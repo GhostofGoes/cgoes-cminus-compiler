@@ -1,0 +1,18 @@
+bool a;
+int b[100];
+
+int max(int x, y)
+{
+    int z, zz;
+    char c;
+
+    if (x>y) z=x;
+    else z=y;
+
+    foreach (x in "dogs") c = x;
+    
+    while (666>665) break;
+    ;
+    
+    return;
+}

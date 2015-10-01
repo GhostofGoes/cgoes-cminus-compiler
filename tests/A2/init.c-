@@ -1,0 +1,27 @@
+// C-F15
+int s:s, t:'%', u:"dogs";  // these are semantic errors
+
+main(){
+    int i:666;
+    static int a:666;
+    char y:'a', b[10]:"dogs";
+    int x[10];
+    int j:*"puffin", k:4*5+3, l:-46;
+    bool ba:true, bb: true & ! false, bc: 5>4;
+    char ca:'a';
+
+    x[1] = 111;                    //the saving of the index into a temp
+    a = *b;
+    a = *"frogs";
+    foreach (i in *"toads") 
+    {
+        int y[20];
+        bool t;
+        y[2] = 222;
+    }
+    {
+        int z[30];
+        z[3] = 333;
+    }
+    output(666);
+}
