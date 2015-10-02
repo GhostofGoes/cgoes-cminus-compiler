@@ -1,0 +1,62 @@
+CharConstTests
+'x'
+'"'
+'\''
+'\"'
+'\n'
+'\0'
+'\\'
+
+StringConstTests
+"x"
+""
+"'"
+"\'"
+"\""
+"\n"
+"\0"
+"\\"
+"dogs"
+"dogs\'cats"
+"dogs\"cats"
+"dogs\ncats"
+"dogs\0cats"
+"dogs\\cats"
+"\0\0\0\0dogs and cats"
+
+'dogs'
+''
+#^&*?#^_@
+"#^&*?#^_@"
+and
+or
+not
+x_
+k9342
+9342k
+variable496
+
+true false        // whitespace
+true	false     // tab
+
+// lone comment
+"Now for a list of all of the tokens and then some"   // you'll never see this
+!=*=+++=---=/=<===>=                                  /// another comment
+! ( ) * + , - : ; < = > ? [ ] | % & { }
+bool
+break
+char
+else
+foreach
+if
+in
+int
+return
+static
+while
+false
+true
+trueAsTheSkyIsBlue
+truefalse
+'
+"
