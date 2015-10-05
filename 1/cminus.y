@@ -48,7 +48,7 @@ start	: start statement
 statement	: ID			{ printf("Line %d Token: ID Value: %s\n", $1.linenum, $1.svalue );  }
 			| NUMCONST		{ printf("Line %d Token: NUMCONST Value: %d Input: %s\n", $1.linenum, atoi($1.input), $1.input ); }
 			| STRINGCONST	{ printf("Line %d Token: STRINGCONST Value of length %d: \"%s\" Input: %s\n", $1.linenum, (int)strlen($1.svalue), $1.svalue, $1.input ); }
-			| CHARCONST		{ printf("Line %d Token: CHARCONST Value: '%s' Input: %s\n", $1.linenum, $1.svalue, $1.input ); }
+			| CHARCONST		{ printf("Line %d Token: CHARCONST Value: '%c' Input: %s\n", $1.linenum, $1.ch, $1.input ); }
 			| BOOLCONST		{ printf("Line %d Token: BOOLCONST Value: %d Input: %s\n", $1.linenum, $1.ivalue, $1.input ); }
 			| ERROR			{ printf("ERROR(%d): %s: \"%s\"\n", $1.linenum, $1.svalue, $1.input); }
 			| SINGLE		{ printf("Line %d Token: %c\n", $1.linenum, $1.ch ); }	
@@ -88,9 +88,7 @@ int main( int argc, char* argv[] ) {
 	do {
 		yyparse();
 	} while (!feof(yyin));
-	
-	
-	
+	return 0;
 }
 
 

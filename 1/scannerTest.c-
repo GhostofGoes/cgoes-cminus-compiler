@@ -26,8 +26,8 @@ StringConstTests
 
 'dogs'
 ''
-#^&*?#^_@
-"#^&*?#^_@"
+#^&*?#^_@~
+"#^&*?#^_@~"
 and
 or
 not
@@ -42,7 +42,8 @@ true	false     // tab
 // lone comment
 "Now for a list of all of the tokens and then some"   // you'll never see this
 !=*=+++=---=/=<===>=                                  /// another comment
-! ( ) * + , - : ; < = > ? [ ] | % & { }
+! ( ) * / + , - : ; < = > ? [ ] | % & { }
+!()*/+,-:;<=>?[]|%&{}
 bool
 break
 char
@@ -60,3 +61,13 @@ trueAsTheSkyIsBlue
 truefalse
 '
 "
+dog
+"
+a*ab_abc#abcd
+-666
++666
+0
+007
+700
+AllWorkAndNoPlayMakesJackADullBoyAllWorkAndNoPlayMakesJackADullBoyAllWorkAndNoPlayMakesJackADullBoy
+redrum
