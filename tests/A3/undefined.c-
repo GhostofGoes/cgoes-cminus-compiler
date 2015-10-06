@@ -1,0 +1,12 @@
+// C-F15
+main()
+{
+    *y;
+    x=3;
+    foreach(x in y);
+        false | true & x < 222 + y*444;
+        444*y + 222 > x & true | false;
+        (444*((x) + 222) > 111) & (y | false);
+    x = true | ! - ? * array * - - 42 / 13 % 5 + 31 - 331 == 12 & 7 < 9;
+}
+

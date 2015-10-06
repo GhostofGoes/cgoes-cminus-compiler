@@ -109,7 +109,8 @@ string		({character}*)
 "true"		{ return toker(BOOLCONST, 1); }
 "false"		{ return toker(BOOLCONST, 0); }
 
-	/* Tokens */
+	/* Could try... \"[^\n]*\"
+	/* String Constants */
 \"			{ 
 				stringbuffer = (char *)calloc(100, sizeof(char));
 				sbuf_ptr = stringbuffer;
@@ -148,6 +149,8 @@ string		({character}*)
 	}
 }
 
+	/* Could try... \'[^\n]*\' */
+	/* Flag to check char length. Or a loop. Check language def if we truncate or error, or ask him */
 \'		{ 
 			literalbuffer = (char *)calloc(5, sizeof(char));
 			strcat(literalbuffer, yytext);
@@ -233,7 +236,9 @@ int strconst() {
 	free(literalbuffer);
 	yylval.tok.svalue = strdup(stringbuffer);
 	free(stringbuffer);
+	//printf( "Flex's line number: %d\n", yylineno );
 	return STRINGCONST;
+	
 }
 
 int cconst() {

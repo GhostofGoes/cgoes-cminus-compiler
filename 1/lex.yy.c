@@ -2319,7 +2319,9 @@ int strconst() {
 	free(literalbuffer);
 	yylval.tok.svalue = strdup(stringbuffer);
 	free(stringbuffer);
+	//printf( "Flex's line number: %d\n", yylineno );
 	return STRINGCONST;
+	
 }
 
 int cconst() {

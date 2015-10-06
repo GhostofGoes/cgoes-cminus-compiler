@@ -3,17 +3,27 @@
 #include <stdlib.h>
 #include "cminus.tab.h"
 
-//extern int linenumber = 0;
-
 int toker(int num, int ival );
 int toker(int num, char * val);
 int toker(int num, char ch);
 int error(const char * msg);
 
+// Handles string constants
+int strconst();
+
+// Handles character constants
+int cconst();
+
 TreeNode * allocNode();
 
-char * strip_chars(const char *string, const char *chars);
+//char * strip_chars(const char *string, const char *chars);
 
+char * stringbuffer;
+char * sbuf_ptr;
+
+char * literalbuffer;
+
+char ctemp;
 
 %}
 
@@ -26,11 +36,13 @@ letdig		({digit}|{letter})
 character	([^'])|(\\[^n])
 stringbody	([^"])|(\\[^n])
 
+%x scond
+%x ccond
 
 %%
 
 	/* Eat single line comments */
-"//".*\n 	{ /* linenumber++; */ }
+"//".*\n 	{ }
 
 ";"			{ return toker(SEMICOLON, yytext[0]); }
 "("			{ return toker(LPAREN, yytext[0]); }
@@ -54,8 +66,6 @@ stringbody	([^"])|(\\[^n])
 ","			{ return toker(COMMA, yytext[0]); }
 ":"			{ return toker(COLON, yytext[0]); }
 
-
-	/* Should these be using the tok type? Nah. */
 	/* Unary ops */
 "+="		{ return toker(ADDASS, yytext); }
 "-="		{ return toker(SUBASS, yytext); }
@@ -86,14 +96,93 @@ stringbody	([^"])|(\\[^n])
 	/* Tokens */
 {letter}{letdig}*		{ return toker(ID, yytext); }
 {digit}+				{ return toker(NUMCONST, atoi(yytext)); }
-"\""{stringbody}*"\""	{ return toker(STRINGCONST, yytext); }
-"'"{character}"'"		{ return toker(CHARCONST, strip_chars(yytext, "\"\'")); }
+
+	/* String Constants */
+	/* TODO: proper errors */
+	/* "\""{stringbody}*"\""	{ return toker(STRINGCONST, yytext); } */
+\"			{ 
+				stringbuffer = (char *)calloc(100, sizeof(char));
+				sbuf_ptr = stringbuffer;
+				literalbuffer = (char *)calloc(110, sizeof(char)); 
+				strcat(literalbuffer, yytext);
+				BEGIN(scond); 
+			}
+<scond>{
+	\"	{
+		strcat(literalbuffer, yytext);
+		*sbuf_ptr = '\0';
+		BEGIN(INITIAL);
+		return strconst();
+	}
+	\n 	{
+		free(literalbuffer);
+		BEGIN(INITIAL);
+		return error("Invalid input character");
+		//return toker(ERROR, "Invalid input character");
+	}
+	\\n { 
+		*sbuf_ptr++ = '\n';
+		strcat(literalbuffer, yytext);
+	}
+	\\0 { 
+		*sbuf_ptr++ = '\0'; 
+		strcat(literalbuffer, yytext);
+	}
+	\\.	{ 
+		*sbuf_ptr++ = yytext[1]; 
+		strcat(literalbuffer, yytext);
+	}
+	.	{ 
+		*sbuf_ptr++ = yytext[0]; 
+		strcat(literalbuffer, yytext);
+	}
+}
+	
+	/* Character Constants  */
+	/* TODO: ensure proper length checking */
+	/* TODO: proper errors */
+	/* "'"{character}"'"		{ return toker(CHARCONST, strip_chars(yytext, "\"\'")); } */
+\'		{ 
+			literalbuffer = (char *)calloc(5, sizeof(char));
+			strcat(literalbuffer, yytext);
+			clength = 0;
+			BEGIN(ccond);
+		}
+<ccond>{
+	\'	{
+		strcat(literalbuffer, yytext);
+		BEGIN(INITIAL);
+		return cconst();
+	}
+	\n 	{
+		free(literalbuffer);
+		BEGIN(INITIAL);
+		return error("Invalid input character");
+		//return toker(ERROR, "Invalid input character");
+	}
+	\\n { 
+		ctemp = '\n';
+		strcat(literalbuffer, yytext);
+	}
+	\\0 { 
+		ctemp = '\0'; 
+		strcat(literalbuffer, yytext);
+	}
+	\\.	{ 
+		ctemp = yytext[1]; 
+		strcat(literalbuffer, yytext);
+	}
+	.	{ 
+		ctemp = yytext[0]; 
+		strcat(literalbuffer, yytext);
+	}	
+}
 
 	/* Eat whitespace */
 [ \t]		;
 
-	/* Count lines. This might be cause of my woes... */
-\n			{ /* linenumber++; */ }
+	/* Count lines? */
+\n			{  }
 
 	/* Shouldn't reach here. Unless its a invalid token. Then we print. */
 .			{ return error("Invalid input character"); }
@@ -143,6 +232,30 @@ int error(const char * msg) {
 	return ERROR;
 }
 
+int strconst() {
+	yylval.tree = allocNode();
+	yylval.tree->lineno = yylineno;
+	yylval.tree->token.num = STRINGCONST;
+	yylval.tree->value = STRINGCONST;
+	yylval.tree->token.input = strdup(literalbuffer);
+	yylval.tree->token.svalue = strdup(stringbuffer);
+	free(literalbuffer);
+	free(stringbuffer);
+	return STRINGCONST;
+}
+
+int cconst() {
+	yylval.tree = allocNode();
+	yylval.tree->lineno = yylineno;
+	yylval.tree->token.num = CHARCONST;
+	yylval.tree->value = CHARCONST;
+	yylval.tree->token.input = strdup(literalbuffer);
+	yylval.tree->token.ch = ctemp;
+	free(literalbuffer);
+	return CHARCONST;
+}
+
+
 /*
 // The OG toker. Does all the yylval stuff for us.
 int toker(int num, int ival ) {
@@ -182,8 +295,10 @@ TreeNode * allocNode() {
 }
 */
 
+
   /* removes all chars from string */
   /* http://rosettacode.org/wiki/Strip_a_set_of_characters_from_a_string */
+/*
 char * strip_chars(const char *string, const char *chars)
 {
   char * newstr = (char *)malloc(strlen(string) + 1);
@@ -199,3 +314,4 @@ char * strip_chars(const char *string, const char *chars)
   newstr[counter] = 0;
   return newstr;
 }
+*/

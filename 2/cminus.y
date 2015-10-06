@@ -459,6 +459,12 @@ int main( int argc, char* argv[] ) {
 			case 'd': 
 				yydebug = 1;
 				break;
+			case 'p':
+				
+				break;
+			case 'P':
+				
+				break;
 			default:
 				break;
 		}
@@ -479,18 +485,17 @@ int main( int argc, char* argv[] ) {
 	printTree(syntaxTree, 0);
 	
 	printf( "Number of warnings: %d\n", warnings );
-	printf( "Number of errors: %d\n", errors );
-	//printf( "Line number: %d\n", linenumber );
-	//printf( "Flex's line number: %d\n", yylineno );
+	printf( "Number of errors: %d\n", errors );	
 	
-	fclose(yyin); // Gotta clean up something at least
+	fclose(yyin);
 	return 0;
 }
 
 // Defines yyerror for bison
 static void yyerror(const char *msg)
 {
-      printf("ERROR(%d): %s\n", yylineno, msg);
+	fflush(stdout);
+    printf("ERROR(%d): %s\n", yylineno, msg);
 }
 
 // Silly "typing saving" helper function
