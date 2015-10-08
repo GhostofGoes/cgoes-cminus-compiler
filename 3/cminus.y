@@ -5,7 +5,6 @@
 #include <string.h>
 #include <stdarg.h>
 #include "types.h"
-#include "CuTest.h"
 #define YYERROR_VERBOSE
 
 extern int yylex();
@@ -20,26 +19,14 @@ int errors = 0;
 // Global abstract syntax tree pointer
 TreeNode *syntaxTree = NULL;
 
-// Global Annotated Syntax Tree pointer 
-TreeNode *annotatedTree = NULL;
-
 // Defining yyerror
 static void yyerror(const char *);
 
 // Save some printf typing
 void easy( int linenum, char * svalue );
 
-// Prints the abstract syntax tree
-void printAbstractTree(TreeNode * tree, int indent_count);
-
-// TODO: Placeholder Prints the annotated syntax tree
-void printAnnotatedTree(TreeNode * tree);
-
-// TODO: placeholder Generates Annotated Syntax Tree
-void semanticAnalysis(TreeNode * tree);
-
-// TODO: placeholder Generates code
-void generateCode();
+// Prints the syntax tree
+void printTree(TreeNode * tree, int indent_count);
 
 // Creates a new node for the syntax tree
 // Args: (int) Number of child nodes, (TreeNode) Child nodes
@@ -466,33 +453,24 @@ int main( int argc, char* argv[] ) {
 	int option;
 	opterr = 0;
 	
-	// Flags
-	bool test_mode = false;
-	bool abstract_tree = false;
-	bool annotated_tree = false;
-	bool code_generation = false;
-	
 	// Command line options. Only handles "-d" debug option currently.
-	while( (option = getopt(argc, argv, "dpPt")) != EOF ) {
+	while( (option = getopt(argc, argv, "d")) != EOF ) {
 		switch(option) {
 			case 'd': 
 				yydebug = 1;
 				break;
 			case 'p':
-				abstract_tree = true;
+				
 				break;
 			case 'P':
-				annotated_tree = true;
-				break;
-			case 't':
-				test_mode = true;
+				
 				break;
 			default:
 				break;
 		}
 	}
 	
-	// Slightly hacky way to get input filename, without using a option
+	// Slightly hacky way to get input filename, without using a option (why...)
 	if( argc > 1 && optind < argc ) {
 		yyin = fopen( argv[optind], "r" );
 	}
@@ -504,21 +482,8 @@ int main( int argc, char* argv[] ) {
 	
 	
 	// Prints out the entire syntax tree recursivly, from the global root node
-	if(abstract_tree) {
-		printAbstractTree(syntaxTree, 0);
-	}
+	printTree(syntaxTree, 0);
 	
-	if(annotated_tree) {
-		semanticAnalysis(annotatedTree);
-		printAnnotatedTree(annotatedTree);
-	}
-	
-	if(code_generation) {
-		// TODO import I/O library
-		generateCode();
-	}
-	
-	// How many bad things happened. TODO: when do we want to do this, or not?
 	printf( "Number of warnings: %d\n", warnings );
 	printf( "Number of errors: %d\n", errors );	
 	
@@ -541,7 +506,7 @@ void easy( int linenum, char * svalue ) {
 
 // Print spaces at end of strings if neccessary. 
 // Assumes we're printing to STDOUT. If we need a file, just redirect at OS level.
-void printAbstractTree(TreeNode * tree, int indent_count) {
+void printTree(TreeNode * tree, int indent_count) {
 	
 	// Keeps track of siblings
 	int sibling_count = 0;
@@ -588,7 +553,7 @@ void printAbstractTree(TreeNode * tree, int indent_count) {
 			for ( int i = 0; i < tree->numChildren; i++ ) {
 				// Two spaces after child num
 				printf( "Child: %d  ", i);
-				printAbstractTree(tree->child[i], indent_count + 1);
+				printTree(tree->child[i], indent_count + 1);
 			}			
 		}
 		
@@ -598,23 +563,6 @@ void printAbstractTree(TreeNode * tree, int indent_count) {
 	} // end while
 	
 }
-
-// TODO: placeholder Prints the Annotated Syntax Tree 
-void printAnnotatedTree( TreeNode * tree ) {
-	;
-}
-
-// TODO: placeholder Performs semantic analysis, generating the Annotated Syntax Tree
-void semanticAnalysis( TreeNode * tree ) {
-	;
-}
-
-
-// TODO: placeholder Generates executable code 
-void generateCode() {
-	;
-}
-
 
 TreeNode * makeNode( int value, int numChildren, ... ) {
 	
