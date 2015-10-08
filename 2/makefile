@@ -1,6 +1,7 @@
 BIN  = cminus
 CC   = g++
 SRCS = $(BIN).y $(BIN).l types.h types.c
+TESTSRCS = CuTest.c CuTest.h AllTests.c
 OBJS = lex.yy.o $(BIN).tab.o
 LIBS = -lm types.c
 CCFLAGS = -g
@@ -31,7 +32,7 @@ pdf:    $(BIN).y $(BIN).l makefile
 	rm *.tex
 
 tar:
-	tar -cvf $(BIN).tar $(SRCS) makefile 
+	tar -cvf $(BIN).tar $(SRCS) $(TESTSRCS) makefile 
 
 test:
 	make clean
