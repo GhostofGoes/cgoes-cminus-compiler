@@ -1,0 +1,33 @@
+free() functions in CuTest.c
+Check return codes
+
+remove main from AllTests.c
+
+use make-tests.sh to build AllTests.c
+
+Integrate compilation and execution to a "make test" option
+
+add  a "--test" option to getopt, sets flag that calls RunAllTests()
+
+make sure the CuAssert.h is either in the tar, or has a switch to disable it!
+
+
+main() of the actual program check to see if the
+command line option "--test" was passed. If it was then I call
+RunAllTests() from AllTests.c
+
+Each individual test corresponds to a CuTest. These are grouped
+to form a CuSuite. CuSuites can hold CuTests or other CuSuites.
+AllTests.c collects all the CuSuites in the program into a single
+CuSuite which it then runs as a single CuSuite.
+
+CuAssrt funcs
+
+void CuAssert(CuTest* tc, char* message, int condition);
+void CuAssertTrue(CuTest* tc, int condition);
+void CuAssertStrEquals(CuTest* tc, char* expected, char* actual);
+void CuAssertIntEquals(CuTest* tc, int expected, int actual);
+void CuAssertPtrEquals(CuTest* tc, void* expected, void* actual);
+void CuAssertPtrNotNull(CuTest* tc, void* pointer);
+
+

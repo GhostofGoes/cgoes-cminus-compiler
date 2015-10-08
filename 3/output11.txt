@@ -1,0 +1,48 @@
+Line 0 Token: INT
+Line 6 Token: ID Value: gromit
+Line 6 Token: ;
+Line 8 Token: ID Value: wallace
+Line 8 Token: (
+Line 8 Token: INT
+Line 8 Token: ID Value: wrong
+Line 8 Token: ,
+Line 8 Token: ID Value: trousers
+Line 8 Token: )
+Line 9 Token: {
+Line 9 Token: BOOL
+Line 10 Token: ID Value: close
+Line 10 Token: :
+Line 10 Token: BOOLCONST Value: 1 Input: true
+Line 10 Token: ,
+Line 10 Token: ID Value: shave
+Line 10 Token: :
+Line 10 Token: BOOLCONST Value: 0 Input: false
+Line 10 Token: ;
+Line 12 Token: ID Value: close
+Line 12 Token: ;
+Line 13 Token: ID Value: close
+Line 13 Token: =
+Line 13 Token: ID Value: shave
+Line 13 Token: ;
+Line 14 Token: ID Value: wrong
+Line 14 Token: =
+Line 14 Token: ID Value: trousers
+Line 14 Token: %
+Line 14 Token: (
+Line 14 Token: NUMCONST Value: 666 Input: 666
+Line 14 Token: /
+Line 14 Token: ID Value: wrong
+Line 14 Token: )
+Line 14 Token: ;
+Line 15 Token: ID Value: gromit
+Line 15 Token: =
+Line 15 Token: ID Value: wrong
+Line 15 Token: *
+Line 15 Token: ID Value: trousers
+Line 15 Token: -
+Line 15 Token: ID Value: gromit
+Line 15 Token: +
+Line 15 Token: -
+Line 15 Token: NUMCONST Value: 42 Input: 42
+Line 15 Token: ;
+ERROR(16): syntax error, unexpected SINGLE, expecting ';'
