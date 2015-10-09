@@ -2,6 +2,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include "cminus.tab.h"
+//#include "tests.h"
 
 int toker(int num, int ival );
 int toker(int num, char * val);
@@ -18,11 +19,10 @@ TreeNode * allocNode();
 
 //char * strip_chars(const char *string, const char *chars);
 
+// String/Character parsing buffers
 char * stringbuffer;
 char * sbuf_ptr;
-
 char * literalbuffer;
-
 char ctemp;
 
 %}
@@ -285,7 +285,7 @@ int toker(int num, char ch) {
 }
 */
 
-/*
+
 TreeNode * allocNode() {
 	TreeNode * tempNode = (TreeNode *)calloc(1, sizeof(TreeNode *));
 	tempNode->numChildren = 0;
@@ -293,7 +293,7 @@ TreeNode * allocNode() {
 	tempNode->sibling = NULL;
 	return tempNode;
 }
-*/
+
 
 
   /* removes all chars from string */

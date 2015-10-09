@@ -18,11 +18,11 @@
 /* Enums for treeNode */
 	// Much of the TreeNode stuff is drawn from the book. 
 	// Source: "Compilers and Construction: Principles and Practice", by Kenneth C. Louden
-	typedef enum { StmtK, ExpK } NodeKind;
-	typedef enum { IfK, CompoundK, ForeachK, WhileK,  } StmtKind;
+	typedef enum { StmtK, ExpK, DeclK } NodeKind;
+	typedef enum { IfK, CompoundK, ForeachK, WhileK, ReturnK, BreakK } StmtKind;
 	typedef enum { OpK, ConstK, IdK, AssignK } ExpKind;
-	typedef enum { } OpKind;
-	typedef enum { } DeclKind;
+	//typedef enum { } OpKind;
+	typedef enum { VarK, FunK } DeclKind;
 // Typechecking
 	typedef enum {Void, Integer, Boolean} ExpType;
 	
@@ -54,7 +54,7 @@
 		// extra properties about the node depending on type of the node
 		union                                  	// relevant data to type -> attr
 		{
-			OpKind op;                         	// type of token (same as in bison)
+			//OpKind op;                         	// type of token (same as in bison)
 			int value;                         	// used when an integer constant or boolean
 			unsigned char cvalue;               // used when a character
 			char *string;                      	// used when a string constant
