@@ -1,11 +1,12 @@
 %{
-#include <stdio.h>
+/*#include <stdio.h>
 #include <stdlib.h>
 #include <getopt.h>
 #include <string.h>
 #include <stdarg.h>
-#include "types.h"
-#include "CuTest.h"
+#include "types.h"*/
+#include "cminus.h"
+//#include "CuTest.h"
 #define YYERROR_VERBOSE
 
 extern int yylex();
@@ -17,14 +18,16 @@ extern FILE * yyin;
 int warnings = 0;
 int errors = 0;
 
+
+// Defining yyerror
+static void yyerror(const char *);
+
+/*
 // Global abstract syntax tree pointer
 TreeNode *syntaxTree = NULL;
 
 // Global Annotated Syntax Tree pointer 
 TreeNode *annotatedTree = NULL;
-
-// Defining yyerror
-static void yyerror(const char *);
 
 // Save some printf typing
 void easy( int linenum, char * svalue );
@@ -50,11 +53,14 @@ void addChildren( TreeNode * parent, int numChildren,...);
 
 // Links all successive siblings to the first and each following
 TreeNode * linkSiblings( int numSiblings,...);
+*/
+
 %}
 
 %code requires {
 	#define MAXCHILDREN 3
 	#include "types.h"
+	#include "cminus.h"
 }
 
 %union 
@@ -131,7 +137,7 @@ program:
 	;
 
 declaration-list: 
-	declaration-list declaration	
+	declaration-list declaration
 		{ $$ = $1; }
 	| declaration
 		{ $$ = $1; }
@@ -187,7 +193,25 @@ type-specifier:
 
 fun-declaration:
 	type-specifier ID LPAREN params RPAREN statement
-	| ID LPAREN params RPAREN statement 
+		{ 
+			$$ = allocNode(); 
+			$$->nodekind = DeclK; 
+			$$->kind.decl = FunK; 
+			$$->nodetype = $1.nodetype; 
+			$$->str = strdup($2.str);
+			$$->child[0] = $4;
+			$$->child[1] = $6;
+		}
+	| ID LPAREN params RPAREN statement
+		{ 
+			$$ = allocNode(); 
+			$$->nodekind = DeclK; 
+			$$->kind.decl = FunK; 
+			$$->nodetype = $1.nodetype; 
+			$$->str = strdup($2.str);
+			$$->child[0] = $4;
+			$$->child[1] = $6;
+		}
 	;
 
 params:
@@ -199,24 +223,39 @@ params:
 
 param-list:
 	param-list SEMICOLON param-type-list 
+		{  
+			$$ = allocNode();
+			$$->sibling = $3;
+			
+		}
 	| param-type-list
 		{ $$ = $1; }
 	;
 	
 param-type-list:
 	type-specifier param-id-list 
-	{ addChildren($1, 1, $2); $$ = $1; }
+		{ 
+			$$ = allocNode();
+			$$->nodekind = DecL;
+			$$->nodetype = $1.nodetype;
+			$$->kind.decl = ParamK;
+			$$->
+		}
 	;
 	
 param-id-list:
 	param-id-list COMMA param-id 
-		{ $$ = linkSiblings(2, $1, $3); }
+		{ 
+			$$ = allocNode(); 
+			$$->sibling = $3;
+		}
 	| param-id 
 		{ $$ = $1; }
 	;
 	
 param-id:
-	ID 		{ $$ = $1; }
+	ID 		
+		{ $$ = $1; }
 	| ID LBRACKET RBRACKET 
 	;
 	
@@ -264,6 +303,10 @@ matched-foreach-stmt:
 	
 unmatched-foreach-stmt:
 	FOREACH LPAREN mutable IN simple-expression RPAREN unmatched
+		{
+			$$ = allocNode();
+			$$->
+		}
 	;
 	
 compound-stmt:
@@ -533,6 +576,7 @@ static void yyerror(const char *msg)
     printf("ERROR(%d): %s\n", yylineno, msg);
 }
 
+/*
 // Silly "typing saving" helper function
 void easy( int linenum, char * svalue ) { 
 	printf("Line %d Token: %s\n", linenum, svalue );
@@ -562,20 +606,6 @@ void printAbstractTree(TreeNode * tree, int indent_count) {
 				
 			}
 		}
-		/*
-		// Statement?
-		if( tree->nodekind == StmtK ) {
-			
-		}
-		// Expression?
-		else if( tree->nodekind == ExpK ) {
-			
-		}
-		// Wtf?
-		else {
-			// error wtf. not wtf wtf.
-		}
-		*/
 		
 		// Print the line number + newline
 		printf( "[line: %d]\n", tree->lineno );
@@ -679,3 +709,5 @@ TreeNode * linkSiblings( int numSiblings, ... ) {
 	return temp;
 	
 }
+
+*/

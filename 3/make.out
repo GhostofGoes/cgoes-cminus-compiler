@@ -1,0 +1,2 @@
+bison -v -t -d cminus.y
+makefile:12: recipe for target 'cminus.tab.h' failed
