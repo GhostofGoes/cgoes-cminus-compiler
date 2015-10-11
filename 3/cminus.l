@@ -2,7 +2,6 @@
 #include <string.h>
 #include <stdlib.h>
 #include "cminus.tab.h"
-//#include "tests.h"
 
 int toker(int num, int ival );
 int toker(int num, char * val);

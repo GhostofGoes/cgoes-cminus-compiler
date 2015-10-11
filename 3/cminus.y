@@ -6,7 +6,7 @@
 #include <stdarg.h>
 #include "types.h"*/
 #include "cminus.h"
-//#include "CuTest.h"
+
 #define YYERROR_VERBOSE
 
 extern int yylex();

@@ -1,8 +1,8 @@
 BIN  = cminus
 CC   = g++
-SRCS = $(BIN).y $(BIN).l types.h types.c
+SRCS = $(BIN).y $(BIN).l types.h types.c cminus.h cminus.c
 OBJS = lex.yy.o $(BIN).tab.o
-LIBS = -lm types.c
+LIBS = -lm types.c cminus.c
 CCFLAGS = -g
 
 $(BIN): $(OBJS)
@@ -37,24 +37,3 @@ test:
 	make clean
 	make all
 	./c-
-	
-#I'm sure there is a way to do this more generically. TODO;
-# maybe an actual testing bash script.
-testA1:
-	make clean
-	make all
-	./c- everything03.c- > output11.txt
-	./c- scannerTest.c- > output12.txt
-
-testA2:
-	make clean
-	make all
-	./c- everything04.c- > output21.txt
-	./c- exp.c- > output22.txt
-	./c- init.c- > output23.txt
-	./c- pas.c- > output24.txt
-	./c- whileif.c- > output25.txt
-
-testAll:
-	make testA1
-	make testA2
