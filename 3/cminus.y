@@ -1,59 +1,35 @@
 %{
-/*#include <stdio.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <getopt.h>
 #include <string.h>
 #include <stdarg.h>
-#include "types.h"*/
+#include "types.h"
 #include "cminus.h"
 
 #define YYERROR_VERBOSE
 
+// Flex's Lexer (heh)
 extern int yylex();
-extern int yylineno; // Use Flex for line numbers. Might be screwing me up.
+
+// Flex's line numbering
+extern int yylineno; 
+
+// Input file stream
 extern FILE * yyin;
-//extern int linenumber;
-//#define MAXCHILDREN 3
 
-int warnings = 0;
-int errors = 0;
-
-
-// Defining yyerror
-static void yyerror(const char *);
-
-/*
 // Global abstract syntax tree pointer
 TreeNode *syntaxTree = NULL;
 
 // Global Annotated Syntax Tree pointer 
 TreeNode *annotatedTree = NULL;
 
-// Save some printf typing
-void easy( int linenum, char * svalue );
+// Globally keep track of warnings and errors
+int warnings = 0;
+int errors = 0;
 
-// Prints the abstract syntax tree
-void printAbstractTree(TreeNode * tree, int indent_count);
-
-// TODO: Placeholder Prints the annotated syntax tree
-void printAnnotatedTree(TreeNode * tree);
-
-// TODO: placeholder Generates Annotated Syntax Tree
-void semanticAnalysis(TreeNode * tree);
-
-// TODO: placeholder Generates code
-void generateCode();
-
-// Creates a new node for the syntax tree
-// Args: (int) Number of child nodes, (TreeNode) Child nodes
-TreeNode * makeNode( int value, int numChildren,...);
-
-// Adds children to a parent node
-void addChildren( TreeNode * parent, int numChildren,...);
-
-// Links all successive siblings to the first and each following
-TreeNode * linkSiblings( int numSiblings,...);
-*/
+// Defining yyerror
+static void yyerror(const char *);
 
 %}
 
@@ -63,9 +39,10 @@ TreeNode * linkSiblings( int numSiblings,...);
 	#include "cminus.h"
 }
 
+// TODO: If i'm using a single type, can i just use the API?
+// %define api.value.type { Treenode *tree }
 %union 
 {
-	/* TokenData tok; */
 	TreeNode *tree;
 }
 
@@ -99,10 +76,6 @@ TreeNode * linkSiblings( int numSiblings,...);
 %type <tree> local-declarations
 %type <tree> statement-list
 %type <tree> expression-stmt
-/*
-%type <tree> selection-stmt
-%type <tree> iteration-stmt
-*/
 %type <tree> return-stmt
 %type <tree> break-stmt
 %type <tree> expression
@@ -167,19 +140,22 @@ var-decl-list:
 var-decl-initialize:
 	var-decl-id
 		{ $$ = $1; }
-	| var-decl-id COLON simple-expression 
+	| var-decl-id COLON simple-expression
+		{ $$ = $1; }
 	;
 
 var-decl-id:
 	ID
 		{ $$ = $1; }
-	| ID LBRACKET NUMCONST RBRACKET 
+	| ID LBRACKET NUMCONST RBRACKET
+		{ $$ = $1; }
 	;
 
 scoped-type-specifier:
-	STATIC type-specifier  
+	STATIC type-specifier
+		{ $$ = $1; }
 	| type-specifier
-		{ $1->typespecifier = true; $$ = $1; }
+		{ $$ = $1; }
 	;
 
 type-specifier:
@@ -194,23 +170,17 @@ type-specifier:
 fun-declaration:
 	type-specifier ID LPAREN params RPAREN statement
 		{ 
-			$$ = allocNode(); 
-			$$->nodekind = DeclK; 
-			$$->kind.decl = FunK; 
-			$$->nodetype = $1.nodetype; 
-			$$->str = strdup($2.str);
-			$$->child[0] = $4;
-			$$->child[1] = $6;
+			$$ = makeNode( DeclK, FunK, $1->nodetype, $2->lineno, $2->str );
+			addChildren( $$, 2, $4, $6 );
+			//$$->child[0] = $4;
+			//$$->child[1] = $6;
 		}
 	| ID LPAREN params RPAREN statement
 		{ 
-			$$ = allocNode(); 
-			$$->nodekind = DeclK; 
-			$$->kind.decl = FunK; 
-			$$->nodetype = $1.nodetype; 
-			$$->str = strdup($2.str);
-			$$->child[0] = $4;
-			$$->child[1] = $6;
+			$$ = makeNode( DeclK, FunK, $1->nodetype, $2->lineno, $2->str );
+			addChildren( $$, 2, $3, $5);
+			//$$->child[0] = $3;
+			//$$->child[1] = $5;
 		}
 	;
 
@@ -224,9 +194,9 @@ params:
 param-list:
 	param-list SEMICOLON param-type-list 
 		{  
-			$$ = allocNode();
-			$$->sibling = $3;
-			
+			//$$ = allocNode();
+			//$$->sibling = $3;
+			$$ = $1;
 		}
 	| param-type-list
 		{ $$ = $1; }
@@ -235,19 +205,16 @@ param-list:
 param-type-list:
 	type-specifier param-id-list 
 		{ 
-			$$ = allocNode();
-			$$->nodekind = DecL;
-			$$->nodetype = $1.nodetype;
-			$$->kind.decl = ParamK;
-			$$->
+			$$ = makeNode( DeclK, ParamK, $1->nodetype, $1->lineno, $2->str );
 		}
 	;
 	
 param-id-list:
 	param-id-list COMMA param-id 
 		{ 
-			$$ = allocNode(); 
-			$$->sibling = $3;
+			//$$ = allocNode(); 
+			//$$->sibling = $3;
+			$$ = $1;
 		}
 	| param-id 
 		{ $$ = $1; }
@@ -256,12 +223,15 @@ param-id-list:
 param-id:
 	ID 		
 		{ $$ = $1; }
-	| ID LBRACKET RBRACKET 
+	| ID LBRACKET RBRACKET
+		{ $$ = $1; }
 	;
 	
 statement:
 	matched
+		{ $$ = $1; }
 	| unmatched
+		{ $$ = $1; }
 	;
 
 matched:
@@ -303,10 +273,7 @@ matched-foreach-stmt:
 	
 unmatched-foreach-stmt:
 	FOREACH LPAREN mutable IN simple-expression RPAREN unmatched
-		{
-			$$ = allocNode();
-			$$->
-		}
+		{ $$ = $1; }
 	;
 	
 compound-stmt:
@@ -315,7 +282,9 @@ compound-stmt:
 
 local-declarations:
 	local-declarations scoped-var-declaration 
-		{ $$ = linkSiblings(2, $1, $2); }
+		{ 
+			$$ = linkSiblings(2, $1, $2); 
+		}
 	| /* empty */ 
 		{ $$ = NULL; }
 	;
@@ -331,20 +300,6 @@ expression-stmt:
 	| SEMICOLON
 		{ $$ = $1; }
 	;
-
-	/*
-	selection-stmt:
-		IF LPAREN simple-expression RPAREN statement 
-		| IF LPAREN simple-expression RPAREN statement ELSE statement 
-		;
-	*/
-
-	/*
-	iteration-stmt:
-		WHILE LPAREN simple-expression RPAREN statement 
-		| FOREACH LPAREN mutable IN simple-expression RPAREN statement 
-		;
-	*/
 	
 return-stmt:
 	RETURN SEMICOLON 
@@ -472,7 +427,10 @@ immutable:
 	
 call:
 	ID LPAREN args RPAREN
-		{ $1->str = strdup("Call"); $1->nodekind = ExpK; addChildren($1, 1, $3); $$ = $1; }
+		{ 
+			$$ = makeNode( ExpK, CallK, $1->nodetype, $1->lineno, $1->str);
+			addChildren($$, 1, $3);
+		}
 	;
 	
 args:
@@ -484,7 +442,9 @@ args:
 	
 arg-list:
 	arg-list COMMA expression
-		{ $$ = linkSiblings(2, $1, $3); }
+		{ 
+			$$ = linkSiblings(2, $1, $3); 
+		}
 	| expression
 		{ $$ = $1; }	
 	;

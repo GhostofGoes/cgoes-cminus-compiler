@@ -18,10 +18,18 @@
 	// Much of the TreeNode stuff is drawn from the book. 
 	// Source: "Compilers and Construction: Principles and Practice", by Kenneth C. Louden
 	typedef enum { StmtK, ExpK, DeclK } NodeKind;
+	
+	typedef enum { 
+		OpK, ConstK, IdK, AssignK, IfK, CompoundK, ForeachK, WhileK, ReturnK, BreakK, VarK, FunK, ParamK, CallK 
+	} Kind;
+	
+	/*
 	typedef enum { IfK, CompoundK, ForeachK, WhileK, ReturnK, BreakK } StmtKind;
 	typedef enum { OpK, ConstK, IdK, AssignK } ExpKind;
 	//typedef enum { } OpKind;
 	typedef enum { VarK, FunK, ParamK } DeclKind;
+	*/
+	
 	// Typechecking
 	typedef enum {Void, Integer, Boolean, Character} Type;
 	
@@ -39,17 +47,19 @@
 		struct treeNode *child[MAXCHILDREN];   	// children of the node
 		struct treeNode *sibling;              	// siblings for the node
 
-		bool typespecifier;
+		//bool typespecifier;
 		
 		// what kind of node
 		NodeKind nodekind;                     	// type of node
+		Kind kind;
+		/*
 		union                                  	// subtype of type
 		{
 			DeclKind decl;                     	// used when DeclK
 			StmtKind stmt;                     	// used when StmtK
 			ExpKind exp;                       	// used when ExpK
 		} kind;
-		
+		*/
 		Type nodetype;
 		//ExpType expType;		           		// used when ExpK for type checking
 		bool isStatic;                         	// is staticly allocated?
@@ -57,7 +67,5 @@
 
 		// even more semantic stuff will go here in later assignments.
 	} TreeNode;
-
-	TreeNode * allocNode();
 
 #endif

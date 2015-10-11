@@ -2,6 +2,9 @@
 #include <string.h>
 #include <stdlib.h>
 #include "cminus.tab.h"
+#include "cminus.h"
+#include "types.h"
+
 
 int toker(int num, int ival );
 int toker(int num, char * val);
@@ -14,15 +17,12 @@ int strconst();
 // Handles character constants
 int cconst();
 
-TreeNode * allocNode();
-
-//char * strip_chars(const char *string, const char *chars);
-
 // String/Character parsing buffers
 char * stringbuffer;
 char * sbuf_ptr;
 char * literalbuffer;
 char ctemp;
+int clength = 0;
 
 %}
 
@@ -140,7 +140,6 @@ stringbody	([^"])|(\\[^n])
 	/* Character Constants  */
 	/* TODO: ensure proper length checking */
 	/* TODO: proper errors */
-	/* "'"{character}"'"		{ return toker(CHARCONST, strip_chars(yytext, "\"\'")); } */
 \'		{ 
 			literalbuffer = (char *)calloc(5, sizeof(char));
 			strcat(literalbuffer, yytext);
@@ -253,64 +252,3 @@ int cconst() {
 	free(literalbuffer);
 	return CHARCONST;
 }
-
-
-/*
-// The OG toker. Does all the yylval stuff for us.
-int toker(int num, int ival ) {
-	yylval.tok.linenum = yylineno;
-	yylval.tok.num = num;
-	yylval.tok.input = strdup(yytext);
-	yylval.tok.ivalue = ival;
-	return num;
-}
-
-// toker clone, for strings!
-int toker(int num, char * val) {
-	yylval.tok.linenum = yylineno;
-	yylval.tok.num = num;
-	yylval.tok.input = strdup(yytext);
-	yylval.tok.svalue = strdup(val);
-	return num;
-}
-
-// Yet Another toker Clone, for Characters (YAtCC)
-int toker(int num, char ch) {
-	yylval.tok.linenum = yylineno;
-	yylval.tok.num = num;
-	yylval.tok.input = strdup(yytext);
-	yylval.tok.ch = ch;
-	return num;
-}
-*/
-
-
-TreeNode * allocNode() {
-	TreeNode * tempNode = (TreeNode *)calloc(1, sizeof(TreeNode *));
-	tempNode->numChildren = 0;
-	tempNode->child = NULL;
-	tempNode->sibling = NULL;
-	return tempNode;
-}
-
-
-
-  /* removes all chars from string */
-  /* http://rosettacode.org/wiki/Strip_a_set_of_characters_from_a_string */
-/*
-char * strip_chars(const char *string, const char *chars)
-{
-  char * newstr = (char *)malloc(strlen(string) + 1);
-  int counter = 0;
- 
-  for ( ; *string; string++) {
-    if (!strchr(chars, *string)) {
-      newstr[ counter ] = *string;
-      ++ counter;
-    }
-  }
- 
-  newstr[counter] = 0;
-  return newstr;
-}
-*/

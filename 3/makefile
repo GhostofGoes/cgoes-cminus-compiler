@@ -1,12 +1,12 @@
 BIN  = cminus
 CC   = g++
-SRCS = $(BIN).y $(BIN).l types.h types.c cminus.h cminus.c
+SRCS = $(BIN).y $(BIN).l types.h cminus.h cminus.cpp
 OBJS = lex.yy.o $(BIN).tab.o
-LIBS = -lm types.c cminus.c
+LIBS = -lm cminus.cpp
 CCFLAGS = -g
 
 $(BIN): $(OBJS)
-	$(CC) $(CCFLAGS) $(OBJS) $(LIBS) -o c- # $(BIN)
+	$(CC) $(CCFLAGS) $(OBJS) $(LIBS) -o c-
 
 $(BIN).tab.h $(BIN).tab.c: $(BIN).y
 	bison -v -t -d $(BIN).y
