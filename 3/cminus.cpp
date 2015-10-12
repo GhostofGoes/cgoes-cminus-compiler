@@ -61,12 +61,12 @@ void printAbstractTree(TreeNode * tree, int indent_count) {
 	
 }
 
-// TODO: placeholder Prints the Annotated Syntax Tree 
+// Prints the Annotated Syntax Tree 
 void printAnnotatedTree( TreeNode * tree ) {
 	;
 }
 
-// TODO: placeholder Performs semantic analysis, generating the Annotated Syntax Tree
+// Performs semantic analysis, generating the Annotated Syntax Tree
 void semanticAnalysis( TreeNode * tree ) {
 	;
 }
@@ -77,7 +77,9 @@ void generateCode() {
 	;
 }
 
-
+// Creates a new node for the syntax tree
+// Args:
+// Return: (TreeNode) The created node
 TreeNode * makeNode( NodeKind nk, Kind k, Type t, int ln, char * s ) {
 	
 	// Allocate a new node
@@ -92,8 +94,8 @@ TreeNode * makeNode( NodeKind nk, Kind k, Type t, int ln, char * s ) {
 	return tempNode;
 }
 
-
-// Creates a new node for the syntax tree
+// Adds children to an existing syntax tree node
+// Args: 
 void addChildren( TreeNode * parent, int numChildren,...) {
 	
 	// Attach children
@@ -110,6 +112,9 @@ void addChildren( TreeNode * parent, int numChildren,...) {
 	}
 }
 
+// Links siblings to each other, starting with the first.
+// Args: (int) number of siblings, (TreeNode) siblings to link
+// Return: (TreeNode) The first node passed
 TreeNode * linkSiblings( int numSiblings, ... ) {
 	
 	va_list siblings;
@@ -139,6 +144,7 @@ TreeNode * linkSiblings( int numSiblings, ... ) {
 }
 
 // Allocates and zeros a new TreeNode
+// Return: (TreeNode) The allocated node
 TreeNode * allocNode() {
 	TreeNode * tempNode = (TreeNode *)calloc(1, sizeof(TreeNode *));
 	tempNode->numChildren = 0;

@@ -210,7 +210,7 @@ void countSymbols(std::string sym, void *ptr) {
 
 
 
-/**/
+/*
 int main()
 {
     Scope s("global");
@@ -282,5 +282,5 @@ int main()
 
     return 0;
 }
-
+*/
 
