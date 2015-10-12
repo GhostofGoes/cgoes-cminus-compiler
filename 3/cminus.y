@@ -40,7 +40,8 @@ static void yyerror(const char *);
 }
 
 // TODO: If i'm using a single type, can i just use the API?
-// %define api.value.type { Treenode *tree }
+// %define api.value.type { Treenode *tree } 
+// Above would allow use of %token <TreeNode> instead of "tree". Unsure of the value, just a random thing.
 %union 
 {
 	TreeNode *tree;
