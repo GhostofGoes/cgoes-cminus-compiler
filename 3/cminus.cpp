@@ -1,8 +1,9 @@
+
 #include "cminus.h"
 
 
-// Recursivly prints the abstract syntax tree
-// Print spaces at end of strings if neccessary. 
+// Recursively prints the abstract syntax tree
+// Print spaces at end of strings if necessary.
 // Assumes we're printing to STDOUT. If we need a file, just redirect at OS level.
 void printAbstractTree(TreeNode * tree, int indent_count) {
 	
