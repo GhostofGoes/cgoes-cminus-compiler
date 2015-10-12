@@ -1,2 +1,2 @@
 # cgoes-cs445
-# why teh heck are you reading a readme, go read the readme. source code. stuff.
+# A shitty compiler, implementing a toy language, utilizing Bison, Flex, and (limited) C++.
