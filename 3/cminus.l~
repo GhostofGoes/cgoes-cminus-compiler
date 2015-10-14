@@ -4,6 +4,7 @@
 #include "cminus.tab.h"
 #include "cminus.h"
 #include "types.h"
+#include "toker.h"
 
 /*
 int toker(int num, int ival );
@@ -44,62 +45,122 @@ stringbody	([^"])|(\\[^n])
 	/* Eat single line comments */
 "//".*\n 	{ }
 
-";"			{ return toker(SEMICOLON, yytext[0]); }
-"("			{ return toker(LPAREN, yytext[0]); }
-")"			{ return toker(RPAREN, yytext[0]); }
-"["			{ return toker(LBRACKET, yytext[0]); }
-"]"			{ return toker(RBRACKET, yytext[0]); }
-"|"			{ return toker(OR, yytext[0]); }
-"&"			{ return toker(AND, yytext[0]); }
-"!"			{ return toker(NOT, yytext[0]); }
-"="			{ return toker(ASSIGN, yytext[0]); }
-"+"			{ return toker(PLUS, yytext[0]); }
-"-"			{ return toker(MINUS, yytext[0]); }
-"*"			{ return toker(MULTIPLY, yytext[0]); }
-"/"			{ return toker(DIVIDE, yytext[0]); }
-"%"			{ return toker(MODULUS, yytext[0]); }
-"?"			{ return toker(QUESTION, yytext[0]); }
-"<"			{ return toker(LTHAN, yytext[0]); }
-">"			{ return toker(GTHAN, yytext[0]); }
-"{"			{ return toker(LBRACE, yytext[0]); }
-"}"			{ return toker(RBRACE, yytext[0]); }
-","			{ return toker(COMMA, yytext[0]); }
-":"			{ return toker(COLON, yytext[0]); }
+";"			{ return cToker(SEMICOLON,  TokK, Void, yytext, yylineno, yytext[0]);}
+"("			{ return cToker(LPAREN,     TokK, Void, yytext, yylineno, yytext[0]);   }
+")"			{ return cToker(RPAREN,     TokK, Void, yytext, yylineno, yytext[0]);   }
+"["			{ return cToker(LBRACKET,   TokK, Void, yytext, yylineno, yytext[0]); }
+"]"			{ return cToker(RBRACKET,   TokK, Void, yytext, yylineno, yytext[0]); }
+"|"			{ return cToker(OR,     OpK, Void, yytext, yylineno, yytext[0]);       }
+"&"			{ return cToker(AND,    OpK, Void, yytext, yylineno, yytext[0]);      }
+"!"			{ return cToker(NOT,    OpK, Void, yytext, yylineno, yytext[0]);      }
+"="			{ return cToker(ASSIGN, OpK, Void, yytext, yylineno, yytext[0]);   }
+"+"			{ return cToker(PLUS,   OpK, Void, yytext, yylineno, yytext[0]);     }
+"-"			{ return cToker(MINUS,  OpK, Void, yytext, yylineno, yytext[0]);    }
+"*"			{ return cToker(MULTIPLY,   OpK, Void, yytext, yylineno, yytext[0]); }
+"/"			{ return cToker(DIVIDE,     OpK, Void, yytext, yylineno, yytext[0]);   }
+"%"			{ return cToker(MODULUS,    OpK, Void, yytext, yylineno, yytext[0]);  }
+"?"			{ return cToker(QUESTION,   OpK, Void, yytext, yylineno, yytext[0]); }
+"<"			{ return cToker(LTHAN,  OpK, Void, yytext, yylineno, yytext[0]);    }
+">"			{ return cToker(GTHAN,  OpK, Void, yytext, yylineno, yytext[0]);    }
+"{"			{ return cToker(LBRACE,     TokK, Void, yytext, yylineno, yytext[0]);   }
+"}"			{ return cToker(RBRACE,     TokK, Void, yytext, yylineno, yytext[0]);   }
+","			{ return cToker(COMMA,  TokK, Void, yytext, yylineno, yytext[0]);    }
+":"			{ return cToker(COLON,  TokK, Void, yytext, yylineno, yytext[0]);    }
 
-	/* Unary ops */
-"+="		{ return toker(ADDASS, yytext); }
-"-="		{ return toker(SUBASS, yytext); }
-"*="		{ return toker(MULASS, yytext); }
-"/="		{ return toker(DIVASS, yytext); }
-"++"		{ return toker(INC, yytext); }
-"--"		{ return toker(DEC, yytext); }
-"<="		{ return toker(LESSEQ, yytext); }
-">="		{ return toker(GRTEQ, yytext); }
-"=="		{ return toker(EQ, yytext); }
-"!="		{ return toker(NOTEQ, yytext); }
-"static"	{ return toker(STATIC, yytext); }
-"int"		{ return toker(INT, yytext); }
-"bool"		{ return toker(BOOL, yytext); }
-"char"		{ return toker(CHAR, yytext); }
-"if"		{ return toker(IF, yytext); }
-"else"		{ return toker(ELSE, yytext); }
-"while"		{ return toker(WHILE, yytext); }
-"foreach"	{ return toker(FOREACH, yytext); }
-"in"		{ return toker(IN, yytext); }
-"return"	{ return toker(RETURN, yytext); }
-"break"		{ return toker(BREAK, yytext); }
-	
+
+
+    /*
+    ";"			{ return toker(SEMICOLON, yytext[0]); }
+    "("			{ return toker(LPAREN, yytext[0]); }
+    ")"			{ return toker(RPAREN, yytext[0]); }
+    "["			{ return toker(LBRACKET, yytext[0]); }
+    "]"			{ return toker(RBRACKET, yytext[0]); }
+    "|"			{ return toker(OR, yytext[0]); }
+    "&"			{ return toker(AND, yytext[0]); }
+    "!"			{ return toker(NOT, yytext[0]); }
+    "="			{ return toker(ASSIGN, yytext[0]); }
+    "+"			{ return toker(PLUS, yytext[0]); }
+    "-"			{ return toker(MINUS, yytext[0]); }
+    "*"			{ return toker(MULTIPLY, yytext[0]); }
+    "/"			{ return toker(DIVIDE, yytext[0]); }
+    "%"			{ return toker(MODULUS, yytext[0]); }
+    "?"			{ return toker(QUESTION, yytext[0]); }
+    "<"			{ return toker(LTHAN, yytext[0]); }
+    ">"			{ return toker(GTHAN, yytext[0]); }
+    "{"			{ return toker(LBRACE, yytext[0]); }
+    "}"			{ return toker(RBRACE, yytext[0]); }
+    ","			{ return toker(COMMA, yytext[0]); }
+    ":"			{ return toker(COLON, yytext[0]); }
+    */
+
+	    /* Unary ops */
+"+="		{ return sToker(ADDASS, OpK, Void, yytext, yylineno, yytext); }
+"-="		{ return sToker(SUBASS, OpK, Void, yytext, yylineno, yytext); }
+"*="		{ return sToker(MULASS, OpK, Void, yytext, yylineno, yytext); }
+"/="		{ return sToker(DIVASS, OpK, Void, yytext, yylineno, yytext); }
+"++"		{ return sToker(INC,    OpK, Void, yytext, yylineno, yytext); }
+"--"		{ return sToker(DEC,    OpK, Void, yytext, yylineno, yytext); }
+"<="		{ return sToker(LESSEQ, OpK, Void, yytext, yylineno, yytext); }
+">="		{ return sToker(GRTEQ,  OpK, Void, yytext, yylineno, yytext); }
+"=="		{ return sToker(EQ,     OpK, Void, yytext, yylineno, yytext); }
+"!="		{ return sToker(NOTEQ,  OpK, Void, yytext, yylineno, yytext); }
+"static"	{ return sToker(STATIC, TokK, Void, yytext, yylineno, yytext); }
+"int"		{ return sToker(INT,    VarK, Integer, yytext, yylineno, yytext); }
+"bool"		{ return sToker(BOOL,   VarK, Boolean, yytext, yylineno, yytext); }
+"char"		{ return sToker(CHAR,   VarK, Character, yytext, yylineno, yytext); }
+"if"		{ return sToker(IF,     IfK, Void, yytext, yylineno, yytext); }
+"else"		{ return sToker(ELSE,   TokK, Void, yytext, yylineno, yytext); }
+"while"		{ return sToker(WHILE,  WhileK, Void, yytext, yylineno, yytext); }
+"foreach"	{ return sToker(FOREACH,ForeachK, Void, yytext, yylineno, yytext); }
+"in"		{ return sToker(IN,     TokK, Void, yytext, yylineno, yytext); }
+"return"	{ return sToker(RETURN, ReturnK, Void, yytext, yylineno, yytext); }
+"break"		{ return sToker(BREAK,  BreakK, Void, yytext, yylineno, yytext); }
+
+    /*
+    "+="		{ return toker(ADDASS, yytext); }
+    "-="		{ return toker(SUBASS, yytext); }
+    "*="		{ return toker(MULASS, yytext); }
+    "/="		{ return toker(DIVASS, yytext); }
+    "++"		{ return toker(INC, yytext); }
+    "--"		{ return toker(DEC, yytext); }
+    "<="		{ return toker(LESSEQ, yytext); }
+    ">="		{ return toker(GRTEQ, yytext); }
+    "=="		{ return toker(EQ, yytext); }
+    "!="		{ return toker(NOTEQ, yytext); }
+    "static"	{ return toker(STATIC, yytext); }
+    "int"		{ return toker(INT, yytext); }
+    "bool"		{ return toker(BOOL, yytext); }
+    "char"		{ return toker(CHAR, yytext); }
+    "if"		{ return toker(IF, yytext); }
+    "else"		{ return toker(ELSE, yytext); }
+    "while"		{ return toker(WHILE, yytext); }
+    "foreach"	{ return toker(FOREACH, yytext); }
+    "in"		{ return toker(IN, yytext); }
+    "return"	{ return toker(RETURN, yytext); }
+    "break"		{ return toker(BREAK, yytext); }
+    */
+
+
 	/* Booleans */
-"true"		{ return toker(BOOLCONST, 1); }
-"false"		{ return toker(BOOLCONST, 0); }
+"true"		{ return iToker(BOOLCONST, TokK, Boolean, yytext, yylineno, 1); }
+"false"		{ return iToker(BOOLCONST, TokK, Boolean, yytext, yylineno, 0); }
+
+    /*
+    "true"		{ return toker(BOOLCONST, 1); }
+    "false"		{ return toker(BOOLCONST, 0); }
+    */
 
 	/* Tokens */
-{letter}{letdig}*		{ return toker(ID, yytext); }
-{digit}+				{ return toker(NUMCONST, atoi(yytext)); }
+{letter}{letdig}*		{ return sToker(ID, IdK, Void, yytext, yylineno, yytext); }
+{digit}+				{ return iToker(NUMCONST, ConstK, Integer, yytext, yylineno, atoi(yytext)); }
+
+    /*
+    {letter}{letdig}*		{ return toker(ID, yytext); }
+    {digit}+				{ return toker(NUMCONST, atoi(yytext)); }
+    */
 
 	/* String Constants */
 	/* TODO: proper errors */
-	/* "\""{stringbody}*"\""	{ return toker(STRINGCONST, yytext); } */
 \"			{ 
 				stringbuffer = (char *)calloc(100, sizeof(char));
 				sbuf_ptr = stringbuffer;
@@ -112,13 +173,13 @@ stringbody	([^"])|(\\[^n])
 		strcat(literalbuffer, yytext);
 		*sbuf_ptr = '\0';
 		BEGIN(INITIAL);
-		return strconst();
+		//return strconst();
+        return sToker(STRINGCONST, ConstK, Void, literalbuffer, yylineno, stringbuffer);
 	}
 	\n 	{
 		free(literalbuffer);
 		BEGIN(INITIAL);
-		return error("Invalid input character");
-		//return toker(ERROR, "Invalid input character");
+		return error(yytext, yylineno, "Invalid input character");
 	}
 	\\n { 
 		*sbuf_ptr++ = '\n';
@@ -151,13 +212,13 @@ stringbody	([^"])|(\\[^n])
 	\'	{
 		strcat(literalbuffer, yytext);
 		BEGIN(INITIAL);
-		return cconst();
+		//return cconst();
+        return cToker(CHARCONST, ConstK, Character, literalbuffer, yylineno, ctemp);
 	}
 	\n 	{
 		free(literalbuffer);
 		BEGIN(INITIAL);
-		return error("Invalid input character");
-		//return toker(ERROR, "Invalid input character");
+		return error(yytext, yylineno, "Invalid input character");
 	}
 	\\n { 
 		ctemp = '\n';
@@ -184,7 +245,7 @@ stringbody	([^"])|(\\[^n])
 \n			{  }
 
 	/* Shouldn't reach here. Unless its a invalid token. Then we print. */
-.			{ return error("Invalid input character"); }
+.			{ return error(yytext, yylineno, "Invalid input character"); }
 
 %%
 /*

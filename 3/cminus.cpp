@@ -33,7 +33,7 @@ void printAbstractTree(TreeNode * tree, int indent_count) {
 		switch(tree->kind) {
 			case OpK:
 				outstr.append("Op: ");
-				outstr.push_back(tree->token.ch);
+				outstr.push_back(tree->token.cvalue);
 				break;
 
 			case ConstK:
@@ -48,7 +48,7 @@ void printAbstractTree(TreeNode * tree, int indent_count) {
 
 			case AssignK:
 				outstr.append("Assign: ");
-				outstr.push_back(tree->token.ch);
+				outstr.push_back(tree->token.cvalue);
 				break;
 
 			case IfK:
