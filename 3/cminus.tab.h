@@ -109,7 +109,7 @@ extern int yydebug;
 typedef union YYSTYPE YYSTYPE;
 union YYSTYPE
 {
-#line 45 "cminus.y" /* yacc.c:1909  */
+#line 46 "cminus.y" /* yacc.c:1909  */
 
 	TreeNode *tree;
 

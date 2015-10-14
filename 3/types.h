@@ -20,7 +20,9 @@
 	typedef enum { StmtK, ExpK, DeclK } NodeKind;
 	
 	typedef enum { 
-		OpK, ConstK, IdK, AssignK, IfK, CompoundK, ForeachK, WhileK, ReturnK, BreakK, VarK, FunK, ParamK, CallK 
+		OpK, ConstK, IdK, AssignK, IfK,
+		CompoundK, ForeachK, WhileK, ReturnK,
+		BreakK, VarK, FunK, ParamK, CallK
 	} Kind;
 	
 	/*
@@ -33,6 +35,7 @@
 	// Typechecking
 	typedef enum {Void, Integer, Boolean, Character} Type;
 	
+	// TODO: KEEP TRACK OF SCOPE!
 // TreeNode
 	typedef struct treeNode
 	{
@@ -40,7 +43,7 @@
 		TokenData token;
 		int lineno;                            	// linenum relevant to this node
 		int value;
-		char * str;
+		char * str; // maybe just use the token data?
 		
 		// connectivity in the tree
 		int numChildren; 						// Number of children for a given node

@@ -1,5 +1,10 @@
-
 #include "cminus.h"
+#include <iostream>
+#include <string>
+#include <cstdlib>
+#include <vector>
+
+using namespace std;
 
 
 // Recursively prints the abstract syntax tree
@@ -21,26 +26,89 @@ void printAbstractTree(TreeNode * tree, int indent_count) {
 			printf( "|Sibling: %d  ", sibling_count);
 		}
 		
-		// Statement
-		if( tree->nodekind == StmtK ) {
-			
-		}
-		// Expression
-		else if( tree->nodekind == ExpK ) {
-			
-		}
-		// Declaration
-		else if (tree->nodekind == DeclK ) { 
-			
-		}
-		// We shouldn't get here. Error!
-		else { 
-			// error wtf. not wtf wtf.
-		}
+		// Prints based on the node's kind
+		// Some will 'fall' into others
+		std::string outstr;
+
+		switch(tree->kind) {
+			case OpK:
+				outstr.append("Op: ");
+				outstr.push_back(tree->token.ch);
+				break;
+
+			case ConstK:
+				outstr.append("Const: ");
+				outstr.append(to_string(tree->token.num));
+				break;
+
+			case IdK:
+				outstr.append("Id: ");
+				outstr.append(tree->str);
+				break;
+
+			case AssignK:
+				outstr.append("Assign: ");
+				outstr.push_back(tree->token.ch);
+				break;
+
+			case IfK:
+				outstr.append("If");
+				break;
+
+			case CompoundK:
+				outstr.append("Compound");
+				break;
+
+			case ForeachK:
+				outstr.append("Foreach");
+				break;
+
+			case WhileK:
+				outstr.append("While");
+				break;
+
+			case ReturnK:
+				outstr.append("Return");
+				break;
+
+			case BreakK:
+				outstr.append("Break");
+				break;
+
+			case VarK:
+			case ParamK:
+				if(tree->kind == VarK)
+					{ outstr.append("Var "); }
+				else
+					{ outstr.append("Param "); }
+				outstr.append(tree->str);
+				if(tree->isArray)
+					{ outstr.append(" is array"); }
+				outstr.append(" of type ");
+				outstr.append(typeToStr(tree->nodetype));
+				break;
+
+			case FunK:
+				outstr.append("Func ");
+				outstr.append(tree->str);
+				outstr.append(" returns type ");
+				outstr.append(typeToStr(tree->nodetype));
+				break;
+
+			case CallK:
+				outstr.append("Call: ");
+				outstr.append(tree->str);
+				break;
+
+			default:
+				// TODO: error?
+				break;
+
+		} // end switch
 		
-		
+		cout << outstr << " [line: " << tree->lineno << "]" << endl;
 		// Print the line number + newline
-		printf( "[line: %d]\n", tree->lineno );
+		//printf( " [line: %d]\n", tree->lineno );
 		
 		// Check if there are children
 		if( tree->numChildren > 0 ) {
@@ -71,7 +139,6 @@ void semanticAnalysis( TreeNode * tree ) {
 	;
 }
 
-
 // TODO: placeholder Generates executable code 
 void generateCode() {
 	;
@@ -80,11 +147,12 @@ void generateCode() {
 // Creates a new node for the syntax tree
 // Args:
 // Return: (TreeNode) The created node
-TreeNode * makeNode( NodeKind nk, Kind k, Type t, int ln, char * s ) {
+TreeNode * makeNode( NodeKind nk, Kind k, Type t, int ln, char * s, TokenData tok ) {
 	
 	// Allocate a new node
 	TreeNode * tempNode = allocNode();
 		
+	tempNode->token = tok;
 	tempNode->lineno = ln;
 	tempNode->nodekind = nk; 
 	tempNode->kind = k; 
@@ -150,4 +218,22 @@ TreeNode * allocNode() {
 	tempNode->numChildren = 0;
 	tempNode->sibling = NULL;
 	return tempNode;
+}
+
+std::string typeToStr( Type t ) {
+	switch(t) {
+		case Void:
+			return("void");
+			break;
+		case Integer:
+			return("int");
+			break;
+		case Boolean:
+			return("bool");
+			break;
+		case Character:
+			return("char");
+			break;
+	}
+	return ("");
 }
