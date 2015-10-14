@@ -215,8 +215,15 @@ TreeNode * linkSiblings( int numSiblings, ... ) {
 // Return: (TreeNode) The allocated node
 TreeNode * allocNode() {
 	TreeNode * tempNode = (TreeNode *)calloc(1, sizeof(TreeNode *));
+	tempNode->token = new TokenData;
+	tempNode->lineno = 0;
+	tempNode->bval = 0;
+	tempNode->str = NULL;
 	tempNode->numChildren = 0;
 	tempNode->sibling = NULL;
+	tempNode->isStatic = false;
+	tempNode->isArray = false;
+	
 	return tempNode;
 }
 
