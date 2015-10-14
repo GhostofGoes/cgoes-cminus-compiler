@@ -220,9 +220,7 @@ param-type-list:
 	
 param-id-list:
 	param-id-list COMMA param-id 
-		{ 
-			$$ = linkSiblings(2, $1, $3);
-		}
+		{ $$ = linkSiblings(2, $1, $3); }
 	| param-id 
 		{ $$ = $1; }
 	;
@@ -334,7 +332,7 @@ statement-list:
 	
 expression-stmt:
 	expression SEMICOLON 
-        { $$ = $1; }
+        { $$ = $1; /* does expression occur at semicolon for line counting? */ }
 	| SEMICOLON
 		{ // null? 
             $$ = $1;
@@ -358,36 +356,80 @@ break-stmt:
 	
 expression:
 	mutable ASSIGN expression
+        { 
+            $$ = $2;
+            addChildren( $$, 2, $1, $3 );
+        }
 	| mutable ADDASS expression
+        { 
+            $$ = $2;
+            addChildren( $$, 2, $1, $3 );
+        }
 	| mutable SUBASS expression
+        { 
+            $$ = $2;
+            addChildren( $$, 2, $1, $3 );
+        }
 	| mutable MULASS expression
+        { 
+            $$ = $2;
+            addChildren( $$, 2, $1, $3 );
+        }
 	| mutable DIVASS expression
+        { 
+            $$ = $2;
+            addChildren( $$, 2, $1, $3 );
+        }
 	| mutable INC
+        { 
+            $$ = $2;
+            addChildren( $$, 2, $1, $3 );
+        }
 	| mutable DEC
+        { 
+            $$ = $2;
+            addChildren( $$, 2, $1, $3 );
+        }
 	| simple-expression
 		{ $$ = $1; }
 	;
 	
 simple-expression:
 	simple-expression OR and-expression 
+        { 
+            $$ = $2;
+            addChildren( $$, 2, $1, $3 );
+        }
 	| and-expression 
 		{ $$ = $1; }
 	;
 	
 and-expression:
-	and-expression AND unary-rel-expression 
+	and-expression AND unary-rel-expression
+        { 
+            $$ = $2;
+            addChildren( $$, 2, $1, $3 );
+        }
 	| unary-rel-expression 
 		{ $$ = $1; }
 	;
 	
 unary-rel-expression:
 	NOT unary-rel-expression
+        { 
+            $$ = $1;
+            addChildren( $$, 1, $2 );
+        }
 	| rel-expression 
 		{ $$ = $1; }
 	;
 	
 rel-expression:
-	sum-expression relop sum-expression 
+	sum-expression relop sum-expression
+        { 
+            $$ = $2;
+            addChildren( $$, 2, $1, $3 );
+        } 
 	| sum-expression 
 		{ $$ = $1; }
 	;
@@ -408,7 +450,11 @@ relop:
 	;
 	
 sum-expression:
-	sum-expression sumop term 
+	sum-expression sumop term
+        { 
+            $$ = $2;
+            addChildren( $$, 2, $1, $3 );
+        } 
 	| term 
 		{ $$ = $1; }
 	;
@@ -422,6 +468,10 @@ sumop:
 	
 term:
 	term mulop unary-expression
+        { 
+            $$ = $2;
+            addChildren( $$, 2, $1, $3 );
+        }
 	| unary-expression 
 		{ $$ = $1; }
 	;
@@ -437,7 +487,10 @@ mulop:
 	
 unary-expression:
 	unaryop unary-expression
-        { $$ = $1; }
+        { 
+            $$ = $1;
+            addChildren( $$, 1, $2 );
+        }
 	| factor 
 		{ $$ = $1; }
 	;
@@ -462,8 +515,10 @@ mutable:
 	ID
 		{ $$ = $1; }
 	| ID LBRACKET expression RBRACKET
-        { // honestly not sure what to do here...
-            $$ = makeNode( DeclK, IdK, $1->nodetype, $1->lineno, $1->str, $3->token  ); 
+        {
+            $$ = $1;
+            $$->isArray = true; 
+            addChildren( $$, 1, $3 );
         }
 	;
 	
