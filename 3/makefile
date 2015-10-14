@@ -2,7 +2,7 @@ BIN  = cminus
 CC   = g++
 SRCS = $(BIN).y $(BIN).l types.h cminus.h cminus.cpp
 OBJS = lex.yy.o $(BIN).tab.o
-LIBS = -lm cminus.cpp
+LIBS = -lm cminus.cpp toker.c
 CCFLAGS = -g -std=gnu++11
 
 $(BIN): $(OBJS)

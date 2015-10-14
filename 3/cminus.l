@@ -1,11 +1,12 @@
 %{
-#include <string.h>
-#include <stdlib.h>
+//#include <string.h>
+//#include <stdlib.h>
 #include "cminus.tab.h"
 #include "cminus.h"
 #include "types.h"
+#include "toker.h"
 
-
+/*
 int toker(int num, int ival );
 int toker(int num, char * val);
 int toker(int num, char ch);
@@ -16,6 +17,7 @@ int strconst();
 
 // Handles character constants
 int cconst();
+*/
 
 // String/Character parsing buffers
 char * stringbuffer;
@@ -186,7 +188,7 @@ stringbody	([^"])|(\\[^n])
 .			{ return error("Invalid input character"); }
 
 %%
-
+/*
 // Rebuilt toker to use unified TreeNode type. TokenData is stored inside nodes.
 int toker(int num, int ival ) {
 	yylval.tree = allocNode();
@@ -252,3 +254,4 @@ int cconst() {
 	free(literalbuffer);
 	return CHARCONST;
 }
+*/

@@ -1,5 +1,5 @@
-#ifndef _TREENODE_H_
-#define _TREENODE_H_
+#ifndef _TYPES_H_
+#define _TYPES_H_
 
 #define MAXCHILDREN 3
 

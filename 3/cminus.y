@@ -6,6 +6,7 @@
 #include <stdarg.h>
 #include "types.h"
 #include "cminus.h"
+#include "toker.h"
 
 #define YYERROR_VERBOSE
 

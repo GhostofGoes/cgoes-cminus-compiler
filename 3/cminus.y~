@@ -383,12 +383,12 @@ expression:
 	| mutable INC
         { 
             $$ = $2;
-            addChildren( $$, 2, $1, $3 );
+            addChildren( $$, 1, $1 );
         }
 	| mutable DEC
         { 
             $$ = $2;
-            addChildren( $$, 2, $1, $3 );
+            addChildren( $$, 1, $1 );
         }
 	| simple-expression
 		{ $$ = $1; }
