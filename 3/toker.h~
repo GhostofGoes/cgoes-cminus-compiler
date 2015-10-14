@@ -5,7 +5,6 @@
 #include "types.h"
 #include "cminus.tab.h"
 
-int toker(int bisons_value, Kind tok_kind, Type tok_type, char * tok_text, int line_number, ...);
 
 int toker(int num, int ival );
 int toker(int num, char * val);

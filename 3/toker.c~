@@ -10,7 +10,7 @@ int toker(int bisons_value, Kind tok_kind, Type tok_type, char * tok_text, int l
 	yylval.tree->lineno = line_number;
 	yylval.tree->token.num = bisons_value; // TODO: deprecated
 	yylval.tree->value = bisons_value;
-	yylval.tree->input = strdup
+	yylval
 
 }
 
