@@ -6,19 +6,6 @@
 #include "types.h"
 #include "toker.h"
 
-/*
-int toker(int num, int ival );
-int toker(int num, char * val);
-int toker(int num, char ch);
-int error(const char * msg);
-
-// Handles string constants
-int strconst();
-
-// Handles character constants
-int cconst();
-*/
-
 // String/Character parsing buffers
 char * stringbuffer;
 char * sbuf_ptr;
@@ -45,27 +32,27 @@ stringbody	([^"])|(\\[^n])
 	/* Eat single line comments */
 "//".*\n 	{ }
 
-";"			{ return cToker(SEMICOLON,  TokK, Void, yytext, yylineno, yytext[0]);}
-"("			{ return cToker(LPAREN,     TokK, Void, yytext, yylineno, yytext[0]);   }
-")"			{ return cToker(RPAREN,     TokK, Void, yytext, yylineno, yytext[0]);   }
-"["			{ return cToker(LBRACKET,   TokK, Void, yytext, yylineno, yytext[0]); }
-"]"			{ return cToker(RBRACKET,   TokK, Void, yytext, yylineno, yytext[0]); }
-"|"			{ return cToker(OR,     OpK, Void, yytext, yylineno, yytext[0]);       }
-"&"			{ return cToker(AND,    OpK, Void, yytext, yylineno, yytext[0]);      }
-"!"			{ return cToker(NOT,    OpK, Void, yytext, yylineno, yytext[0]);      }
-"="			{ return cToker(ASSIGN, OpK, Void, yytext, yylineno, yytext[0]);   }
-"+"			{ return cToker(PLUS,   OpK, Void, yytext, yylineno, yytext[0]);     }
-"-"			{ return cToker(MINUS,  OpK, Void, yytext, yylineno, yytext[0]);    }
-"*"			{ return cToker(MULTIPLY,   OpK, Void, yytext, yylineno, yytext[0]); }
-"/"			{ return cToker(DIVIDE,     OpK, Void, yytext, yylineno, yytext[0]);   }
-"%"			{ return cToker(MODULUS,    OpK, Void, yytext, yylineno, yytext[0]);  }
-"?"			{ return cToker(QUESTION,   OpK, Void, yytext, yylineno, yytext[0]); }
-"<"			{ return cToker(LTHAN,  OpK, Void, yytext, yylineno, yytext[0]);    }
-">"			{ return cToker(GTHAN,  OpK, Void, yytext, yylineno, yytext[0]);    }
-"{"			{ return cToker(LBRACE,     TokK, Void, yytext, yylineno, yytext[0]);   }
-"}"			{ return cToker(RBRACE,     TokK, Void, yytext, yylineno, yytext[0]);   }
-","			{ return cToker(COMMA,  TokK, Void, yytext, yylineno, yytext[0]);    }
-":"			{ return cToker(COLON,  TokK, Void, yytext, yylineno, yytext[0]);    }
+";"			{ return cToker(SEMICOLON,  yytext, yylineno, yytext[0]);}
+"("			{ return cToker(LPAREN,     yytext, yylineno, yytext[0]);   }
+")"			{ return cToker(RPAREN,     yytext, yylineno, yytext[0]);   }
+"["			{ return cToker(LBRACKET,   yytext, yylineno, yytext[0]); }
+"]"			{ return cToker(RBRACKET,   yytext, yylineno, yytext[0]); }
+"|"			{ return cToker(OR,     yytext, yylineno, yytext[0]);       }
+"&"			{ return cToker(AND,    yytext, yylineno, yytext[0]);      }
+"!"			{ return cToker(NOT,    yytext, yylineno, yytext[0]);      }
+"="			{ return cToker(ASSIGN, yytext, yylineno, yytext[0]);   }
+"+"			{ return cToker(PLUS,   yytext, yylineno, yytext[0]);     }
+"-"			{ return cToker(MINUS,  yytext, yylineno, yytext[0]);    }
+"*"			{ return cToker(MULTIPLY,   yytext, yylineno, yytext[0]); }
+"/"			{ return cToker(DIVIDE,     yytext, yylineno, yytext[0]);   }
+"%"			{ return cToker(MODULUS,    yytext, yylineno, yytext[0]);  }
+"?"			{ return cToker(QUESTION,   yytext, yylineno, yytext[0]); }
+"<"			{ return cToker(LTHAN,  yytext, yylineno, yytext[0]);    }
+">"			{ return cToker(GTHAN,  yytext, yylineno, yytext[0]);    }
+"{"			{ return cToker(LBRACE,     yytext, yylineno, yytext[0]);   }
+"}"			{ return cToker(RBRACE,     yytext, yylineno, yytext[0]);   }
+","			{ return cToker(COMMA,  yytext, yylineno, yytext[0]);    }
+":"			{ return cToker(COLON,  yytext, yylineno, yytext[0]);    }
 
 
 
@@ -94,27 +81,27 @@ stringbody	([^"])|(\\[^n])
     */
 
 	    /* Unary ops */
-"+="		{ return sToker(ADDASS, OpK, Void, yytext, yylineno, yytext); }
-"-="		{ return sToker(SUBASS, OpK, Void, yytext, yylineno, yytext); }
-"*="		{ return sToker(MULASS, OpK, Void, yytext, yylineno, yytext); }
-"/="		{ return sToker(DIVASS, OpK, Void, yytext, yylineno, yytext); }
-"++"		{ return sToker(INC,    OpK, Void, yytext, yylineno, yytext); }
-"--"		{ return sToker(DEC,    OpK, Void, yytext, yylineno, yytext); }
-"<="		{ return sToker(LESSEQ, OpK, Void, yytext, yylineno, yytext); }
-">="		{ return sToker(GRTEQ,  OpK, Void, yytext, yylineno, yytext); }
-"=="		{ return sToker(EQ,     OpK, Void, yytext, yylineno, yytext); }
-"!="		{ return sToker(NOTEQ,  OpK, Void, yytext, yylineno, yytext); }
-"static"	{ return sToker(STATIC, TokK, Void, yytext, yylineno, yytext); }
-"int"		{ return sToker(INT,    VarK, Integer, yytext, yylineno, yytext); }
-"bool"		{ return sToker(BOOL,   VarK, Boolean, yytext, yylineno, yytext); }
-"char"		{ return sToker(CHAR,   VarK, Character, yytext, yylineno, yytext); }
-"if"		{ return sToker(IF,     IfK, Void, yytext, yylineno, yytext); }
-"else"		{ return sToker(ELSE,   TokK, Void, yytext, yylineno, yytext); }
-"while"		{ return sToker(WHILE,  WhileK, Void, yytext, yylineno, yytext); }
-"foreach"	{ return sToker(FOREACH,ForeachK, Void, yytext, yylineno, yytext); }
-"in"		{ return sToker(IN,     TokK, Void, yytext, yylineno, yytext); }
-"return"	{ return sToker(RETURN, ReturnK, Void, yytext, yylineno, yytext); }
-"break"		{ return sToker(BREAK,  BreakK, Void, yytext, yylineno, yytext); }
+"+="		{ return sToker(ADDASS, yytext, yylineno, yytext); }
+"-="		{ return sToker(SUBASS, yytext, yylineno, yytext); }
+"*="		{ return sToker(MULASS, yytext, yylineno, yytext); }
+"/="		{ return sToker(DIVASS, yytext, yylineno, yytext); }
+"++"		{ return sToker(INC,    yytext, yylineno, yytext); }
+"--"		{ return sToker(DEC,    yytext, yylineno, yytext); }
+"<="		{ return sToker(LESSEQ, yytext, yylineno, yytext); }
+">="		{ return sToker(GRTEQ,  yytext, yylineno, yytext); }
+"=="		{ return sToker(EQ,     yytext, yylineno, yytext); }
+"!="		{ return sToker(NOTEQ,  yytext, yylineno, yytext); }
+"static"	{ return sToker(STATIC, yytext, yylineno, yytext); }
+"int"		{ return sToker(INT,    yytext, yylineno, yytext); }
+"bool"		{ return sToker(BOOL,   yytext, yylineno, yytext); }
+"char"		{ return sToker(CHAR,   yytext, yylineno, yytext); }
+"if"		{ return sToker(IF,     yytext, yylineno, yytext); }
+"else"		{ return sToker(ELSE,   yytext, yylineno, yytext); }
+"while"		{ return sToker(WHILE,  yytext, yylineno, yytext); }
+"foreach"	{ return sToker(FOREACH,yytext, yylineno, yytext); }
+"in"		{ return sToker(IN,     yytext, yylineno, yytext); }
+"return"	{ return sToker(RETURN, yytext, yylineno, yytext); }
+"break"		{ return sToker(BREAK,  yytext, yylineno, yytext); }
 
     /*
     "+="		{ return toker(ADDASS, yytext); }
@@ -142,8 +129,8 @@ stringbody	([^"])|(\\[^n])
 
 
 	/* Booleans */
-"true"		{ return iToker(BOOLCONST, TokK, Boolean, yytext, yylineno, 1); }
-"false"		{ return iToker(BOOLCONST, TokK, Boolean, yytext, yylineno, 0); }
+"true"		{ return iToker(BOOLCONST, yytext, yylineno, 1); }
+"false"		{ return iToker(BOOLCONST, yytext, yylineno, 0); }
 
     /*
     "true"		{ return toker(BOOLCONST, 1); }
@@ -151,13 +138,8 @@ stringbody	([^"])|(\\[^n])
     */
 
 	/* Tokens */
-{letter}{letdig}*		{ return sToker(ID, IdK, Void, yytext, yylineno, yytext); }
-{digit}+				{ return iToker(NUMCONST, ConstK, Integer, yytext, yylineno, atoi(yytext)); }
-
-    /*
-    {letter}{letdig}*		{ return toker(ID, yytext); }
-    {digit}+				{ return toker(NUMCONST, atoi(yytext)); }
-    */
+{letter}{letdig}*	{ return sToker(ID,         yytext, yylineno, yytext); }
+{digit}+			{ return iToker(NUMCONST,   yytext, yylineno, atoi(yytext)); }
 
 	/* String Constants */
 	/* TODO: proper errors */
@@ -173,11 +155,10 @@ stringbody	([^"])|(\\[^n])
 		strcat(literalbuffer, yytext);
 		*sbuf_ptr = '\0';
 		BEGIN(INITIAL);
-		//return strconst();
-        return sToker(STRINGCONST, ConstK, Void, literalbuffer, yylineno, stringbuffer);
+        return sToker(STRINGCONST, literalbuffer, yylineno, stringbuffer);
 	}
 	\n 	{
-		free(literalbuffer);
+		/* free(literalbuffer); */
 		BEGIN(INITIAL);
 		return error(yytext, yylineno, "Invalid input character");
 	}
@@ -202,6 +183,7 @@ stringbody	([^"])|(\\[^n])
 	/* Character Constants  */
 	/* TODO: ensure proper length checking */
 	/* TODO: proper errors */
+
 \'		{ 
 			literalbuffer = (char *)calloc(5, sizeof(char));
 			strcat(literalbuffer, yytext);
@@ -212,11 +194,10 @@ stringbody	([^"])|(\\[^n])
 	\'	{
 		strcat(literalbuffer, yytext);
 		BEGIN(INITIAL);
-		//return cconst();
-        return cToker(CHARCONST, ConstK, Character, literalbuffer, yylineno, ctemp);
+        return cToker(CHARCONST, literalbuffer, yylineno, ctemp);
 	}
 	\n 	{
-		free(literalbuffer);
+		/* free(literalbuffer); */
 		BEGIN(INITIAL);
 		return error(yytext, yylineno, "Invalid input character");
 	}
@@ -248,70 +229,4 @@ stringbody	([^"])|(\\[^n])
 .			{ return error(yytext, yylineno, "Invalid input character"); }
 
 %%
-/*
-// Rebuilt toker to use unified TreeNode type. TokenData is stored inside nodes.
-int toker(int num, int ival ) {
-	yylval.tree = allocNode();
-	yylval.tree->lineno = yylineno;
-	yylval.tree->token.num = num;
-	yylval.tree->value = num;
-	yylval.tree->token.input = strdup(yytext);
-	yylval.tree->token.ivalue = ival;
-	return num;
-}
 
-
-int toker(int num, char * val) {
-	yylval.tree = allocNode();
-	yylval.tree->lineno = yylineno;
-	yylval.tree->token.num = num;
-	yylval.tree->value = num;
-	yylval.tree->token.input = strdup(yytext);
-	yylval.tree->token.svalue = strdup(val);
-	return num;
-}
-
-// Yet Another toker Clone, for Characters (YAtCC)
-int toker(int num, char ch) {
-	yylval.tree = allocNode();
-	yylval.tree->lineno = yylineno;
-	yylval.tree->token.num = num;
-	yylval.tree->value = num;
-	yylval.tree->token.input = strdup(yytext);
-	yylval.tree->token.ch = ch;
-	return num;
-}
-
-int error(const char * msg) {
-	yylval.tree = allocNode();
-	yylval.tree->lineno = yylineno;
-	yylval.tree->token.num = ERROR;
-	yylval.tree->value = ERROR;
-	yylval.tree->token.input = strdup(yytext);
-	yylval.tree->token.svalue = strdup(msg);
-	return ERROR;
-}
-
-int strconst() {
-	yylval.tree = allocNode();
-	yylval.tree->lineno = yylineno;
-	yylval.tree->token.num = STRINGCONST;
-	yylval.tree->value = STRINGCONST;
-	yylval.tree->token.input = strdup(literalbuffer);
-	yylval.tree->token.svalue = strdup(stringbuffer);
-	free(literalbuffer);
-	free(stringbuffer);
-	return STRINGCONST;
-}
-
-int cconst() {
-	yylval.tree = allocNode();
-	yylval.tree->lineno = yylineno;
-	yylval.tree->token.num = CHARCONST;
-	yylval.tree->value = CHARCONST;
-	yylval.tree->token.input = strdup(literalbuffer);
-	yylval.tree->token.ch = ctemp;
-	free(literalbuffer);
-	return CHARCONST;
-}
-*/

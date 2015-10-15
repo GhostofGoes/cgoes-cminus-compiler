@@ -38,6 +38,7 @@ static void yyerror(const char *);
 	#define MAXCHILDREN 3
 	#include "types.h"
 	#include "cminus.h"
+    #include "toker.h"
 }
 
 // TODO: If i'm using a single type, can i just use the API?
@@ -45,17 +46,14 @@ static void yyerror(const char *);
 // Above would allow use of %token <TreeNode> instead of "tree". Unsure of the value, just a random thing.
 %union 
 {
-	TreeNode *tree;
+    TokenData * tok;
+	TreeNode * tree;
 }
 
-%token <tree> ID
-%token <tree> NUMCONST
-%token <tree> STRINGCONST
-%token <tree> CHARCONST 
-%token <tree> ERROR
-%token <tree> BOOLCONST
-%token <tree> ADDASS SUBASS MULASS DIVASS INC DEC LESSEQ GRTEQ EQ NOTEQ STATIC INT BOOL CHAR IF ELSE WHILE FOREACH IN RETURN BREAK
-%token <tree> SEMICOLON LPAREN RPAREN LBRACKET RBRACKET OR AND NOT ASSIGN PLUS MINUS MULTIPLY DIVIDE MODULUS QUESTION LTHAN GTHAN LBRACE RBRACE COMMA COLON 
+%token <tok> ERROR
+%token <tok> ID NUMCONST STRINGCONST CHARCONST  BOOLCONST
+%token <tok> ADDASS SUBASS MULASS DIVASS INC DEC LESSEQ GRTEQ EQ NOTEQ STATIC INT BOOL CHAR IF ELSE WHILE FOREACH IN RETURN BREAK
+%token <tok> SEMICOLON LPAREN RPAREN LBRACKET RBRACKET OR AND NOT ASSIGN PLUS MINUS MULTIPLY DIVIDE MODULUS QUESTION LTHAN GTHAN LBRACE RBRACE COMMA COLON 
 
 %type <tree> program
 %type <tree> declaration-list
@@ -108,7 +106,10 @@ static void yyerror(const char *);
 	
 program:	
 	declaration-list	
-		{ $$ = $1; syntaxTree = $$; }
+		{ 
+            $$ = $1; 
+            syntaxTree = $$; 
+        }
 	;
 
 declaration-list: 
@@ -127,20 +128,27 @@ declaration:
 
 var-declaration:
 	type-specifier var-decl-list SEMICOLON
-        { $$ = makeNode( DeclK, VarK, $1->nodetype, $1->lineno, $2->str, $2->token ); }
+        { 
+            $$ = makeParent( VarK, $1->nodetype, $1->lineno, $2->str );
+            addChildren($$, 1, $2);
+        }
 	;
 
 /* Note: need to keep track of scope! */
 scoped-var-declaration:
 	scoped-type-specifier var-decl-list SEMICOLON
         { 
-            $$ = makeNode( DeclK, VarK, $1->nodetype, $1->lineno, $2->str, $2->token );
+            $$ = makeParent( VarK, $1->nodetype, $1->lineno, NULL);
+            //$$ = makeNode( DeclK, VarK, $1->nodetype, $1->lineno, $2->str, $2->token );
             //$$->isScoped = true; 
         }
 	;
 
 var-decl-list:
 	var-decl-list COMMA var-decl-initialize
+		{
+            $$ = linkSiblings(2, $1, $3);
+        }
 	| var-decl-initialize 
 		{ $$ = $1; }
 	;				
@@ -149,48 +157,62 @@ var-decl-initialize:
 	var-decl-id
 		{ $$ = $1; }
 	| var-decl-id COLON simple-expression
-		{ $$ = $1; }
+		{
+            $$ = makeParent( IdK, $3->nodetype, $1->lineno, $1->svalue );
+        }
 	;
 
 var-decl-id:
 	ID
-		{ $$ = $1; }
+		{ 
+            $$ = makeNode( IdK, Void, $1->lineno, $1->svalue, $1 );
+        }
 	| ID LBRACKET NUMCONST RBRACKET
 		{ 
-            $$ = $1;
+            $$ = makeParent( IdK, Void, $1->lineno, $1->svalue );
             $$->isArray = true;
+            addChildren( $$, 1, $3 );
         }
 	;
 
 scoped-type-specifier:
 	STATIC type-specifier
 		{ 
-            $$ = makeNode( DeclK, VarK, $2->nodetype, $2->lineno, $2->str, $2->token); 
+            $$ = makeParent( TypeK, $2->nodetype, $2->lineno, NULL);
+            //$$ = makeNode( DeclK, VarK, $2->nodetype, $2->lineno, $2->str, $2->token); 
             $$->isStatic = true; 
             //$$->isScoped = true;
            }
 	| type-specifier
-		{ $$ = $1; }
+		{ $$ = makeParent( TypeK, $1->nodetype, $1->lineno, NULL); }
 	;
 
 type-specifier:
 	INT 
-		{ $$ = $1; $$->nodetype = Integer; }
+		{ 
+            $$ = makeNode( TypeK, Integer, $1->lineno, NULL, $1 );
+        }
 	| BOOL 
-		{ $$ = $1; $$->nodetype = Boolean; }
+		{ 
+            $$ = makeNode( TypeK, Boolean, $1->lineno, NULL, $1 );
+        }
 	| CHAR 
-		{ $$ = $1; $$->nodetype = Character; }
+		{ 
+            $$ = makeNode( TypeK, Character, $1->lineno, NULL, $1 );
+        }
 	;
 
 fun-declaration:
 	type-specifier ID LPAREN params RPAREN statement
 		{ 
-			$$ = makeNode( DeclK, FunK, $1->nodetype, $2->lineno, $2->str, $2->token );
+            $$ = makeParent( FunK, $1->nodetype, $2->lineno, $2->svalue );
+			//$$ = makeNode( DeclK, FunK, $1->nodetype, $2->lineno, $2->str, $2->token );
 			addChildren( $$, 2, $4, $6 );
 		}
 	| ID LPAREN params RPAREN statement
 		{ 
-			$$ = makeNode( DeclK, FunK, $1->nodetype, $1->lineno, $1->str, $1->token );
+            $$ = makeParent( FunK, Void, $1->lineno, $1->svalue );
+			//$$ = makeNode( DeclK, FunK, $1->nodetype, $1->lineno, $1->str, $1->token );
 			addChildren( $$, 2, $3, $5);
 		}
 	;
@@ -214,7 +236,8 @@ param-list:
 param-type-list:
 	type-specifier param-id-list 
 		{ 
-			$$ = makeNode( DeclK, ParamK, $1->nodetype, $1->lineno, $2->str, $2->token );
+            $$ = makeParent( ParamK, $1->nodetype, $1->lineno, NULL );
+			//$$ = makeNode( ParamK, $1->nodetype, $1->lineno );
             addChildren( $$, 1, $2 );
 		}
 	;
@@ -228,10 +251,12 @@ param-id-list:
 	
 param-id:
 	ID 		
-		{ $$ = $1; }
+		{ 
+            $$ = makeNode( IdK, Void, $1->lineno, $1->svalue, $1 );
+        }
 	| ID LBRACKET RBRACKET
 		{ 
-            $$ = $1; 
+            $$ = makeNode( IdK, Void, $1->lineno, $1->svalue, $1 );
             $$->isArray = true; 
         }
 	;
@@ -262,7 +287,7 @@ unmatched:
 matched-selection-stmt:
 	IF LPAREN simple-expression RPAREN matched ELSE matched
         { 
-            $$ = makeNode( StmtK, IfK, $1->nodetype, $1->lineno, NULL, $1->token );
+            $$ = makeParent( IfK, $1->nodetype, $1->lineno, NULL );
             addChildren( $$, 3, $3, $5, $7 );
         }
 	;
@@ -270,12 +295,12 @@ matched-selection-stmt:
 unmatched-selection-stmt:
 	IF LPAREN simple-expression RPAREN statement
         { 
-            $$ = makeNode( StmtK, IfK, $1->nodetype, $1->lineno, NULL, $1->token );
+            $$ = makeParent( IfK, $1->nodetype, $1->lineno, NULL );
             addChildren( $$, 2, $3, $5 );
         }
 	| IF LPAREN simple-expression RPAREN matched ELSE unmatched 
         { 
-            $$ = makeNode( StmtK, IfK, $1->nodetype, $1->lineno, NULL, $1->token );
+            $$ = makeParent( IfK, $1->nodetype, $1->lineno, NULL );
             addChildren( $$, 3, $3, $5, $7 );
         }
 	;
@@ -283,7 +308,7 @@ unmatched-selection-stmt:
 matched-while-stmt:
 	WHILE LPAREN simple-expression RPAREN matched
         { 
-            $$ = makeNode( StmtK, WhileK, $1->nodetype, $1->lineno, NULL, $1->token );
+            $$ = makeParent( WhileK, $1->nodetype, $1->lineno, NULL );
             addChildren( $$, 2, $3, $5 );
         }
 	;
@@ -291,7 +316,7 @@ matched-while-stmt:
 unmatched-while-stmt:
 	WHILE LPAREN simple-expression RPAREN unmatched
         { 
-            $$ = makeNode( StmtK, WhileK, $1->nodetype, $1->lineno, NULL, $1->token );
+            $$ = makeParent( WhileK, $1->nodetype, $1->lineno, NULL );
             addChildren( $$, 2, $3, $5 );
         }
 	;
@@ -299,7 +324,7 @@ unmatched-while-stmt:
 matched-foreach-stmt:
 	FOREACH LPAREN mutable IN simple-expression RPAREN matched
         { 
-            $$ = makeNode( StmtK, ForeachK, $1->nodetype, $1->lineno, NULL, $1->token );
+            $$ = makeParent( ForeachK, $1->nodetype, $1->lineno, NULL );
             addChildren( $$, 3, $3, $5, $7 );
         }
 	;
@@ -307,7 +332,7 @@ matched-foreach-stmt:
 unmatched-foreach-stmt:
 	FOREACH LPAREN mutable IN simple-expression RPAREN unmatched
         { 
-            $$ = makeNode( StmtK, ForeachK, $1->nodetype, $1->lineno, NULL, $1->token );
+            $$ = makeParent( ForeachK, $1->nodetype, $1->lineno, NULL );
             addChildren( $$, 3, $3, $5, $7 );
         }
 	;
@@ -334,61 +359,65 @@ statement-list:
 expression-stmt:
 	expression SEMICOLON 
         { $$ = $1; /* does expression occur at semicolon for line counting? */ }
-	| SEMICOLON
-		{ // null? 
-            $$ = $1;
-        }
+	| SEMICOLON /* EMPTY? */
+		{ $$ = NULL; }
 	;
 	
 return-stmt:
 	RETURN SEMICOLON 
-        { $$ = $1; }
+        { 
+            $$ = makeNode( ReturnK, Void, $1->lineno, NULL, $1->token );     
+        }
 	| RETURN expression SEMICOLON
         {
-            $$ = makeNode( StmtK, ReturnK, $2->nodetype, $1->lineno, $1->str, $1->token );
+            $$ = makeNode( ReturnK, $2->nodetype, $1->lineno, NULL, $1->token );     
+            //$$ = makeNode( StmtK, ReturnK, $2->nodetype, $1->lineno, $1->str, $1->token );
             addChildren( $$, 1, $2 );
         }
 	;
 	
 break-stmt:
 	BREAK SEMICOLON
-        { $$ = $1; } 
+        { 
+            $$ = makeNode( BreakK, Void, $1->lineno, NULL, $1->token );     
+        }
 	;
 	
 expression:
 	mutable ASSIGN expression
         { 
-            $$ = $2;
+            $$ = makeNode( OpK, Void, $2->lineno, NULL, $2->token );     
+            //$$ = $2;
             addChildren( $$, 2, $1, $3 );
         }
 	| mutable ADDASS expression
         { 
-            $$ = $2;
+            $$ = makeNode( OpK, Void, $2->lineno, NULL, $2->token );     
             addChildren( $$, 2, $1, $3 );
         }
 	| mutable SUBASS expression
         { 
-            $$ = $2;
+            $$ = makeNode( OpK, Void, $2->lineno, NULL, $2->token );     
             addChildren( $$, 2, $1, $3 );
         }
 	| mutable MULASS expression
         { 
-            $$ = $2;
+            $$ = makeNode( OpK, Void, $2->lineno, NULL, $2->token );     
             addChildren( $$, 2, $1, $3 );
         }
 	| mutable DIVASS expression
         { 
-            $$ = $2;
+            $$ = makeNode( OpK, Void, $2->lineno, NULL, $2->token );     
             addChildren( $$, 2, $1, $3 );
         }
 	| mutable INC
         { 
-            $$ = $2;
+            $$ = makeNode( OpK, Integer, $2->lineno, NULL, $2->token );     
             addChildren( $$, 1, $1 );
         }
 	| mutable DEC
         { 
-            $$ = $2;
+            $$ = makeNode( OpK, Integer, $2->lineno, NULL, $2->token );     
             addChildren( $$, 1, $1 );
         }
 	| simple-expression
@@ -398,7 +427,7 @@ expression:
 simple-expression:
 	simple-expression OR and-expression 
         { 
-            $$ = $2;
+            $$ = makeNode( OpK, Boolean, $2->lineno, NULL, $2->token );     
             addChildren( $$, 2, $1, $3 );
         }
 	| and-expression 
@@ -408,17 +437,17 @@ simple-expression:
 and-expression:
 	and-expression AND unary-rel-expression
         { 
-            $$ = $2;
+            $$ = makeNode( OpK, Boolean, $2->lineno, NULL, $2->token );     
             addChildren( $$, 2, $1, $3 );
         }
 	| unary-rel-expression 
 		{ $$ = $1; }
 	;
-	
+	/* remember, void here would be children's type, type checker to compare the children */
 unary-rel-expression:
 	NOT unary-rel-expression
         { 
-            $$ = $1;
+            $$ = makeNode( OpK, Boolean, $1->lineno, NULL, $1->token );     
             addChildren( $$, 1, $2 );
         }
 	| rel-expression 
@@ -437,17 +466,29 @@ rel-expression:
 	
 relop:
 	LESSEQ
-		{ $$ = $1; }
+		{ 
+            $$ = makeNode( OpK, Boolean, $1->lineno, NULL, $1 );
+        }
 	| LTHAN
-		{ $$ = $1; }
+		{ 
+            $$ = makeNode( OpK, Boolean, $1->lineno, NULL, $1 );
+        }
 	| GTHAN
-		{ $$ = $1; }
+		{ 
+            $$ = makeNode( OpK, Boolean, $1->lineno, NULL, $1 );
+        }
 	| GRTEQ 
-		{ $$ = $1; }
+		{ 
+            $$ = makeNode( OpK, Boolean, $1->lineno, NULL, $1 );
+        }
 	| EQ 
-		{ $$ = $1; }
+		{ 
+            $$ = makeNode( OpK, Boolean, $1->lineno, NULL, $1 );
+        }
 	| NOTEQ 
-		{ $$ = $1; }
+		{ 
+            $$ = makeNode( OpK, Boolean, $1->lineno, NULL, $1 );
+        }
 	;
 	
 sum-expression:
@@ -462,9 +503,13 @@ sum-expression:
 	
 sumop:
 	PLUS
-		{ $$ = $1; }
+		{ 
+            $$ = makeNode( OpK, Integer, $1->lineno, NULL, $1 );
+        }
 	| MINUS
-		{ $$ = $1; }
+		{ 
+            $$ = makeNode( OpK, Integer, $1->lineno, NULL, $1 );
+        }
 	;
 	
 term:
@@ -479,11 +524,17 @@ term:
 	
 mulop:
 	MULTIPLY 
-		{ $$ = $1; }
+		{ 
+            $$ = makeNode( OpK, Integer, $1->lineno, NULL, $1 );
+        }
 	| DIVIDE 
-		{ $$ = $1; }
+		{ 
+            $$ = makeNode( OpK, Integer, $1->lineno, NULL, $1 );
+        }
 	| MODULUS 
-		{ $$ = $1; }
+		{ 
+            $$ = makeNode( OpK, Integer, $1->lineno, NULL, $1 );
+        }
 	;
 	
 unary-expression:
@@ -498,11 +549,17 @@ unary-expression:
 	
 unaryop:
 	MINUS
-		{ $$ = $1; }
+		{ 
+            $$ = makeNode( OpK, Integer, $1->lineno, NULL, $1 );
+        }
 	| MULTIPLY
-		{ $$ = $1; }
-	| QUESTION
-		{ $$ = $1; }
+		{ 
+            $$ = makeNode( OpK, Integer, $1->lineno, NULL, $1 );
+        }
+	| QUESTION /* Question's type? */
+		{ 
+            $$ = makeNode( OpK, Integer, $1->lineno, NULL, $1 );
+        }
 	;
 	
 factor:
@@ -514,10 +571,12 @@ factor:
 	
 mutable:
 	ID
-		{ $$ = $1; }
+		{ 
+            $$ = makeNode( IdK, Void, $1->lineno, $1->svalue, $1 );
+        }
 	| ID LBRACKET expression RBRACKET
         {
-            $$ = $1;
+            $$ = makeNode( IdK, Void, $1->lineno, $1->svalue, $1 );
             $$->isArray = true; 
             addChildren( $$, 1, $3 );
         }
@@ -535,7 +594,9 @@ immutable:
 call:
 	ID LPAREN args RPAREN
 		{ 
-			$$ = makeNode( ExpK, CallK, $1->nodetype, $1->lineno, $1->str, $1->token );
+            $$ = makeParent( IdK, $3->nodetype, $1->lineno, $1->svalue );
+            $$->kind = CallK;
+			//$$ = makeNode( ExpK, CallK, $1->nodetype, $1->lineno, $1->str, $1->token );
 			addChildren($$, 1, $3);
 		}
 	;
@@ -557,14 +618,22 @@ arg-list:
 	;
 	
 constant:
-	NUMCONST 
-		{ $$ = $1; }
+	NUMCONST /* integer? */
+		{ 
+            $$ = makeNode( ConstK, Integer, $1->lineno, $1->ivalue, $1 );
+        }
 	| CHARCONST 
-		{ $$ = $1; }
+		{ 
+            $$ = makeNode( ConstK, Character, $1->lineno, $1->cvalue, $1 );
+        }
 	| STRINGCONST
-		{ $$ = $1; }
+		{ 
+            $$ = makeNode( ConstK, Character, $1->lineno, $1->svalue, $1 );
+        }
 	| BOOLCONST
-		{ $$ = $1; }
+		{ 
+            $$ = makeNode( ConstK, Boolean, $1->lineno, $1->ivalue, $1 );
+        }
 	;
 	
 
@@ -642,139 +711,3 @@ static void yyerror(const char *msg)
 	fflush(stdout);
     printf("ERROR(%d): %s\n", yylineno, msg);
 }
-
-/*
-// Silly "typing saving" helper function
-void easy( int linenum, char * svalue ) { 
-	printf("Line %d Token: %s\n", linenum, svalue );
-}
-
-
-// Print spaces at end of strings if neccessary. 
-// Assumes we're printing to STDOUT. If we need a file, just redirect at OS level.
-void printAbstractTree(TreeNode * tree, int indent_count) {
-	
-	// Keeps track of siblings
-	int sibling_count = 0;
-
-	// Prints all nodes of the tree
-	while( tree != NULL ) {
-		
-		for(int i = 0; i < indent_count; i++) {
-			printf("|   ");
-		}
-		if(sibling_count > 0) {
-			// two spaces after child num
-			printf( "|Sibling: %d  ", sibling_count);
-		}
-		
-		if( tree->typespecifier ) {
-			if( tree->value == ID ) {
-				
-			}
-		}
-		
-		// Print the line number + newline
-		printf( "[line: %d]\n", tree->lineno );
-		
-		// Check if there are children
-		if( tree->numChildren > 0 ) {
-			// "tab" space for children
-			printf( "   ");
-			
-			for ( int i = 0; i < tree->numChildren; i++ ) {
-				// Two spaces after child num
-				printf( "Child: %d  ", i);
-				printAbstractTree(tree->child[i], indent_count + 1);
-			}			
-		}
-		
-		tree = tree->sibling;
-		sibling_count++;
-		
-	} // end while
-	
-}
-
-// TODO: placeholder Prints the Annotated Syntax Tree 
-void printAnnotatedTree( TreeNode * tree ) {
-	;
-}
-
-// TODO: placeholder Performs semantic analysis, generating the Annotated Syntax Tree
-void semanticAnalysis( TreeNode * tree ) {
-	;
-}
-
-
-// TODO: placeholder Generates executable code 
-void generateCode() {
-	;
-}
-
-
-TreeNode * makeNode( int value, int numChildren, ... ) {
-	
-	// Allocate a new node
-	TreeNode * tempNode = allocNode();
-	
-	// Attach children
-	tempNode->numChildren = numChildren;
-	if(numChildren > 0) { // Congratulations, its a TreeNode pointer!
-		va_list children; 
-		va_start (children, numChildren); // Load children from arguments
-		
-		for(int i = 0; i < numChildren; i++) {
-			tempNode->child[i] = va_arg(children, TreeNode*);
-		}
-		
-		va_end(children); // End var list
-	}
-	
-	return tempNode;
-}
-
-
-// Creates a new node for the syntax tree
-void addChildren( TreeNode * parent, int numChildren,...) {
-	
-	// Attach children
-	parent->numChildren = numChildren;
-	if(numChildren > 0) { // Congratulations, its a TreeNode pointer!
-		va_list children; 
-		va_start (children, numChildren); // Load children from arguments
-		
-		for(int i = 0; i < numChildren; i++) {
-			parent->child[i] = va_arg(children, TreeNode*);
-		}
-		
-		va_end(children); // End var list
-	}
-}
-
-TreeNode * linkSiblings( int numSiblings, ... ) {
-	
-	va_list siblings;
-	va_start (siblings, numSiblings);
-	
-	TreeNode * prev = va_arg(siblings, TreeNode*);
-	TreeNode * temp = prev;
-	TreeNode * next = NULL;
-	if(temp = NULL; )
-	while (prev->sibling != NULL ) { prev = prev->sibling; }
-	
-	for(int i = 0; i < numSiblings; i++) {
-		next = va_arg(siblings, TreeNode*);
-		if(prev != NULL) {
-			prev->sibling = next;
-		}
-		prev = next;
-	}
-	prev->sibling = NULL;
-	va_end(siblings);
-	
-	return temp;
-	
-}
-
-*/

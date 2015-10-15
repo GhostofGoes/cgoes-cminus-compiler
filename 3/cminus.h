@@ -32,7 +32,10 @@ void generateCode();
 // Return: (TreeNode) The created node
 // TODO: add kind to toker() in the flex file
 // TODO: more flexible madeNode. maybe different named functions for different purposes?
-TreeNode * makeNode( NodeKind nodekind, Kind kind, Type type, int linenumber, char * str, TokenData tok );
+//TreeNode * makeNode( NodeKind nodekind, Kind kind, Type type, int linenumber, char * str, TokenData tok );
+
+TreeNode * makeNode( Kind k, Type t, int line, char * svalue, TokenData * token );
+TreeNode * makeParent( Kind k, Type t, int line, char * svalue );
 
 // Adds children to an existing syntax tree node
 // Args: 
@@ -41,7 +44,7 @@ void addChildren( TreeNode * parent, int numChildren,...);
 // Links siblings to each other, starting with the first.
 // Args: (int) number of siblings, (TreeNode) siblings to link
 // Return: (TreeNode) The first node passed
-TreeNode * linkSiblings( int numSiblings,...);
+TreeNode * linkSiblings( int numSiblings, TreeNode * init, ...);
 
 // Allocates and zeros a new TreeNode
 // Return: (TreeNode) The allocated node

@@ -5,105 +5,49 @@
 #include "cminus.tab.h"
 
 
-int iToker(int bval, Kind tok_kind, Type tok_type, char * tok_text, int line_number, int value) {
+int iToker(int bval, char * tok_text, int line_number, int value) {
 
-	baseToker(bval, tok_kind, tok_type, tok_text, line_number );
-	yylval.tree->token.ivalue = value;
-
+	//yylval.tree = allocNode();
+	yylval.tok = allocToken(bval, tok_text, line_number);
+	yylval.tok->ivalue = value;
 	return bval;
 }
 
 
-int cToker(int bval, Kind tok_kind, Type tok_type, char * tok_text, int line_number, char value) {
+int cToker(int bval, char * tok_text, int line_number, char value) {
 
-	baseToker(bval, tok_kind, tok_type, tok_text, line_number );
-	yylval.tree->token.cvalue = value;
-
+	//yylval.tree = allocNode();
+	yylval.tok = allocToken(bval, tok_text, line_number);
+	yylval.tok->cvalue = value;
 	return bval;
 }
-int sToker(int bval, Kind tok_kind, Type tok_type, char * tok_text, int line_number, char * value) {
+int sToker(int bval,  char * tok_text, int line_number, char * value) {
 
-	baseToker(bval, tok_kind, tok_type, tok_text, line_number );
-	yylval.tree->token.svalue = strdup(value);
-
+	//yylval.tree = allocNode();
+	yylval.tok = allocToken(bval, tok_text, line_number);
+	yylval.tok->svalue = strdup(value);
 	return bval;
-}
-
-void baseToker(int bval, Kind tok_kind, Type tok_type, char * tok_text, int line_number ) {
-	yylval.tree = allocNode();
-	yylval.tree->lineno = line_number;
-	yylval.tree->token.num = bval; // TODO: deprecated?
-	yylval.tree->bval = bval;
-	yylval.tree->token.input = strdup(tok_text);
-	yylval.tree->kind = tok_kind;
-	yylval.tree->nodetype = tok_type;
 }
 
 int error(char * tok_text, int line_number, const char * msg) {
-	yylval.tree = allocNode();
-	yylval.tree->lineno = line_number;
-	yylval.tree->token.num = ERROR;
-	yylval.tree->bval = ERROR;
-	yylval.tree->token.input = strdup(tok_text);
-	yylval.tree->token.svalue = strdup(msg);
+	//yylval.tree = allocNode();
+	yylval.tok= allocToken( ERROR, line_number, tok_text);
+	yylval.tok->svalue = strdup(msg);
+	//yylval.tree->lineno = line_number;
+	//yylval.tree->token.num = ERROR;
+	//yylval.tree->bval = ERROR;
+	//yylval.tree->token.input = strdup(tok_text);
+	//yylval.tree->token.svalue = strdup(msg);
 	return ERROR;
 }
 
-/*
-int toker(int num, int ival ) {
-	yylval.tree = allocNode();
-	yylval.tree->lineno = yylineno;
-	yylval.tree->token.num = num;
-	yylval.tree->bval = num;
-	yylval.tree->token.input = strdup(yytext);
-	yylval.tree->token.ivalue = ival;
-	return num;
+TokenData * allocToken( int bval, char * input_text, int linenum ) {
+	TokenData * newToken = (TokenData *)calloc(1, sizeof(TokenData));
+	newToken->bval = bval;
+	newToken->input = strdup(input_text);
+	newToken->linenum = linenum;
+	newToken->cvalue = 0;
+	newToken->ivalue = 0;
+	newToken->svalue = NULL;
+	return newToken;
 }
-
-
-int toker(int num, char * val) {
-	yylval.tree = allocNode();
-	yylval.tree->lineno = yylineno;
-	yylval.tree->token.num = num;
-	yylval.tree->bval = num;
-	yylval.tree->token.input = strdup(yytext);
-	yylval.tree->token.svalue = strdup(val);
-	return num;
-}
-
-// Yet Another toker Clone, for Characters (YAtCC)
-int toker(int num, char ch) {
-	yylval.tree = allocNode();
-	yylval.tree->lineno = yylineno;
-	yylval.tree->token.num = num;
-	yylval.tree->bval = num;
-	yylval.tree->token.input = strdup(yytext);
-	yylval.tree->token.ch = ch;
-	return num;
-}
-
-
-
-int strconst() {
-	yylval.tree = allocNode();
-	yylval.tree->lineno = yylineno;
-	yylval.tree->token.num = STRINGCONST;
-	yylval.tree->bval = STRINGCONST;
-	yylval.tree->token.input = strdup(literalbuffer);
-	yylval.tree->token.svalue = strdup(stringbuffer);
-	free(literalbuffer);
-	free(stringbuffer);
-	return STRINGCONST;
-}
-
-int cconst() {
-	yylval.tree = allocNode();
-	yylval.tree->lineno = yylineno;
-	yylval.tree->token.num = CHARCONST;
-	yylval.tree->bval = CHARCONST;
-	yylval.tree->token.input = strdup(literalbuffer);
-	yylval.tree->token.ch = ctemp;
-	free(literalbuffer);
-	return CHARCONST;
-}
-*/

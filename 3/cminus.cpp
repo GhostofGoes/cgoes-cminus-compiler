@@ -3,6 +3,7 @@
 #include <string>
 #include <cstdlib>
 #include <vector>
+#include <string.h>
 
 using namespace std;
 
@@ -147,6 +148,7 @@ void generateCode() {
 // Creates a new node for the syntax tree
 // Args:
 // Return: (TreeNode) The created node
+/*
 TreeNode * makeNode( NodeKind nk, Kind k, Type t, int ln, char * s, TokenData tok ) {
 	
 	// Allocate a new node
@@ -159,6 +161,27 @@ TreeNode * makeNode( NodeKind nk, Kind k, Type t, int ln, char * s, TokenData to
 	tempNode->nodetype = t; 
 	tempNode->str = s;
 
+	return tempNode;
+}
+*/
+
+TreeNode * makeNode( Kind k, Type t, int line, char * svalue, TokenData * token ) {
+	TreeNode * tempNode = allocNode();
+	tempNode->kind = k;
+	tempNode->nodetype = t;
+	tempNode->lineno = line;
+	tempNode->str = strdup(svalue);
+	tempNode->token = token;
+	return tempNode;
+}
+
+
+TreeNode * makeParent( Kind k, Type t, int l, char * svalue ) {
+	TreeNode * tempNode = allocNode();
+	tempNode->lineno = l;
+	tempNode->kind = k;
+	tempNode->nodetype = t;
+	tempNode->str = strdup(svalue);
 	return tempNode;
 }
 
@@ -183,21 +206,29 @@ void addChildren( TreeNode * parent, int numChildren,...) {
 // Links siblings to each other, starting with the first.
 // Args: (int) number of siblings, (TreeNode) siblings to link
 // Return: (TreeNode) The first node passed
-TreeNode * linkSiblings( int numSiblings, ... ) {
+TreeNode * linkSiblings( int numSiblings, TreeNode * init, ... ) {
 	
-	va_list siblings;
-	va_start (siblings, numSiblings);
-	
-	TreeNode * prev = va_arg(siblings, TreeNode*);
-	TreeNode * temp = prev;
-	TreeNode * next = NULL;
-	if(temp == NULL ) {
-		// ERROR;
+	if( init == NULL ) // Check for dat null pointer
+	{
 		return NULL;
 	}
-	while (prev->sibling != NULL ) { prev = prev->sibling; }
+
+	va_list siblings;
+	//va_start (siblings, numSiblings);
+	va_start (siblings, init);
 	
-	for(int i = 0; i < numSiblings; i++) {
+	//TreeNode * prev = va_arg(siblings, TreeNode*);
+	TreeNode * prev;
+	TreeNode * next;
+
+	prev = init;
+	next = NULL;
+
+	while (prev->sibling != NULL ) {
+		prev = prev->sibling;
+	}
+	
+	for(int i = 1; i < numSiblings; i++) {
 		next = va_arg(siblings, TreeNode*);
 		if(prev != NULL) {
 			prev->sibling = next;
@@ -207,18 +238,20 @@ TreeNode * linkSiblings( int numSiblings, ... ) {
 	prev->sibling = NULL;
 	va_end(siblings);
 	
-	return temp;
+	return init;
 	
 }
 
 // Allocates and zeros a new TreeNode
 // Return: (TreeNode) The allocated node
 TreeNode * allocNode() {
-	TreeNode * tempNode = (TreeNode *)calloc(1, sizeof(TreeNode *));
-	tempNode->token = new TokenData;
+	TreeNode * tempNode = (TreeNode *)calloc(1, sizeof(TreeNode));
+	//TreeNode *tempNode = new TreeNode;
+	tempNode->token = NULL;
 	tempNode->lineno = 0;
 	tempNode->bval = 0;
 	tempNode->str = NULL;
+	tempNode->nodetype = Void;
 	tempNode->numChildren = 0;
 	tempNode->sibling = NULL;
 	tempNode->isStatic = false;

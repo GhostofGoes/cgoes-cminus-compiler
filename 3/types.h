@@ -5,7 +5,8 @@
 
 /*** TokenData ***/
 typedef struct {
-	int num;
+	int lineno;
+	int bval;
 	char cvalue;
 	int ivalue;
 	char * svalue;
@@ -22,7 +23,7 @@ typedef enum {
 	OpK, ConstK, IdK, AssignK, IfK,
 	CompoundK, ForeachK, WhileK, ReturnK,
 	BreakK, VarK, FunK, ParamK, CallK,
-	TokK
+	TokK, TypeK
 } Kind;
 
 typedef enum {Void, Integer, Boolean, Character} Type;
@@ -33,9 +34,9 @@ typedef enum {Void, Integer, Boolean, Character} Type;
 // TreeNode
 typedef struct treeNode
 {
-	TokenData token;
+	TokenData * token;
 	int lineno;                            	// line number relevant to this node
-	int bval;								// The value used by Bison
+	//int bval;								// The value used by Bison
 	char * str;
 	
 	// connectivity in the tree
