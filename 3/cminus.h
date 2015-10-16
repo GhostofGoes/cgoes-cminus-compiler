@@ -52,4 +52,8 @@ TreeNode * allocNode();
 
 std::string typeToStr( Type t );
 
+void freeTree( TreeNode * tree );
+void freeToken( TokenData * token );
+
+
 #endif

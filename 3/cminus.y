@@ -50,7 +50,7 @@ static void yyerror(const char *);
 	TreeNode * tree;
 }
 
-%token <tok> ERROR
+%token <tok> ERROR /* need to put a error incrementer/warning incrementer for ERROR */
 %token <tok> ID NUMCONST STRINGCONST CHARCONST  BOOLCONST
 %token <tok> ADDASS SUBASS MULASS DIVASS INC DEC LESSEQ GRTEQ EQ NOTEQ STATIC INT BOOL CHAR IF ELSE WHILE FOREACH IN RETURN BREAK
 %token <tok> SEMICOLON LPAREN RPAREN LBRACKET RBRACKET OR AND NOT ASSIGN PLUS MINUS MULTIPLY DIVIDE MODULUS QUESTION LTHAN GTHAN LBRACE RBRACE COMMA COLON 
@@ -100,7 +100,6 @@ static void yyerror(const char *);
 %type <tree> matched unmatched  
 %type <tree> matched-while-stmt  matched-foreach-stmt matched-selection-stmt
 %type <tree> unmatched-while-stmt unmatched-selection-stmt unmatched-foreach-stmt
-/* need to put a error incrementer/warning incrementer for ERROR */
 
 %%
 	
@@ -139,7 +138,6 @@ scoped-var-declaration:
 	scoped-type-specifier var-decl-list SEMICOLON
         { 
             $$ = makeParent( VarK, $1->nodetype, $1->lineno, NULL);
-            //$$ = makeNode( DeclK, VarK, $1->nodetype, $1->lineno, $2->str, $2->token );
             //$$->isScoped = true; 
         }
 	;
@@ -179,7 +177,6 @@ scoped-type-specifier:
 	STATIC type-specifier
 		{ 
             $$ = makeParent( TypeK, $2->nodetype, $2->lineno, NULL);
-            //$$ = makeNode( DeclK, VarK, $2->nodetype, $2->lineno, $2->str, $2->token); 
             $$->isStatic = true; 
             //$$->isScoped = true;
            }
@@ -206,13 +203,11 @@ fun-declaration:
 	type-specifier ID LPAREN params RPAREN statement
 		{ 
             $$ = makeParent( FunK, $1->nodetype, $2->lineno, $2->svalue );
-			//$$ = makeNode( DeclK, FunK, $1->nodetype, $2->lineno, $2->str, $2->token );
 			addChildren( $$, 2, $4, $6 );
 		}
 	| ID LPAREN params RPAREN statement
 		{ 
             $$ = makeParent( FunK, Void, $1->lineno, $1->svalue );
-			//$$ = makeNode( DeclK, FunK, $1->nodetype, $1->lineno, $1->str, $1->token );
 			addChildren( $$, 2, $3, $5);
 		}
 	;
@@ -237,7 +232,6 @@ param-type-list:
 	type-specifier param-id-list 
 		{ 
             $$ = makeParent( ParamK, $1->nodetype, $1->lineno, NULL );
-			//$$ = makeNode( ParamK, $1->nodetype, $1->lineno );
             addChildren( $$, 1, $2 );
 		}
 	;
@@ -371,7 +365,6 @@ return-stmt:
 	| RETURN expression SEMICOLON
         {
             $$ = makeNode( ReturnK, $2->nodetype, $1->lineno, NULL, $1 );     
-            //$$ = makeNode( StmtK, ReturnK, $2->nodetype, $1->lineno, $1->str, $1->token );
             addChildren( $$, 1, $2 );
         }
 	;
@@ -596,7 +589,6 @@ call:
 		{ 
             $$ = makeParent( IdK, $3->nodetype, $1->lineno, $1->svalue );
             $$->kind = CallK;
-			//$$ = makeNode( ExpK, CallK, $1->nodetype, $1->lineno, $1->str, $1->token );
 			addChildren($$, 1, $3);
 		}
 	;
@@ -711,5 +703,5 @@ int main( int argc, char* argv[] ) {
 static void yyerror(const char *msg)
 {
 	fflush(stdout);
-    printf("ERROR(%d): %s\n", yylineno, msg);
+    printf("ERROR(%d): %s\n", yylineno, msg ? msg : "");
 }

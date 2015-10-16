@@ -980,189 +980,139 @@ YY_RULE_SETUP
 #line 55 "cminus.l"
 { return cToker(COLON,  yytext, yylineno, yytext[0]);    }
 	YY_BREAK
-/*
-    ";"			{ return toker(SEMICOLON, yytext[0]); }
-    "("			{ return toker(LPAREN, yytext[0]); }
-    ")"			{ return toker(RPAREN, yytext[0]); }
-    "["			{ return toker(LBRACKET, yytext[0]); }
-    "]"			{ return toker(RBRACKET, yytext[0]); }
-    "|"			{ return toker(OR, yytext[0]); }
-    "&"			{ return toker(AND, yytext[0]); }
-    "!"			{ return toker(NOT, yytext[0]); }
-    "="			{ return toker(ASSIGN, yytext[0]); }
-    "+"			{ return toker(PLUS, yytext[0]); }
-    "-"			{ return toker(MINUS, yytext[0]); }
-    "*"			{ return toker(MULTIPLY, yytext[0]); }
-    "/"			{ return toker(DIVIDE, yytext[0]); }
-    "%"			{ return toker(MODULUS, yytext[0]); }
-    "?"			{ return toker(QUESTION, yytext[0]); }
-    "<"			{ return toker(LTHAN, yytext[0]); }
-    ">"			{ return toker(GTHAN, yytext[0]); }
-    "{"			{ return toker(LBRACE, yytext[0]); }
-    "}"			{ return toker(RBRACE, yytext[0]); }
-    ","			{ return toker(COMMA, yytext[0]); }
-    ":"			{ return toker(COLON, yytext[0]); }
-    */
 /* Unary ops */
 case 23:
 YY_RULE_SETUP
-#line 84 "cminus.l"
+#line 58 "cminus.l"
 { return sToker(ADDASS, yytext, yylineno, yytext); }
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 85 "cminus.l"
+#line 59 "cminus.l"
 { return sToker(SUBASS, yytext, yylineno, yytext); }
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 86 "cminus.l"
+#line 60 "cminus.l"
 { return sToker(MULASS, yytext, yylineno, yytext); }
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 87 "cminus.l"
+#line 61 "cminus.l"
 { return sToker(DIVASS, yytext, yylineno, yytext); }
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 88 "cminus.l"
+#line 62 "cminus.l"
 { return sToker(INC,    yytext, yylineno, yytext); }
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 89 "cminus.l"
+#line 63 "cminus.l"
 { return sToker(DEC,    yytext, yylineno, yytext); }
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 90 "cminus.l"
+#line 64 "cminus.l"
 { return sToker(LESSEQ, yytext, yylineno, yytext); }
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 91 "cminus.l"
+#line 65 "cminus.l"
 { return sToker(GRTEQ,  yytext, yylineno, yytext); }
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
-#line 92 "cminus.l"
+#line 66 "cminus.l"
 { return sToker(EQ,     yytext, yylineno, yytext); }
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
-#line 93 "cminus.l"
+#line 67 "cminus.l"
 { return sToker(NOTEQ,  yytext, yylineno, yytext); }
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
-#line 94 "cminus.l"
+#line 68 "cminus.l"
 { return sToker(STATIC, yytext, yylineno, yytext); }
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
-#line 95 "cminus.l"
+#line 69 "cminus.l"
 { return sToker(INT,    yytext, yylineno, yytext); }
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
-#line 96 "cminus.l"
+#line 70 "cminus.l"
 { return sToker(BOOL,   yytext, yylineno, yytext); }
 	YY_BREAK
 case 36:
 YY_RULE_SETUP
-#line 97 "cminus.l"
+#line 71 "cminus.l"
 { return sToker(CHAR,   yytext, yylineno, yytext); }
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
-#line 98 "cminus.l"
+#line 72 "cminus.l"
 { return sToker(IF,     yytext, yylineno, yytext); }
 	YY_BREAK
 case 38:
 YY_RULE_SETUP
-#line 99 "cminus.l"
+#line 73 "cminus.l"
 { return sToker(ELSE,   yytext, yylineno, yytext); }
 	YY_BREAK
 case 39:
 YY_RULE_SETUP
-#line 100 "cminus.l"
+#line 74 "cminus.l"
 { return sToker(WHILE,  yytext, yylineno, yytext); }
 	YY_BREAK
 case 40:
 YY_RULE_SETUP
-#line 101 "cminus.l"
+#line 75 "cminus.l"
 { return sToker(FOREACH,yytext, yylineno, yytext); }
 	YY_BREAK
 case 41:
 YY_RULE_SETUP
-#line 102 "cminus.l"
+#line 76 "cminus.l"
 { return sToker(IN,     yytext, yylineno, yytext); }
 	YY_BREAK
 case 42:
 YY_RULE_SETUP
-#line 103 "cminus.l"
+#line 77 "cminus.l"
 { return sToker(RETURN, yytext, yylineno, yytext); }
 	YY_BREAK
 case 43:
 YY_RULE_SETUP
-#line 104 "cminus.l"
+#line 78 "cminus.l"
 { return sToker(BREAK,  yytext, yylineno, yytext); }
 	YY_BREAK
-/*
-    "+="		{ return toker(ADDASS, yytext); }
-    "-="		{ return toker(SUBASS, yytext); }
-    "*="		{ return toker(MULASS, yytext); }
-    "/="		{ return toker(DIVASS, yytext); }
-    "++"		{ return toker(INC, yytext); }
-    "--"		{ return toker(DEC, yytext); }
-    "<="		{ return toker(LESSEQ, yytext); }
-    ">="		{ return toker(GRTEQ, yytext); }
-    "=="		{ return toker(EQ, yytext); }
-    "!="		{ return toker(NOTEQ, yytext); }
-    "static"	{ return toker(STATIC, yytext); }
-    "int"		{ return toker(INT, yytext); }
-    "bool"		{ return toker(BOOL, yytext); }
-    "char"		{ return toker(CHAR, yytext); }
-    "if"		{ return toker(IF, yytext); }
-    "else"		{ return toker(ELSE, yytext); }
-    "while"		{ return toker(WHILE, yytext); }
-    "foreach"	{ return toker(FOREACH, yytext); }
-    "in"		{ return toker(IN, yytext); }
-    "return"	{ return toker(RETURN, yytext); }
-    "break"		{ return toker(BREAK, yytext); }
-    */
 /* Booleans */
 case 44:
 YY_RULE_SETUP
-#line 132 "cminus.l"
+#line 81 "cminus.l"
 { return iToker(BOOLCONST, yytext, yylineno, 1); }
 	YY_BREAK
 case 45:
 YY_RULE_SETUP
-#line 133 "cminus.l"
+#line 82 "cminus.l"
 { return iToker(BOOLCONST, yytext, yylineno, 0); }
 	YY_BREAK
-/*
-    "true"		{ return toker(BOOLCONST, 1); }
-    "false"		{ return toker(BOOLCONST, 0); }
-    */
 /* Tokens */
 case 46:
 YY_RULE_SETUP
-#line 141 "cminus.l"
+#line 85 "cminus.l"
 { return sToker(ID,         yytext, yylineno, yytext); }
 	YY_BREAK
 case 47:
 YY_RULE_SETUP
-#line 142 "cminus.l"
+#line 86 "cminus.l"
 { return iToker(NUMCONST,   yytext, yylineno, atoi(yytext)); }
 	YY_BREAK
 /* String Constants */
 /* TODO: proper errors */
 case 48:
 YY_RULE_SETUP
-#line 146 "cminus.l"
+#line 90 "cminus.l"
 { 
 				stringbuffer = (char *)calloc(100, sizeof(char));
 				sbuf_ptr = stringbuffer;
@@ -1174,27 +1124,30 @@ YY_RULE_SETUP
 
 case 49:
 YY_RULE_SETUP
-#line 154 "cminus.l"
+#line 98 "cminus.l"
 {
 		strcat(literalbuffer, yytext);
 		*sbuf_ptr = '\0';
 		BEGIN(INITIAL);
-        return sToker(STRINGCONST, literalbuffer, yylineno, stringbuffer);
+        sToker(STRINGCONST, literalbuffer, yylineno, stringbuffer);
+        free(literalbuffer);
+        free(stringbuffer);
+        return STRINGCONST;
 	}
 	YY_BREAK
 case 50:
 /* rule 50 can match eol */
 YY_RULE_SETUP
-#line 160 "cminus.l"
+#line 107 "cminus.l"
 {
-		/* free(literalbuffer); */
+		free(literalbuffer);
 		BEGIN(INITIAL);
 		return error(yytext, yylineno, "Invalid input character");
 	}
 	YY_BREAK
 case 51:
 YY_RULE_SETUP
-#line 165 "cminus.l"
+#line 112 "cminus.l"
 { 
 		*sbuf_ptr++ = '\n';
 		strcat(literalbuffer, yytext);
@@ -1202,7 +1155,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 52:
 YY_RULE_SETUP
-#line 169 "cminus.l"
+#line 116 "cminus.l"
 { 
 		*sbuf_ptr++ = '\0'; 
 		strcat(literalbuffer, yytext);
@@ -1210,7 +1163,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 53:
 YY_RULE_SETUP
-#line 173 "cminus.l"
+#line 120 "cminus.l"
 { 
 		*sbuf_ptr++ = yytext[1]; 
 		strcat(literalbuffer, yytext);
@@ -1218,7 +1171,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 54:
 YY_RULE_SETUP
-#line 177 "cminus.l"
+#line 124 "cminus.l"
 { 
 		*sbuf_ptr++ = yytext[0]; 
 		strcat(literalbuffer, yytext);
@@ -1230,7 +1183,7 @@ YY_RULE_SETUP
 /* TODO: proper errors */
 case 55:
 YY_RULE_SETUP
-#line 187 "cminus.l"
+#line 134 "cminus.l"
 { 
 			literalbuffer = (char *)calloc(5, sizeof(char));
 			strcat(literalbuffer, yytext);
@@ -1241,26 +1194,28 @@ YY_RULE_SETUP
 
 case 56:
 YY_RULE_SETUP
-#line 194 "cminus.l"
+#line 141 "cminus.l"
 {
 		strcat(literalbuffer, yytext);
 		BEGIN(INITIAL);
-        return cToker(CHARCONST, literalbuffer, yylineno, ctemp);
+        cToker(CHARCONST, literalbuffer, yylineno, ctemp);
+        free(literalbuffer);
+        return CHARCONST;
 	}
 	YY_BREAK
 case 57:
 /* rule 57 can match eol */
 YY_RULE_SETUP
-#line 199 "cminus.l"
+#line 148 "cminus.l"
 {
-		/* free(literalbuffer); */
+		free(literalbuffer);
 		BEGIN(INITIAL);
 		return error(yytext, yylineno, "Invalid input character");
 	}
 	YY_BREAK
 case 58:
 YY_RULE_SETUP
-#line 204 "cminus.l"
+#line 153 "cminus.l"
 { 
 		ctemp = '\n';
 		strcat(literalbuffer, yytext);
@@ -1268,7 +1223,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 59:
 YY_RULE_SETUP
-#line 208 "cminus.l"
+#line 157 "cminus.l"
 { 
 		ctemp = '\0'; 
 		strcat(literalbuffer, yytext);
@@ -1276,7 +1231,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 60:
 YY_RULE_SETUP
-#line 212 "cminus.l"
+#line 161 "cminus.l"
 { 
 		ctemp = yytext[1]; 
 		strcat(literalbuffer, yytext);
@@ -1284,7 +1239,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 61:
 YY_RULE_SETUP
-#line 216 "cminus.l"
+#line 165 "cminus.l"
 { 
 		ctemp = yytext[0]; 
 		strcat(literalbuffer, yytext);
@@ -1294,28 +1249,28 @@ YY_RULE_SETUP
 /* Eat whitespace */
 case 62:
 YY_RULE_SETUP
-#line 223 "cminus.l"
+#line 172 "cminus.l"
 ;
 	YY_BREAK
 /* Count lines? */
 case 63:
 /* rule 63 can match eol */
 YY_RULE_SETUP
-#line 226 "cminus.l"
+#line 175 "cminus.l"
 {  }
 	YY_BREAK
 /* Shouldn't reach here. Unless its a invalid token. Then we print. */
 case 64:
 YY_RULE_SETUP
-#line 229 "cminus.l"
+#line 178 "cminus.l"
 { return error(yytext, yylineno, "Invalid input character"); }
 	YY_BREAK
 case 65:
 YY_RULE_SETUP
-#line 231 "cminus.l"
+#line 180 "cminus.l"
 ECHO;
 	YY_BREAK
-#line 1319 "lex.yy.c"
+#line 1274 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 case YY_STATE_EOF(scond):
 case YY_STATE_EOF(ccond):
@@ -2324,7 +2279,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 230 "cminus.l"
+#line 179 "cminus.l"
 
 
 

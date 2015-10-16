@@ -44,7 +44,7 @@ void printAbstractTree(TreeNode * tree, int indent_count) {
 
 			case IdK:
 				outstr.append("Id: ");
-				outstr.append(tree->svalue);
+				outstr.append(tree->svalue ? tree->svalue : "");
 				break;
 
 			case AssignK:
@@ -82,7 +82,7 @@ void printAbstractTree(TreeNode * tree, int indent_count) {
 					{ outstr.append("Var "); }
 				else
 					{ outstr.append("Param "); }
-				outstr.append(tree->svalue);
+				outstr.append(tree->svalue ? tree->svalue : "");
 				if(tree->isArray)
 					{ outstr.append(" is array"); }
 				outstr.append(" of type ");
@@ -91,14 +91,14 @@ void printAbstractTree(TreeNode * tree, int indent_count) {
 
 			case FunK:
 				outstr.append("Func ");
-				outstr.append(tree->svalue);
+				outstr.append(tree->svalue ? tree->svalue : "");
 				outstr.append(" returns type ");
 				outstr.append(typeToStr(tree->nodetype));
 				break;
 
 			case CallK:
 				outstr.append("Call: ");
-				outstr.append(tree->svalue);
+				outstr.append(tree->svalue ? tree->svalue : "");
 				break;
 
 			default:
@@ -151,8 +151,13 @@ TreeNode * makeNode( Kind k, Type t, int line, char * svalue, TokenData * token 
 	tempNode->kind = k;
 	tempNode->nodetype = t;
 	tempNode->lineno = line;
-	tempNode->svalue = strdup(svalue);
-	tempNode->token = token;
+	if( svalue != NULL ) {
+		tempNode->svalue = strdup(svalue);
+	}
+	if(token != NULL) {
+		tempNode->token = token;
+	}
+
 	return tempNode;
 }
 
@@ -161,7 +166,9 @@ TreeNode * makeParent( Kind k, Type t, int l, char * svalue ) {
 	tempNode->lineno = l;
 	tempNode->kind = k;
 	tempNode->nodetype = t;
-	tempNode->svalue = strdup(svalue);
+	if(svalue != NULL) {
+		tempNode->svalue = strdup(svalue);
+	}
 	return tempNode;
 }
 
@@ -228,7 +235,6 @@ TreeNode * allocNode() {
 	//TreeNode *tempNode = new TreeNode;
 	tempNode->token = NULL;
 	tempNode->lineno = 0;
-	//tempNode->bval = 0;
 	tempNode->svalue = NULL;
 	tempNode->nodetype = Void;
 	tempNode->numChildren = 0;
@@ -275,7 +281,7 @@ void freeTree( TreeNode * tree ) {
 		// Check if there are children
 		if( tree->numChildren > 0 ) {
 			for ( int i = 0; i < tree->numChildren; i++ ) {
-				freeTree(child[i]);
+				freeTree(tree->child[i]);
 			}
 		}
 
