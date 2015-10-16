@@ -54,32 +54,6 @@ stringbody	([^"])|(\\[^n])
 ","			{ return cToker(COMMA,  yytext, yylineno, yytext[0]);    }
 ":"			{ return cToker(COLON,  yytext, yylineno, yytext[0]);    }
 
-
-
-    /*
-    ";"			{ return toker(SEMICOLON, yytext[0]); }
-    "("			{ return toker(LPAREN, yytext[0]); }
-    ")"			{ return toker(RPAREN, yytext[0]); }
-    "["			{ return toker(LBRACKET, yytext[0]); }
-    "]"			{ return toker(RBRACKET, yytext[0]); }
-    "|"			{ return toker(OR, yytext[0]); }
-    "&"			{ return toker(AND, yytext[0]); }
-    "!"			{ return toker(NOT, yytext[0]); }
-    "="			{ return toker(ASSIGN, yytext[0]); }
-    "+"			{ return toker(PLUS, yytext[0]); }
-    "-"			{ return toker(MINUS, yytext[0]); }
-    "*"			{ return toker(MULTIPLY, yytext[0]); }
-    "/"			{ return toker(DIVIDE, yytext[0]); }
-    "%"			{ return toker(MODULUS, yytext[0]); }
-    "?"			{ return toker(QUESTION, yytext[0]); }
-    "<"			{ return toker(LTHAN, yytext[0]); }
-    ">"			{ return toker(GTHAN, yytext[0]); }
-    "{"			{ return toker(LBRACE, yytext[0]); }
-    "}"			{ return toker(RBRACE, yytext[0]); }
-    ","			{ return toker(COMMA, yytext[0]); }
-    ":"			{ return toker(COLON, yytext[0]); }
-    */
-
 	    /* Unary ops */
 "+="		{ return sToker(ADDASS, yytext, yylineno, yytext); }
 "-="		{ return sToker(SUBASS, yytext, yylineno, yytext); }
@@ -103,39 +77,9 @@ stringbody	([^"])|(\\[^n])
 "return"	{ return sToker(RETURN, yytext, yylineno, yytext); }
 "break"		{ return sToker(BREAK,  yytext, yylineno, yytext); }
 
-    /*
-    "+="		{ return toker(ADDASS, yytext); }
-    "-="		{ return toker(SUBASS, yytext); }
-    "*="		{ return toker(MULASS, yytext); }
-    "/="		{ return toker(DIVASS, yytext); }
-    "++"		{ return toker(INC, yytext); }
-    "--"		{ return toker(DEC, yytext); }
-    "<="		{ return toker(LESSEQ, yytext); }
-    ">="		{ return toker(GRTEQ, yytext); }
-    "=="		{ return toker(EQ, yytext); }
-    "!="		{ return toker(NOTEQ, yytext); }
-    "static"	{ return toker(STATIC, yytext); }
-    "int"		{ return toker(INT, yytext); }
-    "bool"		{ return toker(BOOL, yytext); }
-    "char"		{ return toker(CHAR, yytext); }
-    "if"		{ return toker(IF, yytext); }
-    "else"		{ return toker(ELSE, yytext); }
-    "while"		{ return toker(WHILE, yytext); }
-    "foreach"	{ return toker(FOREACH, yytext); }
-    "in"		{ return toker(IN, yytext); }
-    "return"	{ return toker(RETURN, yytext); }
-    "break"		{ return toker(BREAK, yytext); }
-    */
-
-
 	/* Booleans */
 "true"		{ return iToker(BOOLCONST, yytext, yylineno, 1); }
 "false"		{ return iToker(BOOLCONST, yytext, yylineno, 0); }
-
-    /*
-    "true"		{ return toker(BOOLCONST, 1); }
-    "false"		{ return toker(BOOLCONST, 0); }
-    */
 
 	/* Tokens */
 {letter}{letdig}*	{ return sToker(ID,         yytext, yylineno, yytext); }
@@ -155,10 +99,13 @@ stringbody	([^"])|(\\[^n])
 		strcat(literalbuffer, yytext);
 		*sbuf_ptr = '\0';
 		BEGIN(INITIAL);
-        return sToker(STRINGCONST, literalbuffer, yylineno, stringbuffer);
+        sToker(STRINGCONST, literalbuffer, yylineno, stringbuffer);
+        free(literalbuffer);
+        free(stringbuffer);
+        return STRINGCONST;
 	}
 	\n 	{
-		/* free(literalbuffer); */
+		free(literalbuffer);
 		BEGIN(INITIAL);
 		return error(yytext, yylineno, "Invalid input character");
 	}
@@ -194,10 +141,12 @@ stringbody	([^"])|(\\[^n])
 	\'	{
 		strcat(literalbuffer, yytext);
 		BEGIN(INITIAL);
-        return cToker(CHARCONST, literalbuffer, yylineno, ctemp);
+        cToker(CHARCONST, literalbuffer, yylineno, ctemp);
+        free(literalbuffer);
+        return CHARCONST;
 	}
 	\n 	{
-		/* free(literalbuffer); */
+		free(literalbuffer);
 		BEGIN(INITIAL);
 		return error(yytext, yylineno, "Invalid input character");
 	}

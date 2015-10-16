@@ -45,19 +45,20 @@ extern int yydebug;
 	#define MAXCHILDREN 3
 	#include "types.h"
 	#include "cminus.h"
+    #include "toker.h"
 
-#line 50 "cminus.tab.h" /* yacc.c:1909  */
+#line 51 "cminus.tab.h" /* yacc.c:1909  */
 
 /* Token type.  */
 #ifndef YYTOKENTYPE
 # define YYTOKENTYPE
   enum yytokentype
   {
-    ID = 258,
-    NUMCONST = 259,
-    STRINGCONST = 260,
-    CHARCONST = 261,
-    ERROR = 262,
+    ERROR = 258,
+    ID = 259,
+    NUMCONST = 260,
+    STRINGCONST = 261,
+    CHARCONST = 262,
     BOOLCONST = 263,
     ADDASS = 264,
     SUBASS = 265,
@@ -109,11 +110,12 @@ extern int yydebug;
 typedef union YYSTYPE YYSTYPE;
 union YYSTYPE
 {
-#line 47 "cminus.y" /* yacc.c:1909  */
+#line 48 "cminus.y" /* yacc.c:1909  */
 
-	TreeNode *tree;
+    TokenData * tok;
+	TreeNode * tree;
 
-#line 117 "cminus.tab.h" /* yacc.c:1909  */
+#line 119 "cminus.tab.h" /* yacc.c:1909  */
 };
 # define YYSTYPE_IS_TRIVIAL 1
 # define YYSTYPE_IS_DECLARED 1

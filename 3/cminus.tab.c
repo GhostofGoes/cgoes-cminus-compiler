@@ -133,19 +133,20 @@ extern int yydebug;
 	#define MAXCHILDREN 3
 	#include "types.h"
 	#include "cminus.h"
+    #include "toker.h"
 
-#line 138 "cminus.tab.c" /* yacc.c:355  */
+#line 139 "cminus.tab.c" /* yacc.c:355  */
 
 /* Token type.  */
 #ifndef YYTOKENTYPE
 # define YYTOKENTYPE
   enum yytokentype
   {
-    ID = 258,
-    NUMCONST = 259,
-    STRINGCONST = 260,
-    CHARCONST = 261,
-    ERROR = 262,
+    ERROR = 258,
+    ID = 259,
+    NUMCONST = 260,
+    STRINGCONST = 261,
+    CHARCONST = 262,
     BOOLCONST = 263,
     ADDASS = 264,
     SUBASS = 265,
@@ -197,11 +198,12 @@ extern int yydebug;
 typedef union YYSTYPE YYSTYPE;
 union YYSTYPE
 {
-#line 47 "cminus.y" /* yacc.c:355  */
+#line 48 "cminus.y" /* yacc.c:355  */
 
-	TreeNode *tree;
+    TokenData * tok;
+	TreeNode * tree;
 
-#line 205 "cminus.tab.c" /* yacc.c:355  */
+#line 207 "cminus.tab.c" /* yacc.c:355  */
 };
 # define YYSTYPE_IS_TRIVIAL 1
 # define YYSTYPE_IS_DECLARED 1
@@ -216,7 +218,7 @@ int yyparse (void);
 
 /* Copy the second part of user declarations.  */
 
-#line 220 "cminus.tab.c" /* yacc.c:358  */
+#line 222 "cminus.tab.c" /* yacc.c:358  */
 
 #ifdef short
 # undef short
@@ -458,7 +460,7 @@ union yyalloc
 /* YYFINAL -- State number of the termination state.  */
 #define YYFINAL  12
 /* YYLAST -- Last index in YYTABLE.  */
-#define YYLAST   206
+#define YYLAST   210
 
 /* YYNTOKENS -- Number of terminals.  */
 #define YYNTOKENS  51
@@ -518,18 +520,18 @@ static const yytype_uint8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint16 yyrline[] =
 {
-       0,   110,   110,   115,   117,   122,   124,   129,   135,   143,
-     144,   149,   151,   156,   158,   166,   172,   177,   179,   181,
-     186,   191,   199,   202,   206,   210,   215,   223,   225,   230,
-     232,   240,   242,   247,   248,   249,   250,   251,   252,   253,
-     257,   258,   259,   263,   271,   276,   284,   292,   300,   308,
-     316,   321,   324,   328,   331,   335,   337,   344,   346,   354,
-     359,   364,   369,   374,   379,   384,   389,   394,   399,   404,
-     409,   414,   419,   424,   429,   434,   439,   441,   443,   445,
-     447,   449,   454,   459,   464,   466,   471,   476,   481,   483,
-     485,   490,   495,   500,   502,   504,   509,   511,   516,   518,
-     527,   529,   531,   536,   544,   547,   551,   555,   560,   562,
-     564,   566
+       0,   108,   108,   116,   118,   123,   125,   130,   139,   148,
+     152,   157,   159,   166,   170,   179,   186,   191,   195,   199,
+     206,   212,   221,   224,   228,   232,   237,   246,   248,   253,
+     257,   265,   267,   272,   273,   274,   275,   276,   277,   278,
+     282,   283,   284,   288,   296,   301,   309,   317,   325,   333,
+     341,   346,   349,   353,   356,   360,   362,   367,   371,   380,
+     387,   393,   398,   403,   408,   413,   418,   423,   428,   433,
+     438,   443,   448,   453,   458,   463,   468,   472,   476,   480,
+     484,   488,   495,   500,   505,   509,   516,   521,   526,   530,
+     534,   541,   546,   551,   555,   559,   566,   568,   573,   577,
+     586,   588,   590,   595,   605,   608,   612,   616,   621,   625,
+     629,   633
 };
 #endif
 
@@ -538,19 +540,19 @@ static const yytype_uint16 yyrline[] =
    First, the terminals, then, starting at YYNTOKENS, nonterminals.  */
 static const char *const yytname[] =
 {
-  "$end", "error", "$undefined", "ID", "NUMCONST", "STRINGCONST",
-  "CHARCONST", "ERROR", "BOOLCONST", "ADDASS", "SUBASS", "MULASS",
-  "DIVASS", "INC", "DEC", "LESSEQ", "GRTEQ", "EQ", "NOTEQ", "STATIC",
-  "INT", "BOOL", "CHAR", "IF", "ELSE", "WHILE", "FOREACH", "IN", "RETURN",
-  "BREAK", "SEMICOLON", "LPAREN", "RPAREN", "LBRACKET", "RBRACKET", "OR",
-  "AND", "NOT", "ASSIGN", "PLUS", "MINUS", "MULTIPLY", "DIVIDE", "MODULUS",
-  "QUESTION", "LTHAN", "GTHAN", "LBRACE", "RBRACE", "COMMA", "COLON",
-  "$accept", "program", "declaration-list", "declaration",
-  "var-declaration", "scoped-var-declaration", "var-decl-list",
-  "var-decl-initialize", "var-decl-id", "scoped-type-specifier",
-  "type-specifier", "fun-declaration", "params", "param-list",
-  "param-type-list", "param-id-list", "param-id", "statement", "matched",
-  "unmatched", "matched-selection-stmt", "unmatched-selection-stmt",
+  "$end", "error", "$undefined", "ERROR", "ID", "NUMCONST", "STRINGCONST",
+  "CHARCONST", "BOOLCONST", "ADDASS", "SUBASS", "MULASS", "DIVASS", "INC",
+  "DEC", "LESSEQ", "GRTEQ", "EQ", "NOTEQ", "STATIC", "INT", "BOOL", "CHAR",
+  "IF", "ELSE", "WHILE", "FOREACH", "IN", "RETURN", "BREAK", "SEMICOLON",
+  "LPAREN", "RPAREN", "LBRACKET", "RBRACKET", "OR", "AND", "NOT", "ASSIGN",
+  "PLUS", "MINUS", "MULTIPLY", "DIVIDE", "MODULUS", "QUESTION", "LTHAN",
+  "GTHAN", "LBRACE", "RBRACE", "COMMA", "COLON", "$accept", "program",
+  "declaration-list", "declaration", "var-declaration",
+  "scoped-var-declaration", "var-decl-list", "var-decl-initialize",
+  "var-decl-id", "scoped-type-specifier", "type-specifier",
+  "fun-declaration", "params", "param-list", "param-type-list",
+  "param-id-list", "param-id", "statement", "matched", "unmatched",
+  "matched-selection-stmt", "unmatched-selection-stmt",
   "matched-while-stmt", "unmatched-while-stmt", "matched-foreach-stmt",
   "unmatched-foreach-stmt", "compound-stmt", "local-declarations",
   "statement-list", "expression-stmt", "return-stmt", "break-stmt",
@@ -575,10 +577,10 @@ static const yytype_uint16 yytoknum[] =
 };
 # endif
 
-#define YYPACT_NINF -87
+#define YYPACT_NINF -116
 
 #define yypact_value_is_default(Yystate) \
-  (!!((Yystate) == (-87)))
+  (!!((Yystate) == (-116)))
 
 #define YYTABLE_NINF -1
 
@@ -589,24 +591,24 @@ static const yytype_uint16 yytoknum[] =
      STATE-NUM.  */
 static const yytype_int16 yypact[] =
 {
-      77,    -5,   -87,   -87,   -87,    25,    77,   -87,   -87,    50,
-     -87,    84,   -87,   -87,    30,    -6,   -87,     8,    61,    41,
-      49,   -87,    84,    80,   -87,    92,   157,    76,    65,   -87,
-     107,    84,    90,    83,    96,   -87,    39,   -87,   -87,   -87,
-     -87,   157,   157,   -87,   -87,   -87,   104,    89,   -87,   -87,
-     160,    85,   -87,    34,   -87,   -87,   -87,   -87,   -87,   106,
-      61,   111,   112,   118,   115,   120,   -87,   -87,   -87,   -87,
-     -87,   -87,   -87,   -87,   -87,   -87,   -87,   -87,   -87,   -87,
-     -87,   123,   104,     9,   -87,   107,   -87,   157,   157,   125,
-     -87,   157,   157,   -87,   -87,   -87,   -87,   -87,   -87,   -87,
-     -87,    34,    34,   -87,   -87,   -87,    34,   -87,   -87,   -87,
-     157,   157,   155,   -87,   134,   -87,    81,   -87,   157,   157,
-     157,   157,   -87,   -87,   157,   -87,   -87,   135,   117,   136,
-     -87,    89,   -87,   -24,    85,   -87,   -21,    14,   138,   141,
-     -87,    84,   -87,    92,   -87,     4,   -87,   -87,   -87,   -87,
-     -87,   -87,   157,   -87,   107,   107,   157,   -87,     1,   -87,
-     -87,   -87,   -87,   145,   -87,   -87,    22,   -87,   107,   107,
-     -87,   -87,   -87,   -87
+      53,    11,  -116,  -116,  -116,    25,    53,  -116,  -116,    27,
+    -116,    58,  -116,  -116,    39,   -23,  -116,    19,    79,    62,
+      65,  -116,    58,    96,  -116,    98,   156,    70,    55,  -116,
+     107,    58,    73,    72,    74,  -116,    51,  -116,  -116,  -116,
+    -116,   156,   156,  -116,  -116,  -116,    75,    81,  -116,  -116,
+     164,   -27,  -116,   161,  -116,  -116,  -116,  -116,  -116,    84,
+      79,    77,    94,    95,   115,    97,  -116,  -116,  -116,  -116,
+    -116,  -116,  -116,  -116,  -116,  -116,  -116,  -116,  -116,  -116,
+    -116,    99,    75,     9,  -116,   107,  -116,   156,   156,   108,
+    -116,   156,   156,  -116,  -116,  -116,  -116,  -116,  -116,  -116,
+    -116,   161,   161,  -116,  -116,  -116,   161,  -116,  -116,  -116,
+     156,   156,   105,  -116,   109,  -116,    78,  -116,   156,   156,
+     156,   156,  -116,  -116,   156,  -116,  -116,   110,   100,   116,
+    -116,    81,  -116,    -2,   -27,  -116,    14,    26,   120,   101,
+    -116,    58,  -116,    98,  -116,     4,  -116,  -116,  -116,  -116,
+    -116,  -116,   156,  -116,   107,   107,   156,  -116,    -6,  -116,
+    -116,  -116,  -116,   119,  -116,  -116,    33,  -116,   107,   107,
+    -116,  -116,  -116,  -116
 };
 
   /* YYDEFACT[STATE-NUM] -- Default reduction number in state STATE-NUM.
@@ -637,12 +639,12 @@ static const yytype_uint8 yydefact[] =
   /* YYPGOTO[NTERM-NUM].  */
 static const yytype_int16 yypgoto[] =
 {
-     -87,   -87,   -87,   166,   -87,   -87,    31,   148,   -87,   -87,
-       0,   -87,   158,   -87,   150,   -87,   119,   -83,   -86,   -61,
-     -87,   -87,   -87,   -87,   -87,   -87,   -87,   -87,   -87,   -87,
-     -87,   -87,   -28,   -22,    91,   -37,   -87,   -87,    82,   -87,
-      87,   -87,   -50,   -87,   -87,   -25,   -87,   -87,   -87,   -87,
-     -87
+    -116,  -116,  -116,   151,  -116,  -116,    15,   145,  -116,  -116,
+       0,  -116,   149,  -116,   141,  -116,   113,   -83,  -115,  -105,
+    -116,  -116,  -116,  -116,  -116,  -116,  -116,  -116,  -116,  -116,
+    -116,  -116,   -28,   -22,    83,   -37,  -116,  -116,    76,  -116,
+      82,  -116,   -50,  -116,  -116,   -25,  -116,  -116,  -116,  -116,
+    -116
 };
 
   /* YYDEFGOTO[NTERM-NUM].  */
@@ -661,62 +663,64 @@ static const yytype_int16 yydefgoto[] =
      number is the opposite.  If YYTABLE_NINF, syntax error.  */
 static const yytype_uint8 yytable[] =
 {
-       9,    55,   125,   107,    46,    90,     9,    36,    37,    38,
-      39,   154,    40,    89,    91,    97,    98,    55,   118,   119,
-     120,   121,   122,   123,    24,    12,    11,    61,    55,    62,
-      63,   167,    64,    65,    66,    41,   114,    36,    37,    38,
-      39,    42,    40,    25,    43,    44,   155,   124,    45,    91,
-      25,    67,   159,    14,   169,   132,   135,    91,    26,   126,
-     129,    22,   160,    23,    27,    41,    55,    55,   163,   164,
-      87,   162,    88,    30,    43,    44,    55,    55,    45,    31,
-       1,    55,   170,   172,    33,    55,    55,   139,   136,   137,
-     146,   147,   148,   149,   165,    34,   150,     2,     3,     4,
-     141,     2,     3,     4,     2,     3,     4,   171,   173,    59,
-      36,    37,    38,    39,    60,    40,   144,    86,    36,    37,
-      38,    39,    85,    40,   161,    92,   103,   104,   105,    23,
-      61,    55,    62,    63,   166,    64,    65,    66,    41,    91,
-     108,   157,   110,   111,    42,   113,    41,    43,    44,   112,
-     115,    45,    42,   117,    67,    43,    44,   130,   138,    45,
-      36,    37,    38,    39,   140,    40,   152,   151,   156,   168,
-     153,    88,    13,    35,   158,    93,    94,    95,    96,   109,
-      32,    84,   131,   133,     0,     0,     0,     0,    41,   134,
-       0,     0,     0,     0,    42,     0,     0,    43,    44,    97,
-      98,    45,     0,     0,     0,    99,   100
+       9,    55,   125,   107,    46,    90,     9,    24,    36,    37,
+      38,    39,    40,    89,   103,   104,   105,    55,   118,   119,
+     120,   121,   122,   123,   167,    12,    25,    61,    55,    62,
+      63,    14,    64,    65,    66,    41,   114,    97,    98,   163,
+     164,    42,    11,    25,    43,    44,   154,   124,    45,    91,
+     165,    67,   159,   170,   172,   132,   135,     1,   155,   126,
+     129,    91,   160,   171,   173,   169,    55,    55,    91,    26,
+      22,   162,    23,     2,     3,     4,    55,    55,     2,     3,
+       4,    55,    87,    27,    88,    55,    55,   139,   136,   137,
+     146,   147,   148,   149,    30,    31,   150,   141,     2,     3,
+       4,    33,    34,    59,    60,    85,    86,    23,   110,   138,
+      91,    36,    37,    38,    39,    40,   144,    92,   108,    36,
+      37,    38,    39,    40,   161,   111,   112,   115,   156,   117,
+      61,    55,    62,    63,   166,    64,    65,    66,    41,   140,
+     130,   157,   151,   168,    42,   113,    41,    43,    44,   152,
+     153,    45,    42,    88,    67,    43,    44,    13,   158,    45,
+      36,    37,    38,    39,    40,    36,    37,    38,    39,    40,
+      35,    32,    84,   109,   131,     0,     0,   133,     0,    93,
+      94,    95,    96,     0,   134,     0,     0,    41,     0,     0,
+       0,     0,    41,    42,     0,     0,    43,    44,     0,     0,
+      45,    43,    44,    97,    98,    45,     0,     0,     0,    99,
+     100
 };
 
 static const yytype_int16 yycheck[] =
 {
-       0,    26,    85,    53,    26,    42,     6,     3,     4,     5,
-       6,    32,     8,    41,    35,    39,    40,    42,     9,    10,
-      11,    12,    13,    14,    30,     0,    31,    23,    53,    25,
-      26,    30,    28,    29,    30,    31,    64,     3,     4,     5,
-       6,    37,     8,    49,    40,    41,    32,    38,    44,    35,
-      49,    47,    48,     3,    32,    92,   106,    35,    50,    87,
-      88,    31,   145,    33,     3,    31,    91,    92,   154,   155,
-      31,   154,    33,    32,    40,    41,   101,   102,    44,    30,
-       3,   106,   168,   169,     4,   110,   111,   112,   110,   111,
-     118,   119,   120,   121,   155,     3,   124,    20,    21,    22,
-      19,    20,    21,    22,    20,    21,    22,   168,   169,    33,
-       3,     4,     5,     6,    49,     8,   116,    34,     3,     4,
-       5,     6,    32,     8,   152,    36,    41,    42,    43,    33,
-      23,   156,    25,    26,   156,    28,    29,    30,    31,    35,
-      34,   141,    31,    31,    37,    30,    31,    40,    41,    31,
-      30,    44,    37,    30,    47,    40,    41,    32,     3,    44,
-       3,     4,     5,     6,    30,     8,    49,    32,    27,    24,
-      34,    33,     6,    25,   143,    15,    16,    17,    18,    60,
-      22,    31,    91,   101,    -1,    -1,    -1,    -1,    31,   102,
-      -1,    -1,    -1,    -1,    37,    -1,    -1,    40,    41,    39,
-      40,    44,    -1,    -1,    -1,    45,    46
+       0,    26,    85,    53,    26,    42,     6,    30,     4,     5,
+       6,     7,     8,    41,    41,    42,    43,    42,     9,    10,
+      11,    12,    13,    14,    30,     0,    49,    23,    53,    25,
+      26,     4,    28,    29,    30,    31,    64,    39,    40,   154,
+     155,    37,    31,    49,    40,    41,    32,    38,    44,    35,
+     155,    47,    48,   168,   169,    92,   106,     4,    32,    87,
+      88,    35,   145,   168,   169,    32,    91,    92,    35,    50,
+      31,   154,    33,    20,    21,    22,   101,   102,    20,    21,
+      22,   106,    31,     4,    33,   110,   111,   112,   110,   111,
+     118,   119,   120,   121,    32,    30,   124,    19,    20,    21,
+      22,     5,     4,    33,    49,    32,    34,    33,    31,     4,
+      35,     4,     5,     6,     7,     8,   116,    36,    34,     4,
+       5,     6,     7,     8,   152,    31,    31,    30,    27,    30,
+      23,   156,    25,    26,   156,    28,    29,    30,    31,    30,
+      32,   141,    32,    24,    37,    30,    31,    40,    41,    49,
+      34,    44,    37,    33,    47,    40,    41,     6,   143,    44,
+       4,     5,     6,     7,     8,     4,     5,     6,     7,     8,
+      25,    22,    31,    60,    91,    -1,    -1,   101,    -1,    15,
+      16,    17,    18,    -1,   102,    -1,    -1,    31,    -1,    -1,
+      -1,    -1,    31,    37,    -1,    -1,    40,    41,    -1,    -1,
+      44,    40,    41,    39,    40,    44,    -1,    -1,    -1,    45,
+      46
 };
 
   /* YYSTOS[STATE-NUM] -- The (internal number of the) accessing
      symbol of state STATE-NUM.  */
 static const yytype_uint8 yystos[] =
 {
-       0,     3,    20,    21,    22,    52,    53,    54,    55,    61,
-      62,    31,     0,    54,     3,    57,    58,    59,    61,    63,
-      64,    65,    31,    33,    30,    49,    50,     3,    66,    67,
-      32,    30,    63,     4,     3,    58,     3,     4,     5,     6,
+       0,     4,    20,    21,    22,    52,    53,    54,    55,    61,
+      62,    31,     0,    54,     4,    57,    58,    59,    61,    63,
+      64,    65,    31,    33,    30,    49,    50,     4,    66,    67,
+      32,    30,    63,     5,     4,    58,     4,     5,     6,     7,
        8,    31,    37,    40,    41,    44,    84,    85,    86,    87,
       89,    91,    93,    94,    95,    96,    97,    98,   101,    33,
       49,    23,    25,    26,    28,    29,    30,    47,    68,    69,
@@ -726,7 +730,7 @@ static const yytype_uint8 yystos[] =
       46,    88,    90,    41,    42,    43,    92,    93,    34,    67,
       31,    31,    31,    30,    83,    30,    78,    30,     9,    10,
       11,    12,    13,    14,    38,    68,    83,    99,   100,    83,
-      32,    85,    86,    89,    91,    93,    84,    84,     3,    96,
+      32,    85,    86,    89,    91,    93,    84,    84,     4,    96,
       30,    19,    56,    60,    61,    79,    83,    83,    83,    83,
       83,    32,    49,    34,    32,    32,    27,    61,    57,    48,
       68,    83,    68,    69,    69,    70,    84,    30,    24,    32,
@@ -1441,702 +1445,778 @@ yyreduce:
   switch (yyn)
     {
         case 2:
-#line 111 "cminus.y" /* yacc.c:1646  */
-    { (yyval.tree) = (yyvsp[0].tree); syntaxTree = (yyval.tree); }
-#line 1447 "cminus.tab.c" /* yacc.c:1646  */
+#line 109 "cminus.y" /* yacc.c:1646  */
+    { 
+            (yyval.tree) = (yyvsp[0].tree); 
+            syntaxTree = (yyval.tree); 
+        }
+#line 1454 "cminus.tab.c" /* yacc.c:1646  */
     break;
 
   case 3:
-#line 116 "cminus.y" /* yacc.c:1646  */
+#line 117 "cminus.y" /* yacc.c:1646  */
     { (yyval.tree) = linkSiblings(2, (yyvsp[-1].tree), (yyvsp[0].tree)); }
-#line 1453 "cminus.tab.c" /* yacc.c:1646  */
+#line 1460 "cminus.tab.c" /* yacc.c:1646  */
     break;
 
   case 4:
-#line 118 "cminus.y" /* yacc.c:1646  */
+#line 119 "cminus.y" /* yacc.c:1646  */
     { (yyval.tree) = (yyvsp[0].tree); }
-#line 1459 "cminus.tab.c" /* yacc.c:1646  */
+#line 1466 "cminus.tab.c" /* yacc.c:1646  */
     break;
 
   case 5:
-#line 123 "cminus.y" /* yacc.c:1646  */
+#line 124 "cminus.y" /* yacc.c:1646  */
     { (yyval.tree) = (yyvsp[0].tree); }
-#line 1465 "cminus.tab.c" /* yacc.c:1646  */
+#line 1472 "cminus.tab.c" /* yacc.c:1646  */
     break;
 
   case 6:
-#line 125 "cminus.y" /* yacc.c:1646  */
+#line 126 "cminus.y" /* yacc.c:1646  */
     { (yyval.tree) = (yyvsp[0].tree); }
-#line 1471 "cminus.tab.c" /* yacc.c:1646  */
+#line 1478 "cminus.tab.c" /* yacc.c:1646  */
     break;
 
   case 7:
-#line 130 "cminus.y" /* yacc.c:1646  */
-    { (yyval.tree) = makeNode( DeclK, VarK, (yyvsp[-2].tree)->nodetype, (yyvsp[-2].tree)->lineno, (yyvsp[-1].tree)->str, (yyvsp[-1].tree)->token ); }
-#line 1477 "cminus.tab.c" /* yacc.c:1646  */
+#line 131 "cminus.y" /* yacc.c:1646  */
+    { 
+            (yyval.tree) = makeParent( VarK, (yyvsp[-2].tree)->nodetype, (yyvsp[-2].tree)->lineno, (yyvsp[-1].tree)->svalue );
+            addChildren((yyval.tree), 1, (yyvsp[-1].tree));
+        }
+#line 1487 "cminus.tab.c" /* yacc.c:1646  */
     break;
 
   case 8:
-#line 136 "cminus.y" /* yacc.c:1646  */
+#line 140 "cminus.y" /* yacc.c:1646  */
     { 
-            (yyval.tree) = makeNode( DeclK, VarK, (yyvsp[-2].tree)->nodetype, (yyvsp[-2].tree)->lineno, (yyvsp[-1].tree)->str, (yyvsp[-1].tree)->token );
+            (yyval.tree) = makeParent( VarK, (yyvsp[-2].tree)->nodetype, (yyvsp[-2].tree)->lineno, NULL);
+            //$$ = makeNode( DeclK, VarK, $1->nodetype, $1->lineno, $2->str, $2->token );
             //$$->isScoped = true; 
         }
-#line 1486 "cminus.tab.c" /* yacc.c:1646  */
+#line 1497 "cminus.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 9:
+#line 149 "cminus.y" /* yacc.c:1646  */
+    {
+            (yyval.tree) = linkSiblings(2, (yyvsp[-2].tree), (yyvsp[0].tree));
+        }
+#line 1505 "cminus.tab.c" /* yacc.c:1646  */
     break;
 
   case 10:
-#line 145 "cminus.y" /* yacc.c:1646  */
+#line 153 "cminus.y" /* yacc.c:1646  */
     { (yyval.tree) = (yyvsp[0].tree); }
-#line 1492 "cminus.tab.c" /* yacc.c:1646  */
+#line 1511 "cminus.tab.c" /* yacc.c:1646  */
     break;
 
   case 11:
-#line 150 "cminus.y" /* yacc.c:1646  */
+#line 158 "cminus.y" /* yacc.c:1646  */
     { (yyval.tree) = (yyvsp[0].tree); }
-#line 1498 "cminus.tab.c" /* yacc.c:1646  */
+#line 1517 "cminus.tab.c" /* yacc.c:1646  */
     break;
 
   case 12:
-#line 152 "cminus.y" /* yacc.c:1646  */
-    { (yyval.tree) = (yyvsp[-2].tree); }
-#line 1504 "cminus.tab.c" /* yacc.c:1646  */
+#line 160 "cminus.y" /* yacc.c:1646  */
+    {
+            (yyval.tree) = makeParent( IdK, (yyvsp[0].tree)->nodetype, (yyvsp[-2].tree)->lineno, (yyvsp[-2].tree)->svalue );
+        }
+#line 1525 "cminus.tab.c" /* yacc.c:1646  */
     break;
 
   case 13:
-#line 157 "cminus.y" /* yacc.c:1646  */
-    { (yyval.tree) = (yyvsp[0].tree); }
-#line 1510 "cminus.tab.c" /* yacc.c:1646  */
+#line 167 "cminus.y" /* yacc.c:1646  */
+    { 
+            (yyval.tree) = makeNode( IdK, Void, (yyvsp[0].tok)->lineno, (yyvsp[0].tok)->svalue, (yyvsp[0].tok) );
+        }
+#line 1533 "cminus.tab.c" /* yacc.c:1646  */
     break;
 
   case 14:
-#line 159 "cminus.y" /* yacc.c:1646  */
+#line 171 "cminus.y" /* yacc.c:1646  */
     { 
-            (yyval.tree) = (yyvsp[-3].tree);
+            (yyval.tree) = makeParent( IdK, Void, (yyvsp[-3].tok)->lineno, (yyvsp[-3].tok)->svalue );
             (yyval.tree)->isArray = true;
+            addChildren( (yyval.tree), 1, (yyvsp[-1].tok) );
         }
-#line 1519 "cminus.tab.c" /* yacc.c:1646  */
+#line 1543 "cminus.tab.c" /* yacc.c:1646  */
     break;
 
   case 15:
-#line 167 "cminus.y" /* yacc.c:1646  */
+#line 180 "cminus.y" /* yacc.c:1646  */
     { 
-            (yyval.tree) = makeNode( DeclK, VarK, (yyvsp[0].tree)->nodetype, (yyvsp[0].tree)->lineno, (yyvsp[0].tree)->str, (yyvsp[0].tree)->token); 
+            (yyval.tree) = makeParent( TypeK, (yyvsp[0].tree)->nodetype, (yyvsp[0].tree)->lineno, NULL);
+            //$$ = makeNode( DeclK, VarK, $2->nodetype, $2->lineno, $2->str, $2->token); 
             (yyval.tree)->isStatic = true; 
             //$$->isScoped = true;
            }
-#line 1529 "cminus.tab.c" /* yacc.c:1646  */
+#line 1554 "cminus.tab.c" /* yacc.c:1646  */
     break;
 
   case 16:
-#line 173 "cminus.y" /* yacc.c:1646  */
-    { (yyval.tree) = (yyvsp[0].tree); }
-#line 1535 "cminus.tab.c" /* yacc.c:1646  */
+#line 187 "cminus.y" /* yacc.c:1646  */
+    { (yyval.tree) = makeParent( TypeK, (yyvsp[0].tree)->nodetype, (yyvsp[0].tree)->lineno, NULL); }
+#line 1560 "cminus.tab.c" /* yacc.c:1646  */
     break;
 
   case 17:
-#line 178 "cminus.y" /* yacc.c:1646  */
-    { (yyval.tree) = (yyvsp[0].tree); (yyval.tree)->nodetype = Integer; }
-#line 1541 "cminus.tab.c" /* yacc.c:1646  */
+#line 192 "cminus.y" /* yacc.c:1646  */
+    { 
+            (yyval.tree) = makeNode( TypeK, Integer, (yyvsp[0].tok)->lineno, NULL, (yyvsp[0].tok) );
+        }
+#line 1568 "cminus.tab.c" /* yacc.c:1646  */
     break;
 
   case 18:
-#line 180 "cminus.y" /* yacc.c:1646  */
-    { (yyval.tree) = (yyvsp[0].tree); (yyval.tree)->nodetype = Boolean; }
-#line 1547 "cminus.tab.c" /* yacc.c:1646  */
+#line 196 "cminus.y" /* yacc.c:1646  */
+    { 
+            (yyval.tree) = makeNode( TypeK, Boolean, (yyvsp[0].tok)->lineno, NULL, (yyvsp[0].tok) );
+        }
+#line 1576 "cminus.tab.c" /* yacc.c:1646  */
     break;
 
   case 19:
-#line 182 "cminus.y" /* yacc.c:1646  */
-    { (yyval.tree) = (yyvsp[0].tree); (yyval.tree)->nodetype = Character; }
-#line 1553 "cminus.tab.c" /* yacc.c:1646  */
+#line 200 "cminus.y" /* yacc.c:1646  */
+    { 
+            (yyval.tree) = makeNode( TypeK, Character, (yyvsp[0].tok)->lineno, NULL, (yyvsp[0].tok) );
+        }
+#line 1584 "cminus.tab.c" /* yacc.c:1646  */
     break;
 
   case 20:
-#line 187 "cminus.y" /* yacc.c:1646  */
+#line 207 "cminus.y" /* yacc.c:1646  */
     { 
-			(yyval.tree) = makeNode( DeclK, FunK, (yyvsp[-5].tree)->nodetype, (yyvsp[-4].tree)->lineno, (yyvsp[-4].tree)->str, (yyvsp[-4].tree)->token );
+            (yyval.tree) = makeParent( FunK, (yyvsp[-5].tree)->nodetype, (yyvsp[-4].tok)->lineno, (yyvsp[-4].tok)->svalue );
+			//$$ = makeNode( DeclK, FunK, $1->nodetype, $2->lineno, $2->str, $2->token );
 			addChildren( (yyval.tree), 2, (yyvsp[-2].tree), (yyvsp[0].tree) );
 		}
-#line 1562 "cminus.tab.c" /* yacc.c:1646  */
+#line 1594 "cminus.tab.c" /* yacc.c:1646  */
     break;
 
   case 21:
-#line 192 "cminus.y" /* yacc.c:1646  */
+#line 213 "cminus.y" /* yacc.c:1646  */
     { 
-			(yyval.tree) = makeNode( DeclK, FunK, (yyvsp[-4].tree)->nodetype, (yyvsp[-4].tree)->lineno, (yyvsp[-4].tree)->str, (yyvsp[-4].tree)->token );
+            (yyval.tree) = makeParent( FunK, Void, (yyvsp[-4].tok)->lineno, (yyvsp[-4].tok)->svalue );
+			//$$ = makeNode( DeclK, FunK, $1->nodetype, $1->lineno, $1->str, $1->token );
 			addChildren( (yyval.tree), 2, (yyvsp[-2].tree), (yyvsp[0].tree));
 		}
-#line 1571 "cminus.tab.c" /* yacc.c:1646  */
+#line 1604 "cminus.tab.c" /* yacc.c:1646  */
     break;
 
   case 22:
-#line 200 "cminus.y" /* yacc.c:1646  */
+#line 222 "cminus.y" /* yacc.c:1646  */
     { (yyval.tree) = (yyvsp[0].tree); }
-#line 1577 "cminus.tab.c" /* yacc.c:1646  */
+#line 1610 "cminus.tab.c" /* yacc.c:1646  */
     break;
 
   case 23:
-#line 202 "cminus.y" /* yacc.c:1646  */
+#line 224 "cminus.y" /* yacc.c:1646  */
     { (yyval.tree) = NULL; }
-#line 1583 "cminus.tab.c" /* yacc.c:1646  */
+#line 1616 "cminus.tab.c" /* yacc.c:1646  */
     break;
 
   case 24:
-#line 207 "cminus.y" /* yacc.c:1646  */
+#line 229 "cminus.y" /* yacc.c:1646  */
     {  
 			(yyval.tree) = linkSiblings(2, (yyvsp[-2].tree), (yyvsp[0].tree));
 		}
-#line 1591 "cminus.tab.c" /* yacc.c:1646  */
-    break;
-
-  case 25:
-#line 211 "cminus.y" /* yacc.c:1646  */
-    { (yyval.tree) = (yyvsp[0].tree); }
-#line 1597 "cminus.tab.c" /* yacc.c:1646  */
-    break;
-
-  case 26:
-#line 216 "cminus.y" /* yacc.c:1646  */
-    { 
-			(yyval.tree) = makeNode( DeclK, ParamK, (yyvsp[-1].tree)->nodetype, (yyvsp[-1].tree)->lineno, (yyvsp[0].tree)->str, (yyvsp[0].tree)->token );
-            addChildren( (yyval.tree), 1, (yyvsp[0].tree) );
-		}
-#line 1606 "cminus.tab.c" /* yacc.c:1646  */
-    break;
-
-  case 27:
-#line 224 "cminus.y" /* yacc.c:1646  */
-    { (yyval.tree) = linkSiblings(2, (yyvsp[-2].tree), (yyvsp[0].tree)); }
-#line 1612 "cminus.tab.c" /* yacc.c:1646  */
-    break;
-
-  case 28:
-#line 226 "cminus.y" /* yacc.c:1646  */
-    { (yyval.tree) = (yyvsp[0].tree); }
-#line 1618 "cminus.tab.c" /* yacc.c:1646  */
-    break;
-
-  case 29:
-#line 231 "cminus.y" /* yacc.c:1646  */
-    { (yyval.tree) = (yyvsp[0].tree); }
 #line 1624 "cminus.tab.c" /* yacc.c:1646  */
     break;
 
-  case 30:
+  case 25:
 #line 233 "cminus.y" /* yacc.c:1646  */
+    { (yyval.tree) = (yyvsp[0].tree); }
+#line 1630 "cminus.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 26:
+#line 238 "cminus.y" /* yacc.c:1646  */
     { 
-            (yyval.tree) = (yyvsp[-2].tree); 
+            (yyval.tree) = makeParent( ParamK, (yyvsp[-1].tree)->nodetype, (yyvsp[-1].tree)->lineno, NULL );
+			//$$ = makeNode( ParamK, $1->nodetype, $1->lineno );
+            addChildren( (yyval.tree), 1, (yyvsp[0].tree) );
+		}
+#line 1640 "cminus.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 27:
+#line 247 "cminus.y" /* yacc.c:1646  */
+    { (yyval.tree) = linkSiblings(2, (yyvsp[-2].tree), (yyvsp[0].tree)); }
+#line 1646 "cminus.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 28:
+#line 249 "cminus.y" /* yacc.c:1646  */
+    { (yyval.tree) = (yyvsp[0].tree); }
+#line 1652 "cminus.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 29:
+#line 254 "cminus.y" /* yacc.c:1646  */
+    { 
+            (yyval.tree) = makeNode( IdK, Void, (yyvsp[0].tok)->lineno, (yyvsp[0].tok)->svalue, (yyvsp[0].tok) );
+        }
+#line 1660 "cminus.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 30:
+#line 258 "cminus.y" /* yacc.c:1646  */
+    { 
+            (yyval.tree) = makeNode( IdK, Void, (yyvsp[-2].tok)->lineno, (yyvsp[-2].tok)->svalue, (yyvsp[-2].tok) );
             (yyval.tree)->isArray = true; 
         }
-#line 1633 "cminus.tab.c" /* yacc.c:1646  */
+#line 1669 "cminus.tab.c" /* yacc.c:1646  */
     break;
 
   case 31:
-#line 241 "cminus.y" /* yacc.c:1646  */
+#line 266 "cminus.y" /* yacc.c:1646  */
     { (yyval.tree) = (yyvsp[0].tree); }
-#line 1639 "cminus.tab.c" /* yacc.c:1646  */
+#line 1675 "cminus.tab.c" /* yacc.c:1646  */
     break;
 
   case 32:
-#line 243 "cminus.y" /* yacc.c:1646  */
+#line 268 "cminus.y" /* yacc.c:1646  */
     { (yyval.tree) = (yyvsp[0].tree); }
-#line 1645 "cminus.tab.c" /* yacc.c:1646  */
-    break;
-
-  case 43:
-#line 264 "cminus.y" /* yacc.c:1646  */
-    { 
-            (yyval.tree) = makeNode( StmtK, IfK, (yyvsp[-6].tree)->nodetype, (yyvsp[-6].tree)->lineno, NULL, (yyvsp[-6].tree)->token );
-            addChildren( (yyval.tree), 3, (yyvsp[-4].tree), (yyvsp[-2].tree), (yyvsp[0].tree) );
-        }
-#line 1654 "cminus.tab.c" /* yacc.c:1646  */
-    break;
-
-  case 44:
-#line 272 "cminus.y" /* yacc.c:1646  */
-    { 
-            (yyval.tree) = makeNode( StmtK, IfK, (yyvsp[-4].tree)->nodetype, (yyvsp[-4].tree)->lineno, NULL, (yyvsp[-4].tree)->token );
-            addChildren( (yyval.tree), 2, (yyvsp[-2].tree), (yyvsp[0].tree) );
-        }
-#line 1663 "cminus.tab.c" /* yacc.c:1646  */
-    break;
-
-  case 45:
-#line 277 "cminus.y" /* yacc.c:1646  */
-    { 
-            (yyval.tree) = makeNode( StmtK, IfK, (yyvsp[-6].tree)->nodetype, (yyvsp[-6].tree)->lineno, NULL, (yyvsp[-6].tree)->token );
-            addChildren( (yyval.tree), 3, (yyvsp[-4].tree), (yyvsp[-2].tree), (yyvsp[0].tree) );
-        }
-#line 1672 "cminus.tab.c" /* yacc.c:1646  */
-    break;
-
-  case 46:
-#line 285 "cminus.y" /* yacc.c:1646  */
-    { 
-            (yyval.tree) = makeNode( StmtK, WhileK, (yyvsp[-4].tree)->nodetype, (yyvsp[-4].tree)->lineno, NULL, (yyvsp[-4].tree)->token );
-            addChildren( (yyval.tree), 2, (yyvsp[-2].tree), (yyvsp[0].tree) );
-        }
 #line 1681 "cminus.tab.c" /* yacc.c:1646  */
     break;
 
-  case 47:
-#line 293 "cminus.y" /* yacc.c:1646  */
+  case 43:
+#line 289 "cminus.y" /* yacc.c:1646  */
     { 
-            (yyval.tree) = makeNode( StmtK, WhileK, (yyvsp[-4].tree)->nodetype, (yyvsp[-4].tree)->lineno, NULL, (yyvsp[-4].tree)->token );
-            addChildren( (yyval.tree), 2, (yyvsp[-2].tree), (yyvsp[0].tree) );
+            (yyval.tree) = makeParent( IfK, Void, (yyvsp[-6].tok)->lineno, NULL );
+            addChildren( (yyval.tree), 3, (yyvsp[-4].tree), (yyvsp[-2].tree), (yyvsp[0].tree) );
         }
 #line 1690 "cminus.tab.c" /* yacc.c:1646  */
     break;
 
-  case 48:
-#line 301 "cminus.y" /* yacc.c:1646  */
+  case 44:
+#line 297 "cminus.y" /* yacc.c:1646  */
     { 
-            (yyval.tree) = makeNode( StmtK, ForeachK, (yyvsp[-6].tree)->nodetype, (yyvsp[-6].tree)->lineno, NULL, (yyvsp[-6].tree)->token );
-            addChildren( (yyval.tree), 3, (yyvsp[-4].tree), (yyvsp[-2].tree), (yyvsp[0].tree) );
+            (yyval.tree) = makeParent( IfK, Void, (yyvsp[-4].tok)->lineno, NULL );
+            addChildren( (yyval.tree), 2, (yyvsp[-2].tree), (yyvsp[0].tree) );
         }
 #line 1699 "cminus.tab.c" /* yacc.c:1646  */
     break;
 
-  case 49:
-#line 309 "cminus.y" /* yacc.c:1646  */
+  case 45:
+#line 302 "cminus.y" /* yacc.c:1646  */
     { 
-            (yyval.tree) = makeNode( StmtK, ForeachK, (yyvsp[-6].tree)->nodetype, (yyvsp[-6].tree)->lineno, NULL, (yyvsp[-6].tree)->token );
+            (yyval.tree) = makeParent( IfK, Void, (yyvsp[-6].tok)->lineno, NULL );
             addChildren( (yyval.tree), 3, (yyvsp[-4].tree), (yyvsp[-2].tree), (yyvsp[0].tree) );
         }
 #line 1708 "cminus.tab.c" /* yacc.c:1646  */
     break;
 
-  case 50:
-#line 317 "cminus.y" /* yacc.c:1646  */
-    { (yyval.tree) = linkSiblings(2, (yyvsp[-2].tree), (yyvsp[-1].tree)); }
-#line 1714 "cminus.tab.c" /* yacc.c:1646  */
+  case 46:
+#line 310 "cminus.y" /* yacc.c:1646  */
+    { 
+            (yyval.tree) = makeParent( WhileK, Void, (yyvsp[-4].tok)->lineno, NULL );
+            addChildren( (yyval.tree), 2, (yyvsp[-2].tree), (yyvsp[0].tree) );
+        }
+#line 1717 "cminus.tab.c" /* yacc.c:1646  */
     break;
 
-  case 51:
-#line 322 "cminus.y" /* yacc.c:1646  */
-    { (yyval.tree) = linkSiblings(2, (yyvsp[-1].tree), (yyvsp[0].tree)); }
-#line 1720 "cminus.tab.c" /* yacc.c:1646  */
-    break;
-
-  case 52:
-#line 324 "cminus.y" /* yacc.c:1646  */
-    { (yyval.tree) = NULL; }
+  case 47:
+#line 318 "cminus.y" /* yacc.c:1646  */
+    { 
+            (yyval.tree) = makeParent( WhileK, Void, (yyvsp[-4].tok)->lineno, NULL );
+            addChildren( (yyval.tree), 2, (yyvsp[-2].tree), (yyvsp[0].tree) );
+        }
 #line 1726 "cminus.tab.c" /* yacc.c:1646  */
     break;
 
-  case 53:
-#line 329 "cminus.y" /* yacc.c:1646  */
-    { (yyval.tree) = linkSiblings(2, (yyvsp[-1].tree), (yyvsp[0].tree)); }
-#line 1732 "cminus.tab.c" /* yacc.c:1646  */
+  case 48:
+#line 326 "cminus.y" /* yacc.c:1646  */
+    { 
+            (yyval.tree) = makeParent( ForeachK, Void, (yyvsp[-6].tok)->lineno, NULL );
+            addChildren( (yyval.tree), 3, (yyvsp[-4].tree), (yyvsp[-2].tree), (yyvsp[0].tree) );
+        }
+#line 1735 "cminus.tab.c" /* yacc.c:1646  */
     break;
 
-  case 54:
-#line 331 "cminus.y" /* yacc.c:1646  */
-    { (yyval.tree) = NULL; }
-#line 1738 "cminus.tab.c" /* yacc.c:1646  */
-    break;
-
-  case 55:
-#line 336 "cminus.y" /* yacc.c:1646  */
-    { (yyval.tree) = (yyvsp[-1].tree); /* does expression occur at semicolon for line counting? */ }
+  case 49:
+#line 334 "cminus.y" /* yacc.c:1646  */
+    { 
+            (yyval.tree) = makeParent( ForeachK, Void, (yyvsp[-6].tok)->lineno, NULL );
+            addChildren( (yyval.tree), 3, (yyvsp[-4].tree), (yyvsp[-2].tree), (yyvsp[0].tree) );
+        }
 #line 1744 "cminus.tab.c" /* yacc.c:1646  */
     break;
 
+  case 50:
+#line 342 "cminus.y" /* yacc.c:1646  */
+    { (yyval.tree) = linkSiblings(2, (yyvsp[-2].tree), (yyvsp[-1].tree)); }
+#line 1750 "cminus.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 51:
+#line 347 "cminus.y" /* yacc.c:1646  */
+    { (yyval.tree) = linkSiblings(2, (yyvsp[-1].tree), (yyvsp[0].tree)); }
+#line 1756 "cminus.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 52:
+#line 349 "cminus.y" /* yacc.c:1646  */
+    { (yyval.tree) = NULL; }
+#line 1762 "cminus.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 53:
+#line 354 "cminus.y" /* yacc.c:1646  */
+    { (yyval.tree) = linkSiblings(2, (yyvsp[-1].tree), (yyvsp[0].tree)); }
+#line 1768 "cminus.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 54:
+#line 356 "cminus.y" /* yacc.c:1646  */
+    { (yyval.tree) = NULL; }
+#line 1774 "cminus.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 55:
+#line 361 "cminus.y" /* yacc.c:1646  */
+    { (yyval.tree) = (yyvsp[-1].tree); /* does expression occur at semicolon for line counting? */ }
+#line 1780 "cminus.tab.c" /* yacc.c:1646  */
+    break;
+
   case 56:
-#line 338 "cminus.y" /* yacc.c:1646  */
-    { // null? 
-            (yyval.tree) = (yyvsp[0].tree);
-        }
-#line 1752 "cminus.tab.c" /* yacc.c:1646  */
+#line 363 "cminus.y" /* yacc.c:1646  */
+    { (yyval.tree) = NULL; }
+#line 1786 "cminus.tab.c" /* yacc.c:1646  */
     break;
 
   case 57:
-#line 345 "cminus.y" /* yacc.c:1646  */
-    { (yyval.tree) = (yyvsp[-1].tree); }
-#line 1758 "cminus.tab.c" /* yacc.c:1646  */
+#line 368 "cminus.y" /* yacc.c:1646  */
+    { 
+            (yyval.tree) = makeNode( ReturnK, Void, (yyvsp[-1].tok)->lineno, NULL, (yyvsp[-1].tok) );     
+        }
+#line 1794 "cminus.tab.c" /* yacc.c:1646  */
     break;
 
   case 58:
-#line 347 "cminus.y" /* yacc.c:1646  */
+#line 372 "cminus.y" /* yacc.c:1646  */
     {
-            (yyval.tree) = makeNode( StmtK, ReturnK, (yyvsp[-1].tree)->nodetype, (yyvsp[-2].tree)->lineno, (yyvsp[-2].tree)->str, (yyvsp[-2].tree)->token );
+            (yyval.tree) = makeNode( ReturnK, (yyvsp[-1].tree)->nodetype, (yyvsp[-2].tok)->lineno, NULL, (yyvsp[-2].tok) );     
+            //$$ = makeNode( StmtK, ReturnK, $2->nodetype, $1->lineno, $1->str, $1->token );
             addChildren( (yyval.tree), 1, (yyvsp[-1].tree) );
         }
-#line 1767 "cminus.tab.c" /* yacc.c:1646  */
+#line 1804 "cminus.tab.c" /* yacc.c:1646  */
     break;
 
   case 59:
-#line 355 "cminus.y" /* yacc.c:1646  */
-    { (yyval.tree) = (yyvsp[-1].tree); }
-#line 1773 "cminus.tab.c" /* yacc.c:1646  */
+#line 381 "cminus.y" /* yacc.c:1646  */
+    { 
+            (yyval.tree) = makeNode( BreakK, Void, (yyvsp[-1].tok)->lineno, NULL, (yyvsp[-1].tok) );     
+        }
+#line 1812 "cminus.tab.c" /* yacc.c:1646  */
     break;
 
   case 60:
-#line 360 "cminus.y" /* yacc.c:1646  */
+#line 388 "cminus.y" /* yacc.c:1646  */
     { 
-            (yyval.tree) = (yyvsp[-1].tree);
+            (yyval.tree) = makeNode( OpK, Void, (yyvsp[-1].tok)->lineno, NULL, (yyvsp[-1].tok) );     
+            //$$ = $2;
             addChildren( (yyval.tree), 2, (yyvsp[-2].tree), (yyvsp[0].tree) );
         }
-#line 1782 "cminus.tab.c" /* yacc.c:1646  */
+#line 1822 "cminus.tab.c" /* yacc.c:1646  */
     break;
 
   case 61:
-#line 365 "cminus.y" /* yacc.c:1646  */
+#line 394 "cminus.y" /* yacc.c:1646  */
     { 
-            (yyval.tree) = (yyvsp[-1].tree);
+            (yyval.tree) = makeNode( OpK, Void, (yyvsp[-1].tok)->lineno, NULL, (yyvsp[-1].tok) );     
             addChildren( (yyval.tree), 2, (yyvsp[-2].tree), (yyvsp[0].tree) );
         }
-#line 1791 "cminus.tab.c" /* yacc.c:1646  */
+#line 1831 "cminus.tab.c" /* yacc.c:1646  */
     break;
 
   case 62:
-#line 370 "cminus.y" /* yacc.c:1646  */
+#line 399 "cminus.y" /* yacc.c:1646  */
     { 
-            (yyval.tree) = (yyvsp[-1].tree);
+            (yyval.tree) = makeNode( OpK, Void, (yyvsp[-1].tok)->lineno, NULL, (yyvsp[-1].tok) );     
             addChildren( (yyval.tree), 2, (yyvsp[-2].tree), (yyvsp[0].tree) );
         }
-#line 1800 "cminus.tab.c" /* yacc.c:1646  */
+#line 1840 "cminus.tab.c" /* yacc.c:1646  */
     break;
 
   case 63:
-#line 375 "cminus.y" /* yacc.c:1646  */
+#line 404 "cminus.y" /* yacc.c:1646  */
     { 
-            (yyval.tree) = (yyvsp[-1].tree);
+            (yyval.tree) = makeNode( OpK, Void, (yyvsp[-1].tok)->lineno, NULL, (yyvsp[-1].tok) );     
             addChildren( (yyval.tree), 2, (yyvsp[-2].tree), (yyvsp[0].tree) );
         }
-#line 1809 "cminus.tab.c" /* yacc.c:1646  */
+#line 1849 "cminus.tab.c" /* yacc.c:1646  */
     break;
 
   case 64:
-#line 380 "cminus.y" /* yacc.c:1646  */
+#line 409 "cminus.y" /* yacc.c:1646  */
     { 
-            (yyval.tree) = (yyvsp[-1].tree);
+            (yyval.tree) = makeNode( OpK, Void, (yyvsp[-1].tok)->lineno, NULL, (yyvsp[-1].tok) );     
             addChildren( (yyval.tree), 2, (yyvsp[-2].tree), (yyvsp[0].tree) );
         }
-#line 1818 "cminus.tab.c" /* yacc.c:1646  */
+#line 1858 "cminus.tab.c" /* yacc.c:1646  */
     break;
 
   case 65:
-#line 385 "cminus.y" /* yacc.c:1646  */
+#line 414 "cminus.y" /* yacc.c:1646  */
     { 
-            (yyval.tree) = (yyvsp[0].tree);
+            (yyval.tree) = makeNode( OpK, Integer, (yyvsp[0].tok)->lineno, NULL, (yyvsp[0].tok) );     
             addChildren( (yyval.tree), 1, (yyvsp[-1].tree) );
         }
-#line 1827 "cminus.tab.c" /* yacc.c:1646  */
+#line 1867 "cminus.tab.c" /* yacc.c:1646  */
     break;
 
   case 66:
-#line 390 "cminus.y" /* yacc.c:1646  */
+#line 419 "cminus.y" /* yacc.c:1646  */
     { 
-            (yyval.tree) = (yyvsp[0].tree);
+            (yyval.tree) = makeNode( OpK, Integer, (yyvsp[0].tok)->lineno, NULL, (yyvsp[0].tok) );     
             addChildren( (yyval.tree), 1, (yyvsp[-1].tree) );
         }
-#line 1836 "cminus.tab.c" /* yacc.c:1646  */
+#line 1876 "cminus.tab.c" /* yacc.c:1646  */
     break;
 
   case 67:
-#line 395 "cminus.y" /* yacc.c:1646  */
+#line 424 "cminus.y" /* yacc.c:1646  */
     { (yyval.tree) = (yyvsp[0].tree); }
-#line 1842 "cminus.tab.c" /* yacc.c:1646  */
+#line 1882 "cminus.tab.c" /* yacc.c:1646  */
     break;
 
   case 68:
-#line 400 "cminus.y" /* yacc.c:1646  */
+#line 429 "cminus.y" /* yacc.c:1646  */
     { 
-            (yyval.tree) = (yyvsp[-1].tree);
+            (yyval.tree) = makeNode( OpK, Boolean, (yyvsp[-1].tok)->lineno, NULL, (yyvsp[-1].tok) );     
             addChildren( (yyval.tree), 2, (yyvsp[-2].tree), (yyvsp[0].tree) );
         }
-#line 1851 "cminus.tab.c" /* yacc.c:1646  */
+#line 1891 "cminus.tab.c" /* yacc.c:1646  */
     break;
 
   case 69:
-#line 405 "cminus.y" /* yacc.c:1646  */
+#line 434 "cminus.y" /* yacc.c:1646  */
     { (yyval.tree) = (yyvsp[0].tree); }
-#line 1857 "cminus.tab.c" /* yacc.c:1646  */
+#line 1897 "cminus.tab.c" /* yacc.c:1646  */
     break;
 
   case 70:
-#line 410 "cminus.y" /* yacc.c:1646  */
+#line 439 "cminus.y" /* yacc.c:1646  */
     { 
-            (yyval.tree) = (yyvsp[-1].tree);
+            (yyval.tree) = makeNode( OpK, Boolean, (yyvsp[-1].tok)->lineno, NULL, (yyvsp[-1].tok) );     
             addChildren( (yyval.tree), 2, (yyvsp[-2].tree), (yyvsp[0].tree) );
         }
-#line 1866 "cminus.tab.c" /* yacc.c:1646  */
+#line 1906 "cminus.tab.c" /* yacc.c:1646  */
     break;
 
   case 71:
-#line 415 "cminus.y" /* yacc.c:1646  */
+#line 444 "cminus.y" /* yacc.c:1646  */
     { (yyval.tree) = (yyvsp[0].tree); }
-#line 1872 "cminus.tab.c" /* yacc.c:1646  */
+#line 1912 "cminus.tab.c" /* yacc.c:1646  */
     break;
 
   case 72:
-#line 420 "cminus.y" /* yacc.c:1646  */
+#line 449 "cminus.y" /* yacc.c:1646  */
     { 
-            (yyval.tree) = (yyvsp[-1].tree);
+            (yyval.tree) = makeNode( OpK, Boolean, (yyvsp[-1].tok)->lineno, NULL, (yyvsp[-1].tok) );     
             addChildren( (yyval.tree), 1, (yyvsp[0].tree) );
         }
-#line 1881 "cminus.tab.c" /* yacc.c:1646  */
+#line 1921 "cminus.tab.c" /* yacc.c:1646  */
     break;
 
   case 73:
-#line 425 "cminus.y" /* yacc.c:1646  */
+#line 454 "cminus.y" /* yacc.c:1646  */
     { (yyval.tree) = (yyvsp[0].tree); }
-#line 1887 "cminus.tab.c" /* yacc.c:1646  */
+#line 1927 "cminus.tab.c" /* yacc.c:1646  */
     break;
 
   case 74:
-#line 430 "cminus.y" /* yacc.c:1646  */
+#line 459 "cminus.y" /* yacc.c:1646  */
     { 
             (yyval.tree) = (yyvsp[-1].tree);
             addChildren( (yyval.tree), 2, (yyvsp[-2].tree), (yyvsp[0].tree) );
         }
-#line 1896 "cminus.tab.c" /* yacc.c:1646  */
+#line 1936 "cminus.tab.c" /* yacc.c:1646  */
     break;
 
   case 75:
-#line 435 "cminus.y" /* yacc.c:1646  */
+#line 464 "cminus.y" /* yacc.c:1646  */
     { (yyval.tree) = (yyvsp[0].tree); }
-#line 1902 "cminus.tab.c" /* yacc.c:1646  */
+#line 1942 "cminus.tab.c" /* yacc.c:1646  */
     break;
 
   case 76:
-#line 440 "cminus.y" /* yacc.c:1646  */
-    { (yyval.tree) = (yyvsp[0].tree); }
-#line 1908 "cminus.tab.c" /* yacc.c:1646  */
+#line 469 "cminus.y" /* yacc.c:1646  */
+    { 
+            (yyval.tree) = makeNode( OpK, Boolean, (yyvsp[0].tok)->lineno, NULL, (yyvsp[0].tok) );
+        }
+#line 1950 "cminus.tab.c" /* yacc.c:1646  */
     break;
 
   case 77:
-#line 442 "cminus.y" /* yacc.c:1646  */
-    { (yyval.tree) = (yyvsp[0].tree); }
-#line 1914 "cminus.tab.c" /* yacc.c:1646  */
+#line 473 "cminus.y" /* yacc.c:1646  */
+    { 
+            (yyval.tree) = makeNode( OpK, Boolean, (yyvsp[0].tok)->lineno, NULL, (yyvsp[0].tok) );
+        }
+#line 1958 "cminus.tab.c" /* yacc.c:1646  */
     break;
 
   case 78:
-#line 444 "cminus.y" /* yacc.c:1646  */
-    { (yyval.tree) = (yyvsp[0].tree); }
-#line 1920 "cminus.tab.c" /* yacc.c:1646  */
+#line 477 "cminus.y" /* yacc.c:1646  */
+    { 
+            (yyval.tree) = makeNode( OpK, Boolean, (yyvsp[0].tok)->lineno, NULL, (yyvsp[0].tok) );
+        }
+#line 1966 "cminus.tab.c" /* yacc.c:1646  */
     break;
 
   case 79:
-#line 446 "cminus.y" /* yacc.c:1646  */
-    { (yyval.tree) = (yyvsp[0].tree); }
-#line 1926 "cminus.tab.c" /* yacc.c:1646  */
-    break;
-
-  case 80:
-#line 448 "cminus.y" /* yacc.c:1646  */
-    { (yyval.tree) = (yyvsp[0].tree); }
-#line 1932 "cminus.tab.c" /* yacc.c:1646  */
-    break;
-
-  case 81:
-#line 450 "cminus.y" /* yacc.c:1646  */
-    { (yyval.tree) = (yyvsp[0].tree); }
-#line 1938 "cminus.tab.c" /* yacc.c:1646  */
-    break;
-
-  case 82:
-#line 455 "cminus.y" /* yacc.c:1646  */
+#line 481 "cminus.y" /* yacc.c:1646  */
     { 
-            (yyval.tree) = (yyvsp[-1].tree);
-            addChildren( (yyval.tree), 2, (yyvsp[-2].tree), (yyvsp[0].tree) );
-        }
-#line 1947 "cminus.tab.c" /* yacc.c:1646  */
-    break;
-
-  case 83:
-#line 460 "cminus.y" /* yacc.c:1646  */
-    { (yyval.tree) = (yyvsp[0].tree); }
-#line 1953 "cminus.tab.c" /* yacc.c:1646  */
-    break;
-
-  case 84:
-#line 465 "cminus.y" /* yacc.c:1646  */
-    { (yyval.tree) = (yyvsp[0].tree); }
-#line 1959 "cminus.tab.c" /* yacc.c:1646  */
-    break;
-
-  case 85:
-#line 467 "cminus.y" /* yacc.c:1646  */
-    { (yyval.tree) = (yyvsp[0].tree); }
-#line 1965 "cminus.tab.c" /* yacc.c:1646  */
-    break;
-
-  case 86:
-#line 472 "cminus.y" /* yacc.c:1646  */
-    { 
-            (yyval.tree) = (yyvsp[-1].tree);
-            addChildren( (yyval.tree), 2, (yyvsp[-2].tree), (yyvsp[0].tree) );
+            (yyval.tree) = makeNode( OpK, Boolean, (yyvsp[0].tok)->lineno, NULL, (yyvsp[0].tok) );
         }
 #line 1974 "cminus.tab.c" /* yacc.c:1646  */
     break;
 
-  case 87:
-#line 477 "cminus.y" /* yacc.c:1646  */
+  case 80:
+#line 485 "cminus.y" /* yacc.c:1646  */
+    { 
+            (yyval.tree) = makeNode( OpK, Boolean, (yyvsp[0].tok)->lineno, NULL, (yyvsp[0].tok) );
+        }
+#line 1982 "cminus.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 81:
+#line 489 "cminus.y" /* yacc.c:1646  */
+    { 
+            (yyval.tree) = makeNode( OpK, Boolean, (yyvsp[0].tok)->lineno, NULL, (yyvsp[0].tok) );
+        }
+#line 1990 "cminus.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 82:
+#line 496 "cminus.y" /* yacc.c:1646  */
+    { 
+            (yyval.tree) = (yyvsp[-1].tree);
+            addChildren( (yyval.tree), 2, (yyvsp[-2].tree), (yyvsp[0].tree) );
+        }
+#line 1999 "cminus.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 83:
+#line 501 "cminus.y" /* yacc.c:1646  */
     { (yyval.tree) = (yyvsp[0].tree); }
-#line 1980 "cminus.tab.c" /* yacc.c:1646  */
+#line 2005 "cminus.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 84:
+#line 506 "cminus.y" /* yacc.c:1646  */
+    { 
+            (yyval.tree) = makeNode( OpK, Integer, (yyvsp[0].tok)->lineno, NULL, (yyvsp[0].tok) );
+        }
+#line 2013 "cminus.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 85:
+#line 510 "cminus.y" /* yacc.c:1646  */
+    { 
+            (yyval.tree) = makeNode( OpK, Integer, (yyvsp[0].tok)->lineno, NULL, (yyvsp[0].tok) );
+        }
+#line 2021 "cminus.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 86:
+#line 517 "cminus.y" /* yacc.c:1646  */
+    { 
+            (yyval.tree) = (yyvsp[-1].tree);
+            addChildren( (yyval.tree), 2, (yyvsp[-2].tree), (yyvsp[0].tree) );
+        }
+#line 2030 "cminus.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 87:
+#line 522 "cminus.y" /* yacc.c:1646  */
+    { (yyval.tree) = (yyvsp[0].tree); }
+#line 2036 "cminus.tab.c" /* yacc.c:1646  */
     break;
 
   case 88:
-#line 482 "cminus.y" /* yacc.c:1646  */
-    { (yyval.tree) = (yyvsp[0].tree); }
-#line 1986 "cminus.tab.c" /* yacc.c:1646  */
+#line 527 "cminus.y" /* yacc.c:1646  */
+    { 
+            (yyval.tree) = makeNode( OpK, Integer, (yyvsp[0].tok)->lineno, NULL, (yyvsp[0].tok) );
+        }
+#line 2044 "cminus.tab.c" /* yacc.c:1646  */
     break;
 
   case 89:
-#line 484 "cminus.y" /* yacc.c:1646  */
-    { (yyval.tree) = (yyvsp[0].tree); }
-#line 1992 "cminus.tab.c" /* yacc.c:1646  */
+#line 531 "cminus.y" /* yacc.c:1646  */
+    { 
+            (yyval.tree) = makeNode( OpK, Integer, (yyvsp[0].tok)->lineno, NULL, (yyvsp[0].tok) );
+        }
+#line 2052 "cminus.tab.c" /* yacc.c:1646  */
     break;
 
   case 90:
-#line 486 "cminus.y" /* yacc.c:1646  */
-    { (yyval.tree) = (yyvsp[0].tree); }
-#line 1998 "cminus.tab.c" /* yacc.c:1646  */
+#line 535 "cminus.y" /* yacc.c:1646  */
+    { 
+            (yyval.tree) = makeNode( OpK, Integer, (yyvsp[0].tok)->lineno, NULL, (yyvsp[0].tok) );
+        }
+#line 2060 "cminus.tab.c" /* yacc.c:1646  */
     break;
 
   case 91:
-#line 491 "cminus.y" /* yacc.c:1646  */
+#line 542 "cminus.y" /* yacc.c:1646  */
     { 
             (yyval.tree) = (yyvsp[-1].tree);
             addChildren( (yyval.tree), 1, (yyvsp[0].tree) );
         }
-#line 2007 "cminus.tab.c" /* yacc.c:1646  */
+#line 2069 "cminus.tab.c" /* yacc.c:1646  */
     break;
 
   case 92:
-#line 496 "cminus.y" /* yacc.c:1646  */
+#line 547 "cminus.y" /* yacc.c:1646  */
     { (yyval.tree) = (yyvsp[0].tree); }
-#line 2013 "cminus.tab.c" /* yacc.c:1646  */
+#line 2075 "cminus.tab.c" /* yacc.c:1646  */
     break;
 
   case 93:
-#line 501 "cminus.y" /* yacc.c:1646  */
-    { (yyval.tree) = (yyvsp[0].tree); }
-#line 2019 "cminus.tab.c" /* yacc.c:1646  */
+#line 552 "cminus.y" /* yacc.c:1646  */
+    { 
+            (yyval.tree) = makeNode( OpK, Integer, (yyvsp[0].tok)->lineno, NULL, (yyvsp[0].tok) );
+        }
+#line 2083 "cminus.tab.c" /* yacc.c:1646  */
     break;
 
   case 94:
-#line 503 "cminus.y" /* yacc.c:1646  */
-    { (yyval.tree) = (yyvsp[0].tree); }
-#line 2025 "cminus.tab.c" /* yacc.c:1646  */
+#line 556 "cminus.y" /* yacc.c:1646  */
+    { 
+            (yyval.tree) = makeNode( OpK, Integer, (yyvsp[0].tok)->lineno, NULL, (yyvsp[0].tok) );
+        }
+#line 2091 "cminus.tab.c" /* yacc.c:1646  */
     break;
 
   case 95:
-#line 505 "cminus.y" /* yacc.c:1646  */
-    { (yyval.tree) = (yyvsp[0].tree); }
-#line 2031 "cminus.tab.c" /* yacc.c:1646  */
+#line 560 "cminus.y" /* yacc.c:1646  */
+    { 
+            (yyval.tree) = makeNode( OpK, Integer, (yyvsp[0].tok)->lineno, NULL, (yyvsp[0].tok) );
+        }
+#line 2099 "cminus.tab.c" /* yacc.c:1646  */
     break;
 
   case 96:
-#line 510 "cminus.y" /* yacc.c:1646  */
+#line 567 "cminus.y" /* yacc.c:1646  */
     { (yyval.tree) = (yyvsp[0].tree); }
-#line 2037 "cminus.tab.c" /* yacc.c:1646  */
+#line 2105 "cminus.tab.c" /* yacc.c:1646  */
     break;
 
   case 97:
-#line 512 "cminus.y" /* yacc.c:1646  */
+#line 569 "cminus.y" /* yacc.c:1646  */
     { (yyval.tree) = (yyvsp[0].tree); }
-#line 2043 "cminus.tab.c" /* yacc.c:1646  */
+#line 2111 "cminus.tab.c" /* yacc.c:1646  */
     break;
 
   case 98:
-#line 517 "cminus.y" /* yacc.c:1646  */
-    { (yyval.tree) = (yyvsp[0].tree); }
-#line 2049 "cminus.tab.c" /* yacc.c:1646  */
+#line 574 "cminus.y" /* yacc.c:1646  */
+    { 
+            (yyval.tree) = makeNode( IdK, Void, (yyvsp[0].tok)->lineno, (yyvsp[0].tok)->svalue, (yyvsp[0].tok) );
+        }
+#line 2119 "cminus.tab.c" /* yacc.c:1646  */
     break;
 
   case 99:
-#line 519 "cminus.y" /* yacc.c:1646  */
+#line 578 "cminus.y" /* yacc.c:1646  */
     {
-            (yyval.tree) = (yyvsp[-3].tree);
+            (yyval.tree) = makeNode( IdK, Void, (yyvsp[-3].tok)->lineno, (yyvsp[-3].tok)->svalue, (yyvsp[-3].tok) );
             (yyval.tree)->isArray = true; 
             addChildren( (yyval.tree), 1, (yyvsp[-1].tree) );
         }
-#line 2059 "cminus.tab.c" /* yacc.c:1646  */
+#line 2129 "cminus.tab.c" /* yacc.c:1646  */
     break;
 
   case 100:
-#line 528 "cminus.y" /* yacc.c:1646  */
+#line 587 "cminus.y" /* yacc.c:1646  */
     { (yyval.tree) = (yyvsp[-1].tree); }
-#line 2065 "cminus.tab.c" /* yacc.c:1646  */
+#line 2135 "cminus.tab.c" /* yacc.c:1646  */
     break;
 
   case 101:
-#line 530 "cminus.y" /* yacc.c:1646  */
+#line 589 "cminus.y" /* yacc.c:1646  */
     { (yyval.tree) = (yyvsp[0].tree); }
-#line 2071 "cminus.tab.c" /* yacc.c:1646  */
+#line 2141 "cminus.tab.c" /* yacc.c:1646  */
     break;
 
   case 102:
-#line 532 "cminus.y" /* yacc.c:1646  */
+#line 591 "cminus.y" /* yacc.c:1646  */
     { (yyval.tree) = (yyvsp[0].tree); }
-#line 2077 "cminus.tab.c" /* yacc.c:1646  */
+#line 2147 "cminus.tab.c" /* yacc.c:1646  */
     break;
 
   case 103:
-#line 537 "cminus.y" /* yacc.c:1646  */
+#line 596 "cminus.y" /* yacc.c:1646  */
     { 
-			(yyval.tree) = makeNode( ExpK, CallK, (yyvsp[-3].tree)->nodetype, (yyvsp[-3].tree)->lineno, (yyvsp[-3].tree)->str, (yyvsp[-3].tree)->token );
+            (yyval.tree) = makeParent( IdK, (yyvsp[-1].tree)->nodetype, (yyvsp[-3].tok)->lineno, (yyvsp[-3].tok)->svalue );
+            (yyval.tree)->kind = CallK;
+			//$$ = makeNode( ExpK, CallK, $1->nodetype, $1->lineno, $1->str, $1->token );
 			addChildren((yyval.tree), 1, (yyvsp[-1].tree));
 		}
-#line 2086 "cminus.tab.c" /* yacc.c:1646  */
+#line 2158 "cminus.tab.c" /* yacc.c:1646  */
     break;
 
   case 104:
-#line 545 "cminus.y" /* yacc.c:1646  */
+#line 606 "cminus.y" /* yacc.c:1646  */
     { (yyval.tree) = (yyvsp[0].tree); }
-#line 2092 "cminus.tab.c" /* yacc.c:1646  */
+#line 2164 "cminus.tab.c" /* yacc.c:1646  */
     break;
 
   case 105:
-#line 547 "cminus.y" /* yacc.c:1646  */
+#line 608 "cminus.y" /* yacc.c:1646  */
     { (yyval.tree) = NULL; }
-#line 2098 "cminus.tab.c" /* yacc.c:1646  */
+#line 2170 "cminus.tab.c" /* yacc.c:1646  */
     break;
 
   case 106:
-#line 552 "cminus.y" /* yacc.c:1646  */
+#line 613 "cminus.y" /* yacc.c:1646  */
     { 
 		    (yyval.tree) = linkSiblings(2, (yyvsp[-2].tree), (yyvsp[0].tree)); 
 		}
-#line 2106 "cminus.tab.c" /* yacc.c:1646  */
+#line 2178 "cminus.tab.c" /* yacc.c:1646  */
     break;
 
   case 107:
-#line 556 "cminus.y" /* yacc.c:1646  */
+#line 617 "cminus.y" /* yacc.c:1646  */
     { (yyval.tree) = (yyvsp[0].tree); }
-#line 2112 "cminus.tab.c" /* yacc.c:1646  */
+#line 2184 "cminus.tab.c" /* yacc.c:1646  */
     break;
 
   case 108:
-#line 561 "cminus.y" /* yacc.c:1646  */
-    { (yyval.tree) = (yyvsp[0].tree); }
-#line 2118 "cminus.tab.c" /* yacc.c:1646  */
+#line 622 "cminus.y" /* yacc.c:1646  */
+    { 
+            (yyval.tree) = makeNode( ConstK, Integer, (yyvsp[0].tok)->lineno, NULL, (yyvsp[0].tok) );
+        }
+#line 2192 "cminus.tab.c" /* yacc.c:1646  */
     break;
 
   case 109:
-#line 563 "cminus.y" /* yacc.c:1646  */
-    { (yyval.tree) = (yyvsp[0].tree); }
-#line 2124 "cminus.tab.c" /* yacc.c:1646  */
+#line 626 "cminus.y" /* yacc.c:1646  */
+    { 
+            (yyval.tree) = makeNode( ConstK, Character, (yyvsp[0].tok)->lineno, NULL, (yyvsp[0].tok) );
+        }
+#line 2200 "cminus.tab.c" /* yacc.c:1646  */
     break;
 
   case 110:
-#line 565 "cminus.y" /* yacc.c:1646  */
-    { (yyval.tree) = (yyvsp[0].tree); }
-#line 2130 "cminus.tab.c" /* yacc.c:1646  */
+#line 630 "cminus.y" /* yacc.c:1646  */
+    { 
+            (yyval.tree) = makeNode( ConstK, Character, (yyvsp[0].tok)->lineno, (yyvsp[0].tok)->svalue, (yyvsp[0].tok) );
+        }
+#line 2208 "cminus.tab.c" /* yacc.c:1646  */
     break;
 
   case 111:
-#line 567 "cminus.y" /* yacc.c:1646  */
-    { (yyval.tree) = (yyvsp[0].tree); }
-#line 2136 "cminus.tab.c" /* yacc.c:1646  */
+#line 634 "cminus.y" /* yacc.c:1646  */
+    { 
+            (yyval.tree) = makeNode( ConstK, Boolean, (yyvsp[0].tok)->lineno, NULL, (yyvsp[0].tok) );
+        }
+#line 2216 "cminus.tab.c" /* yacc.c:1646  */
     break;
 
 
-#line 2140 "cminus.tab.c" /* yacc.c:1646  */
+#line 2220 "cminus.tab.c" /* yacc.c:1646  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -2364,7 +2444,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 571 "cminus.y" /* yacc.c:1906  */
+#line 640 "cminus.y" /* yacc.c:1906  */
 
 
 int main( int argc, char* argv[] ) {

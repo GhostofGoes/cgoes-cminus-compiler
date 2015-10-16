@@ -37,7 +37,7 @@ typedef struct treeNode
 	TokenData * token;
 	int lineno;                            	// line number relevant to this node
 	//int bval;								// The value used by Bison
-	char * str;
+	char * svalue;
 	
 	// connectivity in the tree
 	int numChildren; 						// Number of children for a given node

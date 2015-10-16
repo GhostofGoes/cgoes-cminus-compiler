@@ -34,22 +34,22 @@ void printAbstractTree(TreeNode * tree, int indent_count) {
 		switch(tree->kind) {
 			case OpK:
 				outstr.append("Op: ");
-				outstr.push_back(tree->token.cvalue);
+				outstr.push_back(tree->token->cvalue);
 				break;
 
 			case ConstK:
 				outstr.append("Const: ");
-				outstr.append(to_string(tree->token.num));
+				outstr.append(to_string(tree->token->ivalue));
 				break;
 
 			case IdK:
 				outstr.append("Id: ");
-				outstr.append(tree->str);
+				outstr.append(tree->svalue);
 				break;
 
 			case AssignK:
 				outstr.append("Assign: ");
-				outstr.push_back(tree->token.cvalue);
+				outstr.push_back(tree->token->cvalue);
 				break;
 
 			case IfK:
@@ -82,7 +82,7 @@ void printAbstractTree(TreeNode * tree, int indent_count) {
 					{ outstr.append("Var "); }
 				else
 					{ outstr.append("Param "); }
-				outstr.append(tree->str);
+				outstr.append(tree->svalue);
 				if(tree->isArray)
 					{ outstr.append(" is array"); }
 				outstr.append(" of type ");
@@ -91,14 +91,14 @@ void printAbstractTree(TreeNode * tree, int indent_count) {
 
 			case FunK:
 				outstr.append("Func ");
-				outstr.append(tree->str);
+				outstr.append(tree->svalue);
 				outstr.append(" returns type ");
 				outstr.append(typeToStr(tree->nodetype));
 				break;
 
 			case CallK:
 				outstr.append("Call: ");
-				outstr.append(tree->str);
+				outstr.append(tree->svalue);
 				break;
 
 			default:
@@ -146,42 +146,22 @@ void generateCode() {
 }
 
 // Creates a new node for the syntax tree
-// Args:
-// Return: (TreeNode) The created node
-/*
-TreeNode * makeNode( NodeKind nk, Kind k, Type t, int ln, char * s, TokenData tok ) {
-	
-	// Allocate a new node
-	TreeNode * tempNode = allocNode();
-		
-	tempNode->token = tok;
-	tempNode->lineno = ln;
-	tempNode->nodekind = nk; 
-	tempNode->kind = k; 
-	tempNode->nodetype = t; 
-	tempNode->str = s;
-
-	return tempNode;
-}
-*/
-
 TreeNode * makeNode( Kind k, Type t, int line, char * svalue, TokenData * token ) {
 	TreeNode * tempNode = allocNode();
 	tempNode->kind = k;
 	tempNode->nodetype = t;
 	tempNode->lineno = line;
-	tempNode->str = strdup(svalue);
+	tempNode->svalue = strdup(svalue);
 	tempNode->token = token;
 	return tempNode;
 }
-
 
 TreeNode * makeParent( Kind k, Type t, int l, char * svalue ) {
 	TreeNode * tempNode = allocNode();
 	tempNode->lineno = l;
 	tempNode->kind = k;
 	tempNode->nodetype = t;
-	tempNode->str = strdup(svalue);
+	tempNode->svalue = strdup(svalue);
 	return tempNode;
 }
 
@@ -243,14 +223,13 @@ TreeNode * linkSiblings( int numSiblings, TreeNode * init, ... ) {
 }
 
 // Allocates and zeros a new TreeNode
-// Return: (TreeNode) The allocated node
 TreeNode * allocNode() {
 	TreeNode * tempNode = (TreeNode *)calloc(1, sizeof(TreeNode));
 	//TreeNode *tempNode = new TreeNode;
 	tempNode->token = NULL;
 	tempNode->lineno = 0;
-	tempNode->bval = 0;
-	tempNode->str = NULL;
+	//tempNode->bval = 0;
+	tempNode->svalue = NULL;
 	tempNode->nodetype = Void;
 	tempNode->numChildren = 0;
 	tempNode->sibling = NULL;
@@ -276,4 +255,45 @@ std::string typeToStr( Type t ) {
 			break;
 	}
 	return ("");
+}
+
+void freeTree( TreeNode * tree ) {
+
+	TreeNode * temp;
+
+	while( tree != NULL ) {
+
+		temp = tree;
+
+		if(tree->token != NULL) {
+			freeToken(tree->token);
+		}
+
+		if(tree->svalue != NULL) {
+			free(tree->svalue);
+		}
+		// Check if there are children
+		if( tree->numChildren > 0 ) {
+			for ( int i = 0; i < tree->numChildren; i++ ) {
+				freeTree(child[i]);
+			}
+		}
+
+		tree = tree->sibling;
+		free(temp);
+	} // end while
+
+}
+
+void freeToken( TokenData * token ) {
+
+	if(token->svalue != NULL) {
+		free(token->svalue);
+	}
+
+	if(token->input != NULL) {
+		free(token->input);
+	}
+
+	free(token);
 }
