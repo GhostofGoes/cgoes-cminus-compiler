@@ -44,7 +44,7 @@ void printAbstractTree(TreeNode * tree, int indent_count) {
 
 			case IdK:
 				outstr.append("Id: ");
-				outstr.append(tree->token->svalue ? tree->token->svalue : "");
+				outstr.append(tree->svalue ? tree->svalue : "");
 				break;
 
 			case AssignK:

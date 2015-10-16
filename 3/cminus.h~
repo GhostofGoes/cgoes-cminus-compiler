@@ -46,10 +46,6 @@ void addChildren( TreeNode * parent, int numChildren,...);
 // Return: (TreeNode) The first node passed
 TreeNode * linkSiblings( int numSiblings, TreeNode * init, ...);
 
-void applyTypeToSiblings( int numSiblings, TreeNode * init, ...);
-void appplyTypeToChildren( TreeNode * parent, int numChildren, ...);
-
-
 // Allocates and zeros a new TreeNode
 // Return: (TreeNode) The allocated node
 TreeNode * allocNode();

@@ -231,7 +231,8 @@ param-list:
 param-type-list:
 	type-specifier param-id-list 
 		{ 
-            $$ = makeParent( ParamK, $1->nodetype, $1->lineno, NULL );
+		/* need to apply nodetype to children i  think */
+            $$ = makeParent( ParamK, $1->nodetype, $1->lineno, $2->token->svalue );
             addChildren( $$, 1, $2 );
 		}
 	;

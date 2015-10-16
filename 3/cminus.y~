@@ -50,7 +50,7 @@ static void yyerror(const char *);
 	TreeNode * tree;
 }
 
-%token <tok> ERROR
+%token <tok> ERROR /* need to put a error incrementer/warning incrementer for ERROR */
 %token <tok> ID NUMCONST STRINGCONST CHARCONST  BOOLCONST
 %token <tok> ADDASS SUBASS MULASS DIVASS INC DEC LESSEQ GRTEQ EQ NOTEQ STATIC INT BOOL CHAR IF ELSE WHILE FOREACH IN RETURN BREAK
 %token <tok> SEMICOLON LPAREN RPAREN LBRACKET RBRACKET OR AND NOT ASSIGN PLUS MINUS MULTIPLY DIVIDE MODULUS QUESTION LTHAN GTHAN LBRACE RBRACE COMMA COLON 
@@ -100,7 +100,6 @@ static void yyerror(const char *);
 %type <tree> matched unmatched  
 %type <tree> matched-while-stmt  matched-foreach-stmt matched-selection-stmt
 %type <tree> unmatched-while-stmt unmatched-selection-stmt unmatched-foreach-stmt
-/* need to put a error incrementer/warning incrementer for ERROR */
 
 %%
 	
@@ -232,7 +231,7 @@ param-list:
 param-type-list:
 	type-specifier param-id-list 
 		{ 
-            $$ = makeParent( ParamK, $1->nodetype, $1->lineno, NULL );
+            $$ = makeParent( ParamK, $1->nodetype, $1->lineno, $2->token->svalue );
             addChildren( $$, 1, $2 );
 		}
 	;
