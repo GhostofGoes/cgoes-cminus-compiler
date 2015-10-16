@@ -229,6 +229,41 @@ TreeNode * linkSiblings( int numSiblings, TreeNode * init, ... ) {
 	
 }
 
+
+void applyTypeToSiblings( int numSiblings, TreeNode * init, ...) {
+	if( init == NULL ) // Check for dat null pointer
+	{
+		return;
+	}
+	va_list siblings;
+	va_start (siblings, init);
+	
+	TreeNode * temp;
+	temp = init;
+
+	for(int i = 1; i < numSiblings; i++) {
+		if(temp != NULL) {
+			temp->nodetype = va_arg(siblings, Type);
+		}
+		temp = temp->sibling;
+	}
+	va_end(siblings);	
+}
+
+void appplyTypeToChildren( TreeNode * parent, int numChildren, ...) {
+	if(numChildren > 0) {
+		va_list children; 
+		va_start (children, numChildren);
+		
+		for(int i = 0; i < numChildren; i++) {
+			parent->child[i]->nodetype = va_arg(children, Type);
+		}
+		
+		va_end(children);
+	}
+}
+
+
 // Allocates and zeros a new TreeNode
 TreeNode * allocNode() {
 	TreeNode * tempNode = (TreeNode *)calloc(1, sizeof(TreeNode));
