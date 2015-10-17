@@ -12,6 +12,7 @@ char * sbuf_ptr;
 char * literalbuffer;
 char ctemp;
 int clength = 0;
+bool monitor = false;
 
 %}
 
@@ -135,6 +136,7 @@ stringbody	([^"])|(\\[^n])
 			literalbuffer = (char *)calloc(5, sizeof(char));
 			strcat(literalbuffer, yytext);
 			clength = 0;
+            monitor = false;
 			BEGIN(ccond);
 		}
 <ccond>{
@@ -151,18 +153,38 @@ stringbody	([^"])|(\\[^n])
 		return error(yytext, yylineno, "Invalid input character");
 	}
 	\\n { 
+        if(monitor) {
+            return error(yytext, yylineno, "Invalid input character");
+        } else {
+            monitor = true;
+        }
 		ctemp = '\n';
 		strcat(literalbuffer, yytext);
 	}
-	\\0 { 
+	\\0 {
+        if(monitor) {
+            return error(yytext, yylineno, "Invalid input character");
+        } else {
+            monitor = true;
+        } 
 		ctemp = '\0'; 
 		strcat(literalbuffer, yytext);
 	}
-	\\.	{ 
+	\\.	{
+        if(monitor) {
+            return error(yytext, yylineno, "Invalid input character");
+        } else {
+            monitor = true;
+        } 
 		ctemp = yytext[1]; 
 		strcat(literalbuffer, yytext);
 	}
-	.	{ 
+	.	{
+        if(monitor) {
+            return error(yytext, yylineno, "Invalid input character");
+        } else {
+            monitor = true;
+        } 
 		ctemp = yytext[0]; 
 		strcat(literalbuffer, yytext);
 	}	

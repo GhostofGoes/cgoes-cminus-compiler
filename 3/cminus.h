@@ -28,12 +28,6 @@ void semanticAnalysis(TreeNode * tree);
 void generateCode();
 
 // Creates a new node for the syntax tree
-// Args:
-// Return: (TreeNode) The created node
-// TODO: add kind to toker() in the flex file
-// TODO: more flexible madeNode. maybe different named functions for different purposes?
-//TreeNode * makeNode( NodeKind nodekind, Kind kind, Type type, int linenumber, char * str, TokenData tok );
-
 TreeNode * makeNode( Kind k, Type t, int line, char * svalue, TokenData * token );
 TreeNode * makeParent( Kind k, Type t, int line, char * svalue );
 

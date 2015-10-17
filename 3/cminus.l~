@@ -12,6 +12,7 @@ char * sbuf_ptr;
 char * literalbuffer;
 char ctemp;
 int clength = 0;
+bool monitor = false;
 
 %}
 
@@ -139,6 +140,7 @@ stringbody	([^"])|(\\[^n])
 		}
 <ccond>{
 	\'	{
+        monitor = false;
 		strcat(literalbuffer, yytext);
 		BEGIN(INITIAL);
         cToker(CHARCONST, literalbuffer, yylineno, ctemp);
@@ -151,18 +153,38 @@ stringbody	([^"])|(\\[^n])
 		return error(yytext, yylineno, "Invalid input character");
 	}
 	\\n { 
+        if(monitor) {
+            return error(yytext, yylineno, "Invalid input character");
+        } else {
+            monitor = true;
+        }
 		ctemp = '\n';
 		strcat(literalbuffer, yytext);
 	}
-	\\0 { 
+	\\0 {
+        if(monitor) {
+            return error(yytext, yylineno, "Invalid input character");
+        } else {
+            monitor = true;
+        } 
 		ctemp = '\0'; 
 		strcat(literalbuffer, yytext);
 	}
-	\\.	{ 
+	\\.	{
+        if(monitor) {
+            return error(yytext, yylineno, "Invalid input character");
+        } else {
+            monitor = true;
+        } 
 		ctemp = yytext[1]; 
 		strcat(literalbuffer, yytext);
 	}
-	.	{ 
+	.	{
+        if(monitor) {
+            return error(yytext, yylineno, "Invalid input character");
+        } else {
+            monitor = true;
+        } 
 		ctemp = yytext[0]; 
 		strcat(literalbuffer, yytext);
 	}	

@@ -128,9 +128,11 @@ declaration:
 var-declaration:
 	type-specifier var-decl-list SEMICOLON
         { 
-            $$ = makeParent( VarK, $1->nodetype, $1->lineno, $2->svalue );
-            addChildren($$, 1, $2);
-            applyTypeToSiblings($2, $1->nodetype);
+            //$$ = makeParent( VarK, $1->nodetype, $1->lineno, $2->svalue );
+            $$ = $2;
+            applyTypeToSiblings($$, $1->nodetype);
+            //addChildren($$, 1, $2);
+
         }
 	;
 
@@ -138,8 +140,10 @@ var-declaration:
 scoped-var-declaration:
 	scoped-type-specifier var-decl-list SEMICOLON
         { 
-            $$ = makeParent( VarK, $1->nodetype, $1->lineno, NULL);
-            //$$->isScoped = true; 
+            //$$ = makeParent( VarK, $1->nodetype, $1->lineno, NULL);
+            $$ = $2;
+            applyTypeToSiblings($$, $1->nodetype);
+            $$->isScoped = true; 
         }
 	;
 
@@ -155,39 +159,42 @@ var-decl-list:
 var-decl-initialize:
 	var-decl-id
 		{ 
-            $$ = makeParent( VarK, $1->nodetype, $1->lineno, $1->svalue );
+            $$ = $1;
+            //$$->nodekind = VarK;
         }
 	| var-decl-id COLON simple-expression
 		{
-            $$ = makeParent( VarK, $3->nodetype, $1->lineno, $1->svalue );
+            $$ = $1;
+            //$$->nodekind = VarK;
+            addChildren( $$, 1, $3 );
         }
 	;
 
 var-decl-id:
 	ID
 		{ 
-            $$ = makeNode( IdK, Void, $1->lineno, $1->svalue, $1 );
+            $$ = makeNode( VarK, Void, $1->lineno, $1->svalue, $1 );
         }
 	| ID LBRACKET NUMCONST RBRACKET
 		{ 
-            $$ = makeParent( IdK, Void, $1->lineno, $1->svalue );
+            $$ = makeParent( VarK, Void, $1->lineno, $1->svalue );
             $$->isArray = true;
-            addChildren( $$, 1, $3 );
+            //addChildren( $$, 1, $3 );
         }
 	;
+
+/* TODO: issues with passing booleans up */
 
 scoped-type-specifier:
 	STATIC type-specifier
 		{ 
-            $$ = makeParent( TypeK, $2->nodetype, $2->lineno, NULL);
+            //$$ = makeParent( TypeK, $2->nodetype, $2->lineno, NULL);
+            $$ = $2;
             $$->isStatic = true; 
-            //$$->isScoped = true;
+            $$->isScoped = true;
            }
 	| type-specifier
-		{ $$ = $1;
-            //$$ = makeParent( TypeK, $1->nodetype, $1->lineno, NULL); 
-            
-        }
+		{ $$ = $1; }
 	;
 
 type-specifier:
@@ -237,9 +244,10 @@ param-list:
 param-type-list:
 	type-specifier param-id-list 
 		{ 
-		/* need to apply nodetype to children i  think */
-            $$ = makeParent( ParamK, $1->nodetype, $1->lineno, $2->token->svalue );
-            addChildren( $$, 1, $2 );
+            //$$ = makeParent( ParamK, $1->nodetype, $1->lineno, $2->token->svalue );
+            $$ = $2;
+            applyTypeToSiblings($2, $1->nodetype);
+            //addChildren( $$, 1, $2 );
 		}
 	;
 	
@@ -271,18 +279,28 @@ statement:
 
 matched:
 	expression-stmt 
+		{ $$ = $1; }
 	| compound-stmt 
-	| matched-selection-stmt 
-	| matched-while-stmt 
+		{ $$ = $1; }
+	| matched-selection-stmt
+		{ $$ = $1; } 
+	| matched-while-stmt
+		{ $$ = $1; } 
 	| matched-foreach-stmt
+		{ $$ = $1; }
 	| return-stmt 
+		{ $$ = $1; }
 	| break-stmt 
+		{ $$ = $1; }
 	;
 
 unmatched:
 	unmatched-selection-stmt
+		{ $$ = $1; }
 	| unmatched-while-stmt
+		{ $$ = $1; }
 	| unmatched-foreach-stmt
+		{ $$ = $1; }
 	;
 	
 matched-selection-stmt:
@@ -340,7 +358,11 @@ unmatched-foreach-stmt:
 	
 compound-stmt:
 	LBRACE local-declarations statement-list RBRACE
-        { $$ = linkSiblings(2, $2, $3); }
+        { 
+            //$$ = linkSiblings(2, $2, $3); 
+            $$ = makeParent( CompoundK, Void, $1->lineno, NULL );
+            addChildren( $$, 2, $2, $3 );
+        }
 	;
 
 local-declarations:

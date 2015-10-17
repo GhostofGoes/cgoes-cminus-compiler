@@ -102,7 +102,7 @@ void printAbstractTree(TreeNode * tree, int indent_count) {
 				break;
 
 			default:
-				// TODO: error?
+				outstr.append("\nWe shouldn't get here\n");
 				break;
 
 		} // end switch
@@ -111,12 +111,13 @@ void printAbstractTree(TreeNode * tree, int indent_count) {
 		// Print the line number + newline
 		//printf( " [line: %d]\n", tree->lineno );
 		
+		// TODO: convert printf to outstr
 		// Check if there are children
 		if( tree->numChildren > 0 ) {
 			// "tab" space for children
-			printf( "   ");
 			
 			for ( int i = 0; i < tree->numChildren; i++ ) {
+				printf( "|   ");
 				// Two spaces after child num
 				printf( "Child: %d  ", i);
 				printAbstractTree(tree->child[i], indent_count + 1);

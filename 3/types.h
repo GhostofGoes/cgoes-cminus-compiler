@@ -30,13 +30,10 @@ typedef enum {Void, Integer, Boolean, Character} Type;
 
 
 /*** TREENODE ***/
-// TODO: KEEP TRACK OF SCOPE!
-// TreeNode
 typedef struct treeNode
 {
 	TokenData * token;
 	int lineno;                            	// line number relevant to this node
-	//int bval;								// The value used by Bison
 	char * svalue;
 	
 	// connectivity in the tree
@@ -51,6 +48,7 @@ typedef struct treeNode
 	//bool typespecifier;
 	bool isStatic;                         	// is statically allocated?
 	bool isArray;                          	// is this an array
+	bool isScoped;
 
 	// even more semantic stuff will go here in later assignments.
 	// Like, say, scope!
