@@ -130,6 +130,7 @@ var-declaration:
         { 
             $$ = makeParent( VarK, $1->nodetype, $1->lineno, $2->svalue );
             addChildren($$, 1, $2);
+            applyTypeToSiblings($2, $1->nodetype);
         }
 	;
 
@@ -153,10 +154,12 @@ var-decl-list:
 
 var-decl-initialize:
 	var-decl-id
-		{ $$ = $1; }
+		{ 
+            $$ = makeParent( VarK, $1->nodetype, $1->lineno, $1->svalue );
+        }
 	| var-decl-id COLON simple-expression
 		{
-            $$ = makeParent( IdK, $3->nodetype, $1->lineno, $1->svalue );
+            $$ = makeParent( VarK, $3->nodetype, $1->lineno, $1->svalue );
         }
 	;
 
@@ -181,7 +184,10 @@ scoped-type-specifier:
             //$$->isScoped = true;
            }
 	| type-specifier
-		{ $$ = makeParent( TypeK, $1->nodetype, $1->lineno, NULL); }
+		{ $$ = $1;
+            //$$ = makeParent( TypeK, $1->nodetype, $1->lineno, NULL); 
+            
+        }
 	;
 
 type-specifier:
@@ -247,11 +253,11 @@ param-id-list:
 param-id:
 	ID 		
 		{ 
-            $$ = makeNode( IdK, Void, $1->lineno, $1->svalue, $1 );
+            $$ = makeNode( ParamK, Void, $1->lineno, $1->svalue, $1 );
         }
 	| ID LBRACKET RBRACKET
 		{ 
-            $$ = makeNode( IdK, Void, $1->lineno, $1->svalue, $1 );
+            $$ = makeNode( ParamK, Void, $1->lineno, $1->svalue, $1 );
             $$->isArray = true; 
         }
 	;

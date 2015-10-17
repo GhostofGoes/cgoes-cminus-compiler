@@ -151,6 +151,7 @@ TreeNode * makeNode( Kind k, Type t, int line, char * svalue, TokenData * token 
 	tempNode->kind = k;
 	tempNode->nodetype = t;
 	tempNode->lineno = line;
+	tempNode->svalue = svalue;
 	if( svalue != NULL ) {
 		tempNode->svalue = strdup(svalue);
 	}
@@ -166,6 +167,7 @@ TreeNode * makeParent( Kind k, Type t, int l, char * svalue ) {
 	tempNode->lineno = l;
 	tempNode->kind = k;
 	tempNode->nodetype = t;
+	tempNode->svalue = svalue;
 	if(svalue != NULL) {
 		tempNode->svalue = strdup(svalue);
 	}
@@ -173,7 +175,6 @@ TreeNode * makeParent( Kind k, Type t, int l, char * svalue ) {
 }
 
 // Adds children to an existing syntax tree node
-// Args: 
 void addChildren( TreeNode * parent, int numChildren,...) {
 	
 	// Attach children
@@ -201,10 +202,8 @@ TreeNode * linkSiblings( int numSiblings, TreeNode * init, ... ) {
 	}
 
 	va_list siblings;
-	//va_start (siblings, numSiblings);
 	va_start (siblings, init);
 	
-	//TreeNode * prev = va_arg(siblings, TreeNode*);
 	TreeNode * prev;
 	TreeNode * next;
 
@@ -230,36 +229,20 @@ TreeNode * linkSiblings( int numSiblings, TreeNode * init, ... ) {
 }
 
 
-void applyTypeToSiblings( int numSiblings, TreeNode * init, ...) {
-	if( init == NULL ) // Check for dat null pointer
-	{
-		return;
-	}
-	va_list siblings;
-	va_start (siblings, init);
-	
-	TreeNode * temp;
-	temp = init;
+void applyTypeToSiblings( TreeNode * init, Type t ) {
+	TreeNode * temp = init;
 
-	for(int i = 1; i < numSiblings; i++) {
-		if(temp != NULL) {
-			temp->nodetype = va_arg(siblings, Type);
-		}
+	while( temp != NULL) {
+		temp->nodetype = t;
 		temp = temp->sibling;
 	}
-	va_end(siblings);	
 }
 
-void appplyTypeToChildren( TreeNode * parent, int numChildren, ...) {
-	if(numChildren > 0) {
-		va_list children; 
-		va_start (children, numChildren);
-		
-		for(int i = 0; i < numChildren; i++) {
-			parent->child[i]->nodetype = va_arg(children, Type);
+void appplyTypeToChildren( TreeNode * parent, Type t ) {
+	if(parent != NULL && parent->numChildren > 0) {
+		for(int i = 0; i < parent->numChildren; i++) {
+			parent->child[i]->nodetype = t;
 		}
-		
-		va_end(children);
 	}
 }
 
@@ -299,35 +282,34 @@ std::string typeToStr( Type t ) {
 }
 
 void freeTree( TreeNode * tree ) {
-
+	TreeNode * prev;
 	TreeNode * temp;
 
-	while( tree != NULL ) {
+	prev = tree;
 
-		temp = tree;
-
-		if(tree->token != NULL) {
-			freeToken(tree->token);
+	while( prev != NULL ) {
+		temp = prev;
+		if(prev->token != NULL) {
+			freeToken(prev->token);
 		}
 
-		if(tree->svalue != NULL) {
-			free(tree->svalue);
+		if(prev->svalue != NULL) {
+			free(prev->svalue);
 		}
 		// Check if there are children
-		if( tree->numChildren > 0 ) {
-			for ( int i = 0; i < tree->numChildren; i++ ) {
-				freeTree(tree->child[i]);
+		if( prev->numChildren > 0 ) {
+			for ( int i = 0; i < prev->numChildren; i++ ) {
+				freeTree(prev->child[i]);
 			}
 		}
 
-		tree = tree->sibling;
+		prev = prev->sibling;
 		free(temp);
 	} // end while
 
 }
 
 void freeToken( TokenData * token ) {
-
 	if(token->svalue != NULL) {
 		free(token->svalue);
 	}

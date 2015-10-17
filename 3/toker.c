@@ -6,22 +6,20 @@
 
 
 int iToker(int bval, char * tok_text, int line_number, int value) {
-
 	yylval.tok = allocToken(bval, tok_text, line_number);
 	yylval.tok->ivalue = value;
 	return bval;
 }
 
-
 int cToker(int bval, char * tok_text, int line_number, char value) {
-
 	yylval.tok = allocToken(bval, tok_text, line_number);
 	yylval.tok->cvalue = value;
 	return bval;
 }
-int sToker(int bval,  char * tok_text, int line_number, char * value) {
 
+int sToker(int bval,  char * tok_text, int line_number, char * value) {
 	yylval.tok = allocToken(bval, tok_text, line_number);
+	yylval.tok->svalue = value;
 	if(value != NULL) {
 		yylval.tok->svalue = strdup(value);
 	}
