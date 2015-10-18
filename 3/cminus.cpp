@@ -109,6 +109,7 @@ void printAbstractTree(TreeNode * og, int indent_count) {
 		} // end switch
 		
 		cout << outstr << " [line: " << tree->lineno << "]" << endl;
+		outstr.clear();
 		// Print the line number + newline
 		//printf( " [line: %d]\n", tree->lineno );
 		
@@ -118,9 +119,10 @@ void printAbstractTree(TreeNode * og, int indent_count) {
 			// "tab" space for children
 			
 			for ( int i = 0; i < tree->numChildren; i++ ) {
-				printf( "|   ");
-				// Two spaces after child num
-				printf( "Child: %d  ", i);
+				cout << "|   Child: " << i << "  ";
+				cout.flush();
+				//printf( "|   ");
+				//printf( "Child: %d  ", i);
 				printAbstractTree(tree->child[i], indent_count + 1);
 			}			
 		}
@@ -153,7 +155,7 @@ TreeNode * makeNode( Kind k, Type t, int line, char * svalue, TokenData * token 
 	tempNode->kind = k;
 	tempNode->nodetype = t;
 	tempNode->lineno = line;
-	tempNode->svalue = svalue;
+	//tempNode->svalue = svalue;
 	if( svalue != NULL ) {
 		tempNode->svalue = strdup(svalue);
 	}
@@ -169,7 +171,7 @@ TreeNode * makeParent( Kind k, Type t, int l, char * svalue ) {
 	tempNode->lineno = l;
 	tempNode->kind = k;
 	tempNode->nodetype = t;
-	tempNode->svalue = svalue;
+	//tempNode->svalue = svalue;
 	if(svalue != NULL) {
 		tempNode->svalue = strdup(svalue);
 	}
@@ -178,6 +180,7 @@ TreeNode * makeParent( Kind k, Type t, int l, char * svalue ) {
 
 // Adds children to an existing syntax tree node
 // TODO: make sure it isn't overwriting children. Don't think this is the problem tho...
+/*
 void addChildren( TreeNode * parent, int numChildren,...) {
 	
 	// Attach children
@@ -193,10 +196,39 @@ void addChildren( TreeNode * parent, int numChildren,...) {
 		va_end(children); // End var list
 	}
 }
+*/
+
+void addChildren( TreeNode * parent, int numChildren, TreeNode * child1 ) {
+	if(parent->numChildren != 0) {
+		cout << "Parent has more than 0 children, it has " << parent->numChildren << " children." << endl;
+	}
+	parent->numChildren = numChildren;
+	parent->child[0] = child1;
+}
+
+void addChildren( TreeNode * parent, int numChildren, TreeNode * child1, TreeNode * child2 ) {
+	if(parent->numChildren != 0) {
+		cout << "Parent has more than 0 children, it has " << parent->numChildren << " children." << endl;
+	}
+	parent->numChildren = numChildren;
+	parent->child[0] = child1;
+	parent->child[1] = child2;
+}
+
+void addChildren( TreeNode * parent, int numChildren, TreeNode * child1, TreeNode * child2, TreeNode * child3 ) {
+	if(parent->numChildren != 0) {
+		cout << "Parent has more than 0 children, it has " << parent->numChildren << " children." << endl;
+	}
+	parent->numChildren = numChildren;
+	parent->child[0] = child1;
+	parent->child[1] = child2;
+	parent->child[2] = child3;
+}
 
 // Links siblings to each other, starting with the first.
 // Args: (int) number of siblings, (TreeNode) siblings to link
 // Return: (TreeNode) The first node passed
+/*
 TreeNode * linkSiblings( int numSiblings, TreeNode * init, ... ) {
 	
 	if( init == NULL ) // Check for dat null pointer
@@ -224,11 +256,27 @@ TreeNode * linkSiblings( int numSiblings, TreeNode * init, ... ) {
 		}
 		prev = next;
 	}
-	prev->sibling = NULL;
+	//prev->sibling = NULL;
 	va_end(siblings);
 	
 	return init;
 	
+}
+*/
+
+TreeNode * linkSiblings( TreeNode * sib1, TreeNode * sib2 ) {
+
+	if(sib1 != NULL && sib2 != NULL ) {
+		TreeNode * temp = sib1;
+
+		while( temp->sibling != NULL ) {
+			temp = temp->sibling;
+		}
+
+		temp->sibling = sib2;
+	}
+
+	return sib1;
 }
 
 

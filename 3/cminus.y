@@ -113,7 +113,7 @@ program:
 
 declaration-list: 
 	declaration-list declaration
-		{ $$ = linkSiblings(2, $1, $2); }
+		{ $$ = linkSiblings($1, $2); }
 	| declaration
 		{ $$ = $1; }
 	;
@@ -151,7 +151,7 @@ scoped-var-declaration:
 var-decl-list:
 	var-decl-list COMMA var-decl-initialize
 		{
-            $$ = linkSiblings(2, $1, $3);
+            $$ = linkSiblings($1, $3);
         }
 	| var-decl-initialize 
 		{ $$ = $1; }
@@ -236,7 +236,7 @@ params:
 param-list:
 	param-list SEMICOLON param-type-list 
 		{  
-			$$ = linkSiblings(2, $1, $3);
+			$$ = linkSiblings($1, $3);
 		}
 	| param-type-list
 		{ $$ = $1; }
@@ -255,7 +255,7 @@ param-type-list:
 param-id-list:
 	param-id-list COMMA param-id 
 		{ 
-            $$ = linkSiblings(2, $1, $3);
+            $$ = linkSiblings($1, $3);
         }
 	| param-id 
 		{ $$ = $1; }
@@ -369,14 +369,14 @@ compound-stmt:
 
 local-declarations:
 	local-declarations scoped-var-declaration 
-		{ $$ = linkSiblings(2, $1, $2); }
+		{ $$ = linkSiblings($1, $2); }
 	| /* empty */ 
 		{ $$ = NULL; }
 	;
 	
 statement-list:
 	statement-list statement
-        { $$ = linkSiblings(2, $1, $2); }
+        { $$ = linkSiblings($1, $2); }
 	| /* empty */
 		{ $$ = NULL; }
 	;
@@ -633,7 +633,7 @@ args:
 arg-list:
 	arg-list COMMA expression 
 		{ 
-		    $$ = linkSiblings(2, $1, $3); 
+		    $$ = linkSiblings($1, $3); 
 		}
 	| expression 
 		{ $$ = $1; }	

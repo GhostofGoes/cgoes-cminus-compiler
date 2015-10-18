@@ -47,7 +47,7 @@ wallace(int wrong, trousers)
 }       
 
 
-bool penguin(char Feathers, McGraw[]; bool moon, cheese; int launch) 
+bool penguin(char Feathers, McGraw[]; bool moon, cheese; int lol, launch, fagh, fag1, fag2, fag3) 
 {
     static char tottington:'x';
     char  Wensleydale[17]:"cheeeeeese";

@@ -1455,7 +1455,7 @@ yyreduce:
 
   case 3:
 #line 116 "cminus.y" /* yacc.c:1646  */
-    { (yyval.tree) = linkSiblings(2, (yyvsp[-1].tree), (yyvsp[0].tree)); }
+    { (yyval.tree) = linkSiblings((yyvsp[-1].tree), (yyvsp[0].tree)); }
 #line 1460 "cminus.tab.c" /* yacc.c:1646  */
     break;
 
@@ -1504,7 +1504,7 @@ yyreduce:
   case 9:
 #line 153 "cminus.y" /* yacc.c:1646  */
     {
-            (yyval.tree) = linkSiblings(2, (yyvsp[-2].tree), (yyvsp[0].tree));
+            (yyval.tree) = linkSiblings((yyvsp[-2].tree), (yyvsp[0].tree));
         }
 #line 1510 "cminus.tab.c" /* yacc.c:1646  */
     break;
@@ -1626,7 +1626,7 @@ yyreduce:
   case 24:
 #line 238 "cminus.y" /* yacc.c:1646  */
     {  
-			(yyval.tree) = linkSiblings(2, (yyvsp[-2].tree), (yyvsp[0].tree));
+			(yyval.tree) = linkSiblings((yyvsp[-2].tree), (yyvsp[0].tree));
 		}
 #line 1632 "cminus.tab.c" /* yacc.c:1646  */
     break;
@@ -1651,7 +1651,7 @@ yyreduce:
   case 27:
 #line 257 "cminus.y" /* yacc.c:1646  */
     { 
-            (yyval.tree) = linkSiblings(2, (yyvsp[-2].tree), (yyvsp[0].tree));
+            (yyval.tree) = linkSiblings((yyvsp[-2].tree), (yyvsp[0].tree));
         }
 #line 1657 "cminus.tab.c" /* yacc.c:1646  */
     break;
@@ -1825,7 +1825,7 @@ yyreduce:
 
   case 51:
 #line 372 "cminus.y" /* yacc.c:1646  */
-    { (yyval.tree) = linkSiblings(2, (yyvsp[-1].tree), (yyvsp[0].tree)); }
+    { (yyval.tree) = linkSiblings((yyvsp[-1].tree), (yyvsp[0].tree)); }
 #line 1830 "cminus.tab.c" /* yacc.c:1646  */
     break;
 
@@ -1837,7 +1837,7 @@ yyreduce:
 
   case 53:
 #line 379 "cminus.y" /* yacc.c:1646  */
-    { (yyval.tree) = linkSiblings(2, (yyvsp[-1].tree), (yyvsp[0].tree)); }
+    { (yyval.tree) = linkSiblings((yyvsp[-1].tree), (yyvsp[0].tree)); }
 #line 1842 "cminus.tab.c" /* yacc.c:1646  */
     break;
 
@@ -2243,7 +2243,7 @@ yyreduce:
   case 106:
 #line 635 "cminus.y" /* yacc.c:1646  */
     { 
-		    (yyval.tree) = linkSiblings(2, (yyvsp[-2].tree), (yyvsp[0].tree)); 
+		    (yyval.tree) = linkSiblings((yyvsp[-2].tree), (yyvsp[0].tree)); 
 		}
 #line 2249 "cminus.tab.c" /* yacc.c:1646  */
     break;

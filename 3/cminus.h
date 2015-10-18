@@ -33,12 +33,17 @@ TreeNode * makeParent( Kind k, Type t, int line, char * svalue );
 
 // Adds children to an existing syntax tree node
 // Args: 
-void addChildren( TreeNode * parent, int numChildren,...);
+//void addChildren( TreeNode * parent, int numChildren,...);
+
+void addChildren( TreeNode * parent, int numChildren, TreeNode * child1 );
+void addChildren( TreeNode * parent, int numChildren, TreeNode * child1, TreeNode * child2 );
+void addChildren( TreeNode * parent, int numChildren, TreeNode * child1, TreeNode * child2, TreeNode * child3 );
 
 // Links siblings to each other, starting with the first.
 // Args: (int) number of siblings, (TreeNode) siblings to link
 // Return: (TreeNode) The first node passed
-TreeNode * linkSiblings( int numSiblings, TreeNode * init, ...);
+//TreeNode * linkSiblings( int numSiblings, TreeNode * init, ...);
+TreeNode * linkSiblings( TreeNode * sib1, TreeNode * sib2 );
 
 void applyTypeToSiblings( TreeNode * init, Type t );
 void appplyTypeToChildren( TreeNode * parent, Type t );
