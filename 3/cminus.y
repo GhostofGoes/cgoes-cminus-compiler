@@ -142,6 +142,7 @@ scoped-var-declaration:
         { 
             //$$ = makeParent( VarK, $1->nodetype, $1->lineno, NULL);
             $$ = $2;
+            if($1->isStatic) { $$->isStatic = true; }
             applyTypeToSiblings($$, $1->nodetype);
             $$->isScoped = true; 
         }
@@ -246,14 +247,16 @@ param-type-list:
 		{ 
             //$$ = makeParent( ParamK, $1->nodetype, $1->lineno, $2->token->svalue );
             $$ = $2;
-            applyTypeToSiblings($2, $1->nodetype);
+            applyTypeToSiblings($$, $1->nodetype);
             //addChildren( $$, 1, $2 );
 		}
 	;
 	
 param-id-list:
 	param-id-list COMMA param-id 
-		{ $$ = linkSiblings(2, $1, $3); }
+		{ 
+            $$ = linkSiblings(2, $1, $3);
+        }
 	| param-id 
 		{ $$ = $1; }
 	;
@@ -359,7 +362,6 @@ unmatched-foreach-stmt:
 compound-stmt:
 	LBRACE local-declarations statement-list RBRACE
         { 
-            //$$ = linkSiblings(2, $2, $3); 
             $$ = makeParent( CompoundK, Void, $1->lineno, NULL );
             addChildren( $$, 2, $2, $3 );
         }
@@ -616,8 +618,7 @@ immutable:
 call:
 	ID LPAREN args RPAREN
 		{ 
-            $$ = makeParent( IdK, $3->nodetype, $1->lineno, $1->svalue );
-            $$->kind = CallK;
+            $$ = makeNode( CallK, $3->nodetype, $1->lineno, $1->svalue, $1 );
 			addChildren($$, 1, $3);
 		}
 	;
@@ -630,11 +631,11 @@ args:
 	;
 	
 arg-list:
-	arg-list COMMA expression
+	arg-list COMMA expression 
 		{ 
 		    $$ = linkSiblings(2, $1, $3); 
 		}
-	| expression
+	| expression 
 		{ $$ = $1; }	
 	;
 	
@@ -718,6 +719,10 @@ int main( int argc, char* argv[] ) {
 		generateCode();
 	}
 	
+    if(test_mode) {
+        dumpTree(syntaxTree);
+    }
+
     freeTree(syntaxTree);
 
 	// How many bad things happened. TODO: when do we want to do this, or not?

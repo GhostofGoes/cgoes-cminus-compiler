@@ -11,8 +11,9 @@ using namespace std;
 // Recursively prints the abstract syntax tree
 // Print spaces at end of strings if necessary.
 // Assumes we're printing to STDOUT. If we need a file, just redirect at OS level.
-void printAbstractTree(TreeNode * tree, int indent_count) {
+void printAbstractTree(TreeNode * og, int indent_count) {
 	
+	TreeNode * tree = og;
 	// Keeps track of siblings
 	int sibling_count = 0;
 
@@ -176,6 +177,7 @@ TreeNode * makeParent( Kind k, Type t, int l, char * svalue ) {
 }
 
 // Adds children to an existing syntax tree node
+// TODO: make sure it isn't overwriting children. Don't think this is the problem tho...
 void addChildren( TreeNode * parent, int numChildren,...) {
 	
 	// Attach children
@@ -320,4 +322,97 @@ void freeToken( TokenData * token ) {
 	}
 
 	free(token);
+}
+
+void dumpTree( TreeNode * tree ) {
+	TreeNode * prev;
+	prev = tree;
+	int sibling_count = 0;
+
+	while( prev != NULL ) {
+
+		if(sibling_count > 0) {
+			// two spaces after child num
+			cout << "|Sibling: " << sibling_count << "  " << endl;
+			//printf( "|Sibling: %d  ", sibling_count);
+		}
+
+		if(prev->token != NULL) {
+			cout << "**TokenData**" << endl;
+			if(tree->token->svalue != NULL) {
+				cout << "\tsvalue: " << tree->token->svalue << endl;
+			}
+			if(tree->token->input != NULL) {
+				cout << "\tsvalue: " << tree->token->svalue << endl;
+			}
+			cout << "\tlineno: " << tree->token->lineno << endl;
+			cout << "\tcvalue: " << tree->token->cvalue << endl;
+			cout << "\tivalue: " << tree->token->ivalue << endl;
+		}
+
+		if(prev->svalue != NULL) {
+			cout << "\tsvalue: " << prev->svalue << endl;
+		}
+		// Check if there are children
+		if( prev->numChildren > 0 ) {
+
+			for ( int i = 0; i < prev->numChildren; i++ ) {
+				cout << "|   ";
+				dumpTree(prev->child[i]);
+			}
+		}
+
+		prev = prev->sibling;
+		sibling_count++;
+	} // end while
+	/*
+	while( prev != NULL ) {
+
+		if(sibling_count > 0) {
+			// two spaces after child num
+			cout << applyIndents("|Sibling: ", indent_count) << sibling_count << "  " << endl;
+			//printf( "|Sibling: %d  ", sibling_count);
+		}
+
+		if(prev->token != NULL) {
+			cout << applyIndents("**TokenData**", indent_count) << endl;
+			if(tree->token->svalue != NULL) {
+				cout << applyIndents("\tsvalue: ", indent_count) << tree->token->svalue << endl;
+			}
+			if(tree->token->input != NULL) {
+				cout << applyIndents("\tsvalue: ", indent_count) << tree->token->svalue << endl;
+			}
+			cout << applyIndents("\tlineno: ", indent_count) << tree->token->lineno << endl;
+			//cout << applyIndents("\tbval: ", indent_count) << tree->token->bval << endl;
+			cout << applyIndents("\tcvalue: ", indent_count) << tree->token->cvalue << endl;
+			cout << applyIndents("\tivalue: ", indent_count) << tree->token->ivalue << endl;
+		}
+
+		if(prev->svalue != NULL) {
+			cout << applyIndents("\tsvalue: ", indent_count) << prev->svalue << endl;
+		}
+		// Check if there are children
+		if( prev->numChildren > 0 ) {
+
+			for ( int i = 0; i < prev->numChildren; i++ ) {
+				cout << applyIndents("|   ", indent_count);
+				dumpTree(prev->child[i], indent_count + 1);
+			}
+		}
+
+		prev = prev->sibling;
+		sibling_count++;
+	} // end while
+	*/
+
+}
+
+
+string applyIndents( string s, int indent ) {
+	string temp;
+	for( int i = 0; i < indent; i++ ) {
+		temp.append("|   ");
+	}
+	temp.append(s);
+	return temp;
 }

@@ -53,5 +53,7 @@ std::string typeToStr( Type t );
 void freeTree( TreeNode * tree );
 void freeToken( TokenData * token );
 
+void dumpTree( TreeNode * tree );
+std::string applyIndents( std::string s, int indent_count );
 
 #endif
