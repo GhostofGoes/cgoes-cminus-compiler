@@ -23,7 +23,7 @@ typedef enum {
 	OpK, ConstK, IdK, AssignK, IfK,
 	CompoundK, ForeachK, WhileK, ReturnK,
 	BreakK, VarK, FunK, ParamK, CallK,
-	TokK, TypeK
+	TokK, TypeK, EmptyK
 } Kind;
 
 typedef enum {Void, Integer, Boolean, Character} Type;

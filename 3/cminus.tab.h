@@ -40,7 +40,7 @@
 extern int yydebug;
 #endif
 /* "%code requires" blocks.  */
-#line 37 "cminus.y" /* yacc.c:1909  */
+#line 38 "cminus.y" /* yacc.c:1909  */
 
 	#define MAXCHILDREN 3
 	#include "types.h"
@@ -110,7 +110,7 @@ extern int yydebug;
 typedef union YYSTYPE YYSTYPE;
 union YYSTYPE
 {
-#line 48 "cminus.y" /* yacc.c:1909  */
+#line 49 "cminus.y" /* yacc.c:1909  */
 
     TokenData * tok;
 	TreeNode * tree;

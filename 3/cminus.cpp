@@ -1,4 +1,5 @@
 #include "cminus.h"
+#include "types.h"
 #include <iostream>
 #include <string>
 #include <cstdlib>
@@ -6,6 +7,7 @@
 #include <string.h>
 
 using namespace std;
+
 
 
 // Recursively prints the abstract syntax tree
@@ -16,21 +18,28 @@ void printAbstractTree(TreeNode * og, int indent_count) {
 	TreeNode * tree = og;
 	// Keeps track of siblings
 	int sibling_count = 0;
+	std::string outstr;
+
 
 	// Prints all nodes of the tree
 	while( tree != NULL ) {
 		
+		/*
 		for(int i = 0; i < indent_count; i++) {
 			printf("|   ");
 		}
+		*/
+
 		if(sibling_count > 0) {
-			// two spaces after child num
-			printf( "|Sibling: %d  ", sibling_count);
+			outstr.append("|Sibling: ");
+			outstr.append(to_string(sibling_count));
+			outstr.append("  ");
+			cout << applyIndents(outstr, indent_count);
+			cout.flush();
+			outstr.clear();
+			//printf( "|Sibling: %d  ", sibling_count);
 		}
 		
-		// Prints based on the node's kind
-		// Some will 'fall' into others
-		std::string outstr;
 
 		switch(tree->kind) {
 			case OpK:
@@ -102,25 +111,27 @@ void printAbstractTree(TreeNode * og, int indent_count) {
 				outstr.append(tree->svalue ? tree->svalue : "");
 				break;
 
+			case EmptyK:
+				break;
 			default:
 				outstr.append("\nWe shouldn't get here\n");
 				break;
 
 		} // end switch
-		
-		cout << outstr << " [line: " << tree->lineno << "]" << endl;
+
+		cout << applyIndents(outstr, indent_count) << " [line: " << tree->lineno << "]" << endl;
+		cout.flush();
 		outstr.clear();
-		// Print the line number + newline
 		//printf( " [line: %d]\n", tree->lineno );
 		
-		// TODO: convert printf to outstr
-		// Check if there are children
 		if( tree->numChildren > 0 ) {
-			// "tab" space for children
-			
 			for ( int i = 0; i < tree->numChildren; i++ ) {
-				cout << "|   Child: " << i << "  ";
+				outstr.append("|   Child: ");
+				outstr.append(to_string(i));
+				outstr.append("  ");
+				cout << applyIndents(outstr, indent_count);
 				cout.flush();
+				outstr.clear();
 				//printf( "|   ");
 				//printf( "Child: %d  ", i);
 				printAbstractTree(tree->child[i], indent_count + 1);
@@ -198,6 +209,24 @@ void addChildren( TreeNode * parent, int numChildren,...) {
 }
 */
 
+void addChild( TreeNode * parent, TreeNode * child ) {
+	if( parent == NULL || child == NULL ) {
+		return;
+	}
+
+	if(testing) {
+		cout <<
+				"Adding child " << typeToStr(child->nodetype) << " at line " << child->lineno
+				<< " to parent " << typeToStr(parent->nodetype) << " of line " << parent->lineno << endl;
+	}
+
+
+	if( parent->numChildren >= 0 && parent->numChildren < 3 ) {
+		parent->child[parent->numChildren] = child;
+		parent->numChildren++;
+	}
+}
+/*
 void addChildren( TreeNode * parent, int numChildren, TreeNode * child1 ) {
 	if(parent->numChildren != 0) {
 		cout << "Parent has more than 0 children, it has " << parent->numChildren << " children." << endl;
@@ -224,7 +253,7 @@ void addChildren( TreeNode * parent, int numChildren, TreeNode * child1, TreeNod
 	parent->child[1] = child2;
 	parent->child[2] = child3;
 }
-
+*/
 // Links siblings to each other, starting with the first.
 // Args: (int) number of siblings, (TreeNode) siblings to link
 // Return: (TreeNode) The first node passed
@@ -266,7 +295,14 @@ TreeNode * linkSiblings( int numSiblings, TreeNode * init, ... ) {
 
 TreeNode * linkSiblings( TreeNode * sib1, TreeNode * sib2 ) {
 
+
 	if(sib1 != NULL && sib2 != NULL ) {
+
+		if(testing) {
+			cout << "Linking sibling " << typeToStr(sib2->nodetype) << " of line " << sib1->lineno
+					<< " to initial sibling " << typeToStr(sib1->nodetype) << " of line " << sib2->lineno << endl;
+		}
+
 		TreeNode * temp = sib1;
 
 		while( temp->sibling != NULL ) {

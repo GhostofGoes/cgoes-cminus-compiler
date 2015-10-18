@@ -11,6 +11,9 @@
 #include "cminus.tab.h"
 #include "symbolTable.h"
 
+extern int warnings;
+extern int errors;
+extern bool testing;
 
 // Recursivly prints the abstract syntax tree
 // Args: Tree to be printed, current count of the indent 
@@ -34,6 +37,8 @@ TreeNode * makeParent( Kind k, Type t, int line, char * svalue );
 // Adds children to an existing syntax tree node
 // Args: 
 //void addChildren( TreeNode * parent, int numChildren,...);
+
+void addChild( TreeNode * parent, TreeNode * child );
 
 void addChildren( TreeNode * parent, int numChildren, TreeNode * child1 );
 void addChildren( TreeNode * parent, int numChildren, TreeNode * child1, TreeNode * child2 );
