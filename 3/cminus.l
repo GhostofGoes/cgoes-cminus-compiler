@@ -1,6 +1,4 @@
 %{
-//#include <string.h>
-//#include <stdlib.h>
 #include "cminus.tab.h"
 #include "cminus.h"
 #include "types.h"
@@ -129,8 +127,7 @@ stringbody	([^"])|(\\[^n])
 }
 	
 	/* Character Constants  */
-	/* TODO: ensure proper length checking */
-	/* TODO: proper errors */
+	/* TODO: proper errors? */
 
 \'		{ 
 			literalbuffer = (char *)calloc(5, sizeof(char));

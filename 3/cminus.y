@@ -792,7 +792,7 @@ int main( int argc, char* argv[] ) {
 	}
 	
     if(test_mode) {
-        dumpTree(syntaxTree);
+        //dumpTree(syntaxTree);
     }
 
     freeTree(syntaxTree);

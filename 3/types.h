@@ -50,8 +50,6 @@ typedef struct treeNode
 	bool isArray;                          	// is this an array
 	bool isScoped;
 
-	// even more semantic stuff will go here in later assignments.
-	// Like, say, scope!
 } TreeNode;
 
 #endif
