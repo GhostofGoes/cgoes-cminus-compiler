@@ -1,9 +1,9 @@
 BIN  = cminus
 CC   = g++
-SRCS = $(BIN).y $(BIN).l types.h cminus.h cminus.cpp toker.c toker.h
+SRCS = $(BIN).y $(BIN).l types.h cminus.h cminus.cpp toker.c toker.h symbolTable.h symbolTable.cpp
 OBJS = lex.yy.o $(BIN).tab.o
-LIBS = -lm cminus.cpp toker.c
-CCFLAGS = -g -std=gnu++11 -Wall
+LIBS = -lm cminus.cpp toker.c symbolTable.cpp
+CCFLAGS = -g -std=gnu++11
 
 $(BIN): $(OBJS)
 	$(CC) $(CCFLAGS) $(OBJS) $(LIBS) -o c-

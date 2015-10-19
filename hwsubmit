@@ -1,5 +1,5 @@
 #!/bin/sh
 ass=$1
 file="cminus$ass.tar"
-make -f Makefile$ass tar
+make tar
 ./curlsubmit.sh goes $ass $file
