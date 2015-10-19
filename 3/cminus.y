@@ -408,7 +408,7 @@ statement-list:
 	statement-list statement
         { 
             $$ = linkSiblings($1, $2); 
-			printf("Linking statement to statement-list\n");        
+			//printf("Linking statement to statement-list\n");        
 		}
 	| /* empty */
 		{ 

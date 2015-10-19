@@ -119,7 +119,7 @@ void printAbstractTree(TreeNode * og, int indent_count) {
 
 		} // end switch
 
-		cout << applyIndents(outstr, indent_count) << " [line: " << tree->lineno << "]" << endl;
+		cout << outstr << " [line: " << tree->lineno << "]" << endl;
 		cout.flush();
 		outstr.clear();
 		//printf( " [line: %d]\n", tree->lineno );
@@ -295,9 +295,13 @@ TreeNode * linkSiblings( int numSiblings, TreeNode * init, ... ) {
 
 TreeNode * linkSiblings( TreeNode * sib1, TreeNode * sib2 ) {
 
-
 	if(sib1 != NULL && sib2 != NULL ) {
-
+		if(sib1->kind == EmptyK) {
+			return sib2;
+		}
+		if(sib2->kind == EmptyK) {
+			return sib1;
+		}
 		if(testing) {
 			cout << "Linking sibling " << typeToStr(sib2->nodetype) << " of line " << sib1->lineno
 					<< " to initial sibling " << typeToStr(sib1->nodetype) << " of line " << sib2->lineno << endl;
