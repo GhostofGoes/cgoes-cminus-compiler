@@ -237,8 +237,8 @@ params:
 		{ $$ = $1; }
 	| /* empty */
 		{ 
-			//$$ = NULL; 
-			$$ = makeParent( EmptyK, Void, 0, NULL );	
+			$$ = NULL; 
+			//$$ = makeParent( EmptyK, Void, 0, NULL );	
 		}
 	;
 
@@ -399,8 +399,8 @@ local-declarations:
 		{ $$ = linkSiblings($1, $2); }
 	| /* empty */ 
 		{ 
-			//$$ = NULL; 
-			$$ = makeParent( EmptyK, Void, 0, NULL );	
+			$$ = NULL; 
+			//$$ = makeParent( EmptyK, Void, 0, NULL );	
 		}
 	;
 	
@@ -412,8 +412,8 @@ statement-list:
 		}
 	| /* empty */
 		{ 
-			//$$ = NULL; 
-			$$ = makeParent( EmptyK, Void, 0, NULL );		
+			$$ = NULL; 
+			//$$ = makeParent( EmptyK, Void, 0, NULL );		
 		}
 	;
 	
@@ -422,8 +422,8 @@ expression-stmt:
         { $$ = $1; /* does expression occur at semicolon for line counting? */ }
 	| SEMICOLON /* EMPTY? */
 		{ 
-			//$$ = NULL; 
-			$$ = makeNode( EmptyK, Void, 0, NULL, $1 );	
+			$$ = NULL; 
+			//$$ = makeNode( EmptyK, Void, 0, NULL, $1 );	
 		}
 	;
 	
@@ -694,8 +694,8 @@ args:
 		{ $$ = $1; }
 	| /* empty */
 		{ 
-			//$$ = NULL; 
-			$$ = makeParent( EmptyK, Void, 0, NULL );	
+			$$ = NULL; 
+			//$$ = makeParent( EmptyK, Void, 0, NULL );	
 		}
 	;
 	
