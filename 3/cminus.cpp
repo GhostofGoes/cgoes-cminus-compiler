@@ -26,7 +26,8 @@ void printAbstractTree(TreeNode * og, int indent_count) {
 
 		if(sibling_count > 0) {
 			outstr.append("|Sibling: ");
-			outstr.append(to_string(sibling_count));
+			outstr += sibling_count;
+			//outstr.append(to_string(sibling_count));
 			outstr.append("  ");
 			cout << applyIndents(outstr, indent_count);
 			cout.flush();
@@ -135,7 +136,8 @@ void printAbstractTree(TreeNode * og, int indent_count) {
 			for ( int i = 0; i < tree->numChildren; i++ ) {
 				if(tree->child[i] != NULL ) {
 					outstr.append("|   Child: ");
-					outstr.append(to_string(i));
+					outstr += i;
+					//outstr.append(to_string(i));
 					outstr.append("  ");
 					cout << applyIndents(outstr, indent_count);
 					cout.flush();

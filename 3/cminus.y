@@ -134,14 +134,12 @@ var-declaration:
         }
 	;
 
-/* Note: need to keep track of scope! */
 scoped-var-declaration:
 	scoped-type-specifier var-decl-list SEMICOLON
         { 
             $$ = $2;
             if($1->isStatic) { $$->isStatic = true; }
             applyTypeToSiblings($$, $1->nodetype);
-            $$->isScoped = true; 
         }
 	;
 
@@ -381,7 +379,6 @@ statement-list:
 	statement-list statement
         { 
             $$ = linkSiblings($1, $2); 
-			//printf("Linking statement to statement-list\n");        
 		}
 	| /* empty */
 		{ $$ = NULL; }
@@ -723,7 +720,7 @@ int main( int argc, char* argv[] ) {
 		yyparse();
 	} while (!feof(yyin));
 	
-	
+	//abstract_tree = true;
 	// Prints out the entire syntax tree recursivly, from the global root node
 	if(abstract_tree) {
 		printAbstractTree(syntaxTree, 0);
