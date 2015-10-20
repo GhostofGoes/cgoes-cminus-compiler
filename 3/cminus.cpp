@@ -12,6 +12,7 @@ using namespace std;
 // Print spaces at end of strings, if necessary.
 // Assumes we're printing to STDOUT. If we need a file, just redirect at OS level.
 // TODO: output redirection?
+// TODO: null characters in char and string consts, store/print properly
 void printAbstractTree(TreeNode * og, int indent_count) {
 	
 	TreeNode * tree = og;
@@ -45,15 +46,19 @@ void printAbstractTree(TreeNode * og, int indent_count) {
 				}
 				else if(tree->nodetype == Integer) {
 					outstr += tree->token->ivalue;
-					//outstr.append(to_string(tree->token->ivalue));
 				}
 				else if(tree->nodetype == Character) {
-					outstr += (tree->token->cvalue);
+					if(tree->token->svalue != NULL ) {
+						outstr += '"';
+						outstr += tree->token->svalue ? tree->token->svalue : "";
+						outstr += '"';
+					}
+					else {
+						outstr += '\'';
+						outstr += (tree->token->cvalue);
+						outstr += '\'';
+					}
 				}
-				else {
-					outstr += tree->token->svalue ? tree->token->svalue : "";
-				}
-
 				break;
 
 			case IdK:
@@ -131,13 +136,15 @@ void printAbstractTree(TreeNode * og, int indent_count) {
 		// TODO: check for NULL children
 		if( tree->numChildren > 0 ) {
 			for ( int i = 0; i < tree->numChildren; i++ ) {
-				outstr.append("|   Child: ");
-				outstr.append(to_string(i));
-				outstr.append("  ");
-				cout << applyIndents(outstr, indent_count);
-				cout.flush();
-				outstr.clear();
-				printAbstractTree(tree->child[i], indent_count + 1);
+				if(tree->child[i] != NULL ) {
+					outstr.append("|   Child: ");
+					outstr.append(to_string(i));
+					outstr.append("  ");
+					cout << applyIndents(outstr, indent_count);
+					cout.flush();
+					outstr.clear();
+					printAbstractTree(tree->child[i], indent_count + 1);
+				}
 			}			
 		}
 		
