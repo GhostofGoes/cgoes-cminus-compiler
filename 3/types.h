@@ -17,16 +17,16 @@ typedef struct {
 /*** Enums for treeNode ****/
 // Much of the TreeNode stuff is drawn from the book.
 // Source: "Compilers and Construction: Principles and Practice", by Kenneth C. Louden
-typedef enum { StmtK, ExpK, DeclK } NodeKind;
+//typedef enum { StmtK, ExpK, DeclK } NodeKind;
 
 typedef enum {
-	OpK, ConstK, IdK, AssignK, IfK,
-	CompoundK, ForeachK, WhileK, ReturnK,
-	BreakK, VarK, FunK, ParamK, CallK,
-	TokK, TypeK, EmptyK
+	OpK, AssignK, VarK, FunK, ParamK,
+	CompoundK, IfK, ForeachK, WhileK,
+	ReturnK, BreakK, CallK,
+	ConstK, IdK, TypeK
 } Kind;
 
-typedef enum {Void, Integer, Boolean, Character, String} Type;
+typedef enum {Void, Integer, Boolean, Character} Type;
 
 
 /*** TREENODE ***/
@@ -41,8 +41,8 @@ typedef struct treeNode
 	struct treeNode *child[MAXCHILDREN];   	// children of the node
 	struct treeNode *sibling;              	// siblings for the node
 
-	NodeKind nodekind;                     	// General kind (need?)
-	Kind kind;								// Precise kind (eg Return, Call, etc)
+	//NodeKind nodekind;                     	// General kind (need?)
+	Kind nodekind;								// Precise kind (eg Return, Call, etc)
 	Type nodetype;							// Type of the node
 	//ExpType expType;		           		// used when ExpK for type checking
 	//bool typespecifier;

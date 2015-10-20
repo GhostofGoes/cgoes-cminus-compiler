@@ -33,7 +33,7 @@ void printAbstractTree(TreeNode * og, int indent_count) {
 			outstr.clear();
 		}
 
-		switch(tree->kind) {
+		switch(tree->nodekind) {
 			case OpK:
 				outstr.append("Op: ");
 				outstr.push_back(tree->token->cvalue);
@@ -97,7 +97,7 @@ void printAbstractTree(TreeNode * og, int indent_count) {
 
 			case VarK:
 			case ParamK:
-				if(tree->kind == VarK)
+				if(tree->nodekind == VarK)
 					{ outstr.append("Var "); }
 				else
 					{ outstr.append("Param "); }
@@ -118,9 +118,6 @@ void printAbstractTree(TreeNode * og, int indent_count) {
 			case CallK:
 				outstr.append("Call: ");
 				outstr.append(tree->svalue ? tree->svalue : "");
-				break;
-
-			case EmptyK:
 				break;
 			default:
 				outstr.append("\nWe shouldn't get here\n");
@@ -175,7 +172,7 @@ void generateCode() {
 // TODO: combine with make parent?
 TreeNode * makeNode( Kind k, Type t, int line, char * svalue, TokenData * token ) {
 	TreeNode * tempNode = allocNode();
-	tempNode->kind = k;
+	tempNode->nodekind = k;
 	tempNode->nodetype = t;
 	tempNode->lineno = line;
 	if( svalue != NULL ) {
@@ -191,7 +188,7 @@ TreeNode * makeNode( Kind k, Type t, int line, char * svalue, TokenData * token 
 TreeNode * makeParent( Kind k, Type t, int l, char * svalue ) {
 	TreeNode * tempNode = allocNode();
 	tempNode->lineno = l;
-	tempNode->kind = k;
+	tempNode->nodekind = k;
 	tempNode->nodetype = t;
 	if(svalue != NULL) {
 		tempNode->svalue = strdup(svalue);
@@ -331,7 +328,7 @@ std::string iboolToString( int ib ) {
 }
 
 // Returns the text string version of Type t
-std::string typeToStr( Type t ) {
+string typeToStr( Type t ) {
 	switch(t) {
 		case Void:
 			return("void");
