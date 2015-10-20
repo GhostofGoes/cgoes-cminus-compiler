@@ -20,7 +20,7 @@ extern bool testing;
 void printAbstractTree(TreeNode * tree, int indent_count);
 
 // Prints the annotated syntax tree
-void printAnnotatedTree(TreeNode * tree);
+void printAnnotatedTree(TreeNode * tree, int indent_count);
 
 // Generates Annotated Syntax Tree
 void semanticAnalysis(TreeNode * tree);
@@ -52,6 +52,7 @@ void freeTree( TreeNode * tree );
 void freeToken( TokenData * token );
 
 // Printing helpers
+std::string iboolToString( int ib );
 std::string applyIndents( std::string s, int indent_count );
 std::string typeToStr( Type t );
 

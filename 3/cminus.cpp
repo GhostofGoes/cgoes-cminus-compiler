@@ -40,7 +40,20 @@ void printAbstractTree(TreeNode * og, int indent_count) {
 
 			case ConstK:
 				outstr.append("Const: ");
-				outstr.append(to_string(tree->token->ivalue));
+				if(tree->nodetype == Boolean) {
+					outstr.append(iboolToString(tree->token->ivalue));
+				}
+				else if(tree->nodetype == Integer) {
+					outstr += tree->token->ivalue;
+					//outstr.append(to_string(tree->token->ivalue));
+				}
+				else if(tree->nodetype == Character) {
+					outstr += (tree->token->cvalue);
+				}
+				else {
+					outstr += tree->token->svalue ? tree->token->svalue : "";
+				}
+
 				break;
 
 			case IdK:
@@ -135,11 +148,13 @@ void printAbstractTree(TreeNode * og, int indent_count) {
 }
 
 // Prints the Annotated Syntax Tree 
-void printAnnotatedTree( TreeNode * tree ) {
-	;
+void printAnnotatedTree( TreeNode * tree, int indent_count ) {
+	printAbstractTree(tree, indent_count);
 }
 
 // Performs semantic analysis, generating the Annotated Syntax Tree
+// TODO: insertions
+// TODO: lookups
 void semanticAnalysis( TreeNode * tree ) {
 	;
 }
@@ -197,16 +212,15 @@ void addChild( TreeNode * parent, TreeNode * child ) {
 }
 
 // Links siblings to each other, starting with the first
-// TODO: fix null sibling issue
 TreeNode * linkSiblings( TreeNode * sib1, TreeNode * sib2 ) {
 
-	if(sib1 != NULL && sib2 != NULL ) {
-		if(sib1->kind == EmptyK) {
-			return sib2;
-		}
-		if(sib2->kind == EmptyK) {
-			return sib1;
-		}
+	if(sib1 == NULL) {
+		return sib2;
+	}
+	else if( sib2 == NULL ) {
+		return sib1;
+	}
+	else {
 		if(testing) {
 			cout << "Linking sibling " << typeToStr(sib2->nodetype) << " of line " << sib1->lineno
 					<< " to initial sibling " << typeToStr(sib1->nodetype) << " of line " << sib2->lineno << endl;
@@ -224,7 +238,7 @@ TreeNode * linkSiblings( TreeNode * sib1, TreeNode * sib2 ) {
 	return sib1;
 }
 
-
+// Applies Type t to all the siblings of TreeNode init
 void applyTypeToSiblings( TreeNode * init, Type t ) {
 	TreeNode * temp = init;
 
@@ -234,6 +248,7 @@ void applyTypeToSiblings( TreeNode * init, Type t ) {
 	}
 }
 
+// Applies Type t to all the children of TreeNode parent
 void appplyTypeToChildren( TreeNode * parent, Type t ) {
 	if(parent != NULL && parent->numChildren > 0) {
 		for(int i = 0; i < parent->numChildren; i++) {
@@ -256,24 +271,6 @@ TreeNode * allocNode() {
 	tempNode->isArray = false;
 	
 	return tempNode;
-}
-
-std::string typeToStr( Type t ) {
-	switch(t) {
-		case Void:
-			return("void");
-			break;
-		case Integer:
-			return("int");
-			break;
-		case Boolean:
-			return("bool");
-			break;
-		case Character:
-			return("char");
-			break;
-	}
-	return ("");
 }
 
 void freeTree( TreeNode * tree ) {
@@ -315,6 +312,34 @@ void freeToken( TokenData * token ) {
 	}
 
 	free(token);
+}
+
+std::string iboolToString( int ib ) {
+	if( ib ) {
+		return "true";
+	}
+	else {
+		return "false";
+	}
+}
+
+// Returns the text string version of Type t
+std::string typeToStr( Type t ) {
+	switch(t) {
+		case Void:
+			return("void");
+			break;
+		case Integer:
+			return("int");
+			break;
+		case Boolean:
+			return("bool");
+			break;
+		case Character:
+			return("char");
+			break;
+	}
+	return ("");
 }
 
 // TODO: makes assumption about indentation

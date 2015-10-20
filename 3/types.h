@@ -26,7 +26,7 @@ typedef enum {
 	TokK, TypeK, EmptyK
 } Kind;
 
-typedef enum {Void, Integer, Boolean, Character} Type;
+typedef enum {Void, Integer, Boolean, Character, String} Type;
 
 
 /*** TREENODE ***/

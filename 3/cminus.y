@@ -709,7 +709,7 @@ arg-list:
 	;
 	
 constant:
-	NUMCONST /* integer? */
+	NUMCONST /* TODO: String/other types? */
 		{ 
             $$ = makeNode( ConstK, Integer, $1->lineno, NULL, $1 );
         }
@@ -719,7 +719,7 @@ constant:
         }
 	| STRINGCONST
 		{ 
-            $$ = makeNode( ConstK, Character, $1->lineno, $1->svalue, $1 );
+            $$ = makeNode( ConstK, String, $1->lineno, $1->svalue, $1 );
         }
 	| BOOLCONST
 		{ 
@@ -735,14 +735,14 @@ int main( int argc, char* argv[] ) {
 	// FILE * output = stdout;
 	int option;
 	opterr = 0;
-    testing = false;
+    
 	// Flags
-	bool test_mode = false;
+	testing = false;
 	bool abstract_tree = false;
 	bool annotated_tree = false;
 	bool code_generation = false;
 	
-	// Command line options. Only handles "-d" debug option currently.
+	// Command line options
 	while( (option = getopt(argc, argv, "dpPtz")) != EOF ) {
 		switch(option) {
 			case 'd': 
@@ -755,9 +755,6 @@ int main( int argc, char* argv[] ) {
 				annotated_tree = true;
 				break;
 			case 't':
-				test_mode = true;
-				break;
-            case 'z':
                 testing = true;
                 break;
 			default:
@@ -781,19 +778,16 @@ int main( int argc, char* argv[] ) {
 		printAbstractTree(syntaxTree, 0);
 	}
 	
+	// TODO: build I/O library tree
 	if(annotated_tree) {
 		semanticAnalysis(annotatedTree);
-		printAnnotatedTree(annotatedTree);
+		printAnnotatedTree(annotatedTree, 0);
 	}
 	
 	if(code_generation) {
 		// TODO import I/O library
 		generateCode();
 	}
-	
-    if(test_mode) {
-        //dumpTree(syntaxTree);
-    }
 
     freeTree(syntaxTree);
 
