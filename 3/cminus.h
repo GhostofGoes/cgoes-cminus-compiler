@@ -14,6 +14,7 @@
 extern int warnings;
 extern int errors;
 extern bool testing;
+extern vector<string> error_messages;
 
 // Recursively prints the abstract syntax tree
 // Args: Tree to be printed, current count of the indent 
@@ -22,8 +23,9 @@ void printAbstractTree(TreeNode * tree, int indent_count);
 // Prints the annotated syntax tree
 void printAnnotatedTree(TreeNode * tree, int indent_count);
 
-// Generates Annotated Syntax Tree
-void semanticAnalysis(TreeNode * tree);
+// Creates? and returns the Annotated Syntax Tree
+void semanticAnalysis(TreeNode * tree );
+void treeParse( TreeNode * parent, TreeNode * node, SymbolTable symtable );
 
 // TODO: placeholder Generates code
 void generateCode();
@@ -55,5 +57,7 @@ void freeToken( TokenData * token );
 std::string iboolToString( int ib );
 std::string applyIndents( std::string s, int indent_count );
 std::string typeToStr( Type t );
+
+void printError( int line, string err );
 
 #endif

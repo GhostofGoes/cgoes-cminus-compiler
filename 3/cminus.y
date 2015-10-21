@@ -419,25 +419,25 @@ expression:
         }
 	| mutable ADDASS expression
         { 
-            $$ = makeNode( AssignK, Void, $2->lineno, NULL, $2 );     
+            $$ = makeNode( AssignK, Integer, $2->lineno, NULL, $2 );     
             addChild( $$, $1);
             addChild( $$, $3);
         }
 	| mutable SUBASS expression
         { 
-            $$ = makeNode( AssignK, Void, $2->lineno, NULL, $2 );     
+            $$ = makeNode( AssignK, Integer, $2->lineno, NULL, $2 );     
             addChild( $$, $1);
             addChild( $$, $3);
         }
 	| mutable MULASS expression
         { 
-            $$ = makeNode( AssignK, Void, $2->lineno, NULL, $2 );     
+            $$ = makeNode( AssignK, Integer, $2->lineno, NULL, $2 );     
             addChild( $$, $1);
             addChild( $$, $3);
         }
 	| mutable DIVASS expression
         { 
-            $$ = makeNode( AssignK, Void, $2->lineno, NULL, $2 );     
+            $$ = makeNode( AssignK, Integer, $2->lineno, NULL, $2 );     
             addChild( $$, $1);
             addChild( $$, $3);
         }
@@ -586,15 +586,15 @@ unary-expression:
 unaryop:
 	MINUS
 		{ 
-            $$ = makeNode( OpK, Integer, $1->lineno, NULL, $1 );
+            $$ = makeNode( UnaryK, Integer, $1->lineno, NULL, $1 );
         }
 	| MULTIPLY
 		{ 
-            $$ = makeNode( OpK, Integer, $1->lineno, NULL, $1 );
+            $$ = makeNode( UnaryK, Integer, $1->lineno, NULL, $1 );
         }
 	| QUESTION /* Question's type? */
 		{ 
-            $$ = makeNode( OpK, Integer, $1->lineno, NULL, $1 );
+            $$ = makeNode( UnaryK, Integer, $1->lineno, NULL, $1 );
         }
 	;
 	
@@ -728,7 +728,8 @@ int main( int argc, char* argv[] ) {
 	
 	// TODO: build I/O library tree
 	if(annotated_tree) {
-		semanticAnalysis(annotatedTree);
+		symtable = new SymbolTable();
+		semanticAnalysis(annotatedTree, symtable);
 		printAnnotatedTree(annotatedTree, 0);
 	}
 	
