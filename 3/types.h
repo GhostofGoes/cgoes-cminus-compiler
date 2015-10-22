@@ -46,7 +46,6 @@ typedef struct treeNode
 	Kind kind;								// Precise kind (eg Return, Call, etc)
 	Type nodetype;							// Type of the node
 	//ExpType expType;		           		// used when ExpK for type checking
-	//bool typespecifier;
 	bool isStatic;                         	// is statically allocated?
 	bool isArray;                          	// Array?
 	bool isIndex;							// Array index?

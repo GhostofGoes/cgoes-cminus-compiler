@@ -406,10 +406,13 @@ void treeParse( TreeNode * par, TreeNode * node, SymbolTable * symtable ) {
 
 	while( tree != NULL ) {
 
+
+
 		int sibling_count = 0; // Keeps track of siblings
 
-		Type lhs = Void;
-		Type rhs = Void;
+		Type lhs = Void; // Left hand side (child[0])'s type
+		Type rhs = Void; // Right hand side (child[1])'s type
+
 		std::string child0_sval;
 		std::string child1_sval;
 		std::string tree_svalue = svalResolve(tree);
@@ -431,95 +434,80 @@ void treeParse( TreeNode * par, TreeNode * node, SymbolTable * symtable ) {
 		lhs_str = typeToStr(lhs);
 		rhs_str = typeToStr(rhs);
 
-		int line = tree->lineno;
+		int line = tree->lineno; // Node's line number
 
 
 
-		// error stream
-		switch(tree->kind) {
-			case OpK:
-				// TODO: typing for operations, char/int
+		// Switch on NodeKind (Declaration, Statement, Expression), then Kind
+		switch(tree->nodekind) {
 
-				if( tree->numChildren == 2 ) {
-					if(symtable->lookup(child0_sval) == NULL ) {
-						printf("ERROR(%d): Symbol '%s' is not defined.\n", line, child0_sval.c_str());
-					}
-					if(symtable->lookup(child0_sval) == NULL ) {
-						printf("ERROR(%d): Symbol '%s' is not defined.\n", line, child0_sval.c_str());
-					}
-
-					if( tree->child[0]->isArray != tree->child[1]->isArray ) {
-						printf("ERROR(%d): '%s' requires that if one operand is an array so must the other operand.\n", line, op.c_str());
-						//err = std::string("") + "'" + op + "' requires that if one operand is an array so must the other operand";
-						//printError(line, err);
-					}
-
-					// TODO: op table lookup
-					if( rhs != tree->nodetype ) {
-						printf("ERROR(%d): '%s' requires operands of type %s but rhs is of type %s.\n", line, op.c_str(), tree_type_str, rhs_str);
-					}
-					if( lhs != tree->nodetype ) {
-						printf("ERROR(%d): '%s' requires operands of type %s but lhs is of type %s.\n", line, op.c_str(), tree_type_str, lhs_str);
-					}
-					if( lhs != rhs ) {
-						printf("ERROR(%d): '%s' requires operands of the same type but lhs is type %s and rhs is %s.\n", line, op.c_str(), lhs_str, rhs_str);
-					}
-					if( tree->child[0]->isArray != tree->child[1]->isArray ) {
-						printf("ERROR(%d): '%s' requires that if one operand is an array so must the other operand.\n", line, op.c_str());
-					}
+		// *** Node is part of a declaration ***
+		case DeclK:
+			switch(tree->kind) {
+			case VarK:
+				if( !symtable->insert(tree_svalue, tree) ) {
+					TreeNode * tmp = (TreeNode *)symtable->lookup(tree_svalue);
+					printf("ERROR(%d): Symbol '%s' is already defined at line %d.\n", line, tree_svalue.c_str(), tmp->lineno );
 				}
-
-				// TODO: works/doesn't work with arrays
-				if( tree->token->svalue != NULL ) {
-
-				}
-				else
-				{
-				}
-
-
-				break;
-
-			case UnaryK:
 				if( tree->numChildren == 1 ) {
-					if(symtable->lookup(child0_sval) == NULL ) {
-						printf("ERROR(%d): Symbol '%s' is not defined.\n", line, child0_sval.c_str());
+					if( tree->isArray ) {
+						if( tree->child[0] != NULL && tree->child[0]->isIndex ) {
+							if( child0_sval == tree_svalue ) {
+								printf("ERROR(%d): Array index is the unindexed array '%s'.\n", line, tree_svalue.c_str());
+							}
+							else if( lhs != Integer ) {
+								printf("ERROR(%d): Array '%s' should be indexed by type int but got %s.\n", line, tree_svalue.c_str(), lhs_str);
+							}
+						}
 					}
-					else if( lhs != tree->nodetype ) {
-						printf("ERROR(%d): Unary '%s' requires an operand of type %s but was given %s.\n",
-								line, tree_svalue.c_str(), tree_type_str, lhs_str );
+					else if( tree->child[0]->isIndex ){ // Variables can't have children, right...? Nope, they can. close:bool. lol.
+						printf("ERROR(%d): Cannot index nonarray '%s'.\n", line, tree_svalue.c_str());
+					}
+				}
+
+				break;
+
+			case ParamK:
+				// TODO: "undefined type" as Void lookup return for printing?
+				if( !symtable->insert(tree_svalue, tree) ) {
+					TreeNode * tmp = (TreeNode *)symtable->lookup(tree_svalue);
+					printf("ERROR(%d): Symbol '%s' is already defined at line %d.\n", line, tree_svalue.c_str(), tmp->lineno );
+				}
+				break;
+
+			case FunK:
+				if( !symtable->insert(tree_svalue, tree) ) {
+					TreeNode * tmp = (TreeNode *)symtable->lookup(tree_svalue);
+					printf("ERROR(%d): Symbol '%s' is already defined at line %d.\n", line, tree_svalue.c_str(), tmp->lineno );
+				}
+				else if( tree->nodetype != Void ) {
+					bool returnPresent = false;
+					if(tree->child[0] != NULL && tree->child[0]->kind == CompoundK) {
+						for(int i = 0; i < tree->child[0]->numChildren; i++) {
+							if( tree->child[0]->child[i] != NULL && tree->child[0]->child[i]->kind == ReturnK ) {
+								returnPresent = true;
+								break;
+							}
+						}
+					}
+					if(!returnPresent) {
+						printf("WARNING(%d): Expecting to return type %s but function '%s' has no return statement.\n",
+								line, tree_type_str, tree_svalue.c_str() );
 					}
 				}
 				break;
 
-			case ConstK:
+			default:
 				break;
 
-			case IdK:
-				break;
+			} // end DeclK kind switch
+			break;
 
-			case AssignK:
-				if( tree->numChildren == 1 ) {
-					if( tree->child[0]->kind == VarK || tree->child[0]->kind == CallK ) {
-						if(symtable->lookup(child0_sval) == NULL ) {
-							printf("ERROR(%d): Symbol '%s' is not defined.\n", line, child0_sval.c_str());
-						}
-					}
-				}
-				else if( tree->numChildren == 2 ) {
-					if( tree->child[0]->kind == VarK || tree->child[0]->kind == CallK ) {
-						if(symtable->lookup(child0_sval) == NULL ) {
-							printf("ERROR(%d): Symbol '%s' is not defined.\n", line, child0_sval.c_str());
-						}
-					}
-					if( tree->child[0]->kind == VarK || tree->child[0]->kind == CallK ) {
-						if(symtable->lookup(child1_sval) == NULL ) {
-							printf("ERROR(%d): Symbol '%s' is not defined.\n", line, child1_sval.c_str());
-						}
-					}
-				}
-				break;
 
+
+		// *** Node is part of a statement ***
+		case StmtK:
+			switch(tree->kind) {
 			case IfK:
 				if( tree->numChildren == 2 ) {
 					if( tree->child[0]->isArray ) {
@@ -596,72 +584,34 @@ void treeParse( TreeNode * par, TreeNode * node, SymbolTable * symtable ) {
 				}
 				break;
 
-			case VarK:
-				if( tree->nodekind == DeclK ) {
-					if( !symtable->insert(tree_svalue, tree) ) {
-						TreeNode * tmp = (TreeNode *)symtable->lookup(tree_svalue);
-						printf("ERROR(%d): Symbol '%s' is already defined at line %d.\n", line, tree_svalue.c_str(), tmp->lineno );
-					}
-				}
+			default:
+				break;
+			} // end StmtK kind switch
+			break;
 
+
+
+		// *** Node is part of an expression ***
+		case ExpK:
+			switch(tree->kind) {
+			case AssignK:
 				if( tree->numChildren == 1 ) {
-					if( tree->isArray ) {
-						if( tree->child[0] != NULL && tree->child[0]->isIndex ) {
-							if( child0_sval == tree_svalue ) {
-								printf("ERROR(%d): Array index is the unindexed array '%s'.\n", line, tree_svalue.c_str());
-							}
-							else if( lhs != Integer ) {
-								printf("ERROR(%d): Array '%s' should be indexed by type int but got %s.\n", line, tree_svalue.c_str(), lhs_str);
-							}
+					if( tree->child[0]->kind == VarK || tree->child[0]->kind == CallK ) {
+						if(symtable->lookup(child0_sval) == NULL ) {
+							printf("ERROR(%d): Symbol '%s' is not defined.\n", line, child0_sval.c_str());
 						}
 					}
-					else if( tree->child[0]->isIndex ){ // Variables can't have children, right...? Nope, they can. close:bool. lol.
-						printf("ERROR(%d): Cannot index nonarray '%s'.\n", line, tree_svalue.c_str());
-					}
 				}
-
-				break;
-
-				// TODO: "undefined type" as Void lookup return for printing?
-			case ParamK:
-				if( tree->nodekind == DeclK ) {
-					if( !symtable->insert(tree_svalue, tree) ) {
-						TreeNode * tmp = (TreeNode *)symtable->lookup(tree_svalue);
-						printf("ERROR(%d): Symbol '%s' is already defined at line %d.\n", line, tree_svalue.c_str(), tmp->lineno );
-					}
-				}
-				if( parent->kind == CallK ) {
-
-				}
-				break;
-
-			case FunK:
-				if( tree->nodekind == DeclK ) {
-					if( !symtable->insert(tree_svalue, tree) ) {
-						TreeNode * tmp = (TreeNode *)symtable->lookup(tree_svalue);
-						printf("ERROR(%d): Symbol '%s' is already defined at line %d.\n", line, tree_svalue.c_str(), tmp->lineno );
-					}
-				}
-
-				if( parent->kind == OpK
-					|| parent->kind == UnaryK
-					|| parent->kind == AssignK
-					|| parent->kind == ReturnK
-					|| parent->kind == ParamK )
-				{
-					printf("ERROR(%d): Cannot use function '%s' as a simple variable.\n", line, tree_svalue.c_str());
-				}
-				if( tree->nodetype != Void ) {
-					bool returnPresent = false;
-					for( int i = 0; i < tree->numChildren; i++ ) {
-						if( tree->child[i]->kind == ReturnK ) {
-							returnPresent = true;
-							break;
+				else if( tree->numChildren == 2 ) {
+					if( tree->child[0]->kind == VarK || tree->child[0]->kind == CallK ) {
+						if(symtable->lookup(child0_sval) == NULL ) {
+							printf("ERROR(%d): Symbol '%s' is not defined.\n", line, child0_sval.c_str());
 						}
 					}
-					if(!returnPresent) {
-						printf("WARNING(%d): Expecting to return type %s but function '%s' has no return statement.\n",
-								line, tree_type_str, tree_svalue.c_str() );
+					if( tree->child[0]->kind == VarK || tree->child[0]->kind == CallK ) {
+						if(symtable->lookup(child1_sval) == NULL ) {
+							printf("ERROR(%d): Symbol '%s' is not defined.\n", line, child1_sval.c_str());
+						}
 					}
 				}
 				break;
@@ -679,10 +629,95 @@ void treeParse( TreeNode * par, TreeNode * node, SymbolTable * symtable ) {
 					}
 				}
 				break;
-			default:
+
+			case FunK:
+				printf("ERROR(%d): Cannot use function '%s' as a simple variable.\n", line, tree_svalue.c_str());
 				break;
 
-		} // end switch
+			case OpK:
+				if( tree->numChildren == 2 ) {
+					if(symtable->lookup(child0_sval) == NULL ) {
+						printf("ERROR(%d): Symbol '%s' is not defined.\n", line, child0_sval.c_str());
+					}
+					if(symtable->lookup(child0_sval) == NULL ) {
+						printf("ERROR(%d): Symbol '%s' is not defined.\n", line, child0_sval.c_str());
+					}
+
+					if( tree->child[0]->isArray != tree->child[1]->isArray ) {
+						printf("ERROR(%d): '%s' requires that if one operand is an array so must the other operand.\n", line, op.c_str());
+						//err = std::string("") + "'" + op + "' requires that if one operand is an array so must the other operand";
+						//printError(line, err);
+					}
+
+					// TODO: op table lookup
+					// TODO: typing for operations, char/int
+					if( rhs != tree->nodetype ) {
+						printf("ERROR(%d): '%s' requires operands of type %s but rhs is of type %s.\n", line, op.c_str(), tree_type_str, rhs_str);
+						error++;
+					}
+					if( lhs != tree->nodetype ) {
+						printf("ERROR(%d): '%s' requires operands of type %s but lhs is of type %s.\n",
+								line, op.c_str(), tree_type_str, lhs_str);
+						error++;
+					}
+					if( lhs != rhs ) {
+						printf("ERROR(%d): '%s' requires operands of the same type but lhs is type %s and rhs is %s.\n",
+								line, op.c_str(), lhs_str, rhs_str);
+						error++;
+					}
+					if( tree->child[0]->isArray != tree->child[1]->isArray ) {
+						printf("ERROR(%d): '%s' requires that if one operand is an array so must the other operand.\n", line, op.c_str());
+						error++;
+					}
+				}
+				// TODO: works/doesn't work with arrays
+				break;
+
+			case ParamK:
+				if( parent->kind == CallK ) { // TODO: this is wrong place
+					TreeNode * tmp = (TreeNode *)symtable->lookup(tree_svalue);
+					if( tmp != NULL ) {
+						if( tmp->nodetype != tree->nodetype ) {
+							printf("ERROR(%d): Expecting type %s in parameter %i of call to '%s' defined on line %d but got %s.\n",
+								line, typeToStr(tmp->nodetype), sibling_count, svalResolve(parent).c_str(), parent->lineno, typeToStr(tree->nodetype) );
+						}
+
+						if( tmp->isArray && !tree->isArray ) {
+							printf("ERROR(%d): Expecting array in parameter %i of call to '%s' defined on line %d.\n",
+								line, sibling_count, svalResolve(parent).c_str(), parent->lineno);
+						}
+						else if( !tmp->isArray && tree->isArray ) {
+							printf("ERROR(%d): Not expecting array in parameter %i of call to '%s' defined on line %d.\n",
+								line, sibling_count, svalResolve(parent).c_str(), parent->lineno);
+						}
+
+					} else {
+						printf("ERROR(%d): Symbol '%s' is not defined.\n", line, tree_svalue.c_str());
+					}
+				}
+				break;
+
+			case UnaryK:
+				if( tree->numChildren == 1 ) {
+					if(symtable->lookup(child0_sval) == NULL ) {
+						printf("ERROR(%d): Symbol '%s' is not defined.\n", line, child0_sval.c_str());
+					}
+					else if( lhs != tree->nodetype ) {
+						printf("ERROR(%d): Unary '%s' requires an operand of type %s but was given %s.\n",
+								line, tree_svalue.c_str(), tree_type_str, lhs_str );
+					}
+				}
+				break;
+
+			default:
+				break;
+			} // end ExpK kind switch
+			break;
+
+		default:
+			break;
+		} // end nodekind switch
+
 
 		// Check if there are children
 		if( tree->numChildren > 0 ) {
@@ -696,11 +731,6 @@ void treeParse( TreeNode * par, TreeNode * node, SymbolTable * symtable ) {
 		if( tree->kind == CompoundK ) {
 			symtable->leave();
 		}
-
-		//free(tree_svalue);
-		//free(op);
-		//free(child0_sval);
-		//free(child1_sval);
 
 		tree = tree->sibling; // Jump to the next sibling
 		sibling_count++;
