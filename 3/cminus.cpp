@@ -283,15 +283,21 @@ void printAnnotatedTree( TreeNode * og, int indent_count ) {
 				break;
 
 			case VarK:
-			case ParamK:
-				if(tree->kind == VarK)
-					{ outstr.append("Var "); }
-				else
-					{ outstr.append("Param "); }
+				outstr.append("Var ");
 				outstr.append(svalResolve(tree));
 				if(tree->isArray)
 					{ outstr.append(" is array"); }
 				outstr.append(" of type ");
+				outstr.append(typeToStr(tree->nodetype));
+
+				break;
+
+			case ParamK:
+				outstr.append("Param ");
+				outstr.append(svalResolve(tree));
+				if(tree->isArray)
+					{ outstr.append(" is array "); }
+				outstr += " ";
 				outstr.append(typeToStr(tree->nodetype));
 				break;
 
@@ -348,7 +354,34 @@ void semanticAnalysis( TreeNode * og ) {
 
 	SymbolTable * symtable = new SymbolTable();
 	TreeNode * tree = og;
+/*
+	TreeNode * out;
+	TreeNode * inputb;
+	TreeNode * outputb;
+	TreeNode * inputc;
+	TreeNode * outputc;
+	TreeNode * outnl;
+	TreeNode * idummy;
+	TreeNode * bdummy;
+	TreeNode * cdummy;
 
+	out = makeParent(DeclK, FunK, Void, -1, "output");
+	addChild(out, idummy);
+	inputb = makeParent(DeclK, FunK, Boolean, -1, "inputb");
+	linkSiblings(out, inputb);
+	outputb = makeParent(DeclK, FunK, Void, -1, "outputb");
+	addChild(outputb, bdummy);
+	linkSiblings(out, outputb);
+	inputc = makeParent(DeclK, FunK, Character, -1, "inputc");
+	linkSiblings(out, inputc);
+	outputc = makeParent(DeclK, FunK, Void, -1, "outputc");
+	addChild(outputc, cdummy);
+	linkSiblings(out, outputc);
+	outnl = makeParent(DeclK, FunK, Void, -1, "outnl");
+	linkSiblings(out, outnl);
+
+	linkSiblings(out, tree);
+*/
 	treeParse( NULL, tree, symtable );
 
 }

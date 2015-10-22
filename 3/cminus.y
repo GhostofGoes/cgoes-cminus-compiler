@@ -730,7 +730,37 @@ int main( int argc, char* argv[] ) {
 	
 	// TODO: build I/O library tree
 	if(annotated_tree) {
-		annotatedTree = syntaxTree; // TODO: temp	
+		TreeNode * out;
+		TreeNode * inputb;
+		TreeNode * outputb;
+		TreeNode * inputc;
+		TreeNode * outputc;
+		TreeNode * outnl;
+		TreeNode * idummy;
+		TreeNode * bdummy;
+		TreeNode * cdummy;
+		TreeNode * temp = syntaxTree;
+		out = makeParent(DeclK, FunK, Void, -1, "output");
+		idummy = makeParent(ExpK, ParamK, Integer, -1, "*dummy*");
+		addChild(out, idummy);
+		inputb = makeParent(DeclK, FunK, Boolean, -1, "inputb");
+		linkSiblings(out, inputb);
+		outputb = makeParent(DeclK, FunK, Void, -1, "outputb");
+		bdummy = makeParent(ExpK, ParamK, Boolean, -1, "*dummy*");
+		addChild(outputb, bdummy);
+		linkSiblings(out, outputb);
+		inputc = makeParent(DeclK, FunK, Character, -1, "inputc");
+		linkSiblings(out, inputc);
+		outputc = makeParent(DeclK, FunK, Void, -1, "outputc");
+		cdummy = makeParent(ExpK, ParamK, Character, -1, "*dummy*");
+		addChild(outputc, cdummy);
+		linkSiblings(out, outputc);
+		outnl = makeParent(DeclK, FunK, Void, -1, "outnl");
+		linkSiblings(out, outnl);
+		linkSiblings(out, temp);
+		annotatedTree = out;
+		
+		
 		//semanticAnalysis(annotatedTree);
 		printAnnotatedTree(annotatedTree, 0);
 	}
