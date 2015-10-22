@@ -27,7 +27,7 @@ typedef enum {
 	ConstK, IdK, TypeK, UnaryK
 } Kind;
 
-typedef enum {Void, Integer, Boolean, Character} Type;
+typedef enum {Void, Integer, Boolean, Character, Undef } Type;
 
 
 /*** TREENODE ***/

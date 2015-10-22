@@ -575,6 +575,7 @@ void treeParse( TreeNode * par, TreeNode * node, SymbolTable * symtable ) {
 					if(symtable->lookup(child0_sval) == NULL ) {
 						printf("ERROR(%d): Symbol '%s' is not defined.\n", line, child0_sval.c_str());
 						errors++;
+						tree->nodetype = Undef;
 					}
 					else if(tree->child[0]->isArray) {
 						printf("ERROR(%d): Cannot return an array.\n", line);
@@ -624,6 +625,7 @@ void treeParse( TreeNode * par, TreeNode * node, SymbolTable * symtable ) {
 						if(symtable->lookup(child0_sval) == NULL ) {
 							printf("ERROR(%d): Symbol '%s' is not defined.\n", line, child0_sval.c_str());
 							errors++;
+							tree->child[0]->nodetype = Undef;
 						}
 					}
 				}
@@ -632,9 +634,10 @@ void treeParse( TreeNode * par, TreeNode * node, SymbolTable * symtable ) {
 						if(symtable->lookup(child0_sval) == NULL ) {
 							printf("ERROR(%d): Symbol '%s' is not defined.\n", line, child0_sval.c_str());
 							errors++;
+							tree->child[0]->nodetype = Undef;
 						}
 					}
-					if( tree->child[0]->kind == VarK || tree->child[0]->kind == CallK ) {
+					if( tree->child[1]->kind == VarK || tree->child[1]->kind == CallK ) {
 						if(symtable->lookup(child1_sval) == NULL ) {
 							printf("ERROR(%d): Symbol '%s' is not defined.\n", line, child1_sval.c_str());
 							errors++;
@@ -649,6 +652,7 @@ void treeParse( TreeNode * par, TreeNode * node, SymbolTable * symtable ) {
 					if(temp == NULL ) {
 						printf("ERROR(%d): Symbol '%s' is not defined.\n", line, tree_svalue.c_str());
 						errors++;
+						tree->nodetype = Undef;
 					}
 					else {
 						if( temp->kind != FunK ) {
@@ -669,10 +673,12 @@ void treeParse( TreeNode * par, TreeNode * node, SymbolTable * symtable ) {
 					if(tree->child[0]->kind == IdK && symtable->lookup(child0_sval) == NULL ) {
 						printf("ERROR(%d): Symbol '%s' is not defined.\n", line, child0_sval.c_str());
 						errors++;
+						tree->child[0]->nodetype = Undef;
 					}
-					if(tree->child[0]->kind == IdK && symtable->lookup(child1_sval) == NULL ) {
+					if(tree->child[1]->kind == IdK && symtable->lookup(child1_sval) == NULL ) {
 						printf("ERROR(%d): Symbol '%s' is not defined.\n", line, child1_sval.c_str());
 						errors++;
+						tree->child[1]->nodetype = Undef;
 					}
 
 					if( tree->child[0]->isArray != tree->child[1]->isArray ) {
@@ -710,6 +716,7 @@ void treeParse( TreeNode * par, TreeNode * node, SymbolTable * symtable ) {
 					if(tree->child[0]->kind == IdK && symtable->lookup(child0_sval) == NULL ) {
 						printf("ERROR(%d): Symbol '%s' is not defined.\n", line, child0_sval.c_str());
 						errors++;
+						tree->child[0]->nodetype = Undef;
 					}
 					else if( lhs != tree->nodetype ) {
 						printf("ERROR(%d): Unary '%s' requires an operand of type %s but was given %s.\n",
@@ -744,6 +751,7 @@ void treeParse( TreeNode * par, TreeNode * node, SymbolTable * symtable ) {
 					else {
 						printf("ERROR(%d): Symbol '%s' is not defined.\n", line, tree_svalue.c_str());
 						errors++;
+						tree->nodetype = Undef;
 					}
 				}
 				break;
@@ -756,6 +764,7 @@ void treeParse( TreeNode * par, TreeNode * node, SymbolTable * symtable ) {
 				else {
 					printf("ERROR(%d): Symbol '%s' is not defined.\n", line, tree_svalue.c_str());
 					errors++;
+					tree->nodetype = Undef;
 				}
 				break;
 
@@ -971,6 +980,9 @@ const char * typeToStr( Type t ) {
 			break;
 		case Character:
 			return("char");
+			break;
+		case Undef:
+			return("undefined type");
 			break;
 	}
 	return "";
