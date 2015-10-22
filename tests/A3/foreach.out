@@ -2,6 +2,10 @@ ERROR(16): If not an array, foreach requires rhs of 'in' be of type int but it i
 ERROR(17): If not an array, foreach requires rhs of 'in' be of type int but it is type bool.
 ERROR(19): Foreach requires operands of 'in' be the same type but lhs is type int and rhs array is type char.
 ERROR(20): Foreach requires operands of 'in' be the same type but lhs is type int and rhs array is type bool.
+ERROR(58): In foreach statement the variable to the left of 'in' must not be an array.
+ERROR(58): If not an array, foreach requires rhs of 'in' be of type int but it is type bool.
+ERROR(59): '+' requires operands of type int but rhs is of type char.
+ERROR(60): '+' requires operands of type int but rhs is of type char.
 Func input returns type int [line: -1]
 |Sibling: 1  Func output returns type void [line: -1]
 |   Child: 0  Param *dummy* int [line: -1]
@@ -112,5 +116,15 @@ Func input returns type int [line: -1]
 |   |   |   |   |   |Sibling: 1  Id: stuff Type: int [line: 52]
 |   |   |   |   |   |Sibling: 2  Assign: ++ Type: int [line: 53]
 |   |   |   |   |   |   Child: 0  Id: p Type: int [line: 53]
+|   |   |Sibling: 16  Foreach [line: 58]
+|   |   |   Child: 0  Id: ya Type: is array of int [line: 58]
+|   |   |   Child: 1  Const: true Type: bool [line: 58]
+|   |   |   Child: 2  Compound [line: 58]
+|   |   |   |   Child: 1  Op: + Type: int [line: 59]
+|   |   |   |   |   Child: 0  Const: 5 Type: int [line: 59]
+|   |   |   |   |   Child: 1  Const: 'c' Type: char [line: 59]
+|   |   |   |   |Sibling: 1  Op: + Type: int [line: 60]
+|   |   |   |   |   Child: 0  Const: 6 Type: int [line: 60]
+|   |   |   |   |   Child: 1  Const: 'c' Type: char [line: 60]
 Number of warnings: 0
-Number of errors: 4
+Number of errors: 8

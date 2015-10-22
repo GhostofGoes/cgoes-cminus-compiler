@@ -21,7 +21,11 @@ ERROR(33): The operation '<=' does not work with arrays.
 ERROR(37): The operation '>' does not work with arrays.
 ERROR(38): The operation '>' does not work with arrays.
 ERROR(40): The operation '?' does not work with arrays.
-ERROR(41): Cannot index nonarray 'x'.
+ERROR(43): The operation '*' only works with arrays.
+ERROR(44): Cannot index nonarray 'x'.
+ERROR(45): Cannot index nonarray 'x'.
+ERROR(45): The operation '*' only works with arrays.
+ERROR(47): The operation '*' only works with arrays.
 Func input returns type int [line: -1]
 |Sibling: 1  Func output returns type void [line: -1]
 |   Child: 0  Param *dummy* int [line: -1]
@@ -116,9 +120,22 @@ Func input returns type int [line: -1]
 |   |   |   Child: 1  Id: xa Type: is array of int [line: 38]
 |   |   |Sibling: 24  Op: ? Type: int [line: 40]
 |   |   |   Child: 0  Id: xa Type: is array of int [line: 40]
-|   |   |Sibling: 25  Id: x Type: int [line: 41]
-|   |   |   Child: 0  Const: 2 Type: int [line: 41]
-|   |   |Sibling: 26  Id: xa Type: int [line: 42]
-|   |   |   Child: 0  Const: 2 Type: int [line: 42]
+|   |   |Sibling: 25  Op: * Type: int [line: 41]
+|   |   |   Child: 0  Id: xa Type: is array of int [line: 41]
+|   |   |Sibling: 26  Op: * Type: int [line: 42]
+|   |   |   Child: 0  Id: ba Type: is array of bool [line: 42]
+|   |   |Sibling: 27  Op: * Type: int [line: 43]
+|   |   |   Child: 0  Op: * Type: int [line: 43]
+|   |   |   |   Child: 0  Id: ba Type: is array of bool [line: 43]
+|   |   |Sibling: 28  Id: x Type: int [line: 44]
+|   |   |   Child: 0  Const: 2 Type: int [line: 44]
+|   |   |Sibling: 29  Op: * Type: int [line: 45]
+|   |   |   Child: 0  Id: x Type: int [line: 45]
+|   |   |   |   Child: 0  Const: 2 Type: int [line: 45]
+|   |   |Sibling: 30  Id: xa Type: int [line: 46]
+|   |   |   Child: 0  Const: 2 Type: int [line: 46]
+|   |   |Sibling: 31  Op: * Type: int [line: 47]
+|   |   |   Child: 0  Id: xa Type: int [line: 47]
+|   |   |   |   Child: 0  Const: 2 Type: int [line: 47]
 Number of warnings: 0
-Number of errors: 24
+Number of errors: 28

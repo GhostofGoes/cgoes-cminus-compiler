@@ -6,6 +6,7 @@
 #include <getopt.h>
 #include <stdarg.h>
 #include <string>
+#include <sstream>
 
 #include "types.h"
 #include "cminus.tab.h"
@@ -14,7 +15,6 @@
 extern int warnings;
 extern int errors;
 extern bool testing;
-extern vector<string> error_messages;
 
 // Recursively prints the abstract syntax tree
 // Args: Tree to be printed, current count of the indent 
@@ -25,7 +25,7 @@ void printAnnotatedTree(TreeNode * tree, int indent_count);
 
 // Creates? and returns the Annotated Syntax Tree
 void semanticAnalysis(TreeNode * tree );
-void treeParse( TreeNode * parent, TreeNode * node, SymbolTable symtable );
+void treeParse( TreeNode * parent, TreeNode * node, SymbolTable * symtable );
 
 // TODO: placeholder Generates code
 void generateCode();
@@ -54,10 +54,12 @@ void freeTree( TreeNode * tree );
 void freeToken( TokenData * token );
 
 // Printing helpers
-std::string iboolToString( int ib );
+const char * iboolToString( int ib );
 std::string applyIndents( std::string s, int indent_count );
-std::string typeToStr( Type t );
+const char * typeToStr( Type t );
+char * opToStr( TokenData * tok );
 
-void printError( int line, string err );
+void printError( int line, std::string err );
+void printWarning( int line, std::string warn );
 
 #endif

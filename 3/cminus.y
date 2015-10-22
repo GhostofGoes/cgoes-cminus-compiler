@@ -7,6 +7,7 @@
 #include "types.h"
 #include "cminus.h"
 #include "toker.h"
+#include "symbolTable.h"
 
 #define YYERROR_VERBOSE
 
@@ -728,8 +729,8 @@ int main( int argc, char* argv[] ) {
 	
 	// TODO: build I/O library tree
 	if(annotated_tree) {
-		symtable = new SymbolTable();
-		semanticAnalysis(annotatedTree, symtable);
+		annotatedTree = syntaxTree; // TODO: temp	
+		semanticAnalysis(annotatedTree);
 		printAnnotatedTree(annotatedTree, 0);
 	}
 	

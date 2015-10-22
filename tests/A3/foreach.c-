@@ -54,4 +54,9 @@ main()
         }
     }
 
+
+    foreach (ya in true) {
+        5+'c';
+        6+'c';
+        }
 }

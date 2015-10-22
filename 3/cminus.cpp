@@ -7,7 +7,7 @@
 #include <string.h>
 #include <sstream>
 
-using namespace std;
+//using namespace std;
 
 // Recursively prints the abstract syntax tree
 // Print spaces at end of strings, if necessary.
@@ -26,11 +26,11 @@ void printAbstractTree(TreeNode * og, int indent_count) {
 
 		if(sibling_count > 0) {
 			outstr.append("|Sibling: ");
-			outstr += sibling_count;
-			//outstr.append(to_string(sibling_count));
+			//outstr += sibling_count;
+			outstr.append(std::to_string(sibling_count));
 			outstr.append("  ");
-			cout << applyIndents(outstr, indent_count);
-			cout.flush();
+			std::cout << applyIndents(outstr, indent_count);
+			std::cout.flush();
 			outstr.clear();
 		}
 
@@ -143,8 +143,8 @@ void printAbstractTree(TreeNode * og, int indent_count) {
 
 		} // end switch
 
-		cout << outstr << " [line: " << tree->lineno << "]" << endl;
-		cout.flush();
+		std::cout << outstr << " [line: " << tree->lineno << "]" << std::endl;
+		std::cout.flush();
 		outstr.clear();
 		
 		// Check if there are children
@@ -153,11 +153,11 @@ void printAbstractTree(TreeNode * og, int indent_count) {
 			for ( int i = 0; i < tree->numChildren; i++ ) {
 				if(tree->child[i] != NULL ) {
 					outstr.append("|   Child: ");
-					outstr += i;
-					//outstr.append(to_string(i));
+					//outstr += i;
+					outstr.append(std::to_string(i));
 					outstr.append("  ");
-					cout << applyIndents(outstr, indent_count);
-					cout.flush();
+					std::cout << applyIndents(outstr, indent_count);
+					std::cout.flush();
 					outstr.clear();
 					printAbstractTree(tree->child[i], indent_count + 1);
 				}
@@ -180,23 +180,22 @@ void printAnnotatedTree( TreeNode * tree, int indent_count ) {
 // TODO: lookups
 void semanticAnalysis( TreeNode * og ) {
 
+	SymbolTable * symtable = new SymbolTable();
 	TreeNode * tree = og;
-	error_messages = new vector<string>;
 
-	return newTree;
+	treeParse( NULL, tree, symtable );
 
 }
 
-void treeParse( TreeNode * parent, TreeNode * node, SymbolTable symtable ) {
+void treeParse( TreeNode * parent, TreeNode * node, SymbolTable * symtable ) {
 
 	TreeNode * tree = node;
-	stringstream err;
-	int a[5];
-	int b[8];
+	//std::string err;
 
-	if(a > b) {
-
+	if( parent == NULL ) {
+		// do something special for initial case
 	}
+
 	while( tree != NULL ) {
 
 		int sibling_count = 0; // Keeps track of siblings
@@ -205,20 +204,52 @@ void treeParse( TreeNode * parent, TreeNode * node, SymbolTable symtable ) {
 
 		}
 
+		//std::string op;
+		Type lhs = Void;
+		Type rhs = Void;
+		if(tree->child[0] != NULL ) {
+			lhs = tree->child[0]->nodetype;
+		}
+		if(tree->child[1] != NULL ) {
+			rhs = tree->child[1]->nodetype;
+		}
+
+		const char * lhs_str;
+		const char * rhs_str;
+		const char * tree_type_str;
+		tree_type_str = typeToStr(tree->nodetype);
+		lhs_str = typeToStr(lhs);
+		rhs_str = typeToStr(rhs);
+
+		int line = tree->lineno;
+		const char * tree_svalue;
+		if( tree->svalue != NULL ) {
+			tree_svalue = tree->svalue;
+		}
+		else if( tree->token != NULL ) {
+			tree_svalue = opToStr(tree->token);
+		}
+		else {
+			tree_svalue = "";
+		}
+
+
 		// error stream
 		switch(tree->nodekind) {
 			case OpK:
 				// TODO: typing for operations, char/int
 				// TODO: proper operation printing, string/char
-				string op;
+				char * op;
+				op = opToStr(tree->token);
+
 				if( tree->numChildren == 2 ) {
-					Type lhs, rhs;
-					lhs = tree->child[0]->nodetype;
-					rhs = tree->child[1]->nodetype;
+
 
 					if( tree->child[0]->isArray != tree->child[1]->isArray ) {
-						err << "'" << op << "' requires that if one operand is an array so must the other operand";
-						printError(tree->lineno, err);
+						// TODO: fprintf to stream passed to function
+						printf("ERROR(%d): '%s' requires that if one operand is an array so must the other operand.\n", line, op);
+						//err = std::string("") + "'" + op + "' requires that if one operand is an array so must the other operand";
+						//printError(line, err);
 					}
 					/*
 					if( tree->child[0]->nodekind == FunK || tree->child[1]->nodekind == FunK ) {
@@ -227,23 +258,27 @@ void treeParse( TreeNode * parent, TreeNode * node, SymbolTable symtable ) {
 					*/
 
 					if( lhs != tree->nodetype ) {
-						err << "'" << tree->token->cvalue << "' requires operands of type "
-								<< typeToStr(tree->nodetype) << " but rhs is of type " << typeToStr(rhs);
-						printError(tree->lineno, err);
+						printf("ERROR(%d): '%s' requires operands of type %s but rhs is of type %s.\n", line, op, tree_type_str, rhs_str);
+						/*err = std::string("") + "'" + tree->token->cvalue + "' requires operands of type "
+								+ typeToStr(tree->nodetype) + " but rhs is of type " + typeToStr(rhs);
+						printError(line, err);*/
 					}
 					if( rhs != tree->nodetype ) {
-						err << "'" << tree->token->cvalue << "' requires operands of type "
-								<< typeToStr(tree->nodetype) << " but lhs is of type " << typeToStr(lhs);
-						printError(tree->lineno, err);
+						printf("ERROR(%d): '%s' requires operands of type %s but lhs is of type %s.\n", line, op, tree_type_str, lhs_str);
+						/*err = std::string("") + "'" + tree->token->cvalue + "' requires operands of type "
+								+ typeToStr(tree->nodetype) + " but lhs is of type " + typeToStr(lhs);
+						printError(line, err);*/
 					}
 					if( lhs != rhs ) {
-						err << "'" << tree->token->cvalue << "' requires operands of the same type but lhs is type "
-								<< typeToStr(lhs) << " and rhs is " << typeToStr(rhs);
-						printError(tree->lineno, err);
+						printf("ERROR(%d): '%s' requires operands of the same type but lhs is type %s and rhs is %s.\n", line, op, lhs_str, rhs_str);
+						/*err = std::string("") + "'" + tree->token->cvalue + "' requires operands of the same type but lhs is type "
+								+ typeToStr(lhs) + " and rhs is " + typeToStr(rhs);
+						printError(line, err);*/
 					}
 					if( tree->child[0]->isArray != tree->child[1]->isArray ) {
-						err << "'" << tree->token->cvalue << "' requires that if one operand is an array so must the other operand";
-						printError(tree->lineno, err);
+						printf("ERROR(%d): '%s' requires that if one operand is an array so must the other operand.\n", line, op);
+						/*err = std::string("") + "'" + tree->token->cvalue + "' requires that if one operand is an array so must the other operand";
+						printError(line, err);*/
 					}
 				}
 
@@ -261,9 +296,11 @@ void treeParse( TreeNode * parent, TreeNode * node, SymbolTable symtable ) {
 			case UnaryK:
 				if( tree->numChildren == 1 ) {
 					if( tree->child[0]->nodetype != tree->nodetype ) {
-						err << "Unary '" << tree->token->cvalue << "' requires an operand of type "
-								<< typeToStr(tree->nodetype) << " but was given " << typeToStr(tree->child[0]->nodetype);
-						printError(tree->lineno, err);
+						printf("ERROR(%d): Unary '%s' requires an operand of type %s but was given %s.\n",
+								line, tree_svalue, tree_type_str, lhs_str );
+						/*err = std::string("") + "Unary '" + tree->token->cvalue + "' requires an operand of type "
+								+ typeToStr(tree->nodetype) + " but was given " + typeToStr(tree->child[0]->nodetype);
+						printError(line, err);*/
 					}
 				}
 				break;
@@ -292,10 +329,23 @@ void treeParse( TreeNode * parent, TreeNode * node, SymbolTable symtable ) {
 				break;
 
 			case IfK:
+				if( tree->numChildren == 2 ) {
+					if( tree->child[0]->isArray ) {
+						printf("ERROR(%d): Cannot use array as test condition in if statement.\n", line);
+						/*err = std::string("") + "Cannot use array as test condition in if statement";
+						printError(line, err);*/
+					}
+					else if( tree->child[0]->nodetype != Boolean ) {
+						printf("ERROR(%d): Expecting Boolean test condition in if statement but got type %s.\n", line, lhs_str);
+						/*err = std::string("") + "Expecting Boolean test condition in if statement but got type "
+								+ typeToStr(tree->child[0]->nodetype);
+						printError(line, err);*/
+					}
+				}
 				break;
 
 			case CompoundK:
-				symtable.enter("Compound" + tree->lineno);
+				symtable->enter("Compound" + line);
 				break;
 
 			case ForeachK:
@@ -305,61 +355,79 @@ void treeParse( TreeNode * parent, TreeNode * node, SymbolTable symtable ) {
 					rhs = tree->child[1]->nodetype;
 
 					if( tree->child[0]->isArray ) {
-						err << "In foreach statement the variable to the left of 'in' must not be an array";
-						printError(tree->lineno, err);
+						printf("ERROR(%d): In foreach statement the variable to the left of 'in' must not be an array.\n", line);
+						/*err = std::string("") + "In foreach statement the variable to the left of 'in' must not be an array";
+						printError(line, err);*/
 					}
 					else if ( lhs != Integer ) {
-						err << "If not an array, foreach requires lhs of 'in' be of type int but it is type "
-								<< typeToStr(lhs);
-						printError(tree->lineno, err);
+						printf("ERROR(%d): If not an array, foreach requires lhs of 'in' be of type int but it is type %s.\n", line, lhs_str);
+						/*err = std::string("") + "If not an array, foreach requires lhs of 'in' be of type int but it is type "
+								+ typeToStr(lhs);
+						printError(line, err);*/
 					}
 					if( rhs != Integer ) {
-						err << "If not an array, foreach requires rhs of 'in' be of type int but it is type "
-								<< typeToStr(rhs);
-						printError(tree->lineno, err);
+						printf("ERROR(%d): If not an array, foreach requires rhs of 'in' be of type int but it is type %s.\n", line, rhs_str);
+						/*err = std::string("") + "If not an array, foreach requires rhs of 'in' be of type int but it is type "
+								+ typeToStr(rhs);
+						printError(line, err);*/
 					}
 					if( lhs != rhs ) {
-						err << "Foreach requires operands of 'in' to be the same type but lhs is type "
-								<< typeToStr(lhs) << " and rhs array is type " << typeToStr(rhs);
-						printError(tree->lineno, err);
+						printf("ERROR(%d): Foreach requires operands of 'in' be the same type but lhs is type %s and rhs array is type %s.\n",
+								line, lhs_str, rhs_str);
+						/*err = std::string("") + "Foreach requires operands of 'in' to be the same type but lhs is type "
+								+ typeToStr(lhs) + " and rhs array is type " + typeToStr(rhs);
+						printError(line, err);*/
 					}
 				}
 				break;
 
 			case WhileK:
+				if( tree->numChildren == 2 ) {
+					if( tree->child[0]->isArray ) {
+						printf("ERROR(%d): Cannot use array as test condition in while statement.\n", line);
+						/*err = std::string("") + "Cannot use array as test condition in while statement";
+						printError(line, err);*/
+					}
+					else if( tree->child[0]->nodetype != Boolean ) {
+						printf("ERROR(%d): Expecting Boolean test condition in while statement but got type %s.\n", line, lhs_str);
+						/*err = std::string("") + "Expecting Boolean test condition in while statement but got type "
+								+ typeToStr(tree->child[0]->nodetype);
+						printError(line, err);*/
+					}
+				}
 				break;
 
 			case ReturnK:
 				if( tree->numChildren == 1 && tree->child[0] != NULL ) {
 					if(tree->child[0]->isArray) {
-						err << "Cannot return an array";
-						printError(tree->lineno, err);
+						printf("ERROR(%d): Cannot return an array.\n", line);
+						/*err = std::string("") + "Cannot return an array";
+						printError(line, err);*/
 					}
 				}
 				if( parent->nodekind == FunK ) {
 					if( parent->nodetype == Void && tree->nodetype != Void ) {
-						err << "Function '" << parent->svalue ? parent->svalue : "" << "' at line " << parent->lineno
-								<< " is expecting no return value, but return has return value";
-						printError(tree->lineno, err);
+						printf("ERROR(%d): Function '%s' at line %d is expecting no return value, but return has return value.\n",
+								line, parent->svalue ? parent->svalue : "", parent->lineno);
 					}
 					else if( parent->nodetype != Void && tree->nodetype == Void ) {
-						err << "Function '" << parent->svalue ? parent->svalue : "" << "' at line " << parent->lineno
-								<< " is expecting to return type " << typeToStr(parent->nodetype) << " but return has no return value";
-						printError(tree->lineno, err);
+						printf("ERROR(%d): Function '%s' at line %d is expecting to return type %s but return has no return value.\n",
+								line, parent->svalue ? parent->svalue : "", parent->lineno, typeToStr(parent->nodetype));
 					}
 					else if( parent->nodetype != tree->nodetype ) {
-						err << "Function '" << parent->svalue ? parent->svalue : "" << "' at line " << parent->lineno
-								<< " is expecting to return type " << typeToStr(parent->nodetype) << " but got "
-								<< typeToStr(tree->nodetype);
-						printError(tree->lineno, err);
+						printf("ERROR(%d): Function '%s' at line %d is expecting to return type %s but got %s.\n",
+								line, parent->svalue ? parent->svalue : "", parent->lineno, typeToStr(parent->nodetype), tree_type_str);
+						/*err = std::string("") + "Function '" + parent->svalue ? parent->svalue : "" + "' at line " + parent->lineno
+								+ " is expecting to return type " + typeToStr(parent->nodetype) + " but got "
+								+ typeToStr(tree->nodetype);
+						printError(line, err);*/
 					}
 				}
 				break;
 
 			case BreakK:
 				if( parent->nodekind != ForeachK || parent->nodekind != WhileK ) {
-					err << "Cannot have a break statement outside of loop";
-					printError(tree->lineno, err);
+					printf("ERROR(%d): Cannot have a break statement outside of loop.\n", line);
 				}
 				break;
 
@@ -368,19 +436,15 @@ void treeParse( TreeNode * parent, TreeNode * node, SymbolTable symtable ) {
 					if( tree->isArray ) {
 						if( tree->child[0] != NULL ) {
 							if( tree->child[0]->svalue == tree->svalue ) {
-								err << "Array index is the unindexed array '" << tree->svalue ? tree->svalue : "" << "'";
-								printError(tree->lineno, err);
+								printf("ERROR(%d): Array index is the unindexed array '%s'.\n", line, tree->svalue ? tree->svalue : "");
 							}
 							else if( tree->child[0]->nodetype != Integer ) {
-								err << "Array '" << tree->svalue ? tree->svalue : ""
-										<< "' should be indexed by type int but got " << typeToStr(tree->child[0]->nodetype);
-								printError(tree->lineno, err);
+								printf("ERROR(%d): Array '%s' should be indexed by type int but got %s.\n", line, tree_svalue, lhs_str);
 							}
 						}
 					}
 					else { // Variables can't have children, right...?
-						err << "Cannot index nonarray '" << tree->svalue ? tree->svalue : "" << "'";
-						printError(tree->lineno, err);
+						printf("ERROR(%d): Cannot index nonarray '%s'.\n", line, tree_svalue);
 					}
 				}
 
@@ -400,8 +464,7 @@ void treeParse( TreeNode * parent, TreeNode * node, SymbolTable symtable ) {
 					|| parent->nodekind == ReturnK
 					|| parent->nodekind == ParamK )
 				{
-					err << "Cannot use function '" << tree->svalue ? tree->svalue : "" << "' as a simple variable";
-					printError(tree->lineno, err);
+					printf("ERROR(%d): Cannot use function '%s' as a simple variable.\n", line, tree_svalue);
 				}
 				if( tree->nodetype != Void ) {
 					bool returnPresent = false;
@@ -412,23 +475,24 @@ void treeParse( TreeNode * parent, TreeNode * node, SymbolTable symtable ) {
 						}
 					}
 					if(!returnPresent) {
-						err << "Expecting to return type " << typeToStr(tree->nodetype) << "but function '"
-								<< tree->svalue ? tree->svalue : "" << "' has no return statement";
-						printWarning(tree->lineno, err); // Warning getting a err? naming lol...
+						printf("WARNING(%d): Expecting to return type %s but function '%s' has no return statement.\n",
+								line, tree_type_str, tree_svalue );
+						/*err = std::string("") + "Expecting to return type " + typeToStr(tree->nodetype) + "but function '"
+								+ tree->svalue ? tree->svalue : "" + "' has no return statement";
+						printWarning(line, err); // Warning getting a err? naming lol...*/
 					}
 				}
 				break;
 
 			case CallK:
 				if( tree->svalue != NULL ) {
-					TreeNode * temp = symtable.lookup(tree->svalue);
+					TreeNode * temp = (TreeNode *)symtable->lookup(tree->svalue);
 					if(temp == NULL ) {
 
 					}
 					else {
 						if( temp->nodekind != FunK ) {
-							err << "'" << tree->svalue << "' is a simple variable and cannot be called";
-							printError(tree->lineno, err);
+							printf("ERROR(%d): '%s' is a simple variable and cannot be called.\n", line, tree_svalue);
 						}
 					}
 				}
@@ -448,7 +512,7 @@ void treeParse( TreeNode * parent, TreeNode * node, SymbolTable symtable ) {
 		}
 
 		if( tree->nodekind == CompoundK ) {
-			symtable.leave();
+			symtable->leave();
 		}
 		tree = tree->sibling; // Jump to the next sibling
 		sibling_count++;
@@ -496,9 +560,9 @@ void addChild( TreeNode * parent, TreeNode * child ) {
 	}
 
 	if(testing) {
-		cout <<
+		std::cout <<
 				"Adding child " << typeToStr(child->nodetype) << " at line " << child->lineno
-				<< " to parent " << typeToStr(parent->nodetype) << " of line " << parent->lineno << endl;
+				<< " to parent " << typeToStr(parent->nodetype) << " of line " << parent->lineno << std::endl;
 	}
 
 	if( parent->numChildren >= 0 && parent->numChildren < 3 ) {
@@ -518,8 +582,8 @@ TreeNode * linkSiblings( TreeNode * sib1, TreeNode * sib2 ) {
 	}
 	else {
 		if(testing) {
-			cout << "Linking sibling " << typeToStr(sib2->nodetype) << " of line " << sib1->lineno
-					<< " to initial sibling " << typeToStr(sib1->nodetype) << " of line " << sib2->lineno << endl;
+			std::cout << "Linking sibling " << typeToStr(sib2->nodetype) << " of line " << sib1->lineno
+					<< " to initial sibling " << typeToStr(sib1->nodetype) << " of line " << sib2->lineno << std::endl;
 		}
 
 		TreeNode * temp = sib1;
@@ -610,7 +674,7 @@ void freeToken( TokenData * token ) {
 	free(token);
 }
 
-std::string iboolToString( int ib ) {
+const char * iboolToString( int ib ) {
 	if( ib ) {
 		return "true";
 	}
@@ -620,7 +684,7 @@ std::string iboolToString( int ib ) {
 }
 
 // Returns the text string version of Type t
-string typeToStr( Type t ) {
+const char * typeToStr( Type t ) {
 	switch(t) {
 		case Void:
 			return("void");
@@ -635,12 +699,23 @@ string typeToStr( Type t ) {
 			return("char");
 			break;
 	}
-	return ("");
+	return "";
+}
+
+char * opToStr( TokenData * tok ) {
+	if( tok->svalue != NULL ) {
+		return tok->svalue;
+	}
+	else {
+		char * ptr;
+		*ptr = tok->cvalue;
+		return ptr;
+	}
 }
 
 // TODO: makes assumption about indentation
-string applyIndents( string s, int indent ) {
-	string temp;
+std::string applyIndents( std::string s, int indent ) {
+	std::string temp;
 	for( int i = 0; i < indent; i++ ) {
 		temp.append("|   ");
 	}
@@ -648,16 +723,16 @@ string applyIndents( string s, int indent ) {
 	return temp;
 }
 
-void printError( int line, stringstream err) {
-	cout << "ERROR(" << line << "): " << err.str() << "." << endl;
-	err.str(string());
+void printError( int line, std::string err ) {
+	std::cout << "ERROR(" << line << "): " << err << "." << std::endl;
+	std::cout.flush();
 	err.clear();
 	errors++;
 }
 
-void printWarning( int line, stringstream warn ) {
-	cout << "WARNING(" << line << "): " << warn.str() << "." << endl;
-	warn.str(string());
+void printWarning( int line, std::string warn ) {
+	std::cout << "WARNING(" << line << "): " << warn << "." << std::endl;
+	std::cout.flush();
 	warn.clear();
 	warnings++;
 }

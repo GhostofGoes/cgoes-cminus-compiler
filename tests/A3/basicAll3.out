@@ -19,6 +19,7 @@ ERROR(73): Cannot use function 'cat' as a simple variable.
 ERROR(74): '=' requires operands of the same type but lhs is type char and rhs is int.
 ERROR(75): '+=' requires operands of type int but lhs is of type char.
 ERROR(76): '-=' requires operands of type int but rhs is of type char.
+ERROR(77): '>' requires operands of the same type but lhs is type int and rhs is char.
 ERROR(80): Expecting Boolean test condition in if statement but got type int.
 ERROR(80): Cannot use array as test condition in if statement.
 ERROR(81): Expecting Boolean test condition in while statement but got type int.
@@ -460,4 +461,4 @@ Func input returns type int [line: -1]
 |   |   |Sibling: 72  Return [line: 173]
 |   |   |   Child: 0  Id: aa Type: is array of char [line: 173]
 Number of warnings: 2
-Number of errors: 140
+Number of errors: 141
