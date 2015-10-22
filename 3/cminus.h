@@ -58,6 +58,7 @@ const char * iboolToString( int ib );
 std::string applyIndents( std::string s, int indent_count );
 const char * typeToStr( Type t );
 char * opToStr( TokenData * tok );
+char * svalResolve( TreeNode * tree );
 
 void printError( int line, std::string err );
 void printWarning( int line, std::string warn );

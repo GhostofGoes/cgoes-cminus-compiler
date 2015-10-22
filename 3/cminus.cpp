@@ -7,12 +7,10 @@
 #include <string.h>
 #include <sstream>
 
-//using namespace std;
-
 // Recursively prints the abstract syntax tree
 // Print spaces at end of strings, if necessary.
 // TODO: output redirection
-// TODO: null characters in char and string consts, store/print properly
+// TODO: null characters in char and string consts, store/print properly (check treeParse for solution, make function)
 void printAbstractTree(TreeNode * og, int indent_count) {
 	
 	TreeNode * tree = og;
@@ -346,6 +344,8 @@ void semanticAnalysis( TreeNode * og ) {
 
 }
 
+
+// TODO: build the tree!
 void treeParse( TreeNode * par, TreeNode * node, SymbolTable * symtable ) {
 
 	TreeNode * tree;
@@ -379,6 +379,9 @@ void treeParse( TreeNode * par, TreeNode * node, SymbolTable * symtable ) {
 		if(tree->child[1] != NULL ) {
 			rhs = tree->child[1]->nodetype;
 		}
+
+		char * child0_sval = svalResolve(tree->child[0]);
+		char * child1_sval = svalResolve(tree->child[1]);
 
 		const char * lhs_str;
 		const char * rhs_str;
@@ -457,7 +460,7 @@ void treeParse( TreeNode * par, TreeNode * node, SymbolTable * symtable ) {
 
 			case UnaryK:
 				if( tree->numChildren == 1 ) {
-					if(symtable->lookup(tree->child[0]->svalue) == NULL ) {
+					if(symtable->lookup(svalResolve(tree->child[0])) == NULL ) {
 						printf("ERROR(%d): Symbol '%s' is not defined.\n", line, tree->child[0]->svalue);
 					}
 					else if( tree->child[0]->nodetype != tree->nodetype ) {
@@ -488,6 +491,25 @@ void treeParse( TreeNode * par, TreeNode * node, SymbolTable * symtable ) {
 				break;
 
 			case AssignK:
+				if( tree->numChildren == 1 ) {
+					if( tree->child[0]->kind != ConstK ) {
+						if(symtable->lookup(svalResolve(tree->child[0])) == NULL ) {
+							printf("ERROR(%d): Symbol '%s' is not defined.\n", line, svalResolve(tree->child[0]));
+						}
+					}
+				}
+				else if( tree->numChildren == 2 ) {
+					if( tree->child[0]->kind != ConstK ) {
+						if(symtable->lookup(svalResolve(tree->child[0])) == NULL ) {
+							printf("ERROR(%d): Symbol '%s' is not defined.\n", line, svalResolve(tree->child[0]));
+						}
+					}
+					if( tree->child[1]->kind != ConstK ) {
+						if(symtable->lookup(svalResolve(tree->child[1])) == NULL ) {
+							printf("ERROR(%d): Symbol '%s' is not defined.\n", line, svalResolve(tree->child[1]));
+						}
+					}
+				}
 				break;
 
 			case IfK:
@@ -673,6 +695,9 @@ void treeParse( TreeNode * par, TreeNode * node, SymbolTable * symtable ) {
 		}
 
 		free(tree_svalue);
+		free(child0_sval);
+		free(child1_sval);
+
 		tree = tree->sibling; // Jump to the next sibling
 		sibling_count++;
 
@@ -873,6 +898,18 @@ char * opToStr( TokenData * tok ) {
 		char * ptr = (char *)malloc(sizeof(char));
 		*ptr = tok->cvalue;
 		return ptr;
+	}
+}
+
+char * svalResolve( TreeNode * tree ) {
+	if( tree->svalue != NULL ) {
+		return strdup(tree->svalue);
+	}
+	else if( tree->token != NULL ) {
+		return opToStr(tree->token);
+	}
+	else {
+		return strdup(""); // take that constant string!
 	}
 }
 
