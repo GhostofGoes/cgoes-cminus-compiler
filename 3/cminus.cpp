@@ -194,13 +194,6 @@ void printAnnotatedTree( TreeNode * og, int indent_count ) {
 			case OpK:
 				outstr += "Op: ";
 				outstr += opToStr(tree->token);
-				/*(
-				if( tree->token->svalue != NULL ) {
-					outstr += tree->token->svalue;
-				}
-				else {
-					outstr.push_back(tree->token->cvalue);
-				}*/
 				outstr += (" Type: ");
 				outstr += typeToStr(tree->nodetype);
 				break;
@@ -282,12 +275,12 @@ void printAnnotatedTree( TreeNode * og, int indent_count ) {
 				outstr.append("Break");
 				break;
 
+				// TODO: combine var/param?
 			case VarK:
 				outstr.append("Var ");
 				outstr.append(svalResolve(tree));
 				if(tree->isArray)
-					{ outstr.append(" is array"); }
-				outstr.append(" of type ");
+					{ outstr.append(" is array of "); }
 				outstr.append(typeToStr(tree->nodetype));
 
 				break;
@@ -296,7 +289,7 @@ void printAnnotatedTree( TreeNode * og, int indent_count ) {
 				outstr.append("Param ");
 				outstr.append(svalResolve(tree));
 				if(tree->isArray)
-					{ outstr.append(" is array "); }
+					{ outstr.append(" is array of "); }
 				outstr += " ";
 				outstr.append(typeToStr(tree->nodetype));
 				break;
