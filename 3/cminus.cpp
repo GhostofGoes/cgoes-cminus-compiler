@@ -170,13 +170,7 @@ void printAbstractTree(TreeNode * og, int indent_count) {
 
 // Prints the Annotated Syntax Tree 
 void printAnnotatedTree( TreeNode * og, int indent_count ) {
-
-	// ***
-	//TODO: placeholder for testing
-	printAbstractTree(og, indent_count);
-	return;
-	// ***
-
+	//std::cout << "*********PRINT ANNOTATED TREE **********" << std::endl;
 	TreeNode * tree = og;
 	int sibling_count = 0; // Keeps track of siblings
 
@@ -199,17 +193,23 @@ void printAnnotatedTree( TreeNode * og, int indent_count ) {
 		switch(tree->kind) {
 			case OpK:
 				outstr += "Op: ";
+				outstr += opToStr(tree->token);
+				/*(
 				if( tree->token->svalue != NULL ) {
 					outstr += tree->token->svalue;
 				}
 				else {
 					outstr.push_back(tree->token->cvalue);
-				}
+				}*/
+				outstr += (" Type: ");
+				outstr += typeToStr(tree->nodetype);
 				break;
 
 			case UnaryK:
 				outstr.append("Op: ");
 				outstr.push_back(tree->token->cvalue);
+				outstr += (" Type: ");
+				outstr += typeToStr(tree->nodetype);
 				break;
 
 			case ConstK:
@@ -232,22 +232,29 @@ void printAnnotatedTree( TreeNode * og, int indent_count ) {
 						outstr += '\'';
 					}
 				}
+				outstr.append(" Type: ");
+				outstr.append(typeToStr(tree->nodetype));
 				break;
 
 			case IdK:
 				outstr.append("Id: ");
-				outstr.append(tree->token->svalue ? tree->token->svalue : "");
+				outstr.append(svalResolve(tree));
+				outstr += (" Type: ");
+				outstr += typeToStr(tree->nodetype);
 				break;
 
 			case AssignK:
 				outstr.append("Assign: ");
-
+				outstr += opToStr(tree->token);
+				outstr += (" Type: ");
+				outstr += typeToStr(tree->nodetype);
+				/*
 				if( tree->nodetype == Void ) {
 					outstr.push_back(tree->token->cvalue);
 				}
 				if( tree->nodetype == Integer ) {
 					outstr += tree->token->svalue ? tree->token->svalue : "";
-				}
+				}*/
 
 				break;
 
@@ -281,7 +288,7 @@ void printAnnotatedTree( TreeNode * og, int indent_count ) {
 					{ outstr.append("Var "); }
 				else
 					{ outstr.append("Param "); }
-				outstr.append(tree->svalue ? tree->svalue : "");
+				outstr.append(svalResolve(tree));
 				if(tree->isArray)
 					{ outstr.append(" is array"); }
 				outstr.append(" of type ");
@@ -290,14 +297,16 @@ void printAnnotatedTree( TreeNode * og, int indent_count ) {
 
 			case FunK:
 				outstr.append("Func ");
-				outstr.append(tree->svalue ? tree->svalue : "");
+				outstr.append(svalResolve(tree));
 				outstr.append(" returns type ");
 				outstr.append(typeToStr(tree->nodetype));
 				break;
 
 			case CallK:
 				outstr.append("Call: ");
-				outstr.append(tree->svalue ? tree->svalue : "");
+				outstr.append(svalResolve(tree));
+				outstr += (" Type: ");
+				outstr += typeToStr(tree->nodetype);
 				break;
 			default:
 				outstr.append("\nWe shouldn't get here\n");
@@ -321,7 +330,7 @@ void printAnnotatedTree( TreeNode * og, int indent_count ) {
 					std::cout << applyIndents(outstr, indent_count);
 					std::cout.flush();
 					outstr.clear();
-					printAbstractTree(tree->child[i], indent_count + 1);
+					printAnnotatedTree(tree->child[i], indent_count + 1);
 				}
 			}
 		}
@@ -380,8 +389,8 @@ void treeParse( TreeNode * par, TreeNode * node, SymbolTable * symtable ) {
 			rhs = tree->child[1]->nodetype;
 		}
 
-		char * child0_sval = svalResolve(tree->child[0]);
-		char * child1_sval = svalResolve(tree->child[1]);
+		std::string child0_sval = svalResolve(tree->child[0]);
+		std::string child1_sval = svalResolve(tree->child[1]);
 
 		const char * lhs_str;
 		const char * rhs_str;
@@ -391,8 +400,12 @@ void treeParse( TreeNode * par, TreeNode * node, SymbolTable * symtable ) {
 		rhs_str = typeToStr(rhs);
 
 		int line = tree->lineno;
-		char * tree_svalue;
 
+		std::string tree_svalue = svalResolve(tree);
+		char * op;
+		op = strdup(opToStr(tree->token).c_str());
+
+		/*
 		// Semi-safe, since we're just printing, which means we can free the copies before recursing
 		if( tree->svalue != NULL ) {
 			tree_svalue = strdup(tree->svalue);
@@ -403,22 +416,22 @@ void treeParse( TreeNode * par, TreeNode * node, SymbolTable * symtable ) {
 		else {
 			tree_svalue = strdup(""); // take that constant string!
 		}
-
+	*/
 
 		// error stream
 		switch(tree->kind) {
 			case OpK:
 				// TODO: typing for operations, char/int
-				char * op;
-				op = opToStr(tree->token);
+				//const char * op;
+				//op = opToStr(tree->token).c_str();
 
 				if( tree->numChildren == 2 ) {
 
-					if(symtable->lookup(tree->child[0]->svalue) == NULL ) {
-						printf("ERROR(%d): Symbol '%s' is not defined.\n", line, tree->child[0]->svalue);
+					if(symtable->lookup(child0_sval) == NULL ) {
+						printf("ERROR(%d): Symbol '%s' is not defined.\n", line, child0_sval.c_str());
 					}
-					if(symtable->lookup(tree->child[0]->svalue) == NULL ) {
-						printf("ERROR(%d): Symbol '%s' is not defined.\n", line, tree->child[0]->svalue);
+					if(symtable->lookup(child0_sval) == NULL ) {
+						printf("ERROR(%d): Symbol '%s' is not defined.\n", line, child0_sval.c_str());
 					}
 
 					if( tree->child[0]->isArray != tree->child[1]->isArray ) {
@@ -460,12 +473,12 @@ void treeParse( TreeNode * par, TreeNode * node, SymbolTable * symtable ) {
 
 			case UnaryK:
 				if( tree->numChildren == 1 ) {
-					if(symtable->lookup(svalResolve(tree->child[0])) == NULL ) {
-						printf("ERROR(%d): Symbol '%s' is not defined.\n", line, tree->child[0]->svalue);
+					if(symtable->lookup(child0_sval) == NULL ) {
+						printf("ERROR(%d): Symbol '%s' is not defined.\n", line, child0_sval.c_str());
 					}
-					else if( tree->child[0]->nodetype != tree->nodetype ) {
+					else if( lhs != tree->nodetype ) {
 						printf("ERROR(%d): Unary '%s' requires an operand of type %s but was given %s.\n",
-								line, tree_svalue, tree_type_str, lhs_str );
+								line, tree_svalue.c_str(), tree_type_str, lhs_str );
 					}
 				}
 				break;
@@ -493,20 +506,20 @@ void treeParse( TreeNode * par, TreeNode * node, SymbolTable * symtable ) {
 			case AssignK:
 				if( tree->numChildren == 1 ) {
 					if( tree->child[0]->kind != ConstK ) {
-						if(symtable->lookup(svalResolve(tree->child[0])) == NULL ) {
-							printf("ERROR(%d): Symbol '%s' is not defined.\n", line, svalResolve(tree->child[0]));
+						if(symtable->lookup(child0_sval) == NULL ) {
+							printf("ERROR(%d): Symbol '%s' is not defined.\n", line, child0_sval.c_str());
 						}
 					}
 				}
 				else if( tree->numChildren == 2 ) {
 					if( tree->child[0]->kind != ConstK ) {
-						if(symtable->lookup(svalResolve(tree->child[0])) == NULL ) {
-							printf("ERROR(%d): Symbol '%s' is not defined.\n", line, svalResolve(tree->child[0]));
+						if(symtable->lookup(child0_sval) == NULL ) {
+							printf("ERROR(%d): Symbol '%s' is not defined.\n", line, child0_sval.c_str());
 						}
 					}
 					if( tree->child[1]->kind != ConstK ) {
-						if(symtable->lookup(svalResolve(tree->child[1])) == NULL ) {
-							printf("ERROR(%d): Symbol '%s' is not defined.\n", line, svalResolve(tree->child[1]));
+						if(symtable->lookup(child1_sval) == NULL ) {
+							printf("ERROR(%d): Symbol '%s' is not defined.\n", line, child1_sval.c_str());
 						}
 					}
 				}
@@ -563,8 +576,8 @@ void treeParse( TreeNode * par, TreeNode * node, SymbolTable * symtable ) {
 				// TODO: svalueSearch(TreeNode * tree)
 			case ReturnK:
 				if( tree->numChildren == 1 && tree->child[0] != NULL ) {
-					if(symtable->lookup(tree->child[0]->svalue) == NULL ) {
-						printf("ERROR(%d): Symbol '%s' is not defined.\n", line, tree->child[0]->svalue);
+					if(symtable->lookup(child0_sval) == NULL ) {
+						printf("ERROR(%d): Symbol '%s' is not defined.\n", line, child0_sval.c_str());
 					}
 					else if(tree->child[0]->isArray) {
 						printf("ERROR(%d): Cannot return an array.\n", line);
@@ -597,23 +610,23 @@ void treeParse( TreeNode * par, TreeNode * node, SymbolTable * symtable ) {
 				if( tree->nodekind == DeclK ) {
 					if( !symtable->insert(tree_svalue, tree) ) {
 						TreeNode * tmp = (TreeNode *)symtable->lookup(tree_svalue);
-						printf("ERROR(%d): Symbol '%s' is already defined at line %d.\n", line, tree_svalue, tmp->lineno );
+						printf("ERROR(%d): Symbol '%s' is already defined at line %d.\n", line, tree_svalue.c_str(), tmp->lineno );
 					}
 				}
 
 				if( tree->numChildren == 1 ) {
 					if( tree->isArray ) {
 						if( tree->child[0] != NULL && tree->child[0]->isIndex ) {
-							if( tree->child[0]->svalue == tree->svalue ) {
-								printf("ERROR(%d): Array index is the unindexed array '%s'.\n", line, tree->svalue ? tree->svalue : "");
+							if( child0_sval == tree_svalue ) {
+								printf("ERROR(%d): Array index is the unindexed array '%s'.\n", line, tree_svalue.c_str());
 							}
-							else if( tree->child[0]->nodetype != Integer ) {
-								printf("ERROR(%d): Array '%s' should be indexed by type int but got %s.\n", line, tree_svalue, lhs_str);
+							else if( lhs != Integer ) {
+								printf("ERROR(%d): Array '%s' should be indexed by type int but got %s.\n", line, tree_svalue.c_str(), lhs_str);
 							}
 						}
 					}
 					else if( tree->child[0]->isIndex ){ // Variables can't have children, right...? Nope, they can. close:bool. lol.
-						printf("ERROR(%d): Cannot index nonarray '%s'.\n", line, tree_svalue);
+						printf("ERROR(%d): Cannot index nonarray '%s'.\n", line, tree_svalue.c_str());
 					}
 				}
 
@@ -624,7 +637,7 @@ void treeParse( TreeNode * par, TreeNode * node, SymbolTable * symtable ) {
 				if( tree->nodekind == DeclK ) {
 					if( !symtable->insert(tree_svalue, tree) ) {
 						TreeNode * tmp = (TreeNode *)symtable->lookup(tree_svalue);
-						printf("ERROR(%d): Symbol '%s' is already defined at line %d.\n", line, tree_svalue, tmp->lineno );
+						printf("ERROR(%d): Symbol '%s' is already defined at line %d.\n", line, tree_svalue.c_str(), tmp->lineno );
 					}
 				}
 				if( parent->kind == CallK ) {
@@ -636,7 +649,7 @@ void treeParse( TreeNode * par, TreeNode * node, SymbolTable * symtable ) {
 				if( tree->nodekind == DeclK ) {
 					if( !symtable->insert(tree_svalue, tree) ) {
 						TreeNode * tmp = (TreeNode *)symtable->lookup(tree_svalue);
-						printf("ERROR(%d): Symbol '%s' is already defined at line %d.\n", line, tree_svalue, tmp->lineno );
+						printf("ERROR(%d): Symbol '%s' is already defined at line %d.\n", line, tree_svalue.c_str(), tmp->lineno );
 					}
 				}
 
@@ -646,7 +659,7 @@ void treeParse( TreeNode * par, TreeNode * node, SymbolTable * symtable ) {
 					|| parent->kind == ReturnK
 					|| parent->kind == ParamK )
 				{
-					printf("ERROR(%d): Cannot use function '%s' as a simple variable.\n", line, tree_svalue);
+					printf("ERROR(%d): Cannot use function '%s' as a simple variable.\n", line, tree_svalue.c_str());
 				}
 				if( tree->nodetype != Void ) {
 					bool returnPresent = false;
@@ -658,20 +671,20 @@ void treeParse( TreeNode * par, TreeNode * node, SymbolTable * symtable ) {
 					}
 					if(!returnPresent) {
 						printf("WARNING(%d): Expecting to return type %s but function '%s' has no return statement.\n",
-								line, tree_type_str, tree_svalue );
+								line, tree_type_str, tree_svalue.c_str() );
 					}
 				}
 				break;
 
 			case CallK:
 				if( tree->svalue != NULL ) {
-					TreeNode * temp = (TreeNode *)symtable->lookup(tree->svalue);
+					TreeNode * temp = (TreeNode *)symtable->lookup(tree_svalue);
 					if(temp == NULL ) {
-						printf("ERROR(%d): Symbol '%s' is not defined.\n", line, tree_svalue);
+						printf("ERROR(%d): Symbol '%s' is not defined.\n", line, tree_svalue.c_str());
 					}
 					else {
 						if( temp->kind != FunK ) {
-							printf("ERROR(%d): '%s' is a simple variable and cannot be called.\n", line, tree_svalue);
+							printf("ERROR(%d): '%s' is a simple variable and cannot be called.\n", line, tree_svalue.c_str());
 						}
 					}
 				}
@@ -694,9 +707,10 @@ void treeParse( TreeNode * par, TreeNode * node, SymbolTable * symtable ) {
 			symtable->leave();
 		}
 
-		free(tree_svalue);
-		free(child0_sval);
-		free(child1_sval);
+		//free(tree_svalue);
+		free(op);
+		//free(child0_sval);
+		//free(child1_sval);
 
 		tree = tree->sibling; // Jump to the next sibling
 		sibling_count++;
@@ -806,7 +820,8 @@ void appplyTypeToChildren( TreeNode * parent, Type t ) {
 
 // Allocates and zeros a new TreeNode
 TreeNode * allocNode() {
-	TreeNode * tempNode = (TreeNode *)calloc(1, sizeof(TreeNode));
+	//TreeNode * tempNode = (TreeNode *)calloc(1, sizeof(TreeNode));
+	TreeNode * tempNode = (TreeNode *)new TreeNode;
 	tempNode->token = NULL;
 	tempNode->lineno = 0;
 	tempNode->svalue = NULL;
@@ -846,7 +861,8 @@ void freeTree( TreeNode * tree ) {
 		}
 
 		prev = prev->sibling;
-		free(temp);
+		delete(temp);
+		//free(temp);
 	} // end while
 }
 
@@ -890,27 +906,34 @@ const char * typeToStr( Type t ) {
 	return "";
 }
 
-char * opToStr( TokenData * tok ) {
-	if( tok->svalue != NULL ) {
-		return strdup(tok->svalue);
+std::string opToStr( TokenData * tok ) {
+
+	std::string temp;
+
+	if( tok != NULL ) {
+		if( tok->svalue != NULL ) {
+			temp.assign(tok->svalue);
+		}
+		else {
+			temp.push_back(tok->cvalue);
+		}
 	}
-	else {
-		char * ptr = (char *)malloc(sizeof(char));
-		*ptr = tok->cvalue;
-		return ptr;
-	}
+
+	return temp;
 }
 
-char * svalResolve( TreeNode * tree ) {
-	if( tree->svalue != NULL ) {
-		return strdup(tree->svalue);
+std::string svalResolve( TreeNode * tree ) {
+
+	std::string temp;
+	if( tree != NULL ) {
+		if( tree->svalue != NULL ) {
+			temp.assign(tree->svalue);
+		}
+		else if( tree->token != NULL ) {
+			temp = opToStr(tree->token);
+		}
 	}
-	else if( tree->token != NULL ) {
-		return opToStr(tree->token);
-	}
-	else {
-		return strdup(""); // take that constant string!
-	}
+	return temp;
 }
 
 // TODO: makes assumption about indentation

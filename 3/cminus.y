@@ -731,7 +731,7 @@ int main( int argc, char* argv[] ) {
 	// TODO: build I/O library tree
 	if(annotated_tree) {
 		annotatedTree = syntaxTree; // TODO: temp	
-		semanticAnalysis(annotatedTree);
+		//semanticAnalysis(annotatedTree);
 		printAnnotatedTree(annotatedTree, 0);
 	}
 	

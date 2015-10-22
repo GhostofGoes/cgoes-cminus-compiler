@@ -23,7 +23,7 @@ void printAbstractTree(TreeNode * tree, int indent_count);
 // Prints the annotated syntax tree
 void printAnnotatedTree(TreeNode * tree, int indent_count);
 
-// Creates? and returns the Annotated Syntax Tree
+// Creates the Annotated Syntax Tree
 void semanticAnalysis(TreeNode * tree );
 void treeParse( TreeNode * parent, TreeNode * node, SymbolTable * symtable );
 
@@ -57,8 +57,8 @@ void freeToken( TokenData * token );
 const char * iboolToString( int ib );
 std::string applyIndents( std::string s, int indent_count );
 const char * typeToStr( Type t );
-char * opToStr( TokenData * tok );
-char * svalResolve( TreeNode * tree );
+std::string opToStr( TokenData * tok );
+std::string svalResolve( TreeNode * tree );
 
 void printError( int line, std::string err );
 void printWarning( int line, std::string warn );
