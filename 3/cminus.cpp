@@ -666,12 +666,12 @@ void treeParse( TreeNode * par, TreeNode * node, SymbolTable * symtable ) {
 
 			case OpK:
 				if( tree->numChildren == 2 ) {
-					if(symtable->lookup(child0_sval) == NULL ) {
+					if(tree->child[0]->kind == IdK && symtable->lookup(child0_sval) == NULL ) {
 						printf("ERROR(%d): Symbol '%s' is not defined.\n", line, child0_sval.c_str());
 						errors++;
 					}
-					if(symtable->lookup(child0_sval) == NULL ) {
-						printf("ERROR(%d): Symbol '%s' is not defined.\n", line, child0_sval.c_str());
+					if(tree->child[0]->kind == IdK && symtable->lookup(child1_sval) == NULL ) {
+						printf("ERROR(%d): Symbol '%s' is not defined.\n", line, child1_sval.c_str());
 						errors++;
 					}
 
@@ -736,7 +736,7 @@ void treeParse( TreeNode * par, TreeNode * node, SymbolTable * symtable ) {
 
 			case UnaryK:
 				if( tree->numChildren == 1 ) {
-					if(symtable->lookup(child0_sval) == NULL ) {
+					if(tree->child[0]->kind == IdK && symtable->lookup(child0_sval) == NULL ) {
 						printf("ERROR(%d): Symbol '%s' is not defined.\n", line, child0_sval.c_str());
 						errors++;
 					}
