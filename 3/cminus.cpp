@@ -408,22 +408,21 @@ void treeParse( TreeNode * par, TreeNode * node, SymbolTable * symtable ) {
 
 		int sibling_count = 0; // Keeps track of siblings
 
-		if(sibling_count > 0) {
-
-		}
-
-		//std::string op;
 		Type lhs = Void;
 		Type rhs = Void;
+		std::string child0_sval;
+		std::string child1_sval;
+		std::string tree_svalue = svalResolve(tree);
+		std::string op = opToStr(tree->token);
+
 		if(tree->child[0] != NULL ) {
 			lhs = tree->child[0]->nodetype;
+			child0_sval = svalResolve(tree->child[0]);
 		}
 		if(tree->child[1] != NULL ) {
 			rhs = tree->child[1]->nodetype;
+			child1_sval = svalResolve(tree->child[1]);
 		}
-
-		std::string child0_sval = svalResolve(tree->child[0]);
-		std::string child1_sval = svalResolve(tree->child[1]);
 
 		const char * lhs_str;
 		const char * rhs_str;
@@ -434,32 +433,14 @@ void treeParse( TreeNode * par, TreeNode * node, SymbolTable * symtable ) {
 
 		int line = tree->lineno;
 
-		std::string tree_svalue = svalResolve(tree);
-		char * op;
-		op = strdup(opToStr(tree->token).c_str());
 
-		/*
-		// Semi-safe, since we're just printing, which means we can free the copies before recursing
-		if( tree->svalue != NULL ) {
-			tree_svalue = strdup(tree->svalue);
-		}
-		else if( tree->token != NULL ) {
-			tree_svalue = opToStr(tree->token);
-		}
-		else {
-			tree_svalue = strdup(""); // take that constant string!
-		}
-	*/
 
 		// error stream
 		switch(tree->kind) {
 			case OpK:
 				// TODO: typing for operations, char/int
-				//const char * op;
-				//op = opToStr(tree->token).c_str();
 
 				if( tree->numChildren == 2 ) {
-
 					if(symtable->lookup(child0_sval) == NULL ) {
 						printf("ERROR(%d): Symbol '%s' is not defined.\n", line, child0_sval.c_str());
 					}
@@ -468,17 +449,12 @@ void treeParse( TreeNode * par, TreeNode * node, SymbolTable * symtable ) {
 					}
 
 					if( tree->child[0]->isArray != tree->child[1]->isArray ) {
-						// TODO: fprintf to stream passed to function
 						printf("ERROR(%d): '%s' requires that if one operand is an array so must the other operand.\n", line, op);
 						//err = std::string("") + "'" + op + "' requires that if one operand is an array so must the other operand";
 						//printError(line, err);
 					}
-					/*
-					if( tree->child[0]->nodekind == FunK || tree->child[1]->nodekind == FunK ) {
-						err << "Cannot use function '" <<
-					}
-					*/
 
+					// TODO: op table lookup
 					if( rhs != tree->nodetype ) {
 						printf("ERROR(%d): '%s' requires operands of type %s but rhs is of type %s.\n", line, op, tree_type_str, rhs_str);
 					}
@@ -517,20 +493,6 @@ void treeParse( TreeNode * par, TreeNode * node, SymbolTable * symtable ) {
 				break;
 
 			case ConstK:
-				if(tree->nodetype == Boolean) {
-					//outstr.append(iboolToString(tree->token->ivalue));
-				}
-				else if(tree->nodetype == Integer) {
-					//outstr += tree->token->ivalue;
-				}
-				else if(tree->nodetype == Character) {
-					if(tree->token->svalue != NULL ) {
-
-					}
-					else {
-
-					}
-				}
 				break;
 
 			case IdK:
@@ -538,19 +500,19 @@ void treeParse( TreeNode * par, TreeNode * node, SymbolTable * symtable ) {
 
 			case AssignK:
 				if( tree->numChildren == 1 ) {
-					if( tree->child[0]->kind != ConstK ) {
+					if( tree->child[0]->kind == VarK || tree->child[0]->kind == CallK ) {
 						if(symtable->lookup(child0_sval) == NULL ) {
 							printf("ERROR(%d): Symbol '%s' is not defined.\n", line, child0_sval.c_str());
 						}
 					}
 				}
 				else if( tree->numChildren == 2 ) {
-					if( tree->child[0]->kind != ConstK ) {
+					if( tree->child[0]->kind == VarK || tree->child[0]->kind == CallK ) {
 						if(symtable->lookup(child0_sval) == NULL ) {
 							printf("ERROR(%d): Symbol '%s' is not defined.\n", line, child0_sval.c_str());
 						}
 					}
-					if( tree->child[1]->kind != ConstK ) {
+					if( tree->child[0]->kind == VarK || tree->child[0]->kind == CallK ) {
 						if(symtable->lookup(child1_sval) == NULL ) {
 							printf("ERROR(%d): Symbol '%s' is not defined.\n", line, child1_sval.c_str());
 						}
@@ -575,10 +537,6 @@ void treeParse( TreeNode * par, TreeNode * node, SymbolTable * symtable ) {
 
 			case ForeachK:
 				if( tree->numChildren)  {
-					Type lhs, rhs;
-					lhs = tree->child[0]->nodetype;
-					rhs = tree->child[1]->nodetype;
-
 					if( tree->child[0]->isArray ) {
 						printf("ERROR(%d): In foreach statement the variable to the left of 'in' must not be an array.\n", line);
 					}
@@ -606,7 +564,6 @@ void treeParse( TreeNode * par, TreeNode * node, SymbolTable * symtable ) {
 				}
 				break;
 
-				// TODO: svalueSearch(TreeNode * tree)
 			case ReturnK:
 				if( tree->numChildren == 1 && tree->child[0] != NULL ) {
 					if(symtable->lookup(child0_sval) == NULL ) {

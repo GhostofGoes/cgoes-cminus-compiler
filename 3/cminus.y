@@ -761,7 +761,7 @@ int main( int argc, char* argv[] ) {
 		annotatedTree = out;
 		
 		
-		//semanticAnalysis(annotatedTree);
+		semanticAnalysis(annotatedTree);
 		printAnnotatedTree(annotatedTree, 0);
 	}
 	
