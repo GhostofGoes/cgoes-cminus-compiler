@@ -34,7 +34,7 @@ void printAbstractTree(TreeNode * og, int indent_count) {
 			outstr.clear();
 		}
 
-		switch(tree->nodekind) {
+		switch(tree->kind) {
 			case OpK:
 				outstr += "Op: ";
 				if( tree->token->svalue != NULL ) {
@@ -115,7 +115,7 @@ void printAbstractTree(TreeNode * og, int indent_count) {
 
 			case VarK:
 			case ParamK:
-				if(tree->nodekind == VarK)
+				if(tree->kind == VarK)
 					{ outstr.append("Var "); }
 				else
 					{ outstr.append("Param "); }
@@ -171,8 +171,167 @@ void printAbstractTree(TreeNode * og, int indent_count) {
 }
 
 // Prints the Annotated Syntax Tree 
-void printAnnotatedTree( TreeNode * tree, int indent_count ) {
-	printAbstractTree(tree, indent_count);
+void printAnnotatedTree( TreeNode * og, int indent_count ) {
+
+	// ***
+	//TODO: placeholder for testing
+	printAbstractTree(og, indent_count);
+	return;
+	// ***
+
+	TreeNode * tree = og;
+	int sibling_count = 0; // Keeps track of siblings
+
+	// Output buffer (TODO: string stream better option?)
+	std::string outstr;
+
+	// Prints all nodes of the tree
+	while( tree != NULL ) {
+
+		if(sibling_count > 0) {
+			outstr.append("|Sibling: ");
+			//outstr += sibling_count;
+			outstr.append(std::to_string(sibling_count));
+			outstr.append("  ");
+			std::cout << applyIndents(outstr, indent_count);
+			std::cout.flush();
+			outstr.clear();
+		}
+
+		switch(tree->kind) {
+			case OpK:
+				outstr += "Op: ";
+				if( tree->token->svalue != NULL ) {
+					outstr += tree->token->svalue;
+				}
+				else {
+					outstr.push_back(tree->token->cvalue);
+				}
+				break;
+
+			case UnaryK:
+				outstr.append("Op: ");
+				outstr.push_back(tree->token->cvalue);
+				break;
+
+			case ConstK:
+				outstr.append("Const: ");
+				if(tree->nodetype == Boolean) {
+					outstr.append(iboolToString(tree->token->ivalue));
+				}
+				else if(tree->nodetype == Integer) {
+					outstr += tree->token->ivalue;
+				}
+				else if(tree->nodetype == Character) {
+					if(tree->token->svalue != NULL ) {
+						outstr += '"';
+						outstr += tree->token->svalue ? tree->token->svalue : "";
+						outstr += '"';
+					}
+					else {
+						outstr += '\'';
+						outstr += (tree->token->cvalue);
+						outstr += '\'';
+					}
+				}
+				break;
+
+			case IdK:
+				outstr.append("Id: ");
+				outstr.append(tree->token->svalue ? tree->token->svalue : "");
+				break;
+
+			case AssignK:
+				outstr.append("Assign: ");
+
+				if( tree->nodetype == Void ) {
+					outstr.push_back(tree->token->cvalue);
+				}
+				if( tree->nodetype == Integer ) {
+					outstr += tree->token->svalue ? tree->token->svalue : "";
+				}
+
+				break;
+
+			case IfK:
+				outstr.append("If");
+				break;
+
+			case CompoundK:
+				outstr.append("Compound");
+				break;
+
+			case ForeachK:
+				outstr.append("Foreach");
+				break;
+
+			case WhileK:
+				outstr.append("While");
+				break;
+
+			case ReturnK:
+				outstr.append("Return");
+				break;
+
+			case BreakK:
+				outstr.append("Break");
+				break;
+
+			case VarK:
+			case ParamK:
+				if(tree->kind == VarK)
+					{ outstr.append("Var "); }
+				else
+					{ outstr.append("Param "); }
+				outstr.append(tree->svalue ? tree->svalue : "");
+				if(tree->isArray)
+					{ outstr.append(" is array"); }
+				outstr.append(" of type ");
+				outstr.append(typeToStr(tree->nodetype));
+				break;
+
+			case FunK:
+				outstr.append("Func ");
+				outstr.append(tree->svalue ? tree->svalue : "");
+				outstr.append(" returns type ");
+				outstr.append(typeToStr(tree->nodetype));
+				break;
+
+			case CallK:
+				outstr.append("Call: ");
+				outstr.append(tree->svalue ? tree->svalue : "");
+				break;
+			default:
+				outstr.append("\nWe shouldn't get here\n");
+				break;
+
+		} // end switch
+
+		std::cout << outstr << " [line: " << tree->lineno << "]" << std::endl;
+		std::cout.flush();
+		outstr.clear();
+
+		// Check if there are children
+		// TODO: check for NULL children
+		if( tree->numChildren > 0 ) {
+			for ( int i = 0; i < tree->numChildren; i++ ) {
+				if(tree->child[i] != NULL ) {
+					outstr.append("|   Child: ");
+					//outstr += i;
+					outstr.append(std::to_string(i));
+					outstr.append("  ");
+					std::cout << applyIndents(outstr, indent_count);
+					std::cout.flush();
+					outstr.clear();
+					printAbstractTree(tree->child[i], indent_count + 1);
+				}
+			}
+		}
+
+		tree = tree->sibling; // Jump to the next sibling
+		sibling_count++;
+	} // end while
+
 }
 
 // Performs semantic analysis, generating the Annotated Syntax Tree
@@ -244,7 +403,7 @@ void treeParse( TreeNode * par, TreeNode * node, SymbolTable * symtable ) {
 
 
 		// error stream
-		switch(tree->nodekind) {
+		switch(tree->kind) {
 			case OpK:
 				// TODO: typing for operations, char/int
 				// TODO: proper operation printing, string/char
@@ -377,7 +536,7 @@ void treeParse( TreeNode * par, TreeNode * node, SymbolTable * symtable ) {
 						printf("ERROR(%d): Cannot return an array.\n", line);
 					}
 				}
-				if( parent->nodekind == FunK ) {
+				if( parent->kind == FunK ) {
 					if( parent->nodetype == Void && tree->nodetype != Void ) {
 						printf("ERROR(%d): Function '%s' at line %d is expecting no return value, but return has return value.\n",
 								line, parent->svalue ? parent->svalue : "", parent->lineno);
@@ -394,7 +553,7 @@ void treeParse( TreeNode * par, TreeNode * node, SymbolTable * symtable ) {
 				break;
 
 			case BreakK:
-				if( parent->nodekind != ForeachK || parent->nodekind != WhileK ) {
+				if( parent->kind != ForeachK || parent->kind != WhileK ) {
 					printf("ERROR(%d): Cannot have a break statement outside of loop.\n", line);
 				}
 				break;
@@ -420,24 +579,24 @@ void treeParse( TreeNode * par, TreeNode * node, SymbolTable * symtable ) {
 
 			case ParamK:
 
-				if( parent->nodekind == CallK ) {
+				if( parent->kind == CallK ) {
 
 				}
 				break;
 
 			case FunK:
-				if( parent->nodekind == OpK
-					|| parent->nodekind == UnaryK
-					|| parent->nodekind == AssignK
-					|| parent->nodekind == ReturnK
-					|| parent->nodekind == ParamK )
+				if( parent->kind == OpK
+					|| parent->kind == UnaryK
+					|| parent->kind == AssignK
+					|| parent->kind == ReturnK
+					|| parent->kind == ParamK )
 				{
 					printf("ERROR(%d): Cannot use function '%s' as a simple variable.\n", line, tree_svalue);
 				}
 				if( tree->nodetype != Void ) {
 					bool returnPresent = false;
 					for( int i = 0; i < tree->numChildren; i++ ) {
-						if( tree->child[i]->nodekind == ReturnK ) {
+						if( tree->child[i]->kind == ReturnK ) {
 							returnPresent = true;
 							break;
 						}
@@ -456,7 +615,7 @@ void treeParse( TreeNode * par, TreeNode * node, SymbolTable * symtable ) {
 
 					}
 					else {
-						if( temp->nodekind != FunK ) {
+						if( temp->kind != FunK ) {
 							printf("ERROR(%d): '%s' is a simple variable and cannot be called.\n", line, tree_svalue);
 						}
 					}
@@ -476,7 +635,7 @@ void treeParse( TreeNode * par, TreeNode * node, SymbolTable * symtable ) {
 			}
 		}
 
-		if( tree->nodekind == CompoundK ) {
+		if( tree->kind == CompoundK ) {
 			symtable->leave();
 		}
 
@@ -494,9 +653,10 @@ void generateCode() {
 
 // Creates a new node for the syntax tree
 // TODO: combine with make parent?
-TreeNode * makeNode( Kind k, Type t, int line, char * svalue, TokenData * token ) {
+TreeNode * makeNode( NodeKind nk, Kind k, Type t, int line, char * svalue, TokenData * token ) {
 	TreeNode * tempNode = allocNode();
-	tempNode->nodekind = k;
+	tempNode->nodekind = nk;
+	tempNode->kind = k;
 	tempNode->nodetype = t;
 	tempNode->lineno = line;
 	if( svalue != NULL ) {
@@ -509,11 +669,12 @@ TreeNode * makeNode( Kind k, Type t, int line, char * svalue, TokenData * token 
 	return tempNode;
 }
 
-TreeNode * makeParent( Kind k, Type t, int l, char * svalue ) {
+TreeNode * makeParent( NodeKind nk, Kind k, Type t, int l, char * svalue ) {
 	TreeNode * tempNode = allocNode();
-	tempNode->lineno = l;
-	tempNode->nodekind = k;
+	tempNode->nodekind = nk;
+	tempNode->kind = k;
 	tempNode->nodetype = t;
+	tempNode->lineno = l;
 	if(svalue != NULL) {
 		tempNode->svalue = strdup(svalue);
 	}
@@ -592,6 +753,7 @@ TreeNode * allocNode() {
 	tempNode->lineno = 0;
 	tempNode->svalue = NULL;
 	tempNode->nodetype = Void;
+	tempNode->nodekind = DefaultK;
 	tempNode->numChildren = 0;
 	tempNode->sibling = NULL;
 	tempNode->isStatic = false;

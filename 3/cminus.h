@@ -31,8 +31,8 @@ void treeParse( TreeNode * parent, TreeNode * node, SymbolTable * symtable );
 void generateCode();
 
 // Creates a new node for the syntax tree
-TreeNode * makeNode( Kind k, Type t, int line, char * svalue, TokenData * token );
-TreeNode * makeParent( Kind k, Type t, int line, char * svalue );
+TreeNode * makeNode( NodeKind nk, Kind k, Type t, int line, char * svalue, TokenData * token );
+TreeNode * makeParent( NodeKind nk, Kind k, Type t, int line, char * svalue );
 
 // Adds a child to an existing syntax tree node
 void addChild( TreeNode * parent, TreeNode * child );
