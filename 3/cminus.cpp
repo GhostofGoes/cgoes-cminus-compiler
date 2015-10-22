@@ -448,20 +448,25 @@ void treeParse( TreeNode * par, TreeNode * node, SymbolTable * symtable ) {
 				if( !symtable->insert(tree_svalue, tree) ) {
 					TreeNode * tmp = (TreeNode *)symtable->lookup(tree_svalue);
 					printf("ERROR(%d): Symbol '%s' is already defined at line %d.\n", line, tree_svalue.c_str(), tmp->lineno );
+					errors++;
 				}
 				if( tree->numChildren == 1 ) {
 					if( tree->isArray ) {
 						if( tree->child[0] != NULL && tree->child[0]->isIndex ) {
 							if( child0_sval == tree_svalue ) {
 								printf("ERROR(%d): Array index is the unindexed array '%s'.\n", line, tree_svalue.c_str());
+								errors++;
 							}
 							else if( lhs != Integer ) {
-								printf("ERROR(%d): Array '%s' should be indexed by type int but got %s.\n", line, tree_svalue.c_str(), lhs_str);
+								printf("ERROR(%d): Array '%s' should be indexed by type int but got %s.\n",
+										line, tree_svalue.c_str(), lhs_str);
+								errors++;
 							}
 						}
 					}
 					else if( tree->child[0]->isIndex ){ // Variables can't have children, right...? Nope, they can. close:bool. lol.
 						printf("ERROR(%d): Cannot index nonarray '%s'.\n", line, tree_svalue.c_str());
+						errors++;
 					}
 				}
 
@@ -472,6 +477,7 @@ void treeParse( TreeNode * par, TreeNode * node, SymbolTable * symtable ) {
 				if( !symtable->insert(tree_svalue, tree) ) {
 					TreeNode * tmp = (TreeNode *)symtable->lookup(tree_svalue);
 					printf("ERROR(%d): Symbol '%s' is already defined at line %d.\n", line, tree_svalue.c_str(), tmp->lineno );
+					errors++;
 				}
 				break;
 
@@ -479,6 +485,7 @@ void treeParse( TreeNode * par, TreeNode * node, SymbolTable * symtable ) {
 				if( !symtable->insert(tree_svalue, tree) ) {
 					TreeNode * tmp = (TreeNode *)symtable->lookup(tree_svalue);
 					printf("ERROR(%d): Symbol '%s' is already defined at line %d.\n", line, tree_svalue.c_str(), tmp->lineno );
+					errors++;
 				}
 				else if( tree->nodetype != Void ) {
 					bool returnPresent = false;
@@ -493,6 +500,7 @@ void treeParse( TreeNode * par, TreeNode * node, SymbolTable * symtable ) {
 					if(!returnPresent) {
 						printf("WARNING(%d): Expecting to return type %s but function '%s' has no return statement.\n",
 								line, tree_type_str, tree_svalue.c_str() );
+						warnings++;
 					}
 				}
 				break;
@@ -512,9 +520,11 @@ void treeParse( TreeNode * par, TreeNode * node, SymbolTable * symtable ) {
 				if( tree->numChildren == 2 ) {
 					if( tree->child[0]->isArray ) {
 						printf("ERROR(%d): Cannot use array as test condition in if statement.\n", line);
+						errors++;
 					}
 					else if( tree->child[0]->nodetype != Boolean ) {
 						printf("ERROR(%d): Expecting Boolean test condition in if statement but got type %s.\n", line, lhs_str);
+						errors++;
 					}
 				}
 				break;
@@ -527,16 +537,22 @@ void treeParse( TreeNode * par, TreeNode * node, SymbolTable * symtable ) {
 				if( tree->numChildren)  {
 					if( tree->child[0]->isArray ) {
 						printf("ERROR(%d): In foreach statement the variable to the left of 'in' must not be an array.\n", line);
+						errors++;
 					}
 					else if ( lhs != Integer ) {
-						printf("ERROR(%d): If not an array, foreach requires lhs of 'in' be of type int but it is type %s.\n", line, lhs_str);
+						printf("ERROR(%d): If not an array, foreach requires lhs of 'in' be of type int but it is type %s.\n",
+								line, lhs_str);
+						errors++;
 					}
 					if( rhs != Integer ) {
-						printf("ERROR(%d): If not an array, foreach requires rhs of 'in' be of type int but it is type %s.\n", line, rhs_str);
+						printf("ERROR(%d): If not an array, foreach requires rhs of 'in' be of type int but it is type %s.\n",
+								line, rhs_str);
+						errors++;
 					}
 					if( lhs != rhs ) {
 						printf("ERROR(%d): Foreach requires operands of 'in' be the same type but lhs is type %s and rhs array is type %s.\n",
 								line, lhs_str, rhs_str);
+						errors++;
 					}
 				}
 				break;
@@ -545,9 +561,11 @@ void treeParse( TreeNode * par, TreeNode * node, SymbolTable * symtable ) {
 				if( tree->numChildren == 2 ) {
 					if( tree->child[0]->isArray ) {
 						printf("ERROR(%d): Cannot use array as test condition in while statement.\n", line);
+						errors++;
 					}
 					else if( tree->child[0]->nodetype != Boolean ) {
 						printf("ERROR(%d): Expecting Boolean test condition in while statement but got type %s.\n", line, lhs_str);
+						errors++;
 					}
 				}
 				break;
@@ -556,9 +574,11 @@ void treeParse( TreeNode * par, TreeNode * node, SymbolTable * symtable ) {
 				if( tree->numChildren == 1 && tree->child[0] != NULL ) {
 					if(symtable->lookup(child0_sval) == NULL ) {
 						printf("ERROR(%d): Symbol '%s' is not defined.\n", line, child0_sval.c_str());
+						errors++;
 					}
 					else if(tree->child[0]->isArray) {
 						printf("ERROR(%d): Cannot return an array.\n", line);
+						errors++;
 					}
 
 				}
@@ -566,14 +586,17 @@ void treeParse( TreeNode * par, TreeNode * node, SymbolTable * symtable ) {
 					if( parent->nodetype == Void && tree->nodetype != Void ) {
 						printf("ERROR(%d): Function '%s' at line %d is expecting no return value, but return has return value.\n",
 								line, parent->svalue ? parent->svalue : "", parent->lineno);
+						errors++;
 					}
 					else if( parent->nodetype != Void && tree->nodetype == Void ) {
 						printf("ERROR(%d): Function '%s' at line %d is expecting to return type %s but return has no return value.\n",
 								line, parent->svalue ? parent->svalue : "", parent->lineno, typeToStr(parent->nodetype));
+						errors++;
 					}
 					else if( parent->nodetype != tree->nodetype ) {
 						printf("ERROR(%d): Function '%s' at line %d is expecting to return type %s but got %s.\n",
 								line, parent->svalue ? parent->svalue : "", parent->lineno, typeToStr(parent->nodetype), tree_type_str);
+						errors++;
 					}
 				}
 				break;
@@ -581,6 +604,7 @@ void treeParse( TreeNode * par, TreeNode * node, SymbolTable * symtable ) {
 			case BreakK:
 				if( parent->kind != ForeachK || parent->kind != WhileK ) {
 					printf("ERROR(%d): Cannot have a break statement outside of loop.\n", line);
+					errors++;
 				}
 				break;
 
@@ -599,6 +623,7 @@ void treeParse( TreeNode * par, TreeNode * node, SymbolTable * symtable ) {
 					if( tree->child[0]->kind == VarK || tree->child[0]->kind == CallK ) {
 						if(symtable->lookup(child0_sval) == NULL ) {
 							printf("ERROR(%d): Symbol '%s' is not defined.\n", line, child0_sval.c_str());
+							errors++;
 						}
 					}
 				}
@@ -606,11 +631,13 @@ void treeParse( TreeNode * par, TreeNode * node, SymbolTable * symtable ) {
 					if( tree->child[0]->kind == VarK || tree->child[0]->kind == CallK ) {
 						if(symtable->lookup(child0_sval) == NULL ) {
 							printf("ERROR(%d): Symbol '%s' is not defined.\n", line, child0_sval.c_str());
+							errors++;
 						}
 					}
 					if( tree->child[0]->kind == VarK || tree->child[0]->kind == CallK ) {
 						if(symtable->lookup(child1_sval) == NULL ) {
 							printf("ERROR(%d): Symbol '%s' is not defined.\n", line, child1_sval.c_str());
+							errors++;
 						}
 					}
 				}
@@ -621,10 +648,12 @@ void treeParse( TreeNode * par, TreeNode * node, SymbolTable * symtable ) {
 					TreeNode * temp = (TreeNode *)symtable->lookup(tree_svalue);
 					if(temp == NULL ) {
 						printf("ERROR(%d): Symbol '%s' is not defined.\n", line, tree_svalue.c_str());
+						errors++;
 					}
 					else {
 						if( temp->kind != FunK ) {
 							printf("ERROR(%d): '%s' is a simple variable and cannot be called.\n", line, tree_svalue.c_str());
+							errors++;
 						}
 					}
 				}
@@ -632,19 +661,23 @@ void treeParse( TreeNode * par, TreeNode * node, SymbolTable * symtable ) {
 
 			case FunK:
 				printf("ERROR(%d): Cannot use function '%s' as a simple variable.\n", line, tree_svalue.c_str());
+				errors++;
 				break;
 
 			case OpK:
 				if( tree->numChildren == 2 ) {
 					if(symtable->lookup(child0_sval) == NULL ) {
 						printf("ERROR(%d): Symbol '%s' is not defined.\n", line, child0_sval.c_str());
+						errors++;
 					}
 					if(symtable->lookup(child0_sval) == NULL ) {
 						printf("ERROR(%d): Symbol '%s' is not defined.\n", line, child0_sval.c_str());
+						errors++;
 					}
 
 					if( tree->child[0]->isArray != tree->child[1]->isArray ) {
 						printf("ERROR(%d): '%s' requires that if one operand is an array so must the other operand.\n", line, op.c_str());
+						errors++;
 						//err = std::string("") + "'" + op + "' requires that if one operand is an array so must the other operand";
 						//printError(line, err);
 					}
@@ -653,21 +686,21 @@ void treeParse( TreeNode * par, TreeNode * node, SymbolTable * symtable ) {
 					// TODO: typing for operations, char/int
 					if( rhs != tree->nodetype ) {
 						printf("ERROR(%d): '%s' requires operands of type %s but rhs is of type %s.\n", line, op.c_str(), tree_type_str, rhs_str);
-						error++;
+						errors++;
 					}
 					if( lhs != tree->nodetype ) {
 						printf("ERROR(%d): '%s' requires operands of type %s but lhs is of type %s.\n",
 								line, op.c_str(), tree_type_str, lhs_str);
-						error++;
+						errors++;
 					}
 					if( lhs != rhs ) {
 						printf("ERROR(%d): '%s' requires operands of the same type but lhs is type %s and rhs is %s.\n",
 								line, op.c_str(), lhs_str, rhs_str);
-						error++;
+						errors++;
 					}
 					if( tree->child[0]->isArray != tree->child[1]->isArray ) {
 						printf("ERROR(%d): '%s' requires that if one operand is an array so must the other operand.\n", line, op.c_str());
-						error++;
+						errors++;
 					}
 				}
 				// TODO: works/doesn't work with arrays
@@ -680,19 +713,23 @@ void treeParse( TreeNode * par, TreeNode * node, SymbolTable * symtable ) {
 						if( tmp->nodetype != tree->nodetype ) {
 							printf("ERROR(%d): Expecting type %s in parameter %i of call to '%s' defined on line %d but got %s.\n",
 								line, typeToStr(tmp->nodetype), sibling_count, svalResolve(parent).c_str(), parent->lineno, typeToStr(tree->nodetype) );
+							errors++;
 						}
 
 						if( tmp->isArray && !tree->isArray ) {
 							printf("ERROR(%d): Expecting array in parameter %i of call to '%s' defined on line %d.\n",
 								line, sibling_count, svalResolve(parent).c_str(), parent->lineno);
+							errors++;
 						}
 						else if( !tmp->isArray && tree->isArray ) {
 							printf("ERROR(%d): Not expecting array in parameter %i of call to '%s' defined on line %d.\n",
 								line, sibling_count, svalResolve(parent).c_str(), parent->lineno);
+							errors++;
 						}
 
 					} else {
 						printf("ERROR(%d): Symbol '%s' is not defined.\n", line, tree_svalue.c_str());
+						errors++;
 					}
 				}
 				break;
@@ -701,10 +738,12 @@ void treeParse( TreeNode * par, TreeNode * node, SymbolTable * symtable ) {
 				if( tree->numChildren == 1 ) {
 					if(symtable->lookup(child0_sval) == NULL ) {
 						printf("ERROR(%d): Symbol '%s' is not defined.\n", line, child0_sval.c_str());
+						errors++;
 					}
 					else if( lhs != tree->nodetype ) {
 						printf("ERROR(%d): Unary '%s' requires an operand of type %s but was given %s.\n",
 								line, tree_svalue.c_str(), tree_type_str, lhs_str );
+						errors++;
 					}
 				}
 				break;
