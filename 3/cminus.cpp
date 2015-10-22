@@ -189,7 +189,8 @@ void semanticAnalysis( TreeNode * og ) {
 
 void treeParse( TreeNode * par, TreeNode * node, SymbolTable * symtable ) {
 
-	TreeNode * tree = node;
+	TreeNode * tree;
+	tree = node;
 	//std::string err;
 
 	TreeNode * parent;
@@ -228,15 +229,17 @@ void treeParse( TreeNode * par, TreeNode * node, SymbolTable * symtable ) {
 		rhs_str = typeToStr(rhs);
 
 		int line = tree->lineno;
-		const char * tree_svalue;
+		char * tree_svalue;
+
+		// Semi-safe, since we're just printing, which means we can free the copies before recursing
 		if( tree->svalue != NULL ) {
-			tree_svalue = tree->svalue;
+			tree_svalue = strdup(tree->svalue);
 		}
 		else if( tree->token != NULL ) {
 			tree_svalue = opToStr(tree->token);
 		}
 		else {
-			tree_svalue = "";
+			tree_svalue = strdup(""); // take that constant string!
 		}
 
 
@@ -263,10 +266,10 @@ void treeParse( TreeNode * par, TreeNode * node, SymbolTable * symtable ) {
 					}
 					*/
 
-					if( lhs != tree->nodetype ) {
+					if( rhs != tree->nodetype ) {
 						printf("ERROR(%d): '%s' requires operands of type %s but rhs is of type %s.\n", line, op, tree_type_str, rhs_str);
 					}
-					if( rhs != tree->nodetype ) {
+					if( lhs != tree->nodetype ) {
 						printf("ERROR(%d): '%s' requires operands of type %s but lhs is of type %s.\n", line, op, tree_type_str, lhs_str);
 					}
 					if( lhs != rhs ) {
@@ -476,6 +479,8 @@ void treeParse( TreeNode * par, TreeNode * node, SymbolTable * symtable ) {
 		if( tree->nodekind == CompoundK ) {
 			symtable->leave();
 		}
+
+		free(tree_svalue);
 		tree = tree->sibling; // Jump to the next sibling
 		sibling_count++;
 
@@ -667,10 +672,10 @@ const char * typeToStr( Type t ) {
 
 char * opToStr( TokenData * tok ) {
 	if( tok->svalue != NULL ) {
-		return tok->svalue;
+		return strdup(tok->svalue);
 	}
 	else {
-		char * ptr;
+		char * ptr = (char *)malloc(sizeof(char));
 		*ptr = tok->cvalue;
 		return ptr;
 	}
