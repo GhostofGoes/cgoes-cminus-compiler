@@ -170,19 +170,16 @@ void printAbstractTree(TreeNode * og, int indent_count) {
 
 // Prints the Annotated Syntax Tree 
 void printAnnotatedTree( TreeNode * og, int indent_count ) {
-	//std::cout << "*********PRINT ANNOTATED TREE **********" << std::endl;
+
 	TreeNode * tree = og;
 	int sibling_count = 0; // Keeps track of siblings
-
-	// Output buffer (TODO: string stream better option?)
-	std::string outstr;
+	std::string outstr; // Output buffer
 
 	// Prints all nodes of the tree
 	while( tree != NULL ) {
 
 		if(sibling_count > 0) {
 			outstr.append("|Sibling: ");
-			//outstr += sibling_count;
 			outstr.append(std::to_string(sibling_count));
 			outstr.append("  ");
 			std::cout << applyIndents(outstr, indent_count);
@@ -241,14 +238,6 @@ void printAnnotatedTree( TreeNode * og, int indent_count ) {
 				outstr += opToStr(tree->token);
 				outstr += (" Type: ");
 				outstr += typeToStr(tree->nodetype);
-				/*
-				if( tree->nodetype == Void ) {
-					outstr.push_back(tree->token->cvalue);
-				}
-				if( tree->nodetype == Integer ) {
-					outstr += tree->token->svalue ? tree->token->svalue : "";
-				}*/
-
 				break;
 
 			case IfK:
@@ -280,7 +269,8 @@ void printAnnotatedTree( TreeNode * og, int indent_count ) {
 				outstr.append("Var ");
 				outstr.append(svalResolve(tree));
 				if(tree->isArray)
-					{ outstr.append(" is array of "); }
+					{ outstr.append(" is array of"); }
+				outstr += " ";
 				outstr.append(typeToStr(tree->nodetype));
 
 				break;
@@ -307,6 +297,7 @@ void printAnnotatedTree( TreeNode * og, int indent_count ) {
 				outstr += (" Type: ");
 				outstr += typeToStr(tree->nodetype);
 				break;
+
 			default:
 				outstr.append("\nWe shouldn't get here\n");
 				break;
@@ -323,7 +314,6 @@ void printAnnotatedTree( TreeNode * og, int indent_count ) {
 			for ( int i = 0; i < tree->numChildren; i++ ) {
 				if(tree->child[i] != NULL ) {
 					outstr.append("|   Child: ");
-					//outstr += i;
 					outstr.append(std::to_string(i));
 					outstr.append("  ");
 					std::cout << applyIndents(outstr, indent_count);
@@ -341,56 +331,25 @@ void printAnnotatedTree( TreeNode * og, int indent_count ) {
 }
 
 // Performs semantic analysis, generating the Annotated Syntax Tree
-// TODO: insertions
-// TODO: lookups
 void semanticAnalysis( TreeNode * og ) {
-
+	// TODO: add return
 	SymbolTable * symtable = new SymbolTable();
 	TreeNode * tree = og;
-/*
-	TreeNode * out;
-	TreeNode * inputb;
-	TreeNode * outputb;
-	TreeNode * inputc;
-	TreeNode * outputc;
-	TreeNode * outnl;
-	TreeNode * idummy;
-	TreeNode * bdummy;
-	TreeNode * cdummy;
+	// TODO: initial node creations from Bison file
 
-	out = makeParent(DeclK, FunK, Void, -1, "output");
-	addChild(out, idummy);
-	inputb = makeParent(DeclK, FunK, Boolean, -1, "inputb");
-	linkSiblings(out, inputb);
-	outputb = makeParent(DeclK, FunK, Void, -1, "outputb");
-	addChild(outputb, bdummy);
-	linkSiblings(out, outputb);
-	inputc = makeParent(DeclK, FunK, Character, -1, "inputc");
-	linkSiblings(out, inputc);
-	outputc = makeParent(DeclK, FunK, Void, -1, "outputc");
-	addChild(outputc, cdummy);
-	linkSiblings(out, outputc);
-	outnl = makeParent(DeclK, FunK, Void, -1, "outnl");
-	linkSiblings(out, outnl);
-
-	linkSiblings(out, tree);
-*/
 	treeParse( NULL, tree, symtable );
 
 }
 
 
-// TODO: build the tree!
 void treeParse( TreeNode * par, TreeNode * node, SymbolTable * symtable ) {
 
 	TreeNode * tree;
 	tree = node;
-	//std::string err;
 
 	TreeNode * parent;
-
 	if( par == NULL ) {
-		// TODO: do something (actually) special for initial case
+		// TODO: do something (actually) special for initial case?
 		parent = tree;
 	}
 	else {
@@ -399,13 +358,15 @@ void treeParse( TreeNode * par, TreeNode * node, SymbolTable * symtable ) {
 
 	while( tree != NULL ) {
 
-		TreeNode * tmp;
+		TreeNode * tmp; // Temporary TreeNode
 
 		int sibling_count = 0; // Keeps track of siblings
+		int line = tree->lineno; // Node's line number
 
 		Type lhs = Void; // Left hand side (child[0])'s type
 		Type rhs = Void; // Right hand side (child[1])'s type
 
+		// TODO: variable comments
 		std::string child0_sval;
 		std::string child1_sval;
 		std::string tree_svalue = svalResolve(tree);
@@ -426,9 +387,6 @@ void treeParse( TreeNode * par, TreeNode * node, SymbolTable * symtable ) {
 		tree_type_str = typeToStr(tree->nodetype);
 		lhs_str = typeToStr(lhs);
 		rhs_str = typeToStr(rhs);
-
-		int line = tree->lineno; // Node's line number
-
 
 
 		// Switch on NodeKind (Declaration, Statement, Expression), then Kind
@@ -457,7 +415,7 @@ void treeParse( TreeNode * par, TreeNode * node, SymbolTable * symtable ) {
 							}
 						}
 					}
-					else if( tree->child[0]->isIndex ){ // Variables can't have children, right...? Nope, they can. close:bool. lol.
+					else if( tree->child[0]->isIndex ){
 						printf("ERROR(%d): Cannot index nonarray '%s'.\n", line, tree_svalue.c_str());
 						errors++;
 					}
@@ -466,7 +424,6 @@ void treeParse( TreeNode * par, TreeNode * node, SymbolTable * symtable ) {
 				break;
 
 			case ParamK:
-				// TODO: "undefined type" as Void lookup return for printing?
 				if( !symtable->insert(tree_svalue, tree) ) {
 					TreeNode * tmp = (TreeNode *)symtable->lookup(tree_svalue);
 					printf("ERROR(%d): Symbol '%s' is already defined at line %d.\n", line, tree_svalue.c_str(), tmp->lineno );
@@ -608,7 +565,6 @@ void treeParse( TreeNode * par, TreeNode * node, SymbolTable * symtable ) {
 			break;
 
 
-
 		// *** Node is part of an expression ***
 		case ExpK:
 			switch(tree->kind) {
@@ -677,8 +633,6 @@ void treeParse( TreeNode * par, TreeNode * node, SymbolTable * symtable ) {
 					if( tree->child[0]->isArray != tree->child[1]->isArray ) {
 						printf("ERROR(%d): '%s' requires that if one operand is an array so must the other operand.\n", line, op.c_str());
 						errors++;
-						//err = std::string("") + "'" + op + "' requires that if one operand is an array so must the other operand";
-						//printError(line, err);
 					}
 
 					// TODO: op table lookup
@@ -1011,7 +965,7 @@ std::string svalResolve( TreeNode * tree ) {
 	return temp;
 }
 
-// TODO: makes assumption about indentation
+// TODO: makes assumption about indentation with "|   "
 std::string applyIndents( std::string s, int indent ) {
 	std::string temp;
 	for( int i = 0; i < indent; i++ ) {
