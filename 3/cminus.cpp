@@ -406,12 +406,17 @@ void treeParse( TreeNode * par, TreeNode * node, SymbolTable * symtable ) {
 		switch(tree->kind) {
 			case OpK:
 				// TODO: typing for operations, char/int
-				// TODO: proper operation printing, string/char
 				char * op;
 				op = opToStr(tree->token);
 
 				if( tree->numChildren == 2 ) {
 
+					if(symtable->lookup(tree->child[0]->svalue) == NULL ) {
+						printf("ERROR(%d): Symbol '%s' is not defined.\n", line, tree->child[0]->svalue);
+					}
+					if(symtable->lookup(tree->child[0]->svalue) == NULL ) {
+						printf("ERROR(%d): Symbol '%s' is not defined.\n", line, tree->child[0]->svalue);
+					}
 
 					if( tree->child[0]->isArray != tree->child[1]->isArray ) {
 						// TODO: fprintf to stream passed to function
@@ -452,7 +457,10 @@ void treeParse( TreeNode * par, TreeNode * node, SymbolTable * symtable ) {
 
 			case UnaryK:
 				if( tree->numChildren == 1 ) {
-					if( tree->child[0]->nodetype != tree->nodetype ) {
+					if(symtable->lookup(tree->child[0]->svalue) == NULL ) {
+						printf("ERROR(%d): Symbol '%s' is not defined.\n", line, tree->child[0]->svalue);
+					}
+					else if( tree->child[0]->nodetype != tree->nodetype ) {
 						printf("ERROR(%d): Unary '%s' requires an operand of type %s but was given %s.\n",
 								line, tree_svalue, tree_type_str, lhs_str );
 					}
@@ -530,11 +538,16 @@ void treeParse( TreeNode * par, TreeNode * node, SymbolTable * symtable ) {
 				}
 				break;
 
+				// TODO: svalueSearch(TreeNode * tree)
 			case ReturnK:
 				if( tree->numChildren == 1 && tree->child[0] != NULL ) {
-					if(tree->child[0]->isArray) {
+					if(symtable->lookup(tree->child[0]->svalue) == NULL ) {
+						printf("ERROR(%d): Symbol '%s' is not defined.\n", line, tree->child[0]->svalue);
+					}
+					else if(tree->child[0]->isArray) {
 						printf("ERROR(%d): Cannot return an array.\n", line);
 					}
+
 				}
 				if( parent->kind == FunK ) {
 					if( parent->nodetype == Void && tree->nodetype != Void ) {
@@ -559,6 +572,13 @@ void treeParse( TreeNode * par, TreeNode * node, SymbolTable * symtable ) {
 				break;
 
 			case VarK:
+				if( tree->nodekind == DeclK ) {
+					if( !symtable->insert(tree_svalue, tree) ) {
+						TreeNode * tmp = (TreeNode *)symtable->lookup(tree_svalue);
+						printf("ERROR(%d): Symbol '%s' is already defined at line %d.\n", line, tree_svalue, tmp->lineno );
+					}
+				}
+
 				if( tree->numChildren == 1 ) {
 					if( tree->isArray ) {
 						if( tree->child[0] != NULL && tree->child[0]->isIndex ) {
@@ -577,14 +597,27 @@ void treeParse( TreeNode * par, TreeNode * node, SymbolTable * symtable ) {
 
 				break;
 
+				// TODO: "undefined type" as Void lookup return for printing?
 			case ParamK:
-
+				if( tree->nodekind == DeclK ) {
+					if( !symtable->insert(tree_svalue, tree) ) {
+						TreeNode * tmp = (TreeNode *)symtable->lookup(tree_svalue);
+						printf("ERROR(%d): Symbol '%s' is already defined at line %d.\n", line, tree_svalue, tmp->lineno );
+					}
+				}
 				if( parent->kind == CallK ) {
 
 				}
 				break;
 
 			case FunK:
+				if( tree->nodekind == DeclK ) {
+					if( !symtable->insert(tree_svalue, tree) ) {
+						TreeNode * tmp = (TreeNode *)symtable->lookup(tree_svalue);
+						printf("ERROR(%d): Symbol '%s' is already defined at line %d.\n", line, tree_svalue, tmp->lineno );
+					}
+				}
+
 				if( parent->kind == OpK
 					|| parent->kind == UnaryK
 					|| parent->kind == AssignK
@@ -612,7 +645,7 @@ void treeParse( TreeNode * par, TreeNode * node, SymbolTable * symtable ) {
 				if( tree->svalue != NULL ) {
 					TreeNode * temp = (TreeNode *)symtable->lookup(tree->svalue);
 					if(temp == NULL ) {
-
+						printf("ERROR(%d): Symbol '%s' is not defined.\n", line, tree_svalue);
 					}
 					else {
 						if( temp->kind != FunK ) {
