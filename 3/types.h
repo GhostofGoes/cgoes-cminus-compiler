@@ -48,7 +48,8 @@ typedef struct treeNode
 	//ExpType expType;		           		// used when ExpK for type checking
 	//bool typespecifier;
 	bool isStatic;                         	// is statically allocated?
-	bool isArray;                          	// is this an array
+	bool isArray;                          	// Array?
+	bool isIndex;							// Array index?
 	bool isScoped;
 
 } TreeNode;

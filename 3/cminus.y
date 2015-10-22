@@ -615,6 +615,7 @@ mutable:
         {
             $$ = makeNode( IdK, Void, $1->lineno, $1->svalue, $1 );
             $$->isArray = true; 
+            $3->isIndex = true;
             addChild( $$, $3);
         }
 	;
