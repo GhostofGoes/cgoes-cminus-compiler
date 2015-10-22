@@ -449,23 +449,23 @@ void treeParse( TreeNode * par, TreeNode * node, SymbolTable * symtable ) {
 					}
 
 					if( tree->child[0]->isArray != tree->child[1]->isArray ) {
-						printf("ERROR(%d): '%s' requires that if one operand is an array so must the other operand.\n", line, op);
+						printf("ERROR(%d): '%s' requires that if one operand is an array so must the other operand.\n", line, op.c_str());
 						//err = std::string("") + "'" + op + "' requires that if one operand is an array so must the other operand";
 						//printError(line, err);
 					}
 
 					// TODO: op table lookup
 					if( rhs != tree->nodetype ) {
-						printf("ERROR(%d): '%s' requires operands of type %s but rhs is of type %s.\n", line, op, tree_type_str, rhs_str);
+						printf("ERROR(%d): '%s' requires operands of type %s but rhs is of type %s.\n", line, op.c_str(), tree_type_str, rhs_str);
 					}
 					if( lhs != tree->nodetype ) {
-						printf("ERROR(%d): '%s' requires operands of type %s but lhs is of type %s.\n", line, op, tree_type_str, lhs_str);
+						printf("ERROR(%d): '%s' requires operands of type %s but lhs is of type %s.\n", line, op.c_str(), tree_type_str, lhs_str);
 					}
 					if( lhs != rhs ) {
-						printf("ERROR(%d): '%s' requires operands of the same type but lhs is type %s and rhs is %s.\n", line, op, lhs_str, rhs_str);
+						printf("ERROR(%d): '%s' requires operands of the same type but lhs is type %s and rhs is %s.\n", line, op.c_str(), lhs_str, rhs_str);
 					}
 					if( tree->child[0]->isArray != tree->child[1]->isArray ) {
-						printf("ERROR(%d): '%s' requires that if one operand is an array so must the other operand.\n", line, op);
+						printf("ERROR(%d): '%s' requires that if one operand is an array so must the other operand.\n", line, op.c_str());
 					}
 				}
 
@@ -698,7 +698,7 @@ void treeParse( TreeNode * par, TreeNode * node, SymbolTable * symtable ) {
 		}
 
 		//free(tree_svalue);
-		free(op);
+		//free(op);
 		//free(child0_sval);
 		//free(child1_sval);
 
