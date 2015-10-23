@@ -233,6 +233,8 @@ void printAnnotatedTree( TreeNode * og, int indent_count ) {
 				outstr.append("Id: ");
 				outstr.append(svalResolve(tree));
 				outstr += (" Type: ");
+				if(tree->isArray)
+					{ outstr.append("is array of "); }
 				outstr += typeToStr(tree->nodetype);
 				break;
 
@@ -240,6 +242,8 @@ void printAnnotatedTree( TreeNode * og, int indent_count ) {
 				outstr.append("Assign: ");
 				outstr += opToStr(tree->token);
 				outstr += (" Type: ");
+				if(tree->isArray)
+					{ outstr.append("is array of "); }
 				outstr += typeToStr(tree->nodetype);
 				break;
 
