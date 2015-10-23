@@ -222,7 +222,10 @@ void printAnnotatedTree( TreeNode * og, int indent_count ) {
 						outstr += '\'';
 					}
 				}
+
 				outstr.append(" Type: ");
+				if(tree->isArray)
+					{ outstr.append("is array of "); }
 				outstr.append(typeToStr(tree->nodetype));
 				break;
 
