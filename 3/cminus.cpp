@@ -110,9 +110,7 @@ int main( int argc, char* argv[] ) {
 	if(code_generation) {
 		generateCode();
 	}
-
-
-    freeTree(annotatedTree);
+    //freeTree(annotatedTree);
 
 	// How many bad things happened. TODO: when do we want to do this, or not?
 	printf( "Number of warnings: %d\n", warnings );
