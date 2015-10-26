@@ -16,6 +16,14 @@ extern int warnings;
 extern int errors;
 extern bool testing;
 
+extern int yylex();
+extern int yylineno;
+extern FILE * yyin;
+
+
+
+static void yyerror(const char *);
+
 // Recursively prints the abstract syntax tree
 // Args: Tree to be printed, current count of the indent 
 void printAbstractTree(TreeNode * tree, int indent_count);

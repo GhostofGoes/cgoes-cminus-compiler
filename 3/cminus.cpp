@@ -1,11 +1,127 @@
-#include "cminus.h"
-#include "types.h"
 #include <iostream>
 #include <string>
 #include <cstdlib>
 #include <vector>
 #include <string.h>
 #include <sstream>
+
+
+#include "cminus.h"
+#include "types.h"
+#include "toker.h"
+#include "symbolTable.h"
+
+TreeNode * syntaxTree;
+TreeNode * annotatedTree;
+
+int main( int argc, char* argv[] ) {
+
+	syntaxTree = NULL;
+	annotatedTree = NULL;
+
+	// FILE * output = stdout;
+	int option;
+	opterr = 0;
+
+	// Flags
+	testing = false;
+	bool abstract_tree = false;
+	bool annotated_tree = false;
+	bool code_generation = false;
+
+	// Command line options
+	while( (option = getopt(argc, argv, "dpPtz")) != EOF ) {
+		switch(option) {
+			case 'd':
+				yydebug = 1;
+				break;
+			case 'p':
+				abstract_tree = true;
+				break;
+			case 'P':
+				annotated_tree = true;
+				break;
+			case 't':
+                testing = true;
+                break;
+			default:
+				break;
+		}
+	}
+
+	// Slightly hacky way to get input filename, without using a option
+	if( argc > 1 && optind < argc ) {
+		yyin = fopen( argv[optind], "r" );
+	}
+
+	// Main parsing loop. Goes until end of input
+	do {
+		yyparse();
+	} while (!feof(yyin));
+
+	//abstract_tree = true;
+	// Prints out the entire syntax tree recursivly, from the global root node
+	if(abstract_tree) {
+		printAbstractTree(syntaxTree, 0);
+		freeTree(syntaxTree);
+	}
+
+	// TODO: build I/O library tree
+	if(annotated_tree) {
+		TreeNode * in;
+		TreeNode * out;
+		TreeNode * inputb;
+		TreeNode * outputb;
+		TreeNode * inputc;
+		TreeNode * outputc;
+		TreeNode * outnl;
+		TreeNode * idummy;
+		TreeNode * bdummy;
+		TreeNode * cdummy;
+		//TreeNode * temp = syntaxTree;
+		in = makeParent(DeclK, FunK, Integer, -1, "input");
+		out = makeParent(DeclK, FunK, Void, -1, "output");
+		idummy = makeParent(ExpK, ParamK, Integer, -1, "*dummy*");
+		addChild(out, idummy);
+		linkSiblings(in, out);
+		inputb = makeParent(DeclK, FunK, Boolean, -1, "inputb");
+		linkSiblings(in, inputb);
+		outputb = makeParent(DeclK, FunK, Void, -1, "outputb");
+		bdummy = makeParent(ExpK, ParamK, Boolean, -1, "*dummy*");
+		addChild(outputb, bdummy);
+		linkSiblings(in, outputb);
+		inputc = makeParent(DeclK, FunK, Character, -1, "inputc");
+		linkSiblings(in, inputc);
+		outputc = makeParent(DeclK, FunK, Void, -1, "outputc");
+		cdummy = makeParent(ExpK, ParamK, Character, -1, "*dummy*");
+		addChild(outputc, cdummy);
+		linkSiblings(in, outputc);
+		outnl = makeParent(DeclK, FunK, Void, -1, "outnl");
+		linkSiblings(in, outnl);
+		linkSiblings(in, syntaxTree);
+		annotatedTree = in;
+
+
+		semanticAnalysis(annotatedTree);
+		printAnnotatedTree(annotatedTree, 0);
+		freeTree(annotatedTree);
+	}
+
+	if(code_generation) {
+		generateCode();
+	}
+
+
+    freeTree(annotatedTree);
+
+	// How many bad things happened. TODO: when do we want to do this, or not?
+	printf( "Number of warnings: %d\n", warnings );
+	printf( "Number of errors: %d\n", errors );
+
+	fclose(yyin);
+	return 0;
+}
+
 
 // Recursively prints the abstract syntax tree
 // Print spaces at end of strings, if necessary.
@@ -863,6 +979,9 @@ TreeNode * allocNode() {
 	tempNode->svalue = NULL;
 	tempNode->nodetype = Void;
 	tempNode->nodekind = DefaultK;
+	tempNode->child[0] = NULL;
+	tempNode->child[1] = NULL;
+	tempNode->child[2] = NULL;
 	tempNode->numChildren = 0;
 	tempNode->sibling = NULL;
 	tempNode->isStatic = false;
@@ -873,6 +992,11 @@ TreeNode * allocNode() {
 }
 
 void freeTree( TreeNode * tree ) {
+
+	if( tree == NULL ) {
+		return;
+	}
+
 	TreeNode * prev;
 	TreeNode * temp;
 
@@ -882,14 +1006,17 @@ void freeTree( TreeNode * tree ) {
 		temp = prev;
 		if(prev->token != NULL) {
 			freeToken(prev->token);
+			prev->token = NULL;
 		}
 
 		if(prev->svalue != NULL) {
 			free(prev->svalue);
+			prev->svalue = NULL;
 		}
 		// Check if there are children
 		if( prev->numChildren > 0 ) {
-			for ( int i = 0; i < prev->numChildren; i++ ) {
+			//for ( int i = 0; i < prev->numChildren; i++ ) {
+			for (int i = 0; i < MAXCHILDREN; i++ ) {
 				if(prev->child[i] != NULL ) {
 					freeTree(prev->child[i]);
 				}
@@ -898,17 +1025,25 @@ void freeTree( TreeNode * tree ) {
 
 		prev = prev->sibling;
 		delete(temp);
+		temp = NULL;
 		//free(temp);
 	} // end while
+	tree = NULL;
 }
 
 void freeToken( TokenData * token ) {
+	if(token == NULL ) {
+		return;
+	}
+
 	if(token->svalue != NULL) {
 		free(token->svalue);
+		token->svalue = NULL;
 	}
 
 	if(token->input != NULL) {
 		free(token->input);
+		token->input = NULL;
 	}
 
 	free(token);

@@ -12,19 +12,19 @@
 #define YYERROR_VERBOSE
 
 // Flex's Lexer (heh)
-extern int yylex();
+//extern int yylex();
 
 // Flex's line numbering
-extern int yylineno; 
+//extern int yylineno; 
 
 // Input file stream
-extern FILE * yyin;
+//extern FILE * yyin;
 
 // Global abstract syntax tree pointer
-TreeNode *syntaxTree = NULL;
+//TreeNode *syntaxTree = NULL;
 
 // Global Annotated Syntax Tree pointer 
-TreeNode *annotatedTree = NULL;
+//TreeNode *annotatedTree = NULL;
 
 // Globally keep track of warnings and errors
 int warnings = 0;
@@ -32,7 +32,7 @@ int errors = 0;
 bool testing = false;
 
 // Defining yyerror
-static void yyerror(const char *);
+//static void yyerror(const char *);
 
 %}
 
@@ -732,108 +732,6 @@ constant:
 	
 
 %%
-
-int main( int argc, char* argv[] ) {
-	
-	// FILE * output = stdout;
-	int option;
-	opterr = 0;
-    
-	// Flags
-	testing = false;
-	bool abstract_tree = false;
-	bool annotated_tree = false;
-	bool code_generation = false;
-	
-	// Command line options
-	while( (option = getopt(argc, argv, "dpPtz")) != EOF ) {
-		switch(option) {
-			case 'd': 
-				yydebug = 1;
-				break;
-			case 'p':
-				abstract_tree = true;
-				break;
-			case 'P':
-				annotated_tree = true;
-				break;
-			case 't':
-                testing = true;
-                break;
-			default:
-				break;
-		}
-	}
-	
-	// Slightly hacky way to get input filename, without using a option
-	if( argc > 1 && optind < argc ) {
-		yyin = fopen( argv[optind], "r" );
-	}
-
-	// Main parsing loop. Goes until end of input
-	do {
-		yyparse();
-	} while (!feof(yyin));
-	
-	//abstract_tree = true;
-	// Prints out the entire syntax tree recursivly, from the global root node
-	if(abstract_tree) {
-		printAbstractTree(syntaxTree, 0);
-	}
-	
-	// TODO: build I/O library tree
-	if(annotated_tree) {
-		TreeNode * in;
-		TreeNode * out;
-		TreeNode * inputb;
-		TreeNode * outputb;
-		TreeNode * inputc;
-		TreeNode * outputc;
-		TreeNode * outnl;
-		TreeNode * idummy;
-		TreeNode * bdummy;
-		TreeNode * cdummy;
-		TreeNode * temp = syntaxTree;
-		in = makeParent(DeclK, FunK, Integer, -1, "input");
-		out = makeParent(DeclK, FunK, Void, -1, "output");
-		idummy = makeParent(ExpK, ParamK, Integer, -1, "*dummy*");
-		addChild(out, idummy);
-		linkSiblings(in, out);
-		inputb = makeParent(DeclK, FunK, Boolean, -1, "inputb");
-		linkSiblings(in, inputb);
-		outputb = makeParent(DeclK, FunK, Void, -1, "outputb");
-		bdummy = makeParent(ExpK, ParamK, Boolean, -1, "*dummy*");
-		addChild(outputb, bdummy);
-		linkSiblings(in, outputb);
-		inputc = makeParent(DeclK, FunK, Character, -1, "inputc");
-		linkSiblings(in, inputc);
-		outputc = makeParent(DeclK, FunK, Void, -1, "outputc");
-		cdummy = makeParent(ExpK, ParamK, Character, -1, "*dummy*");
-		addChild(outputc, cdummy);
-		linkSiblings(in, outputc);
-		outnl = makeParent(DeclK, FunK, Void, -1, "outnl");
-		linkSiblings(in, outnl);
-		linkSiblings(in, temp);
-		annotatedTree = in;
-		
-		
-		semanticAnalysis(annotatedTree);
-		printAnnotatedTree(annotatedTree, 0);
-	}
-	
-	if(code_generation) {
-		generateCode();
-	}
-
-    freeTree(syntaxTree);
-
-	// How many bad things happened. TODO: when do we want to do this, or not?
-	printf( "Number of warnings: %d\n", warnings );
-	printf( "Number of errors: %d\n", errors );	
-	
-	fclose(yyin);
-	return 0;
-}
 
 // Defines yyerror for bison
 static void yyerror(const char *msg)
