@@ -208,7 +208,7 @@ void printAnnotatedTree( TreeNode * og, int indent_count ) {
 					outstr.append(iboolToString(tree->token->ivalue));
 				}
 				else if(tree->nodetype == Integer) {
-					outstr += tree->token->ivalue;
+					outstr.append(std::to_string(tree->token->ivalue));
 				}
 				else if(tree->nodetype == Character) {
 					if(tree->token->svalue != NULL ) {
@@ -615,6 +615,9 @@ void treeParse( TreeNode * par, TreeNode * node, SymbolTable * symtable ) {
 							printf("ERROR(%d): '%s' is a simple variable and cannot be called.\n", line, tree_svalue.c_str());
 							errors++;
 						}
+						else {
+							tree->nodetype = temp->nodetype;
+						}
 					}
 				}
 				break;
@@ -958,6 +961,7 @@ std::string opToStr( TokenData * tok ) {
 	return temp;
 }
 
+// TODO: ivalue handling!
 std::string svalResolve( TreeNode * tree ) {
 
 	std::string temp;

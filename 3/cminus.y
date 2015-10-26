@@ -148,6 +148,7 @@ var-decl-list:
 	var-decl-list COMMA var-decl-initialize
 		{
             $$ = linkSiblings($1, $3);
+            freeToken($2);
         }
 	| var-decl-initialize 
 		{ $$ = $1; }
@@ -160,6 +161,7 @@ var-decl-initialize:
 		{
             $$ = $1;
             addChild( $$, $3);
+            freeToken($2);
         }
 	;
 
@@ -172,6 +174,8 @@ var-decl-id:
 		{ 
             $$ = makeNode( DeclK, VarK, Void, $1->lineno, $1->svalue, $1 );
             $$->isArray = true;
+            freeToken($2);
+           	freeToken($4);
         }
 	;
 
@@ -183,6 +187,7 @@ scoped-type-specifier:
             $$ = $2;
             $$->isStatic = true; 
             $$->isScoped = true;
+            freeToken($1);
         }
 	| type-specifier
 		{ $$ = $1; }
@@ -209,12 +214,16 @@ fun-declaration:
             $$ = makeParent( DeclK, FunK, $1->nodetype, $2->lineno, $2->svalue );
             addChild( $$, $4);
             addChild( $$, $6);
+            freeToken($3);
+           	freeToken($5);
 		}
 	| ID LPAREN params RPAREN statement
 		{ 
             $$ = makeParent( DeclK, FunK, Void, $1->lineno, $1->svalue );
             addChild( $$, $3);
             addChild( $$, $5);
+            freeToken($2);
+           	freeToken($4);
 		}
 	;
 
@@ -229,6 +238,7 @@ param-list:
 	param-list SEMICOLON param-type-list 
 		{  
 			$$ = linkSiblings($1, $3);
+			freeToken($2);
 		}
 	| param-type-list
 		{ $$ = $1; }
@@ -246,6 +256,7 @@ param-id-list:
 	param-id-list COMMA param-id 
 		{ 
             $$ = linkSiblings($1, $3);
+            freeToken($2);
         }
 	| param-id 
 		{ $$ = $1; }
@@ -260,6 +271,8 @@ param-id:
 		{ 
             $$ = makeNode( DeclK, ParamK, Void, $1->lineno, $1->svalue, $1 );
             $$->isArray = true; 
+            freeToken($2);
+           	freeToken($3);
         }
 	;
 	
@@ -303,6 +316,9 @@ matched-selection-stmt:
             addChild( $$, $3);
             addChild( $$, $5);
             addChild( $$, $7);
+            freeToken($2);
+            freeToken($4);
+            freeToken($6);
         }
 	;
 
@@ -312,6 +328,8 @@ unmatched-selection-stmt:
             $$ = makeParent( StmtK, IfK, Void, $1->lineno, NULL );
             addChild( $$, $3);
             addChild( $$, $5);
+           	freeToken($2);
+            freeToken($4);
         }
 	| IF LPAREN simple-expression RPAREN matched ELSE unmatched 
         { 
@@ -319,6 +337,9 @@ unmatched-selection-stmt:
             addChild( $$, $3);
             addChild( $$, $5);
             addChild( $$, $7);
+            freeToken($2);
+            freeToken($4);
+            freeToken($6);
         }
 	;
 	
@@ -328,6 +349,8 @@ matched-while-stmt:
             $$ = makeParent( StmtK, WhileK, Void, $1->lineno, NULL );
             addChild( $$, $3);
             addChild( $$, $5);
+            freeToken($2);
+            freeToken($4);
         }
 	;
 
@@ -337,6 +360,8 @@ unmatched-while-stmt:
             $$ = makeParent( StmtK, WhileK, Void, $1->lineno, NULL );
             addChild( $$, $3);
             addChild( $$, $5);
+            freeToken($2);
+            freeToken($4);
         }
 	;
 	
@@ -347,6 +372,9 @@ matched-foreach-stmt:
             addChild( $$, $3);
             addChild( $$, $5);
             addChild( $$, $7);
+            freeToken($2);
+            freeToken($4);
+            freeToken($6);
         }
 	;
 	
@@ -357,6 +385,9 @@ unmatched-foreach-stmt:
             addChild( $$, $3);
             addChild( $$, $5);
             addChild( $$, $7);
+            freeToken($2);
+            freeToken($4);
+            freeToken($6);
         }
 	;
 	
@@ -366,6 +397,8 @@ compound-stmt:
             $$ = makeParent( StmtK, CompoundK, Void, $1->lineno, NULL );
             addChild( $$, $2);
             addChild( $$, $3);
+            freeToken($1);
+            freeToken($4);
         }
 	;
 
@@ -387,27 +420,37 @@ statement-list:
 	
 expression-stmt:
 	expression SEMICOLON 
-        { $$ = $1; /* does expression occur at semicolon for line counting? */ }
+        { 
+        	$$ = $1;
+         	/* does expression occur at semicolon for line counting? */ 
+         	freeToken($2);
+        }
 	| SEMICOLON /* EMPTY? */
-		{ $$ = NULL; }
+		{ 
+			$$ = NULL; 
+			freeToken($1);	
+		}
 	;
 	
 return-stmt:
 	RETURN SEMICOLON 
         { 
-            $$ = makeNode( StmtK, ReturnK, Void, $1->lineno, NULL, $1 );     
+            $$ = makeNode( StmtK, ReturnK, Void, $1->lineno, NULL, $1 );
+            freeToken($2);    
         }
 	| RETURN expression SEMICOLON
         {
             $$ = makeNode( StmtK, ReturnK, $2->nodetype, $1->lineno, NULL, $1 );     
             addChild( $$, $2);
+            freeToken($3);
         }
 	;
 	
 break-stmt:
 	BREAK SEMICOLON
         { 
-            $$ = makeNode( StmtK, BreakK, Void, $1->lineno, NULL, $1 );     
+            $$ = makeNode( StmtK, BreakK, Void, $1->lineno, NULL, $1 );   
+            freeToken($2);  
         }
 	;
 	
@@ -617,12 +660,18 @@ mutable:
             $$->isArray = true; 
             $3->isIndex = true;
             addChild( $$, $3);
+            freeToken($2);
+            freeToken($4);
         }
 	;
 	
 immutable:
 	LPAREN expression RPAREN
-        { $$ = $2; }
+        { 
+        	$$ = $2;
+			freeToken($1);
+			freeToken($3);        
+         }
 	| call
 		{ $$ = $1; }	
 	| constant 
@@ -635,10 +684,13 @@ call:
 			if($3 != NULL) {
 	            $$ = makeNode( ExpK, CallK, $3->nodetype, $1->lineno, $1->svalue, $1 );
     	        addChild($$, $3);
+
 			}
 			else {
 				$$ = makeNode( ExpK, CallK, Void, $1->lineno, $1->svalue, $1 );
 			}	
+			freeToken($2);
+           	freeToken($4);
 		}
 	;
 	
@@ -653,6 +705,7 @@ arg-list:
 	arg-list COMMA expression 
 		{ 
 		    $$ = linkSiblings($1, $3); 
+		    freeToken($2);
 		}
 	| expression 
 		{ $$ = $1; }	
