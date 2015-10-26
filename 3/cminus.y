@@ -3,36 +3,14 @@
 #include <stdlib.h>
 #include <getopt.h>
 #include <string.h>
-#include <stdarg.h>
+//#include <stdarg.h>
+
 #include "types.h"
 #include "cminus.h"
 #include "toker.h"
 #include "symbolTable.h"
 
 #define YYERROR_VERBOSE
-
-// Flex's Lexer (heh)
-//extern int yylex();
-
-// Flex's line numbering
-//extern int yylineno; 
-
-// Input file stream
-//extern FILE * yyin;
-
-// Global abstract syntax tree pointer
-//TreeNode *syntaxTree = NULL;
-
-// Global Annotated Syntax Tree pointer 
-//TreeNode *annotatedTree = NULL;
-
-// Globally keep track of warnings and errors
-int warnings = 0;
-int errors = 0;
-bool testing = false;
-
-// Defining yyerror
-//static void yyerror(const char *);
 
 %}
 

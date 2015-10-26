@@ -1,26 +1,23 @@
 #ifndef _CMINUS_H_
 #define _CMINUS_H_
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <getopt.h>
-#include <stdarg.h>
-#include <string>
-#include <sstream>
-
+/* Local headers */
 #include "types.h"
 #include "cminus.tab.h"
 #include "symbolTable.h"
 
+/* Global flags/counters */
 extern int warnings;
 extern int errors;
 extern bool testing;
 
-extern int yylex();
-extern int yylineno;
-extern FILE * yyin;
+/* Flex stuff */
+extern int yylex();		// Flex's Lexer (heh)
+extern int yylineno; 	// Flex's line numbering
+extern FILE * yyin;		// Input file stream for Flex
 
-
+extern TreeNode * syntaxTree;
+extern TreeNode * annotatedTree;
 
 static void yyerror(const char *);
 

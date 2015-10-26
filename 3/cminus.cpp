@@ -1,23 +1,31 @@
+/* C++ Libraries */
 #include <iostream>
 #include <string>
 #include <cstdlib>
 #include <vector>
+
+/* C libraries */
+#include <stdio.h>
 #include <string.h>
-#include <sstream>
+#include <getopt.h>
 
-
+/* Local headers */
 #include "cminus.h"
 #include "types.h"
 #include "toker.h"
 #include "symbolTable.h"
 
-TreeNode * syntaxTree;
-TreeNode * annotatedTree;
+/* Tree pointers */
+TreeNode * syntaxTree = NULL;
+TreeNode * annotatedTree = NULL;
 
-int main( int argc, char* argv[] ) {
+// Globally keep track of warnings and errors
+int warnings = 0;
+int errors = 0;
+bool testing = false;
 
-	syntaxTree = NULL;
-	annotatedTree = NULL;
+
+int main( int argc, char * argv[] ) {
 
 	// FILE * output = stdout;
 	int option;
@@ -59,8 +67,6 @@ int main( int argc, char* argv[] ) {
 		yyparse();
 	} while (!feof(yyin));
 
-	//abstract_tree = true;
-	// Prints out the entire syntax tree recursivly, from the global root node
 	if(abstract_tree) {
 		printAbstractTree(syntaxTree, 0);
 		freeTree(syntaxTree);
@@ -110,9 +116,7 @@ int main( int argc, char* argv[] ) {
 	if(code_generation) {
 		generateCode();
 	}
-    //freeTree(annotatedTree);
 
-	// How many bad things happened. TODO: when do we want to do this, or not?
 	printf( "Number of warnings: %d\n", warnings );
 	printf( "Number of errors: %d\n", errors );
 

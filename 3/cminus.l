@@ -1,16 +1,19 @@
 %{
+#include <stdlib.h>
+#include <string.h>
+
 #include "cminus.tab.h"
 #include "cminus.h"
 #include "types.h"
 #include "toker.h"
 
 // String/Character parsing buffers
-char * stringbuffer;
-char * sbuf_ptr;
-char * literalbuffer;
-char ctemp;
-int clength = 0;
-bool monitor = false;
+char * stringbuffer;	// Holds initial position for stringconst parsing
+char * sbuf_ptr;		// keeps track of stringconst parsing
+char * literalbuffer;	// Input string buffer for constant processing (strings/chars)
+char ctemp;				// Character constant temporary
+//int clength = 0;
+bool monitor = false; 	// Character constant length checking
 
 %}
 
@@ -132,7 +135,7 @@ stringbody	([^"])|(\\[^n])
 \'		{ 
 			literalbuffer = (char *)calloc(5, sizeof(char));
 			strcat(literalbuffer, yytext);
-			clength = 0;
+			//clength = 0;
             monitor = false;
 			BEGIN(ccond);
 		}
@@ -197,4 +200,3 @@ stringbody	([^"])|(\\[^n])
 .			{ return error(yytext, yylineno, "Invalid input character"); }
 
 %%
-
