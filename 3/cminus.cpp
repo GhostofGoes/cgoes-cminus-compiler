@@ -142,7 +142,6 @@ void printAbstractTree(TreeNode * og, int indent_count) {
 
 		if(sibling_count > 0) {
 			outstr.append("|Sibling: ");
-			//outstr += sibling_count;
 			outstr.append(std::to_string(sibling_count));
 			outstr.append("  ");
 			std::cout << applyIndents(outstr, indent_count);
@@ -264,12 +263,10 @@ void printAbstractTree(TreeNode * og, int indent_count) {
 		outstr.clear();
 		
 		// Check if there are children
-		// TODO: check for NULL children
 		if( tree->numChildren > 0 ) {
 			for ( int i = 0; i < tree->numChildren; i++ ) {
 				if(tree->child[i] != NULL ) {
 					outstr.append("|   Child: ");
-					//outstr += i;
 					outstr.append(std::to_string(i));
 					outstr.append("  ");
 					std::cout << applyIndents(outstr, indent_count);
@@ -290,8 +287,8 @@ void printAbstractTree(TreeNode * og, int indent_count) {
 void printAnnotatedTree( TreeNode * og, int indent_count ) {
 
 	TreeNode * tree = og;
-	int sibling_count = 0; // Keeps track of siblings
-	std::string outstr; // Output buffer
+	int sibling_count = 0; 	// Keeps track of siblings
+	std::string outstr; 	// Output buffer
 
 	// Prints all nodes of the tree
 	while( tree != NULL ) {
@@ -961,16 +958,6 @@ void applyTypeToSiblings( TreeNode * init, Type t ) {
 		temp = temp->sibling;
 	}
 }
-
-// Applies Type t to all the children of TreeNode parent
-void appplyTypeToChildren( TreeNode * parent, Type t ) {
-	if(parent != NULL && parent->numChildren > 0) {
-		for(int i = 0; i < parent->numChildren; i++) {
-			parent->child[i]->nodetype = t;
-		}
-	}
-}
-
 
 // Allocates and zeros a new TreeNode
 TreeNode * allocNode() {

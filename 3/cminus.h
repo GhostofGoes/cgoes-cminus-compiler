@@ -1,6 +1,11 @@
 #ifndef _CMINUS_H_
 #define _CMINUS_H_
 
+/* C/C++ headers */
+#include <stdio.h>
+#include <cstdlib>
+#include <string>
+
 /* Local headers */
 #include "types.h"
 #include "cminus.tab.h"
@@ -32,7 +37,6 @@ void printAnnotatedTree(TreeNode * tree, int indent_count);
 void semanticAnalysis(TreeNode * tree );
 void treeParse( TreeNode * parent, TreeNode * node, SymbolTable * symtable );
 
-// TODO: placeholder Generates code
 void generateCode();
 
 // Creates a new node for the syntax tree
@@ -45,16 +49,13 @@ void addChild( TreeNode * parent, TreeNode * child );
 // Links sib2 to the end of sib1's sibling chain. If sib1 is null, sib2 is returned.
 TreeNode * linkSiblings( TreeNode * sib1, TreeNode * sib2 );
 
+// Applies Type t to init and all its siblings
 void applyTypeToSiblings( TreeNode * init, Type t );
-void appplyTypeToChildren( TreeNode * parent, Type t );
-
 
 // Allocates and zeros a new TreeNode
-// Return: (TreeNode) The allocated node
 TreeNode * allocNode();
 
-
-// memory deallocation
+// Memory deallocation
 void freeTree( TreeNode * tree );
 void freeToken( TokenData * token );
 
