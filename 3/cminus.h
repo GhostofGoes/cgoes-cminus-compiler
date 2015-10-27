@@ -26,18 +26,16 @@ extern TreeNode * annotatedTree;
 
 static void yyerror(const char *);
 
+// TODO: combine the two print tree functions, or move bulk to another function?
 // Recursively prints the abstract syntax tree
-// Args: Tree to be printed, current count of the indent 
 void printAbstractTree(TreeNode * tree, int indent_count);
 
-// Prints the annotated syntax tree
+// Recursively prints the annotated syntax tree
 void printAnnotatedTree(TreeNode * tree, int indent_count);
 
 // Creates the Annotated Syntax Tree
 void semanticAnalysis(TreeNode * tree );
 void treeParse( TreeNode * parent, TreeNode * node, SymbolTable * symtable );
-
-void generateCode();
 
 // Creates a new node for the syntax tree
 TreeNode * makeNode( NodeKind nk, Kind k, Type t, int line, char * svalue, TokenData * token );
@@ -52,20 +50,22 @@ TreeNode * linkSiblings( TreeNode * sib1, TreeNode * sib2 );
 // Applies Type t to init and all its siblings
 void applyTypeToSiblings( TreeNode * init, Type t );
 
-// Allocates and zeros a new TreeNode
-TreeNode * allocNode();
 
-// Memory deallocation
-void freeTree( TreeNode * tree );
-void freeToken( TokenData * token );
+/* Memory Management */
+TreeNode * allocNode(); 				// Allocates and zeros a new TreeNode
+void freeTree( TreeNode * tree );		// Recursively frees and zeroes the tree
+void freeToken( TokenData * token );	// Frees and zeroes the token
 
-// Printing helpers
-const char * iboolToString( int ib );
+
+/* Printing and String manipulation */
+const char * iboolToString( int ib );	// Returns "true" for 1, "false" for 0
 std::string applyIndents( std::string s, int indent_count );
-const char * typeToStr( Type t );
-std::string opToStr( TokenData * tok );
-std::string svalResolve( TreeNode * tree );
+const char * typeToStr( Type t );		// Returns literal string of type, eg "int" for Integer
+std::string svalResolve( TreeNode * tree ); // Resolves the svalue of node or token as a C++ string
+std::string opToStr( TokenData * tok );		// TODO: Redundant to svalResolve, may be deprecated
 
+
+/* Failed attempt as generic errors. May be revived in the future. */
 void printError( int line, std::string err );
 void printWarning( int line, std::string warn );
 

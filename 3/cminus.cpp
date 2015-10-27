@@ -115,7 +115,7 @@ int main( int argc, char * argv[] ) {
 	}
 
 	if(code_generation) {
-		generateCode();
+		//generateCode();
 	}
 
 	printf( "Number of warnings: %d\n", warnings );
@@ -871,8 +871,6 @@ void treeParse( TreeNode * par, TreeNode * node, SymbolTable * symtable ) {
 								errors++;
 							}
 							break;
-
-
 						}
 					}
 					else {
@@ -996,11 +994,6 @@ void treeParse( TreeNode * par, TreeNode * node, SymbolTable * symtable ) {
 		sibling_count++;
 
 	} // end while
-}
-
-// TODO: placeholder Generates executable code 
-void generateCode() {
-	;
 }
 
 // Creates a new node for the syntax tree
