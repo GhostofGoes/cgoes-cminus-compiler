@@ -502,7 +502,7 @@ and-expression:
 unary-rel-expression:
 	NOT unary-rel-expression
         { 
-            $$ = makeNode( ExpK, OpK, Boolean, $1->lineno, NULL, $1 );     
+            $$ = makeNode( ExpK, UnaryK, Boolean, $1->lineno, NULL, $1 );     
             addChild( $$, $2);
         }
 	| rel-expression 

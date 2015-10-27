@@ -34,6 +34,7 @@ stringbody	([^"])|(\\[^n])
 	/* Eat single line comments */
 "//".*\n 	{ }
 
+	/* TODO: return characters as strings? */
 ";"			{ return cToker(SEMICOLON,  yytext, yylineno, yytext[0]);}
 "("			{ return cToker(LPAREN,     yytext, yylineno, yytext[0]);   }
 ")"			{ return cToker(RPAREN,     yytext, yylineno, yytext[0]);   }
@@ -56,7 +57,6 @@ stringbody	([^"])|(\\[^n])
 ","			{ return cToker(COMMA,  yytext, yylineno, yytext[0]);    }
 ":"			{ return cToker(COLON,  yytext, yylineno, yytext[0]);    }
 
-	    /* Unary ops */
 "+="		{ return sToker(ADDASS, yytext, yylineno, yytext); }
 "-="		{ return sToker(SUBASS, yytext, yylineno, yytext); }
 "*="		{ return sToker(MULASS, yytext, yylineno, yytext); }

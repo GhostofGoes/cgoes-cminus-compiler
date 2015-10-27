@@ -3,6 +3,7 @@
 #include <string>
 #include <cstdlib>
 #include <vector>
+#include <map>
 
 /* C libraries */
 #include <stdio.h>
@@ -386,7 +387,6 @@ void printAnnotatedTree( TreeNode * og, int indent_count ) {
 				outstr.append("Break");
 				break;
 
-				// TODO: combine var/param?
 			case VarK:
 				outstr.append("Var ");
 				outstr.append(svalResolve(tree));
@@ -431,7 +431,6 @@ void printAnnotatedTree( TreeNode * og, int indent_count ) {
 		outstr.clear();
 
 		// Check if there are children
-		// TODO: check for NULL children
 		if( tree->numChildren > 0 ) {
 			for ( int i = 0; i < tree->numChildren; i++ ) {
 				if(tree->child[i] != NULL ) {
@@ -691,6 +690,64 @@ void treeParse( TreeNode * par, TreeNode * node, SymbolTable * symtable ) {
 		case ExpK:
 			switch(tree->kind) {
 			case AssignK:
+				if( tree->token != NULL ) {
+					switch(tree->token->bval) {
+					case ASSIGN:
+						if( lhs != rhs ) {
+							printf("ERROR(%d): '%s' requires operands of the same type but lhs is type %s and rhs is %s.\n",
+									line, op.c_str(), lhs_str, rhs_str);
+							errors++;
+						}
+						if( rhs != tree->nodetype ) {
+							printf("ERROR(%d): '%s' requires operands of type %s but rhs is of type %s.\n",
+									line, op.c_str(), tree_type_str, rhs_str);
+							errors++;
+						}
+						if( lhs != tree->nodetype ) {
+							printf("ERROR(%d): '%s' requires operands of type %s but lhs is of type %s.\n",
+									line, op.c_str(), tree_type_str, lhs_str);
+							errors++;
+						}
+						if( tree->child[0]->isArray != tree->child[1]->isArray ) {
+							printf("ERROR(%d): '%s' requires that if one operand is an array so must the other operand.\n",
+									line, op.c_str());
+							errors++;
+						}
+						break;
+
+					case ADDASS:
+					case SUBASS:
+					case MULASS:
+					case DIVASS:
+						if( lhs != Integer ) {
+							printf("ERROR(%d): '%s' requires operands of type %s but lhs is of type %s.\n",
+									line, op.c_str(), typeToStr(Integer), lhs_str);
+							errors++;
+						}
+						if( rhs != Integer ) {
+							printf("ERROR(%d): '%s' requires operands of type %s but rhs is of type %s.\n",
+									line, op.c_str(), typeToStr(Integer), rhs_str);
+							errors++;
+						}
+						break;
+
+					case INC:
+					case DEC:
+						if( lhs != Integer ) {
+							printf("ERROR(%d): '%s' requires operands of type %s but lhs is of type %s.\n",
+									line, op.c_str(), typeToStr(Integer), lhs_str);
+							errors++;
+						}
+						break;
+					} // end assign switch
+				}
+				else {
+					if(testing) {
+						std::cerr << "Tried to access NULL token in ExpK: AssignK" << std::endl;
+					}
+				}
+
+				// TODO: lookups then type checking? both? (ask him?)
 				if( tree->numChildren == 1 ) {
 					if( tree->child[0]->kind == VarK || tree->child[0]->kind == CallK ) {
 						if(symtable->lookup(child0_sval) == NULL ) {
@@ -727,7 +784,8 @@ void treeParse( TreeNode * par, TreeNode * node, SymbolTable * symtable ) {
 					}
 					else {
 						if( temp->kind != FunK ) {
-							printf("ERROR(%d): '%s' is a simple variable and cannot be called.\n", line, tree_svalue.c_str());
+							printf("ERROR(%d): '%s' is a simple variable and cannot be called.\n",
+									line, tree_svalue.c_str());
 							errors++;
 						}
 						else {
@@ -760,29 +818,76 @@ void treeParse( TreeNode * par, TreeNode * node, SymbolTable * symtable ) {
 						errors++;
 					}
 
-					// TODO: op table lookup
-					// TODO: typing for operations, char/int
-					if( rhs != tree->nodetype ) {
-						printf("ERROR(%d): '%s' requires operands of type %s but rhs is of type %s.\n", line, op.c_str(), tree_type_str, rhs_str);
-						errors++;
+					if(tree->token != NULL ) {
+						switch(tree->token->bval) {
+						case NOT:
+						case QUESTION:
+							std::cerr << "Shouldn't reach Unary in a OpK" << std::endl;
+							break;
+
+						case EQ:
+						case NOTEQ:
+							if( lhs != rhs ) {
+								printf("ERROR(%d): '%s' requires operands of the same type but lhs is type %s and rhs is %s.\n",
+										line, op.c_str(), lhs_str, rhs_str);
+								errors++;
+							}
+							break;
+
+						case LESSEQ:
+						case LTHAN:
+						case GRTEQ:
+						case GTHAN:
+							if( lhs != Integer || lhs != Character ) {
+								printf("ERROR(%d): '%s' requires operands of type %s but lhs is of type %s.\n",
+										line, op.c_str(), "char or int", lhs_str);
+								errors++;
+							}
+							if( rhs != Integer || rhs != Character ) {
+								printf("ERROR(%d): '%s' requires operands of type %s but rhs is of type %s.\n",
+										line, op.c_str(), "char or int", rhs_str);
+								errors++;
+							}
+							if( tree->child[0]->isArray || tree->child[1]->isArray ) {
+								printf("ERROR(%d): The operation '%s' does not work with arrays.\n",
+										line, op.c_str());
+								errors++;
+							}
+							break;
+
+						case MULTIPLY:
+						case PLUS:
+						case MINUS:
+						case DIVIDE:
+						case MODULUS:
+							if( lhs != Integer ) {
+								printf("ERROR(%d): '%s' requires operands of type %s but lhs is of type %s.\n",
+										line, op.c_str(), typeToStr(Integer), lhs_str);
+								errors++;
+							}
+							if( rhs != Integer ) {
+								printf("ERROR(%d): '%s' requires operands of type %s but rhs is of type %s.\n",
+										line, op.c_str(), typeToStr(Integer), rhs_str);
+								errors++;
+							}
+							break;
+
+
+						}
 					}
-					if( lhs != tree->nodetype ) {
-						printf("ERROR(%d): '%s' requires operands of type %s but lhs is of type %s.\n",
-								line, op.c_str(), tree_type_str, lhs_str);
-						errors++;
+					else {
+						if(testing) {
+							std::cerr << "Tried to access NULL token in ExpK: OpK" << std::endl;
+						}
 					}
-					if( lhs != rhs ) {
-						printf("ERROR(%d): '%s' requires operands of the same type but lhs is type %s and rhs is %s.\n",
-								line, op.c_str(), lhs_str, rhs_str);
-						errors++;
-					}
+
 					if( tree->child[0]->isArray != tree->child[1]->isArray ) {
 						printf("ERROR(%d): '%s' requires that if one operand is an array so must the other operand.\n", line, op.c_str());
 						errors++;
 					}
 				}
-				// TODO: works/doesn't work with arrays
 				break;
+
 			case UnaryK:
 				if( tree->numChildren == 1 ) {
 					if(tree->child[0]->kind == IdK && symtable->lookup(child0_sval) == NULL ) {
@@ -790,10 +895,34 @@ void treeParse( TreeNode * par, TreeNode * node, SymbolTable * symtable ) {
 						errors++;
 						tree->child[0]->nodetype = Undef;
 					}
-					else if( lhs != tree->nodetype ) {
-						printf("ERROR(%d): Unary '%s' requires an operand of type %s but was given %s.\n",
-								line, tree_svalue.c_str(), tree_type_str, lhs_str );
-						errors++;
+					else {
+						switch(tree->token->bval) {
+						case MULTIPLY:
+							if( !tree->child[0]->isArray ) {
+								printf("ERROR(%d): The operation '%s' only works with arrays.\n",
+										line, tree_svalue.c_str());
+								errors++;
+							}
+							break;
+
+						case MINUS:
+						case QUESTION:
+							if( lhs != Integer ) {
+								printf("ERROR(%d): Unary '%s' requires an operand of type %s but was given %s.\n",
+										line, tree_svalue.c_str(), typeToStr(Integer), lhs_str );
+								errors++;
+							}
+							break;
+
+						case NOT:
+							if( lhs != Boolean ) {
+								printf("ERROR(%d): Unary '%s' requires an operand of type %s but was given %s.\n",
+										line, tree_svalue.c_str(), typeToStr(Boolean), lhs_str );
+								errors++;
+							}
+							break;
+
+						}
 					}
 				}
 				break;
@@ -1086,6 +1215,7 @@ std::string opToStr( TokenData * tok ) {
 }
 
 // TODO: ivalue handling!
+// TODO: fix flex so this isn't necessary
 std::string svalResolve( TreeNode * tree ) {
 
 	std::string temp;
