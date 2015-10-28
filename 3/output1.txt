@@ -1,8 +1,0 @@
-Var a of type bool [line: 1]
-|Sibling: 1  Var b is array of type int [line: 2]
-|Sibling: 2  Func max returns type int [line: 4]
-|   Child: 0  |   Param x of type int [line: 4]
-|   |Sibling: 1  Param y of type int [line: 4]
-|   Child: 1  |   Compound [line: 5]
-|   Child: 0  |   Child: 1  Number of warnings: 0
-Number of errors: 0

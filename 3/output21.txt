@@ -1,3 +1,0 @@
-ERROR(6): syntax error, unexpected SINGLE, expecting $end
-Number of warnings: 0
-Number of errors: 0Line number: 5Flex's line number: 6
