@@ -994,19 +994,19 @@ void treeParse( TreeNode * par, TreeNode * node, SymbolTable * symtable ) {
 		sibling_count++;
 
 	} // end while
-}
+}   
 
 // Creates a new node for the syntax tree
 // TODO: combine with make parent?
-TreeNode * makeNode( NodeKind nk, Kind k, Type t, int line, char * svalue, TokenData * token ) {
+TreeNode * makeNode( NodeKind nk, Kind k, Type t, int line, TokenData * token ) {
 	TreeNode * tempNode = allocNode();
 	tempNode->nodekind = nk;
 	tempNode->kind = k;
 	tempNode->nodetype = t;
 	tempNode->lineno = line;
-	if( svalue != NULL ) {
+	/*if( svalue != NULL ) {
 		tempNode->svalue = strdup(svalue);
-	}
+	}*/
 	if(token != NULL) {
 		tempNode->token = token;
 	}

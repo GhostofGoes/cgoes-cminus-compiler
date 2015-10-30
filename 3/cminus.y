@@ -146,11 +146,11 @@ var-decl-initialize:
 var-decl-id:
 	ID
 		{ 
-            $$ = makeNode( DeclK, VarK, Void, $1->lineno, $1->svalue, $1 );
+            $$ = makeNode( DeclK, VarK, Void, $1->lineno, $1 );
         }
 	| ID LBRACKET NUMCONST RBRACKET
 		{ 
-            $$ = makeNode( DeclK, VarK, Void, $1->lineno, $1->svalue, $1 );
+            $$ = makeNode( DeclK, VarK, Void, $1->lineno, $1 );
             $$->isArray = true;
             freeToken($2);
            	freeToken($4);
@@ -174,22 +174,22 @@ scoped-type-specifier:
 type-specifier:
 	INT 
 		{ 
-            $$ = makeNode( DeclK, TypeK, Integer, $1->lineno, NULL, $1 );
+            $$ = makeNode( DeclK, TypeK, Integer, $1->lineno, $1 );
         }
 	| BOOL 
 		{ 
-            $$ = makeNode( DeclK, TypeK, Boolean, $1->lineno, NULL, $1 );
+            $$ = makeNode( DeclK, TypeK, Boolean, $1->lineno, $1 );
         }
 	| CHAR 
 		{ 
-            $$ = makeNode( DeclK, TypeK, Character, $1->lineno, NULL, $1 );
+            $$ = makeNode( DeclK, TypeK, Character, $1->lineno, $1 );
         }
 	;
 
 fun-declaration:
 	type-specifier ID LPAREN params RPAREN statement
 		{ 
-            $$ = makeParent( DeclK, FunK, $1->nodetype, $2->lineno, $2->svalue );
+            $$ = makeNode( DeclK, FunK, $1->nodetype, $2->lineno, $2 );
             addChild( $$, $4);
             addChild( $$, $6);
             freeToken($3);
@@ -197,7 +197,7 @@ fun-declaration:
 		}
 	| ID LPAREN params RPAREN statement
 		{ 
-            $$ = makeParent( DeclK, FunK, Void, $1->lineno, $1->svalue );
+            $$ = makeNode( DeclK, FunK, Void, $1->lineno, $1 );
             addChild( $$, $3);
             addChild( $$, $5);
             freeToken($2);
@@ -243,11 +243,11 @@ param-id-list:
 param-id:
 	ID 		
 		{ 
-            $$ = makeNode( DeclK, ParamK, Void, $1->lineno, $1->svalue, $1 );
+            $$ = makeNode( DeclK, ParamK, Void, $1->lineno, $1 );
         }
 	| ID LBRACKET RBRACKET
 		{ 
-            $$ = makeNode( DeclK, ParamK, Void, $1->lineno, $1->svalue, $1 );
+            $$ = makeNode( DeclK, ParamK, Void, $1->lineno, $1 );
             $$->isArray = true; 
             freeToken($2);
            	freeToken($3);
@@ -290,7 +290,7 @@ unmatched:
 matched-selection-stmt:
 	IF LPAREN simple-expression RPAREN matched ELSE matched
         { 
-            $$ = makeParent( StmtK, IfK, Void, $1->lineno, NULL );
+            $$ = makeNode( StmtK, IfK, Void, $1->lineno, $1 );
             addChild( $$, $3);
             addChild( $$, $5);
             addChild( $$, $7);
@@ -303,7 +303,7 @@ matched-selection-stmt:
 unmatched-selection-stmt:
 	IF LPAREN simple-expression RPAREN statement
         { 
-            $$ = makeParent( StmtK, IfK, Void, $1->lineno, NULL );
+            $$ = makeNode( StmtK, IfK, Void, $1->lineno, $1 );
             addChild( $$, $3);
             addChild( $$, $5);
            	freeToken($2);
@@ -311,7 +311,7 @@ unmatched-selection-stmt:
         }
 	| IF LPAREN simple-expression RPAREN matched ELSE unmatched 
         { 
-            $$ = makeParent( StmtK, IfK, Void, $1->lineno, NULL );
+            $$ = makeNode( StmtK, IfK, Void, $1->lineno, $1 );
             addChild( $$, $3);
             addChild( $$, $5);
             addChild( $$, $7);
@@ -324,7 +324,7 @@ unmatched-selection-stmt:
 matched-while-stmt:
 	WHILE LPAREN simple-expression RPAREN matched
         { 
-            $$ = makeParent( StmtK, WhileK, Void, $1->lineno, NULL );
+            $$ = makeNode( StmtK, WhileK, Void, $1->lineno, $1 );
             addChild( $$, $3);
             addChild( $$, $5);
             freeToken($2);
@@ -335,7 +335,7 @@ matched-while-stmt:
 unmatched-while-stmt:
 	WHILE LPAREN simple-expression RPAREN unmatched
         { 
-            $$ = makeParent( StmtK, WhileK, Void, $1->lineno, NULL );
+            $$ = makeNode( StmtK, WhileK, Void, $1->lineno, $1 );
             addChild( $$, $3);
             addChild( $$, $5);
             freeToken($2);
@@ -346,7 +346,7 @@ unmatched-while-stmt:
 matched-foreach-stmt:
 	FOREACH LPAREN mutable IN simple-expression RPAREN matched
         { 
-            $$ = makeParent( StmtK, ForeachK, Void, $1->lineno, NULL );
+            $$ = makeNode( StmtK, ForeachK, Void, $1->lineno, $1 );
             addChild( $$, $3);
             addChild( $$, $5);
             addChild( $$, $7);
@@ -359,7 +359,7 @@ matched-foreach-stmt:
 unmatched-foreach-stmt:
 	FOREACH LPAREN mutable IN simple-expression RPAREN unmatched
         { 
-            $$ = makeParent( StmtK, ForeachK, Void, $1->lineno, NULL );
+            $$ = makeNode( StmtK, ForeachK, Void, $1->lineno, $1 );
             addChild( $$, $3);
             addChild( $$, $5);
             addChild( $$, $7);
@@ -372,7 +372,7 @@ unmatched-foreach-stmt:
 compound-stmt:
 	LBRACE local-declarations statement-list RBRACE
         { 
-            $$ = makeParent( StmtK, CompoundK, Void, $1->lineno, NULL );
+            $$ = makeNode( StmtK, CompoundK, Void, $1->lineno, $1 );
             addChild( $$, $2);
             addChild( $$, $3);
             freeToken($1);
@@ -413,12 +413,12 @@ expression-stmt:
 return-stmt:
 	RETURN SEMICOLON 
         { 
-            $$ = makeNode( StmtK, ReturnK, Void, $1->lineno, NULL, $1 );
+            $$ = makeNode( StmtK, ReturnK, Void, $1->lineno, $1 );
             freeToken($2);    
         }
 	| RETURN expression SEMICOLON
         {
-            $$ = makeNode( StmtK, ReturnK, $2->nodetype, $1->lineno, NULL, $1 );     
+            $$ = makeNode( StmtK, ReturnK, $2->nodetype, $1->lineno, $1 );     
             addChild( $$, $2);
             freeToken($3);
         }
@@ -427,7 +427,7 @@ return-stmt:
 break-stmt:
 	BREAK SEMICOLON
         { 
-            $$ = makeNode( StmtK, BreakK, Void, $1->lineno, NULL, $1 );   
+            $$ = makeNode( StmtK, BreakK, Void, $1->lineno, $1 );   
             freeToken($2);  
         }
 	;
@@ -435,42 +435,42 @@ break-stmt:
 expression:
 	mutable ASSIGN expression
         { 
-            $$ = makeNode( ExpK, AssignK, Void, $2->lineno, NULL, $2 );     
+            $$ = makeNode( ExpK, AssignK, Void, $2->lineno, $2 );     
             addChild( $$, $1);
             addChild( $$, $3);
         }
 	| mutable ADDASS expression
         { 
-            $$ = makeNode( ExpK, AssignK, Integer, $2->lineno, NULL, $2 );     
+            $$ = makeNode( ExpK, AssignK, Integer, $2->lineno, $2 );     
             addChild( $$, $1);
             addChild( $$, $3);
         }
 	| mutable SUBASS expression
         { 
-            $$ = makeNode( ExpK, AssignK, Integer, $2->lineno, NULL, $2 );     
+            $$ = makeNode( ExpK, AssignK, Integer, $2->lineno, $2 );     
             addChild( $$, $1);
             addChild( $$, $3);
         }
 	| mutable MULASS expression
         { 
-            $$ = makeNode( ExpK, AssignK, Integer, $2->lineno, NULL, $2 );     
+            $$ = makeNode( ExpK, AssignK, Integer, $2->lineno, $2 );     
             addChild( $$, $1);
             addChild( $$, $3);
         }
 	| mutable DIVASS expression
         { 
-            $$ = makeNode( ExpK, AssignK, Integer, $2->lineno, NULL, $2 );     
+            $$ = makeNode( ExpK, AssignK, Integer, $2->lineno, $2 );     
             addChild( $$, $1);
             addChild( $$, $3);
         }
 	| mutable INC
         { 
-            $$ = makeNode( ExpK, AssignK, Integer, $2->lineno, NULL, $2 );     
+            $$ = makeNode( ExpK, AssignK, Integer, $2->lineno, $2 );     
             addChild( $$, $1);
         }
 	| mutable DEC
         { 
-            $$ = makeNode( ExpK, AssignK, Integer, $2->lineno, NULL, $2 );     
+            $$ = makeNode( ExpK, AssignK, Integer, $2->lineno, $2 );     
             addChild( $$, $1);
         }
 	| simple-expression
@@ -480,7 +480,7 @@ expression:
 simple-expression:
 	simple-expression OR and-expression 
         { 
-            $$ = makeNode( ExpK, OpK, Boolean, $2->lineno, NULL, $2 );
+            $$ = makeNode( ExpK, OpK, Boolean, $2->lineno, $2 );
             addChild( $$, $1);
             addChild( $$, $3);
         }
@@ -491,7 +491,7 @@ simple-expression:
 and-expression:
 	and-expression AND unary-rel-expression
         { 
-            $$ = makeNode( ExpK, OpK, Boolean, $2->lineno, NULL, $2 );     
+            $$ = makeNode( ExpK, OpK, Boolean, $2->lineno, $2 );     
             addChild( $$, $1);
             addChild( $$, $3);
         }
@@ -502,7 +502,7 @@ and-expression:
 unary-rel-expression:
 	NOT unary-rel-expression
         { 
-            $$ = makeNode( ExpK, UnaryK, Boolean, $1->lineno, NULL, $1 );     
+            $$ = makeNode( ExpK, UnaryK, Boolean, $1->lineno, $1 );     
             addChild( $$, $2);
         }
 	| rel-expression 
@@ -523,27 +523,27 @@ rel-expression:
 relop:
 	LESSEQ
 		{ 
-            $$ = makeNode( ExpK, OpK, Boolean, $1->lineno, NULL, $1 );
+            $$ = makeNode( ExpK, OpK, Boolean, $1->lineno, $1 );
         }
 	| LTHAN
 		{ 
-            $$ = makeNode( ExpK, OpK, Boolean, $1->lineno, NULL, $1 );
+            $$ = makeNode( ExpK, OpK, Boolean, $1->lineno, $1 );
         }
 	| GTHAN
 		{ 
-            $$ = makeNode( ExpK, OpK, Boolean, $1->lineno, NULL, $1 );
+            $$ = makeNode( ExpK, OpK, Boolean, $1->lineno, $1 );
         }
 	| GRTEQ 
 		{ 
-            $$ = makeNode( ExpK, OpK, Boolean, $1->lineno, NULL, $1 );
+            $$ = makeNode( ExpK, OpK, Boolean, $1->lineno, $1 );
         }
 	| EQ 
 		{ 
-            $$ = makeNode( ExpK, OpK, Boolean, $1->lineno, NULL, $1 );
+            $$ = makeNode( ExpK, OpK, Boolean, $1->lineno, $1 );
         }
 	| NOTEQ 
 		{ 
-            $$ = makeNode( ExpK, OpK, Boolean, $1->lineno, NULL, $1 );
+            $$ = makeNode( ExpK, OpK, Boolean, $1->lineno, $1 );
         }
 	;
 	
@@ -561,11 +561,11 @@ sum-expression:
 sumop:
 	PLUS
 		{ 
-            $$ = makeNode( ExpK, OpK, Integer, $1->lineno, NULL, $1 );
+            $$ = makeNode( ExpK, OpK, Integer, $1->lineno, $1 );
         }
 	| MINUS
 		{ 
-            $$ = makeNode( ExpK, OpK, Integer, $1->lineno, NULL, $1 );
+            $$ = makeNode( ExpK, OpK, Integer, $1->lineno, $1 );
         }
 	;
 	
@@ -583,15 +583,15 @@ term:
 mulop:
 	MULTIPLY 
 		{ 
-            $$ = makeNode( ExpK, OpK, Integer, $1->lineno, NULL, $1 );
+            $$ = makeNode( ExpK, OpK, Integer, $1->lineno, $1 );
         }
 	| DIVIDE 
 		{ 
-            $$ = makeNode( ExpK, OpK, Integer, $1->lineno, NULL, $1 );
+            $$ = makeNode( ExpK, OpK, Integer, $1->lineno, $1 );
         }
 	| MODULUS 
 		{ 
-            $$ = makeNode( ExpK, OpK, Integer, $1->lineno, NULL, $1 );
+            $$ = makeNode( ExpK, OpK, Integer, $1->lineno, $1 );
         }
 	;
 	
@@ -608,15 +608,15 @@ unary-expression:
 unaryop:
 	MINUS
 		{ 
-            $$ = makeNode( ExpK, UnaryK, Integer, $1->lineno, NULL, $1 );
+            $$ = makeNode( ExpK, UnaryK, Integer, $1->lineno, $1 );
         }
 	| MULTIPLY
 		{ 
-            $$ = makeNode( ExpK, UnaryK, Integer, $1->lineno, NULL, $1 );
+            $$ = makeNode( ExpK, UnaryK, Integer, $1->lineno, $1 );
         }
 	| QUESTION /* Question's type? */
 		{ 
-            $$ = makeNode( ExpK, UnaryK, Integer, $1->lineno, NULL, $1 );
+            $$ = makeNode( ExpK, UnaryK, Integer, $1->lineno, $1 );
         }
 	;
 	
@@ -630,11 +630,11 @@ factor:
 mutable:
 	ID
 		{ 
-            $$ = makeNode( ExpK, IdK, Void, $1->lineno, $1->svalue, $1 );
+            $$ = makeNode( ExpK, IdK, Void, $1->lineno, $1 );
         }
 	| ID LBRACKET expression RBRACKET
         {
-            $$ = makeNode( ExpK, IdK, Void, $1->lineno, $1->svalue, $1 );
+            $$ = makeNode( ExpK, IdK, Void, $1->lineno, $1 );
             $$->isArray = true; 
             $3->isIndex = true;
             addChild( $$, $3);
@@ -660,12 +660,12 @@ call:
 	ID LPAREN args RPAREN
 		{ 
 			if($3 != NULL) {
-	            $$ = makeNode( ExpK, CallK, $3->nodetype, $1->lineno, $1->svalue, $1 );
+	            $$ = makeNode( ExpK, CallK, $3->nodetype, $1->lineno, $1 );
     	        addChild($$, $3);
 
 			}
 			else {
-				$$ = makeNode( ExpK, CallK, Void, $1->lineno, $1->svalue, $1 );
+				$$ = makeNode( ExpK, CallK, Void, $1->lineno, $1 );
 			}	
 			freeToken($2);
            	freeToken($4);
@@ -692,19 +692,19 @@ arg-list:
 constant:
 	NUMCONST
 		{ 
-            $$ = makeNode( ExpK, ConstK, Integer, $1->lineno, NULL, $1 );
+            $$ = makeNode( ExpK, ConstK, Integer, $1->lineno, $1 );
         }
 	| CHARCONST 
 		{ 
-            $$ = makeNode( ExpK, ConstK, Character, $1->lineno, NULL, $1 );
+            $$ = makeNode( ExpK, ConstK, Character, $1->lineno, $1 );
         }
 	| STRINGCONST
 		{ 
-            $$ = makeNode( ExpK, ConstK, Character, $1->lineno, $1->svalue, $1 );
+            $$ = makeNode( ExpK, ConstK, Character, $1->lineno, $1 );
         }
 	| BOOLCONST
 		{ 
-            $$ = makeNode( ExpK, ConstK, Boolean, $1->lineno, NULL, $1 );
+            $$ = makeNode( ExpK, ConstK, Boolean, $1->lineno, $1 );
         }
 	;
 	

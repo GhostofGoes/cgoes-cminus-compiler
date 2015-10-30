@@ -38,7 +38,7 @@ void semanticAnalysis(TreeNode * tree );
 void treeParse( TreeNode * parent, TreeNode * node, SymbolTable * symtable );
 
 // Creates a new node for the syntax tree
-TreeNode * makeNode( NodeKind nk, Kind k, Type t, int line, char * svalue, TokenData * token );
+TreeNode * makeNode( NodeKind nk, Kind k, Type t, int line, TokenData * token );
 TreeNode * makeParent( NodeKind nk, Kind k, Type t, int line, char * svalue );
 
 // Adds a child to an existing syntax tree node
