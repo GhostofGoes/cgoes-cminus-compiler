@@ -38,7 +38,7 @@ typedef struct treeNode
 	char * svalue;
 	
 	// connectivity in the tree
-	int numChildren; 						// Number of children for a given node
+	int numChildren; 			// Number of children for a given node
 	struct treeNode *child[MAXCHILDREN];   	// children of the node
 	struct treeNode *sibling;              	// siblings for the node
 

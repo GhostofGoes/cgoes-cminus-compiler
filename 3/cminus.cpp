@@ -69,18 +69,20 @@ int main( int argc, char * argv[] ) {
     } while (!feof(yyin));
 
     if (abstract_tree) {
-        printAbstractTree(syntaxTree, 0);
+        printAbstractTree(syntaxTree);
         freeTree(syntaxTree);
     }
 
     // TODO: build I/O library tree
     if (annotated_tree) {
+        annotatedTree = syntaxTree;
+        semanticAnalysis(annotatedTree);
+        
         TreeNode * io = buildIOLibrary();
         linkSiblings(io, syntaxTree);
         annotatedTree = io;
         
-        semanticAnalysis(annotatedTree);
-        printAnnotatedTree(annotatedTree, 0);
+        printAnnotatedTree(annotatedTree);
         
         freeTree(annotatedTree);
     }
@@ -100,7 +102,7 @@ int main( int argc, char * argv[] ) {
 // Recursively prints the abstract syntax tree
 // TODO: output redirection
 // TODO: null characters in char and string consts, store/print properly (check treeParse for solution, make function)
-void printAbstractTree(TreeNode * og, int indent_count) {
+void printAbstractTree(TreeNode * og, int indent_count ) {
 
     TreeNode * tree = og;
     int sibling_count = 0; // Keeps track of siblings
@@ -742,10 +744,23 @@ void treeParse( TreeNode * par, TreeNode * node, SymbolTable * symtable ) {
                             } else {
                                 if (temp->kind != FunK) {
                                     printf("ERROR(%d): '%s' is a simple variable and cannot be called.\n",
-                                            line, tree_svalue.c_str());
+                                            line, svalResolve(temp).c_str());
                                     errors++;
                                 } else {
-                                    tree->nodetype = temp->nodetype;
+                                    int treesibs = countSiblings(tree->child[0]);
+                                    int tempsibs = countSiblings(temp->child[0]);
+                                    
+                                    if( treesibs < tempsibs ) {
+                                        printf("ERROR(%d): Too few parameters passed for function '%s' defined on line %d.\n",
+                                                line, svalResolve(temp).c_str(), temp->lineno );
+                                    }
+                                    else if( treesibs > tempsibs ) {
+                                        printf("ERROR(%d): Too many parameters passed for function '%s' defined on line %d.\n", 
+                                                line, svalResolve(temp).c_str(), temp->lineno );
+                                    }
+                                    else {
+                                        tree->nodetype = temp->nodetype;
+                                    }
                                 }
                             }
                         }
@@ -1067,6 +1082,22 @@ void applyTypeToSiblings( TreeNode * init, Type t ) {
 		temp->nodetype = t;
 		temp = temp->sibling;
 	}
+}
+
+// Returns number of siblings the node has
+int countSiblings( TreeNode * start ) {
+    int sibling_count = 0;
+    
+    if( start != NULL) {
+        TreeNode * temp;
+        temp = start->sibling;
+        while(temp != NULL) {
+            sibling_count++;
+            temp = temp->sibling;
+
+        }
+    }
+    return sibling_count;
 }
 
 // Allocates and zeros a new TreeNode

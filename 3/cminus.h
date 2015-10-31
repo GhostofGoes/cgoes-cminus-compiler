@@ -28,10 +28,10 @@ static void yyerror(const char *);
 
 // TODO: combine the two print tree functions, or move bulk to another function?
 // Recursively prints the abstract syntax tree
-void printAbstractTree(TreeNode * tree, int indent_count);
+void printAbstractTree(TreeNode * tree, int indent_count = 0);
 
 // Recursively prints the annotated syntax tree
-void printAnnotatedTree(TreeNode * tree, int indent_count);
+void printAnnotatedTree(TreeNode * tree, int indent_count = 0);
 
 // Creates the Annotated Syntax Tree
 void semanticAnalysis(TreeNode * tree );
@@ -51,6 +51,7 @@ TreeNode * linkSiblings( TreeNode * sib1, TreeNode * sib2 );
 // Applies Type t to init and all its siblings
 void applyTypeToSiblings( TreeNode * init, Type t );
 
+int countSiblings( TreeNode * start );
 
 /* Memory Management */
 TreeNode * allocNode(); 		// Allocates and zeros a new TreeNode
