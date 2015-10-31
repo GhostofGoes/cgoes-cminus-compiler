@@ -25,6 +25,8 @@ int warnings = 0;
 int errors = 0;
 bool testing = false;
 
+bool main_check = false; // lazy global hack to check for main
+
 
 int main( int argc, char * argv[] ) {
 
@@ -431,6 +433,10 @@ void semanticAnalysis( TreeNode * og ) {
 	// TODO: initial node creations from Bison file
 
 	treeParse( NULL, tree, symtable );
+        if(main_check == false) {
+            printf("ERROR(LINKER): Procedure main is not defined.");
+            errors++;
+        }
 
 }
 
@@ -493,20 +499,33 @@ void treeParse( TreeNode * par, TreeNode * node, SymbolTable * symtable ) {
                             printf("ERROR(%d): Symbol '%s' is already defined at line %d.\n", line, tree_svalue.c_str(), tmp->lineno);
                             errors++;
                         }
-                        if (tree->numChildren == 1) {
+                        if ( tree->numChildren == 1 && tree->child[0] != NULL ) {
                             if (tree->isArray) {
-                                if (tree->child[0] != NULL && tree->child[0]->isIndex) {
-                                    if (child0_sval == tree_svalue) {
-                                        printf("ERROR(%d): Array index is the unindexed array '%s'.\n", line, tree_svalue.c_str());
-                                        errors++;
-                                    } else if (lhs != Integer) {
-                                        printf("ERROR(%d): Array '%s' should be indexed by type int but got %s.\n",
-                                                line, tree_svalue.c_str(), lhs_str);
+                                    if( tree->nodetype != Character ) {
+                                        printf("ERROR(%d): Array '%s' must be of type char to be initialized, but is of type %s.\n", 
+                                                line, tree_svalue.c_str(), tree_type_str );
                                         errors++;
                                     }
-                                }
+                                    // TODO: Stringconst is an array of characters. check that in bison.
+                                    else if( lhs != Character ) { 
+                                        printf("ERROR(%d): Initializer for array variable '%s' must be a string, but is of nonarray type %s.\n",
+                                                line, tree_svalue.c_str(), lhs_str );
+                                        errors++;
+                                    }
                             } else if (tree->child[0]->isIndex) {
                                 printf("ERROR(%d): Cannot index nonarray '%s'.\n", line, tree_svalue.c_str());
+                                errors++;
+                            } else if (tree->child[0]->isArray) {
+                                printf("ERROR(%d): Initializer for nonarray variable '%s' of type %s cannot be initialized with an array.\n",
+                                        line, tree_svalue.c_str(), tree_type_str );
+                                errors++;
+                            } else if ( tree->child[0]->kind != ConstK ) {
+                                printf("ERROR(%d): Initializer for variable '%s' is not a constant expression.\n",
+                                        line, tree_svalue.c_str() );
+                                errors++;
+                            } else if ( lhs != tree->nodetype ) {
+                                printf("ERROR(%d): Variable '%s' is of type %s but is being initialized with an expression of type %s.\n",
+                                        line, tree_svalue.c_str(), tree_type_str, lhs_str );
                                 errors++;
                             }
                         }
@@ -522,6 +541,7 @@ void treeParse( TreeNode * par, TreeNode * node, SymbolTable * symtable ) {
                         break;
 
                     case FunK:
+                        if (tree_svalue == "main") { main_check = true; } // check for a main...but what if multiple?
                         if (!symtable->insert(tree_svalue, tree)) {
                             TreeNode * tmp = (TreeNode *) symtable->lookup(tree_svalue);
                             printf("ERROR(%d): Symbol '%s' is already defined at line %d.\n", line, tree_svalue.c_str(), tmp->lineno);
@@ -753,10 +773,12 @@ void treeParse( TreeNode * par, TreeNode * node, SymbolTable * symtable ) {
                                     if( treesibs < tempsibs ) {
                                         printf("ERROR(%d): Too few parameters passed for function '%s' defined on line %d.\n",
                                                 line, svalResolve(temp).c_str(), temp->lineno );
+                                        errors++;
                                     }
                                     else if( treesibs > tempsibs ) {
                                         printf("ERROR(%d): Too many parameters passed for function '%s' defined on line %d.\n", 
                                                 line, svalResolve(temp).c_str(), temp->lineno );
+                                        errors++;
                                     }
                                     else {
                                         tree->nodetype = temp->nodetype;
@@ -926,6 +948,24 @@ void treeParse( TreeNode * par, TreeNode * node, SymbolTable * symtable ) {
                         tmp = (TreeNode *) symtable->lookup(tree_svalue);
                         if (tmp != NULL) {
                             tree->nodetype = tmp->nodetype;
+                            // TODO: variables in expressions
+
+                            if (tree->child[0] != NULL && tree->child[0]->isIndex) {
+                                if (tmp->isArray) {
+                                    if (child0_sval == tree_svalue) {
+                                        printf("ERROR(%d): Array index is the unindexed array '%s'.\n", line, tree_svalue.c_str());
+                                        errors++;
+                                    } else if (lhs != Integer) {
+                                        printf("ERROR(%d): Array '%s' should be indexed by type int but got %s.\n",
+                                                line, tree_svalue.c_str(), lhs_str);
+                                        errors++;
+                                    }
+                                } else {
+                                    printf("ERROR(%d): Cannot index nonarray '%s'.\n",
+                                            line, tree_svalue.c_str());
+                                    errors++;
+                                }
+                            }
                         } else {
                             printf("ERROR(%d): Symbol '%s' is not defined.\n", line, tree_svalue.c_str());
                             errors++;
@@ -1086,18 +1126,17 @@ void applyTypeToSiblings( TreeNode * init, Type t ) {
 
 // Returns number of siblings the node has
 int countSiblings( TreeNode * start ) {
-    int sibling_count = 0;
+    int sib_count = 0;
     
     if( start != NULL) {
-        TreeNode * temp;
-        temp = start->sibling;
+        TreeNode * temp= start->sibling;
         while(temp != NULL) {
-            sibling_count++;
+            sib_count++;
             temp = temp->sibling;
 
         }
     }
-    return sibling_count;
+    return sib_count;
 }
 
 // Allocates and zeros a new TreeNode

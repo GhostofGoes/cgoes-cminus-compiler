@@ -701,6 +701,7 @@ constant:
 	| STRINGCONST
 		{ 
             $$ = makeNode( ExpK, ConstK, Character, $1->lineno, $1 );
+            $$->isArray = true;
         }
 	| BOOLCONST
 		{ 
