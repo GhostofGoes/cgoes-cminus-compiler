@@ -25,8 +25,6 @@ int warnings = 0;
 int errors = 0;
 bool testing = false;
 
-bool main_check = false; // lazy global hack to check for main
-
 
 int main( int argc, char * argv[] ) {
 
@@ -427,17 +425,17 @@ void printAnnotatedTree( TreeNode * og, int indent_count ) {
 
 // Performs semantic analysis, generating the Annotated Syntax Tree
 void semanticAnalysis( TreeNode * og ) {
-	// TODO: add return
-	SymbolTable * symtable = new SymbolTable();
-	TreeNode * tree = og;
-	// TODO: initial node creations from Bison file
+    // TODO: add return
+    SymbolTable * symtable = new SymbolTable();
+    TreeNode * tree = og;
+    // TODO: initial node creations from Bison file
 
-	treeParse( NULL, tree, symtable );
-        if(main_check == false) {
-            printf("ERROR(LINKER): Procedure main is not defined.");
-            errors++;
-        }
-
+    treeParse(NULL, tree, symtable);
+    if (symtable->lookup("main") == NULL) {
+        printf("ERROR(LINKER): Procedure main is not defined.");
+        errors++;
+    }
+    delete symtable;
 }
 
 
@@ -541,7 +539,6 @@ void treeParse( TreeNode * par, TreeNode * node, SymbolTable * symtable ) {
                         break;
 
                     case FunK:
-                        if (tree_svalue == "main") { main_check = true; } // check for a main...but what if multiple?
                         if (!symtable->insert(tree_svalue, tree)) {
                             TreeNode * tmp = (TreeNode *) symtable->lookup(tree_svalue);
                             printf("ERROR(%d): Symbol '%s' is already defined at line %d.\n", line, tree_svalue.c_str(), tmp->lineno);
