@@ -62,6 +62,7 @@ void freeToken( TokenData * token );	// Frees and zeroes the token
 
 
 /* Printing and String manipulation */
+/*
 const char * iboolToString( int ib );	// Returns "true" for 1, "false" for 0
 std::string applyIndents( std::string s, int indent_count );
 const char * typeToStr( Type t );	// Returns literal string of type, eg "int" for Integer
@@ -69,12 +70,10 @@ const char * nodekindToStr( NodeKind nk );
 std::string svalResolve( TreeNode * tree ); // Resolves the svalue of node or token as a C++ string
 std::string opToStr( TokenData * tok );
 
-
-/* Failed attempt as generic errors. May be revived in the future. */
 void printError( int line, std::string err );
 void printWarning( int line, std::string warn );
 
 void printTreeNode( void * node );
 void printTokenData( void * token );
-
+*/
 #endif

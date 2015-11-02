@@ -12,9 +12,11 @@
 
 /* Local headers */
 #include "cminus.h"
+#include "cminus.tab.h"
 #include "types.h"
 #include "toker.h"
 #include "symbolTable.h"
+#include "printing.h"
 
 /* Tree pointers */
 TreeNode * syntaxTree = NULL;
@@ -1327,6 +1329,7 @@ void freeToken( TokenData * token ) {
     free(token);
 }
 
+/*
 const char * iboolToString( int ib ) {
     if (ib) {
         return "true";
@@ -1488,3 +1491,4 @@ void printTokenData(void * tok) {
     std::cout << std::endl;
     
 }
+*/

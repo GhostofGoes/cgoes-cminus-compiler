@@ -39,7 +39,7 @@ Grammar
    20                | ID LPAREN params RPAREN statement
 
    21 params: param-list
-   22       | %empty
+   22       | /* empty */
 
    23 param-list: param-list SEMICOLON param-type-list
    24           | param-type-list
@@ -83,10 +83,10 @@ Grammar
    49 compound-stmt: LBRACE local-declarations statement-list RBRACE
 
    50 local-declarations: local-declarations scoped-var-declaration
-   51                   | %empty
+   51                   | /* empty */
 
    52 statement-list: statement-list statement
-   53               | %empty
+   53               | /* empty */
 
    54 expression-stmt: expression SEMICOLON
    55                | SEMICOLON
@@ -157,7 +157,7 @@ Grammar
   102 call: ID LPAREN args RPAREN
 
   103 args: arg-list
-  104     | %empty
+  104     | /* empty */
 
   105 arg-list: arg-list COMMA expression
   106         | expression
@@ -329,7 +329,7 @@ constant (101)
     on left: 107 108 109 110, on right: 101
 
 
-State 0
+state 0
 
     0 $accept: . program $end
 
@@ -346,42 +346,42 @@ State 0
     fun-declaration   go to state 10
 
 
-State 1
+state 1
 
    20 fun-declaration: ID . LPAREN params RPAREN statement
 
     LPAREN  shift, and go to state 11
 
 
-State 2
+state 2
 
    16 type-specifier: INT .
 
     $default  reduce using rule 16 (type-specifier)
 
 
-State 3
+state 3
 
    17 type-specifier: BOOL .
 
     $default  reduce using rule 17 (type-specifier)
 
 
-State 4
+state 4
 
    18 type-specifier: CHAR .
 
     $default  reduce using rule 18 (type-specifier)
 
 
-State 5
+state 5
 
     0 $accept: program . $end
 
     $end  shift, and go to state 12
 
 
-State 6
+state 6
 
     1 program: declaration-list .
     2 declaration-list: declaration-list . declaration
@@ -399,21 +399,21 @@ State 6
     fun-declaration  go to state 10
 
 
-State 7
+state 7
 
     3 declaration-list: declaration .
 
     $default  reduce using rule 3 (declaration-list)
 
 
-State 8
+state 8
 
     4 declaration: var-declaration .
 
     $default  reduce using rule 4 (declaration)
 
 
-State 9
+state 9
 
     6 var-declaration: type-specifier . var-decl-list SEMICOLON
    19 fun-declaration: type-specifier . ID LPAREN params RPAREN statement
@@ -425,14 +425,14 @@ State 9
     var-decl-id          go to state 17
 
 
-State 10
+state 10
 
     5 declaration: fun-declaration .
 
     $default  reduce using rule 5 (declaration)
 
 
-State 11
+state 11
 
    20 fun-declaration: ID LPAREN . params RPAREN statement
 
@@ -448,21 +448,21 @@ State 11
     param-type-list  go to state 21
 
 
-State 12
+state 12
 
     0 $accept: program $end .
 
     $default  accept
 
 
-State 13
+state 13
 
     2 declaration-list: declaration-list declaration .
 
     $default  reduce using rule 2 (declaration-list)
 
 
-State 14
+state 14
 
    12 var-decl-id: ID .
    13            | ID . LBRACKET NUMCONST RBRACKET
@@ -474,7 +474,7 @@ State 14
     $default  reduce using rule 12 (var-decl-id)
 
 
-State 15
+state 15
 
     6 var-declaration: type-specifier var-decl-list . SEMICOLON
     8 var-decl-list: var-decl-list . COMMA var-decl-initialize
@@ -483,14 +483,14 @@ State 15
     COMMA      shift, and go to state 25
 
 
-State 16
+state 16
 
     9 var-decl-list: var-decl-initialize .
 
     $default  reduce using rule 9 (var-decl-list)
 
 
-State 17
+state 17
 
    10 var-decl-initialize: var-decl-id .
    11                    | var-decl-id . COLON simple-expression
@@ -500,7 +500,7 @@ State 17
     $default  reduce using rule 10 (var-decl-initialize)
 
 
-State 18
+state 18
 
    25 param-type-list: type-specifier . param-id-list
 
@@ -510,14 +510,14 @@ State 18
     param-id       go to state 29
 
 
-State 19
+state 19
 
    20 fun-declaration: ID LPAREN params . RPAREN statement
 
     RPAREN  shift, and go to state 30
 
 
-State 20
+state 20
 
    21 params: param-list .
    23 param-list: param-list . SEMICOLON param-type-list
@@ -527,14 +527,14 @@ State 20
     $default  reduce using rule 21 (params)
 
 
-State 21
+state 21
 
    24 param-list: param-type-list .
 
     $default  reduce using rule 24 (param-list)
 
 
-State 22
+state 22
 
    19 fun-declaration: type-specifier ID LPAREN . params RPAREN statement
 
@@ -550,21 +550,21 @@ State 22
     param-type-list  go to state 21
 
 
-State 23
+state 23
 
    13 var-decl-id: ID LBRACKET . NUMCONST RBRACKET
 
     NUMCONST  shift, and go to state 33
 
 
-State 24
+state 24
 
     6 var-declaration: type-specifier var-decl-list SEMICOLON .
 
     $default  reduce using rule 6 (var-declaration)
 
 
-State 25
+state 25
 
     8 var-decl-list: var-decl-list COMMA . var-decl-initialize
 
@@ -574,7 +574,7 @@ State 25
     var-decl-id          go to state 17
 
 
-State 26
+state 26
 
    11 var-decl-initialize: var-decl-id COLON . simple-expression
 
@@ -604,7 +604,7 @@ State 26
     constant              go to state 58
 
 
-State 27
+state 27
 
    28 param-id: ID .
    29         | ID . LBRACKET RBRACKET
@@ -614,7 +614,7 @@ State 27
     $default  reduce using rule 28 (param-id)
 
 
-State 28
+state 28
 
    25 param-type-list: type-specifier param-id-list .
    26 param-id-list: param-id-list . COMMA param-id
@@ -624,14 +624,14 @@ State 28
     $default  reduce using rule 25 (param-type-list)
 
 
-State 29
+state 29
 
    27 param-id-list: param-id .
 
     $default  reduce using rule 27 (param-id-list)
 
 
-State 30
+state 30
 
    20 fun-declaration: ID LPAREN params RPAREN . statement
 
@@ -682,7 +682,7 @@ State 30
     constant                  go to state 58
 
 
-State 31
+state 31
 
    23 param-list: param-list SEMICOLON . param-type-list
 
@@ -694,21 +694,21 @@ State 31
     param-type-list  go to state 84
 
 
-State 32
+state 32
 
    19 fun-declaration: type-specifier ID LPAREN params . RPAREN statement
 
     RPAREN  shift, and go to state 85
 
 
-State 33
+state 33
 
    13 var-decl-id: ID LBRACKET NUMCONST . RBRACKET
 
     RBRACKET  shift, and go to state 86
 
 
-State 34
+state 34
 
    12 var-decl-id: ID .
    13            | ID . LBRACKET NUMCONST RBRACKET
@@ -718,14 +718,14 @@ State 34
     $default  reduce using rule 12 (var-decl-id)
 
 
-State 35
+state 35
 
     8 var-decl-list: var-decl-list COMMA var-decl-initialize .
 
     $default  reduce using rule 8 (var-decl-list)
 
 
-State 36
+state 36
 
    97 mutable: ID .
    98        | ID . LBRACKET expression RBRACKET
@@ -737,35 +737,35 @@ State 36
     $default  reduce using rule 97 (mutable)
 
 
-State 37
+state 37
 
   107 constant: NUMCONST .
 
     $default  reduce using rule 107 (constant)
 
 
-State 38
+state 38
 
   109 constant: STRINGCONST .
 
     $default  reduce using rule 109 (constant)
 
 
-State 39
+state 39
 
   108 constant: CHARCONST .
 
     $default  reduce using rule 108 (constant)
 
 
-State 40
+state 40
 
   110 constant: BOOLCONST .
 
     $default  reduce using rule 110 (constant)
 
 
-State 41
+state 41
 
    99 immutable: LPAREN . expression RPAREN
 
@@ -796,7 +796,7 @@ State 41
     constant              go to state 58
 
 
-State 42
+state 42
 
    71 unary-rel-expression: NOT . unary-rel-expression
 
@@ -824,28 +824,28 @@ State 42
     constant              go to state 58
 
 
-State 43
+state 43
 
    92 unaryop: MINUS .
 
     $default  reduce using rule 92 (unaryop)
 
 
-State 44
+state 44
 
    93 unaryop: MULTIPLY .
 
     $default  reduce using rule 93 (unaryop)
 
 
-State 45
+state 45
 
    94 unaryop: QUESTION .
 
     $default  reduce using rule 94 (unaryop)
 
 
-State 46
+state 46
 
    11 var-decl-initialize: var-decl-id COLON simple-expression .
    67 simple-expression: simple-expression . OR and-expression
@@ -855,7 +855,7 @@ State 46
     $default  reduce using rule 11 (var-decl-initialize)
 
 
-State 47
+state 47
 
    68 simple-expression: and-expression .
    69 and-expression: and-expression . AND unary-rel-expression
@@ -865,21 +865,21 @@ State 47
     $default  reduce using rule 68 (simple-expression)
 
 
-State 48
+state 48
 
    70 and-expression: unary-rel-expression .
 
     $default  reduce using rule 70 (and-expression)
 
 
-State 49
+state 49
 
    72 unary-rel-expression: rel-expression .
 
     $default  reduce using rule 72 (unary-rel-expression)
 
 
-State 50
+state 50
 
    73 rel-expression: sum-expression . relop sum-expression
    74               | sum-expression .
@@ -900,7 +900,7 @@ State 50
     sumop  go to state 102
 
 
-State 51
+state 51
 
    82 sum-expression: term .
    85 term: term . mulop unary-expression
@@ -914,14 +914,14 @@ State 51
     mulop  go to state 106
 
 
-State 52
+state 52
 
    86 term: unary-expression .
 
     $default  reduce using rule 86 (term)
 
 
-State 53
+state 53
 
    90 unary-expression: unaryop . unary-expression
 
@@ -944,49 +944,49 @@ State 53
     constant          go to state 58
 
 
-State 54
+state 54
 
    91 unary-expression: factor .
 
     $default  reduce using rule 91 (unary-expression)
 
 
-State 55
+state 55
 
    96 factor: mutable .
 
     $default  reduce using rule 96 (factor)
 
 
-State 56
+state 56
 
    95 factor: immutable .
 
     $default  reduce using rule 95 (factor)
 
 
-State 57
+state 57
 
   100 immutable: call .
 
     $default  reduce using rule 100 (immutable)
 
 
-State 58
+state 58
 
   101 immutable: constant .
 
     $default  reduce using rule 101 (immutable)
 
 
-State 59
+state 59
 
    29 param-id: ID LBRACKET . RBRACKET
 
     RBRACKET  shift, and go to state 108
 
 
-State 60
+state 60
 
    26 param-id-list: param-id-list COMMA . param-id
 
@@ -995,7 +995,7 @@ State 60
     param-id  go to state 109
 
 
-State 61
+state 61
 
    42 matched-selection-stmt: IF . LPAREN simple-expression RPAREN matched ELSE matched
    43 unmatched-selection-stmt: IF . LPAREN simple-expression RPAREN statement
@@ -1004,7 +1004,7 @@ State 61
     LPAREN  shift, and go to state 110
 
 
-State 62
+state 62
 
    45 matched-while-stmt: WHILE . LPAREN simple-expression RPAREN matched
    46 unmatched-while-stmt: WHILE . LPAREN simple-expression RPAREN unmatched
@@ -1012,7 +1012,7 @@ State 62
     LPAREN  shift, and go to state 111
 
 
-State 63
+state 63
 
    47 matched-foreach-stmt: FOREACH . LPAREN mutable IN simple-expression RPAREN matched
    48 unmatched-foreach-stmt: FOREACH . LPAREN mutable IN simple-expression RPAREN unmatched
@@ -1020,7 +1020,7 @@ State 63
     LPAREN  shift, and go to state 112
 
 
-State 64
+state 64
 
    56 return-stmt: RETURN . SEMICOLON
    57            | RETURN . expression SEMICOLON
@@ -1053,21 +1053,21 @@ State 64
     constant              go to state 58
 
 
-State 65
+state 65
 
    58 break-stmt: BREAK . SEMICOLON
 
     SEMICOLON  shift, and go to state 115
 
 
-State 66
+state 66
 
    55 expression-stmt: SEMICOLON .
 
     $default  reduce using rule 55 (expression-stmt)
 
 
-State 67
+state 67
 
    49 compound-stmt: LBRACE . local-declarations statement-list RBRACE
 
@@ -1076,105 +1076,105 @@ State 67
     local-declarations  go to state 116
 
 
-State 68
+state 68
 
    20 fun-declaration: ID LPAREN params RPAREN statement .
 
     $default  reduce using rule 20 (fun-declaration)
 
 
-State 69
+state 69
 
    30 statement: matched .
 
     $default  reduce using rule 30 (statement)
 
 
-State 70
+state 70
 
    31 statement: unmatched .
 
     $default  reduce using rule 31 (statement)
 
 
-State 71
+state 71
 
    34 matched: matched-selection-stmt .
 
     $default  reduce using rule 34 (matched)
 
 
-State 72
+state 72
 
    39 unmatched: unmatched-selection-stmt .
 
     $default  reduce using rule 39 (unmatched)
 
 
-State 73
+state 73
 
    35 matched: matched-while-stmt .
 
     $default  reduce using rule 35 (matched)
 
 
-State 74
+state 74
 
    40 unmatched: unmatched-while-stmt .
 
     $default  reduce using rule 40 (unmatched)
 
 
-State 75
+state 75
 
    36 matched: matched-foreach-stmt .
 
     $default  reduce using rule 36 (matched)
 
 
-State 76
+state 76
 
    41 unmatched: unmatched-foreach-stmt .
 
     $default  reduce using rule 41 (unmatched)
 
 
-State 77
+state 77
 
    33 matched: compound-stmt .
 
     $default  reduce using rule 33 (matched)
 
 
-State 78
+state 78
 
    32 matched: expression-stmt .
 
     $default  reduce using rule 32 (matched)
 
 
-State 79
+state 79
 
    37 matched: return-stmt .
 
     $default  reduce using rule 37 (matched)
 
 
-State 80
+state 80
 
    38 matched: break-stmt .
 
     $default  reduce using rule 38 (matched)
 
 
-State 81
+state 81
 
    54 expression-stmt: expression . SEMICOLON
 
     SEMICOLON  shift, and go to state 117
 
 
-State 82
+state 82
 
    66 expression: simple-expression .
    67 simple-expression: simple-expression . OR and-expression
@@ -1184,7 +1184,7 @@ State 82
     $default  reduce using rule 66 (expression)
 
 
-State 83
+state 83
 
    59 expression: mutable . ASSIGN expression
    60           | mutable . ADDASS expression
@@ -1206,14 +1206,14 @@ State 83
     $default  reduce using rule 96 (factor)
 
 
-State 84
+state 84
 
    23 param-list: param-list SEMICOLON param-type-list .
 
     $default  reduce using rule 23 (param-list)
 
 
-State 85
+state 85
 
    19 fun-declaration: type-specifier ID LPAREN params RPAREN . statement
 
@@ -1264,14 +1264,14 @@ State 85
     constant                  go to state 58
 
 
-State 86
+state 86
 
    13 var-decl-id: ID LBRACKET NUMCONST RBRACKET .
 
     $default  reduce using rule 13 (var-decl-id)
 
 
-State 87
+state 87
 
   102 call: ID LPAREN . args RPAREN
 
@@ -1306,7 +1306,7 @@ State 87
     constant              go to state 58
 
 
-State 88
+state 88
 
    98 mutable: ID LBRACKET . expression RBRACKET
 
@@ -1337,21 +1337,21 @@ State 88
     constant              go to state 58
 
 
-State 89
+state 89
 
    99 immutable: LPAREN expression . RPAREN
 
     RPAREN  shift, and go to state 130
 
 
-State 90
+state 90
 
    71 unary-rel-expression: NOT unary-rel-expression .
 
     $default  reduce using rule 71 (unary-rel-expression)
 
 
-State 91
+state 91
 
    67 simple-expression: simple-expression OR . and-expression
 
@@ -1380,7 +1380,7 @@ State 91
     constant              go to state 58
 
 
-State 92
+state 92
 
    69 and-expression: and-expression AND . unary-rel-expression
 
@@ -1408,63 +1408,63 @@ State 92
     constant              go to state 58
 
 
-State 93
+state 93
 
    75 relop: LESSEQ .
 
     $default  reduce using rule 75 (relop)
 
 
-State 94
+state 94
 
    78 relop: GRTEQ .
 
     $default  reduce using rule 78 (relop)
 
 
-State 95
+state 95
 
    79 relop: EQ .
 
     $default  reduce using rule 79 (relop)
 
 
-State 96
+state 96
 
    80 relop: NOTEQ .
 
     $default  reduce using rule 80 (relop)
 
 
-State 97
+state 97
 
    83 sumop: PLUS .
 
     $default  reduce using rule 83 (sumop)
 
 
-State 98
+state 98
 
    84 sumop: MINUS .
 
     $default  reduce using rule 84 (sumop)
 
 
-State 99
+state 99
 
    76 relop: LTHAN .
 
     $default  reduce using rule 76 (relop)
 
 
-State 100
+state 100
 
    77 relop: GTHAN .
 
     $default  reduce using rule 77 (relop)
 
 
-State 101
+state 101
 
    73 rel-expression: sum-expression relop . sum-expression
 
@@ -1489,7 +1489,7 @@ State 101
     constant          go to state 58
 
 
-State 102
+state 102
 
    81 sum-expression: sum-expression sumop . term
 
@@ -1513,28 +1513,28 @@ State 102
     constant          go to state 58
 
 
-State 103
+state 103
 
    87 mulop: MULTIPLY .
 
     $default  reduce using rule 87 (mulop)
 
 
-State 104
+state 104
 
    88 mulop: DIVIDE .
 
     $default  reduce using rule 88 (mulop)
 
 
-State 105
+state 105
 
    89 mulop: MODULUS .
 
     $default  reduce using rule 89 (mulop)
 
 
-State 106
+state 106
 
    85 term: term mulop . unary-expression
 
@@ -1557,28 +1557,28 @@ State 106
     constant          go to state 58
 
 
-State 107
+state 107
 
    90 unary-expression: unaryop unary-expression .
 
     $default  reduce using rule 90 (unary-expression)
 
 
-State 108
+state 108
 
    29 param-id: ID LBRACKET RBRACKET .
 
     $default  reduce using rule 29 (param-id)
 
 
-State 109
+state 109
 
    26 param-id-list: param-id-list COMMA param-id .
 
     $default  reduce using rule 26 (param-id-list)
 
 
-State 110
+state 110
 
    42 matched-selection-stmt: IF LPAREN . simple-expression RPAREN matched ELSE matched
    43 unmatched-selection-stmt: IF LPAREN . simple-expression RPAREN statement
@@ -1610,7 +1610,7 @@ State 110
     constant              go to state 58
 
 
-State 111
+state 111
 
    45 matched-while-stmt: WHILE LPAREN . simple-expression RPAREN matched
    46 unmatched-while-stmt: WHILE LPAREN . simple-expression RPAREN unmatched
@@ -1641,7 +1641,7 @@ State 111
     constant              go to state 58
 
 
-State 112
+state 112
 
    47 matched-foreach-stmt: FOREACH LPAREN . mutable IN simple-expression RPAREN matched
    48 unmatched-foreach-stmt: FOREACH LPAREN . mutable IN simple-expression RPAREN unmatched
@@ -1651,28 +1651,28 @@ State 112
     mutable  go to state 139
 
 
-State 113
+state 113
 
    56 return-stmt: RETURN SEMICOLON .
 
     $default  reduce using rule 56 (return-stmt)
 
 
-State 114
+state 114
 
    57 return-stmt: RETURN expression . SEMICOLON
 
     SEMICOLON  shift, and go to state 140
 
 
-State 115
+state 115
 
    58 break-stmt: BREAK SEMICOLON .
 
     $default  reduce using rule 58 (break-stmt)
 
 
-State 116
+state 116
 
    49 compound-stmt: LBRACE local-declarations . statement-list RBRACE
    50 local-declarations: local-declarations . scoped-var-declaration
@@ -1690,14 +1690,14 @@ State 116
     statement-list          go to state 145
 
 
-State 117
+state 117
 
    54 expression-stmt: expression SEMICOLON .
 
     $default  reduce using rule 54 (expression-stmt)
 
 
-State 118
+state 118
 
    60 expression: mutable ADDASS . expression
 
@@ -1728,7 +1728,7 @@ State 118
     constant              go to state 58
 
 
-State 119
+state 119
 
    61 expression: mutable SUBASS . expression
 
@@ -1759,7 +1759,7 @@ State 119
     constant              go to state 58
 
 
-State 120
+state 120
 
    62 expression: mutable MULASS . expression
 
@@ -1790,7 +1790,7 @@ State 120
     constant              go to state 58
 
 
-State 121
+state 121
 
    63 expression: mutable DIVASS . expression
 
@@ -1821,21 +1821,21 @@ State 121
     constant              go to state 58
 
 
-State 122
+state 122
 
    64 expression: mutable INC .
 
     $default  reduce using rule 64 (expression)
 
 
-State 123
+state 123
 
    65 expression: mutable DEC .
 
     $default  reduce using rule 65 (expression)
 
 
-State 124
+state 124
 
    59 expression: mutable ASSIGN . expression
 
@@ -1866,28 +1866,28 @@ State 124
     constant              go to state 58
 
 
-State 125
+state 125
 
    19 fun-declaration: type-specifier ID LPAREN params RPAREN statement .
 
     $default  reduce using rule 19 (fun-declaration)
 
 
-State 126
+state 126
 
   106 arg-list: expression .
 
     $default  reduce using rule 106 (arg-list)
 
 
-State 127
+state 127
 
   102 call: ID LPAREN args . RPAREN
 
     RPAREN  shift, and go to state 151
 
 
-State 128
+state 128
 
   103 args: arg-list .
   105 arg-list: arg-list . COMMA expression
@@ -1897,21 +1897,21 @@ State 128
     $default  reduce using rule 103 (args)
 
 
-State 129
+state 129
 
    98 mutable: ID LBRACKET expression . RBRACKET
 
     RBRACKET  shift, and go to state 153
 
 
-State 130
+state 130
 
    99 immutable: LPAREN expression RPAREN .
 
     $default  reduce using rule 99 (immutable)
 
 
-State 131
+state 131
 
    67 simple-expression: simple-expression OR and-expression .
    69 and-expression: and-expression . AND unary-rel-expression
@@ -1921,14 +1921,14 @@ State 131
     $default  reduce using rule 67 (simple-expression)
 
 
-State 132
+state 132
 
    69 and-expression: and-expression AND unary-rel-expression .
 
     $default  reduce using rule 69 (and-expression)
 
 
-State 133
+state 133
 
    73 rel-expression: sum-expression relop sum-expression .
    81 sum-expression: sum-expression . sumop term
@@ -1941,7 +1941,7 @@ State 133
     sumop  go to state 102
 
 
-State 134
+state 134
 
    81 sum-expression: sum-expression sumop term .
    85 term: term . mulop unary-expression
@@ -1955,14 +1955,14 @@ State 134
     mulop  go to state 106
 
 
-State 135
+state 135
 
    85 term: term mulop unary-expression .
 
     $default  reduce using rule 85 (term)
 
 
-State 136
+state 136
 
    42 matched-selection-stmt: IF LPAREN simple-expression . RPAREN matched ELSE matched
    43 unmatched-selection-stmt: IF LPAREN simple-expression . RPAREN statement
@@ -1973,7 +1973,7 @@ State 136
     OR      shift, and go to state 91
 
 
-State 137
+state 137
 
    45 matched-while-stmt: WHILE LPAREN simple-expression . RPAREN matched
    46 unmatched-while-stmt: WHILE LPAREN simple-expression . RPAREN unmatched
@@ -1983,7 +1983,7 @@ State 137
     OR      shift, and go to state 91
 
 
-State 138
+state 138
 
    97 mutable: ID .
    98        | ID . LBRACKET expression RBRACKET
@@ -1993,7 +1993,7 @@ State 138
     $default  reduce using rule 97 (mutable)
 
 
-State 139
+state 139
 
    47 matched-foreach-stmt: FOREACH LPAREN mutable . IN simple-expression RPAREN matched
    48 unmatched-foreach-stmt: FOREACH LPAREN mutable . IN simple-expression RPAREN unmatched
@@ -2001,14 +2001,14 @@ State 139
     IN  shift, and go to state 156
 
 
-State 140
+state 140
 
    57 return-stmt: RETURN expression SEMICOLON .
 
     $default  reduce using rule 57 (return-stmt)
 
 
-State 141
+state 141
 
    14 scoped-type-specifier: STATIC . type-specifier
 
@@ -2019,14 +2019,14 @@ State 141
     type-specifier  go to state 157
 
 
-State 142
+state 142
 
    50 local-declarations: local-declarations scoped-var-declaration .
 
     $default  reduce using rule 50 (local-declarations)
 
 
-State 143
+state 143
 
     7 scoped-var-declaration: scoped-type-specifier . var-decl-list SEMICOLON
 
@@ -2037,14 +2037,14 @@ State 143
     var-decl-id          go to state 17
 
 
-State 144
+state 144
 
    15 scoped-type-specifier: type-specifier .
 
     $default  reduce using rule 15 (scoped-type-specifier)
 
 
-State 145
+state 145
 
    49 compound-stmt: LBRACE local-declarations statement-list . RBRACE
    52 statement-list: statement-list . statement
@@ -2097,49 +2097,49 @@ State 145
     constant                  go to state 58
 
 
-State 146
+state 146
 
    60 expression: mutable ADDASS expression .
 
     $default  reduce using rule 60 (expression)
 
 
-State 147
+state 147
 
    61 expression: mutable SUBASS expression .
 
     $default  reduce using rule 61 (expression)
 
 
-State 148
+state 148
 
    62 expression: mutable MULASS expression .
 
     $default  reduce using rule 62 (expression)
 
 
-State 149
+state 149
 
    63 expression: mutable DIVASS expression .
 
     $default  reduce using rule 63 (expression)
 
 
-State 150
+state 150
 
    59 expression: mutable ASSIGN expression .
 
     $default  reduce using rule 59 (expression)
 
 
-State 151
+state 151
 
   102 call: ID LPAREN args RPAREN .
 
     $default  reduce using rule 102 (call)
 
 
-State 152
+state 152
 
   105 arg-list: arg-list COMMA . expression
 
@@ -2170,14 +2170,14 @@ State 152
     constant              go to state 58
 
 
-State 153
+state 153
 
    98 mutable: ID LBRACKET expression RBRACKET .
 
     $default  reduce using rule 98 (mutable)
 
 
-State 154
+state 154
 
    42 matched-selection-stmt: IF LPAREN simple-expression RPAREN . matched ELSE matched
    43 unmatched-selection-stmt: IF LPAREN simple-expression RPAREN . statement
@@ -2230,7 +2230,7 @@ State 154
     constant                  go to state 58
 
 
-State 155
+state 155
 
    45 matched-while-stmt: WHILE LPAREN simple-expression RPAREN . matched
    46 unmatched-while-stmt: WHILE LPAREN simple-expression RPAREN . unmatched
@@ -2281,7 +2281,7 @@ State 155
     constant                  go to state 58
 
 
-State 156
+state 156
 
    47 matched-foreach-stmt: FOREACH LPAREN mutable IN . simple-expression RPAREN matched
    48 unmatched-foreach-stmt: FOREACH LPAREN mutable IN . simple-expression RPAREN unmatched
@@ -2312,14 +2312,14 @@ State 156
     constant              go to state 58
 
 
-State 157
+state 157
 
    14 scoped-type-specifier: STATIC type-specifier .
 
     $default  reduce using rule 14 (scoped-type-specifier)
 
 
-State 158
+state 158
 
     7 scoped-var-declaration: scoped-type-specifier var-decl-list . SEMICOLON
     8 var-decl-list: var-decl-list . COMMA var-decl-initialize
@@ -2328,35 +2328,35 @@ State 158
     COMMA      shift, and go to state 25
 
 
-State 159
+state 159
 
    49 compound-stmt: LBRACE local-declarations statement-list RBRACE .
 
     $default  reduce using rule 49 (compound-stmt)
 
 
-State 160
+state 160
 
    52 statement-list: statement-list statement .
 
     $default  reduce using rule 52 (statement-list)
 
 
-State 161
+state 161
 
   105 arg-list: arg-list COMMA expression .
 
     $default  reduce using rule 105 (arg-list)
 
 
-State 162
+state 162
 
    43 unmatched-selection-stmt: IF LPAREN simple-expression RPAREN statement .
 
     $default  reduce using rule 43 (unmatched-selection-stmt)
 
 
-State 163
+state 163
 
    30 statement: matched .
    42 matched-selection-stmt: IF LPAREN simple-expression RPAREN matched . ELSE matched
@@ -2367,21 +2367,21 @@ State 163
     $default  reduce using rule 30 (statement)
 
 
-State 164
+state 164
 
    45 matched-while-stmt: WHILE LPAREN simple-expression RPAREN matched .
 
     $default  reduce using rule 45 (matched-while-stmt)
 
 
-State 165
+state 165
 
    46 unmatched-while-stmt: WHILE LPAREN simple-expression RPAREN unmatched .
 
     $default  reduce using rule 46 (unmatched-while-stmt)
 
 
-State 166
+state 166
 
    47 matched-foreach-stmt: FOREACH LPAREN mutable IN simple-expression . RPAREN matched
    48 unmatched-foreach-stmt: FOREACH LPAREN mutable IN simple-expression . RPAREN unmatched
@@ -2391,14 +2391,14 @@ State 166
     OR      shift, and go to state 91
 
 
-State 167
+state 167
 
     7 scoped-var-declaration: scoped-type-specifier var-decl-list SEMICOLON .
 
     $default  reduce using rule 7 (scoped-var-declaration)
 
 
-State 168
+state 168
 
    42 matched-selection-stmt: IF LPAREN simple-expression RPAREN matched ELSE . matched
    44 unmatched-selection-stmt: IF LPAREN simple-expression RPAREN matched ELSE . unmatched
@@ -2449,7 +2449,7 @@ State 168
     constant                  go to state 58
 
 
-State 169
+state 169
 
    47 matched-foreach-stmt: FOREACH LPAREN mutable IN simple-expression RPAREN . matched
    48 unmatched-foreach-stmt: FOREACH LPAREN mutable IN simple-expression RPAREN . unmatched
@@ -2500,28 +2500,28 @@ State 169
     constant                  go to state 58
 
 
-State 170
+state 170
 
    42 matched-selection-stmt: IF LPAREN simple-expression RPAREN matched ELSE matched .
 
     $default  reduce using rule 42 (matched-selection-stmt)
 
 
-State 171
+state 171
 
    44 unmatched-selection-stmt: IF LPAREN simple-expression RPAREN matched ELSE unmatched .
 
     $default  reduce using rule 44 (unmatched-selection-stmt)
 
 
-State 172
+state 172
 
    47 matched-foreach-stmt: FOREACH LPAREN mutable IN simple-expression RPAREN matched .
 
     $default  reduce using rule 47 (matched-foreach-stmt)
 
 
-State 173
+state 173
 
    48 unmatched-foreach-stmt: FOREACH LPAREN mutable IN simple-expression RPAREN unmatched .
 
