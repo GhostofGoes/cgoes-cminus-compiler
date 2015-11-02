@@ -26,6 +26,7 @@ extern TreeNode * annotatedTree;
 
 static void yyerror(const char *);
 
+// TODO: seperate files for printing and helper functions
 // TODO: combine the two print tree functions, or move bulk to another function?
 // Recursively prints the abstract syntax tree
 void printAbstractTree(TreeNode * tree, int indent_count = 0);
@@ -35,6 +36,7 @@ void printAnnotatedTree(TreeNode * tree, int indent_count = 0);
 
 // Creates the Annotated Syntax Tree
 void semanticAnalysis(TreeNode * tree );
+void typeResolution( TreeNode * node, SymbolTable * symtable );
 void treeParse( TreeNode * parent, TreeNode * node, SymbolTable * symtable );
 TreeNode * buildIOLibrary();
 
@@ -63,6 +65,7 @@ void freeToken( TokenData * token );	// Frees and zeroes the token
 const char * iboolToString( int ib );	// Returns "true" for 1, "false" for 0
 std::string applyIndents( std::string s, int indent_count );
 const char * typeToStr( Type t );	// Returns literal string of type, eg "int" for Integer
+const char * nodekindToStr( NodeKind nk );
 std::string svalResolve( TreeNode * tree ); // Resolves the svalue of node or token as a C++ string
 std::string opToStr( TokenData * tok );
 
@@ -70,5 +73,8 @@ std::string opToStr( TokenData * tok );
 /* Failed attempt as generic errors. May be revived in the future. */
 void printError( int line, std::string err );
 void printWarning( int line, std::string warn );
+
+void printTreeNode( void * node );
+void printTokenData( void * token );
 
 #endif

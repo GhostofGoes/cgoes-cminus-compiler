@@ -5,6 +5,7 @@
 // Some sample void * printing routines.   User shoud supply their own.
 //
 
+/*
 void pointerPrintAddr(void *data)
 {
     printf("0x%016llx ", (unsigned long long int)(data));
@@ -14,7 +15,7 @@ void pointerPrintStr(void *data)
 {
     printf("%s ", (char *)(data));
 }
-
+*/
 // // // // // // // // // // // // // // // // // // // // 
 //
 // Class: Scope
@@ -193,7 +194,7 @@ bool SymbolTable::insertGlobal(std::string sym, void *ptr)   // inserts a new pt
 // Some tests
 //
 
-
+/*
 std::string words[] = {"alfa", "bravo", "charlie", "dog", "echo", "foxtrot", "golf"};
 int wordsLen = 7;
 
@@ -206,7 +207,7 @@ void countSymbols(std::string sym, void *ptr) {
     pointerPrintAddr(ptr);
     printf("\n");
  }
-
+*/
 
 
 

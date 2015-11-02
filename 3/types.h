@@ -20,6 +20,7 @@ typedef struct {
 
 typedef enum { StmtK, ExpK, DeclK, DefaultK } NodeKind;
 
+// TODO: enum as maps so i can easily print
 typedef enum {
 	OpK, AssignK, VarK, FunK, ParamK,
 	CompoundK, IfK, ForeachK, WhileK,
@@ -46,10 +47,10 @@ typedef struct treeNode
 	Kind kind;								// Precise kind (eg Return, Call, etc)
 	Type nodetype;							// Type of the node
 	//ExpType expType;		           		// used when ExpK for type checking
-	bool isStatic;                         	// is statically allocated?
+	bool isStatic;                         	// is statically allocated? TODO: needed?
 	bool isArray;                          	// Array?
 	bool isIndex;							// Array index?
-	bool isScoped;
+	bool isScoped;  // TODO: needed?
 
 } TreeNode;
 
