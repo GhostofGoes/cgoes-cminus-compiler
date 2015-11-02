@@ -125,16 +125,19 @@ void printAbstractTree(TreeNode * og, int indent_count ) {
         switch (tree->kind) {
             case OpK:
                 outstr += "Op: ";
+                outstr += svalResolve(tree);
+                /*
                 if (tree->token->svalue != NULL) {
                     outstr += tree->token->svalue;
                 } else {
                     outstr.push_back(tree->token->cvalue);
                 }
+                */
                 break;
 
             case UnaryK:
                 outstr.append("Op: ");
-                outstr.push_back(tree->token->cvalue);
+                outstr.append(svalResolve(tree));
                 break;
 
             case ConstK:
@@ -142,15 +145,16 @@ void printAbstractTree(TreeNode * og, int indent_count ) {
                 if (tree->nodetype == Boolean) {
                     outstr.append(iboolToString(tree->token->ivalue));
                 } else if (tree->nodetype == Integer) {
-                    outstr += tree->token->ivalue;
+                    outstr.append(std::to_string(tree->token->ivalue));
                 } else if (tree->nodetype == Character) {
-                    if (tree->token->svalue != NULL) {
+                    if (tree->token->svalue != NULL) { // TODO: could use isArray here for stringconsts
                         outstr += '"';
-                        outstr += tree->token->svalue ? tree->token->svalue : "";
+                        outstr += tree->token->svalue;
+                        //fwrite( tree->token->svalue, sizeof(char), sizeof(tree->token->svalue), stdout);
                         outstr += '"';
                     } else {
                         outstr += '\'';
-                        outstr += (tree->token->cvalue);
+                        outstr += tree->token->cvalue;
                         outstr += '\'';
                     }
                 }
@@ -158,17 +162,17 @@ void printAbstractTree(TreeNode * og, int indent_count ) {
 
             case IdK:
                 outstr.append("Id: ");
-                outstr.append(tree->token->svalue ? tree->token->svalue : "");
+                outstr.append(svalResolve(tree));
                 break;
 
             case AssignK:
                 outstr.append("Assign: ");
 
                 if (tree->nodetype == Void) {
-                    outstr.push_back(tree->token->cvalue);
+                    outstr.append(svalResolve(tree));
                 }
                 if (tree->nodetype == Integer) {
-                    outstr += tree->token->svalue ? tree->token->svalue : "";
+                    outstr += svalResolve(tree);
                 }
 
                 break;
@@ -204,7 +208,7 @@ void printAbstractTree(TreeNode * og, int indent_count ) {
                 } else {
                     outstr.append("Param ");
                 }
-                outstr.append(tree->svalue ? tree->svalue : "");
+                outstr.append(svalResolve(tree));
                 if (tree->isArray) {
                     outstr.append(" is array");
                 }
@@ -214,14 +218,14 @@ void printAbstractTree(TreeNode * og, int indent_count ) {
 
             case FunK:
                 outstr.append("Func ");
-                outstr.append(tree->svalue ? tree->svalue : "");
+                outstr.append(svalResolve(tree));
                 outstr.append(" returns type ");
                 outstr.append(typeToStr(tree->nodetype));
                 break;
 
             case CallK:
                 outstr.append("Call: ");
-                outstr.append(tree->svalue ? tree->svalue : "");
+                outstr.append(svalResolve(tree));
                 break;
             default:
                 outstr.append("\nWe shouldn't get here\n");
@@ -283,7 +287,7 @@ void printAnnotatedTree( TreeNode * og, int indent_count ) {
 
             case UnaryK:
                 outstr.append("Op: ");
-                outstr.push_back(tree->token->cvalue);
+                outstr.append(svalResolve(tree));
                 outstr += (" Type: ");
                 outstr += typeToStr(tree->nodetype);
                 break;
@@ -297,11 +301,11 @@ void printAnnotatedTree( TreeNode * og, int indent_count ) {
                 } else if (tree->nodetype == Character) {
                     if (tree->token->svalue != NULL) {
                         outstr += '"';
-                        outstr += tree->token->svalue ? tree->token->svalue : "";
+                        outstr += tree->token->svalue;
                         outstr += '"';
                     } else {
                         outstr += '\'';
-                        outstr += (tree->token->cvalue);
+                        outstr += tree->token->cvalue;
                         outstr += '\'';
                     }
                 }
@@ -445,8 +449,7 @@ void treeParse( TreeNode * par, TreeNode * node, SymbolTable * symtable ) {
     tree = node;
 
     TreeNode * parent;
-    if (par == NULL) {
-        // TODO: do something (actually) special for initial case?
+    if (par == NULL) { // TODO: do something (actually) special for initial case?
         parent = tree;
     } else {
         parent = par;
@@ -455,14 +458,12 @@ void treeParse( TreeNode * par, TreeNode * node, SymbolTable * symtable ) {
     while (tree != NULL) {
 
         TreeNode * tmp; // Temporary TreeNode
-
         int sibling_count = 0; // Keeps track of siblings
         int line = tree->lineno; // Node's line number
 
         Type lhs = Void; // Left hand side (child[0])'s type
         Type rhs = Void; // Right hand side (child[1])'s type
 
-        // TODO: variable comments
         std::string child0_sval;
         std::string child1_sval;
         std::string tree_svalue = svalResolve(tree);
@@ -1264,6 +1265,7 @@ std::string opToStr( TokenData * tok ) {
 std::string svalResolve( TreeNode * tree ) {
 
     std::string temp;
+    
     if (tree != NULL) {
         if (tree->svalue != NULL) {
             temp.assign(tree->svalue);
