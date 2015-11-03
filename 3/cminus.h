@@ -1,6 +1,8 @@
 #ifndef _CMINUS_H_
 #define _CMINUS_H_
 
+// cminus.h
+
 /* C/C++ headers */
 #include <stdio.h>
 #include <cstdlib>
@@ -10,6 +12,8 @@
 #include "types.h"
 #include "cminus.tab.h"
 #include "symbolTable.h"
+#include "printing.h"
+#include "trees.h"
 
 /* Global flags/counters */
 extern int warnings;
@@ -40,6 +44,7 @@ void typeResolution( TreeNode * node, SymbolTable * symtable );
 void treeParse( TreeNode * parent, TreeNode * node, SymbolTable * symtable );
 TreeNode * buildIOLibrary();
 
+/*
 // Creates a new node for the syntax tree
 TreeNode * makeNode( NodeKind nk, Kind k, Type t, int line, TokenData * token );
 TreeNode * makeParent( NodeKind nk, Kind k, Type t, int line, const char * svalue );
@@ -55,11 +60,10 @@ void applyTypeToSiblings( TreeNode * init, Type t );
 
 int countSiblings( TreeNode * start );
 
-/* Memory Management */
 TreeNode * allocNode(); 		// Allocates and zeros a new TreeNode
 void freeTree( TreeNode * tree );	// Recursively frees and zeroes the tree
 void freeToken( TokenData * token );	// Frees and zeroes the token
-
+*/
 
 /* Printing and String manipulation */
 /*

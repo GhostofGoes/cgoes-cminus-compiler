@@ -1,3 +1,5 @@
+// cminus.cpp
+
 /* C++ Libraries */
 #include <iostream>
 #include <string>
@@ -17,6 +19,7 @@
 #include "toker.h"
 #include "symbolTable.h"
 #include "printing.h"
+#include "trees.h"
 
 /* Tree pointers */
 TreeNode * syntaxTree = NULL;
@@ -1166,17 +1169,18 @@ TreeNode * buildIOLibrary() {
     return in;    
 }
 
+
+
 // Creates a new node for the syntax tree
 // TODO: combine with make parent?
+/*
 TreeNode * makeNode( NodeKind nk, Kind k, Type t, int line, TokenData * token ) {
 	TreeNode * tempNode = allocNode();
 	tempNode->nodekind = nk;
 	tempNode->kind = k;
 	tempNode->nodetype = t;
 	tempNode->lineno = line;
-	/*if( svalue != NULL ) {
-		tempNode->svalue = strdup(svalue);
-	}*/
+
 	if(token != NULL) {
 		tempNode->token = token;
 	}
@@ -1328,8 +1332,10 @@ void freeToken( TokenData * token ) {
 
     free(token);
 }
+*/
 
 /*
+
 const char * iboolToString( int ib ) {
     if (ib) {
         return "true";
@@ -1492,3 +1498,5 @@ void printTokenData(void * tok) {
     
 }
 */
+
+
