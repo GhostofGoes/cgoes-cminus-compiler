@@ -20,7 +20,6 @@
 #include "symbolTable.h"
 #include "printing.h"
 
-
 // Creates a new node for the syntax tree
 TreeNode * makeNode( NodeKind nk, Kind k, Type t, int line, TokenData * token );
 TreeNode * makeParent( NodeKind nk, Kind k, Type t, int line, const char * svalue );

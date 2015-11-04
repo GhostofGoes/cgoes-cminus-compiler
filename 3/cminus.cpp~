@@ -732,6 +732,9 @@ void treeParse( TreeNode * par, TreeNode * node, SymbolTable * symtable ) {
                         break;
 
                     default:
+						if(testing) {
+							std::cout << "Hit default case in DeclK switch" << std::endl;
+						}
                         break;
 
                 } // end DeclK kind switch
@@ -830,6 +833,9 @@ void treeParse( TreeNode * par, TreeNode * node, SymbolTable * symtable ) {
                         break;
 
                     default:
+						if(testing) {
+							std::cout << "Hit default case in StmtK switch" << std::endl;
+						}
                         break;
                 } // end StmtK kind switch
                 break;
@@ -1074,6 +1080,7 @@ void treeParse( TreeNode * par, TreeNode * node, SymbolTable * symtable ) {
                     case ParamK:
                         /*if (parent->kind == CallK) { // TODO: this is wrong place
                         }*/
+						// TODO: paramK in expk? need to handle
                         break;
 
                     case IdK:
@@ -1126,6 +1133,9 @@ void treeParse( TreeNode * par, TreeNode * node, SymbolTable * symtable ) {
                 break;
 
             default:
+				if(testing) {
+					std::cout << "Hit default case in ExpK switch" << std::endl;
+				}
                 break;
         } // end nodekind switch
 
@@ -1141,6 +1151,7 @@ void treeParse( TreeNode * par, TreeNode * node, SymbolTable * symtable ) {
 
         if (tree->kind == CompoundK || tree->kind == FunK) {
             if(testing) {
+				std::cout << "Leaving symtable..." << std::endl;
                 symtable->print(printTreeNode);
             }
             symtable->leave();
@@ -1188,335 +1199,3 @@ TreeNode * buildIOLibrary() {
 
     return in;    
 }
-
-
-
-// Creates a new node for the syntax tree
-// TODO: combine with make parent?
-/*
-TreeNode * makeNode( NodeKind nk, Kind k, Type t, int line, TokenData * token ) {
-	TreeNode * tempNode = allocNode();
-	tempNode->nodekind = nk;
-	tempNode->kind = k;
-	tempNode->nodetype = t;
-	tempNode->lineno = line;
-
-	if(token != NULL) {
-		tempNode->token = token;
-	}
-
-	return tempNode;
-}
-
-TreeNode * makeParent( NodeKind nk, Kind k, Type t, int l, const char * svalue ) {
-	TreeNode * tempNode = allocNode();
-	tempNode->nodekind = nk;
-	tempNode->kind = k;
-	tempNode->nodetype = t;
-	tempNode->lineno = l;
-	if(svalue != NULL) {
-		tempNode->svalue = strdup(svalue);
-	}
-	return tempNode;
-}
-
-// Adds a child to an existing syntax tree node
-void addChild(TreeNode * parent, TreeNode * child) {
-    if (parent == NULL || child == NULL) {
-        return;
-    }
-
-    if (parent->numChildren >= 0 && parent->numChildren < 3) {
-        parent->child[parent->numChildren] = child;
-        parent->numChildren++;
-    }
-}
-
-// Links siblings to each other, starting with the first
-TreeNode * linkSiblings( TreeNode * sib1, TreeNode * sib2 ) {
-
-    if (sib1 == NULL) {
-        return sib2;
-    } else if (sib2 == NULL) {
-        return sib1;
-    } else {
-        TreeNode * temp = sib1;
-
-        while (temp->sibling != NULL) {
-            temp = temp->sibling;
-        }
-        temp->sibling = sib2;
-    }
-
-    return sib1;
-}
-
-// Applies Type t to all the siblings of TreeNode init
-void applyTypeToSiblings( TreeNode * init, Type t ) {
-	TreeNode * temp = init;
-
-	while( temp != NULL) {
-		temp->nodetype = t;
-		temp = temp->sibling;
-	}
-}
-
-// Returns number of siblings the node has
-int countSiblings( TreeNode * start ) {
-    int sib_count = 0;
-    
-    if( start != NULL) {
-        TreeNode * temp= start->sibling;
-        while(temp != NULL) {
-            sib_count++;
-            temp = temp->sibling;
-
-        }
-    }
-    return sib_count;
-}
-
-// Allocates and zeros a new TreeNode
-TreeNode * allocNode() {
-    //TreeNode * tempNode = (TreeNode *)calloc(1, sizeof(TreeNode));
-    TreeNode * tempNode = (TreeNode *)new TreeNode;
-    tempNode->token = NULL;
-    tempNode->lineno = 0;
-    tempNode->svalue = NULL;
-    tempNode->nodetype = Void;
-    tempNode->nodekind = DefaultK;
-    tempNode->child[0] = NULL;
-    tempNode->child[1] = NULL;
-    tempNode->child[2] = NULL;
-    tempNode->numChildren = 0;
-    tempNode->sibling = NULL;
-    tempNode->isStatic = false;
-    tempNode->isArray = false;
-    tempNode->isIndex = false;
-
-    return tempNode;
-}
-
-void freeTree( TreeNode * tree ) {
-    if (tree == NULL) {
-        return;
-    }
-
-    TreeNode * prev;
-    TreeNode * temp;
-    prev = tree;
-
-    while (prev != NULL) {
-        temp = prev;
-        if (prev->token != NULL) {
-            freeToken(prev->token);
-            prev->token = NULL;
-        }
-
-        if (prev->svalue != NULL) {
-            free(prev->svalue);
-            prev->svalue = NULL;
-        }
-        // Check if there are children
-        if (prev->numChildren > 0) {
-            //for ( int i = 0; i < prev->numChildren; i++ ) {
-            for (int i = 0; i < MAXCHILDREN; i++) {
-                if (prev->child[i] != NULL) {
-                    freeTree(prev->child[i]);
-                }
-            }
-        }
-
-        prev = prev->sibling;
-        delete(temp);
-        temp = NULL;
-        //free(temp);
-    } // end while
-    tree = NULL;
-}
-
-void freeToken( TokenData * token ) {
-    if (token == NULL) {
-        return;
-    }
-
-    if (token->svalue != NULL) {
-        free(token->svalue);
-        token->svalue = NULL;
-    }
-
-    if (token->input != NULL) {
-        free(token->input);
-        token->input = NULL;
-    }
-
-    free(token);
-}
-*/
-
-/*
-
-const char * iboolToString( int ib ) {
-    if (ib) {
-        return "true";
-    } else {
-        return "false";
-    }
-}
-
-// Returns the text string version of Type t
-const char * typeToStr( Type t ) {
-    switch (t) {
-        case Void:
-            return ("void");
-            break;
-        case Integer:
-            return ("int");
-            break;
-        case Boolean:
-            return ("bool");
-            break;
-        case Character:
-            return ("char");
-            break;
-        case Undef:
-            return ("undefined type");
-            break;
-    }
-    return "";
-}
-
-const char * nodekindToStr( NodeKind nk ) {
-    switch(nk) {
-        case DeclK:
-            return ("DeclK");
-            break;
-        case StmtK:
-            return ("StmtK");
-            break;
-        case ExpK:
-            return ("ExpK");
-            break;
-        case DefaultK:
-            return ("DefaultK");
-            break;
-    }
-    return "";
-}
-
-std::string opToStr( TokenData * tok ) {
-
-    std::string temp;
-
-    if (tok != NULL) {
-        if (tok->svalue != NULL) {
-            temp.assign(tok->svalue);
-        } else if (tok->cvalue != 0) {
-            temp.push_back(tok->cvalue);
-        } else {
-            temp += tok->ivalue;
-        }
-    }
-
-    return temp;
-}
-
-// TODO: fix flex so this isn't necessary
-std::string svalResolve( TreeNode * tree ) {
-
-    std::string temp;
-    
-    if (tree != NULL) {
-        if (tree->svalue != NULL) {
-            temp.assign(tree->svalue);
-        } else if (tree->token != NULL) {
-            temp = opToStr(tree->token);
-        }
-    }
-    return temp;
-}
-
-// TODO: makes assumption about indentation with "|   "
-std::string applyIndents( std::string s, int indent ) {
-    std::string temp;
-    for (int i = 0; i < indent; i++) {
-        temp.append("|   ");
-    }
-    temp.append(s);
-    return temp;
-}
-
-void printError( int line, std::string err ) {
-    std::cout << "ERROR(" << line << "): " << err << "." << std::endl;
-    std::cout.flush();
-    err.clear();
-    errors++;
-}
-
-void printWarning( int line, std::string warn ) {
-    std::cout << "WARNING(" << line << "): " << warn << "." << std::endl;
-    std::cout.flush();
-    warn.clear();
-    warnings++;
-}
-
-void printTreeNode(void * node) {
-    if(node == NULL) {
-        std::cout << "TreeNode - NULL" << std::endl;
-        return;
-    }
-        
-    TreeNode * data = (TreeNode *)node;
-    std::cout << "TreeNode" << std::endl;
-
-    
-    printTokenData(data->token);
-    
-    std::cout << " |lineno: " << data->lineno;
-    std::cout << " |numChildren: " << data->numChildren;
-    std::cout << " |isArray: " << data->isArray;
-    std::cout << " |isIndex: " << data->isIndex;
-    std::cout << " |isStatic: " << data->isStatic;
-    std::cout << " |isScoped: " << data->isScoped;
-    std::cout << std::endl;
-    
-    std::cout << " |nodekind: " << nodekindToStr(data->nodekind);
-    std::cout << " |kind: " << data->kind;
-    std::cout << " |nodetype: " << typeToStr(data->nodetype);
-    std::cout << std::endl;
-    
-    // TODO: print children?
-    if( data->sibling != NULL ) {
-        std::cout << " |Sibling: " 
-                << data->sibling->svalue != NULL ? data->sibling->svalue : "";
-        std::cout << std::endl;
-    }
-    
-    
-    std::cout << " |svalue: " << data->svalue != NULL ? data->svalue : "";
-    std::cout << std::endl;
-}
-
-void printTokenData(void * tok) {
-    if(tok == NULL)
-    {
-        std::cout << "TokenData - NULL" << std::endl;
-        return;
-    }
-    
-    TokenData * token = (TokenData *)tok;
-    std::cout << "*|TokenData|*" << std::endl;
-    
-    std::cout << " |Lineno: " << token->lineno;
-    std::cout << " |bval: " << token->bval;
-    std::cout << " |cvalue: " << token->cvalue;
-    std::cout << " |ivalue: " << token->ivalue << std::endl;
-    
-    std::cout << " |svalue: " << token->svalue != NULL ? token->svalue : "";
-    std::cout << " |input: " << token->input != NULL ? token->input : "";
-    std::cout << std::endl;
-    
-}
-*/
-
-

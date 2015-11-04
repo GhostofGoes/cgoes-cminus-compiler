@@ -27,6 +27,7 @@ TreeNode * makeParent( NodeKind nk, Kind k, Type t, int line, const char * svalu
 // Adds a child to an existing syntax tree node
 void addChild( TreeNode * parent, TreeNode * child );
 
+// *** Siblings ***
 // Links sib2 to the end of sib1's sibling chain. If sib1 is null, sib2 is returned.
 TreeNode * linkSiblings( TreeNode * sib1, TreeNode * sib2 );
 
@@ -35,6 +36,7 @@ void applyTypeToSiblings( TreeNode * init, Type t );
 
 int countSiblings( TreeNode * start );
 
+// *** Memory ***
 TreeNode * allocNode(); 		// Allocates and zeros a new TreeNode
 void freeTree( TreeNode * tree );	// Recursively frees and zeroes the tree
 void freeToken( TokenData * token );	// Frees and zeroes the token

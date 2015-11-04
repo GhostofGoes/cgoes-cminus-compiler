@@ -732,6 +732,9 @@ void treeParse( TreeNode * par, TreeNode * node, SymbolTable * symtable ) {
                         break;
 
                     default:
+						if(testing) {
+							std::cout << "Hit default case in DeclK switch" << std::endl;
+						}
                         break;
 
                 } // end DeclK kind switch
@@ -830,6 +833,9 @@ void treeParse( TreeNode * par, TreeNode * node, SymbolTable * symtable ) {
                         break;
 
                     default:
+						if(testing) {
+							std::cout << "Hit default case in StmtK switch" << std::endl;
+						}
                         break;
                 } // end StmtK kind switch
                 break;
@@ -1074,6 +1080,7 @@ void treeParse( TreeNode * par, TreeNode * node, SymbolTable * symtable ) {
                     case ParamK:
                         /*if (parent->kind == CallK) { // TODO: this is wrong place
                         }*/
+						// TODO: paramK in expk? need to handle
                         break;
 
                     case IdK:
@@ -1126,6 +1133,9 @@ void treeParse( TreeNode * par, TreeNode * node, SymbolTable * symtable ) {
                 break;
 
             default:
+				if(testing) {
+					std::cout << "Hit default case in ExpK switch" << std::endl;
+				}
                 break;
         } // end nodekind switch
 
@@ -1141,6 +1151,7 @@ void treeParse( TreeNode * par, TreeNode * node, SymbolTable * symtable ) {
 
         if (tree->kind == CompoundK || tree->kind == FunK) {
             if(testing) {
+				std::cout << "Leaving symtable..." << std::endl;
                 symtable->print(printTreeNode);
             }
             symtable->leave();
