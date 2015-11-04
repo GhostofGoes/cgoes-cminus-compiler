@@ -970,7 +970,9 @@ void treeParse( TreeNode * par, TreeNode * node, SymbolTable * symtable ) {
                                 switch (tree->token->bval) {
                                     case NOT:
                                     case QUESTION:
-                                        std::cerr << "Shouldn't reach Unary in a OpK" << std::endl;
+                                        if(testing) {
+	std::cerr << "Shouldn't reach Unary in a OpK" << std::endl;
+}
                                         break;
 
                                     case EQ:
@@ -1035,11 +1037,11 @@ void treeParse( TreeNode * par, TreeNode * node, SymbolTable * symtable ) {
 
                     case UnaryK:
                         if (tree->numChildren == 1) {
-                            if (tree->child[0]->kind == IdK && symtable->lookup(child0_sval) == NULL) {
+                            /*if (tree->child[0]->kind == IdK && symtable->lookup(child0_sval) == NULL) {
                                 printf("ERROR(%d): Symbol '%s' is not defined.\n", line, child0_sval.c_str());
                                 errors++;
                                 tree->child[0]->nodetype = Undef;
-                            } else {
+                            } else {*/
                                 switch (tree->token->bval) {
                                     case MULTIPLY:
                                         if (!tree->child[0]->isArray) {
@@ -1065,8 +1067,6 @@ void treeParse( TreeNode * par, TreeNode * node, SymbolTable * symtable ) {
                                             errors++;
                                         }
                                         break;
-
-                                }
                             }
                         }
                         break;
