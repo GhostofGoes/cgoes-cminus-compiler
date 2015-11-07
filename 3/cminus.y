@@ -483,6 +483,9 @@ simple-expression:
             $$ = makeNode( ExpK, OpK, Boolean, $2->lineno, $2 );
             addChild( $$, $1);
             addChild( $$, $3);
+            if( $1 != NULL && $3 != NULL && $1->isConstant && $3->isConstant ) {
+                $$->isConstant = true;
+            }
         }
 	| and-expression 
 		{ $$ = $1; }
@@ -494,6 +497,9 @@ and-expression:
             $$ = makeNode( ExpK, OpK, Boolean, $2->lineno, $2 );     
             addChild( $$, $1);
             addChild( $$, $3);
+            if( $1 != NULL && $3 != NULL && $1->isConstant && $3->isConstant ) {
+                $$->isConstant = true;
+            }            
         }
 	| unary-rel-expression 
 		{ $$ = $1; }
@@ -504,6 +510,9 @@ unary-rel-expression:
         { 
             $$ = makeNode( ExpK, UnaryK, Boolean, $1->lineno, $1 );     
             addChild( $$, $2);
+            if( $2 != NULL && $2->isConstant ) {
+                $$->isConstant = true;
+            }            
         }
 	| rel-expression 
 		{ $$ = $1; }
@@ -515,6 +524,9 @@ rel-expression:
             $$ = $2;
             addChild( $$, $1);
             addChild( $$, $3);
+            if( $1 != NULL && $3 != NULL && $1->isConstant && $3->isConstant ) {
+                $$->isConstant = true;
+            }            
         } 
 	| sum-expression 
 		{ $$ = $1; }
@@ -522,27 +534,27 @@ rel-expression:
 	
 relop:
 	LESSEQ
-		{ 
+	{ 
             $$ = makeNode( ExpK, OpK, Boolean, $1->lineno, $1 );
         }
 	| LTHAN
-		{ 
+	{ 
             $$ = makeNode( ExpK, OpK, Boolean, $1->lineno, $1 );
         }
 	| GTHAN
-		{ 
+	{ 
             $$ = makeNode( ExpK, OpK, Boolean, $1->lineno, $1 );
         }
 	| GRTEQ 
-		{ 
+	{ 
             $$ = makeNode( ExpK, OpK, Boolean, $1->lineno, $1 );
         }
 	| EQ 
-		{ 
+	{ 
             $$ = makeNode( ExpK, OpK, Boolean, $1->lineno, $1 );
         }
 	| NOTEQ 
-		{ 
+	{ 
             $$ = makeNode( ExpK, OpK, Boolean, $1->lineno, $1 );
         }
 	;
@@ -553,18 +565,21 @@ sum-expression:
             $$ = $2;
             addChild( $$, $1);
             addChild( $$, $3);
+            if( $1 != NULL && $3 != NULL && $1->isConstant && $3->isConstant ) {
+                $$->isConstant = true;
+            }            
         } 
 	| term 
-		{ $$ = $1; }
+            { $$ = $1; }
 	;
 	
 sumop:
 	PLUS
-		{ 
+	{ 
             $$ = makeNode( ExpK, OpK, Integer, $1->lineno, $1 );
         }
 	| MINUS
-		{ 
+	{ 
             $$ = makeNode( ExpK, OpK, Integer, $1->lineno, $1 );
         }
 	;
@@ -575,22 +590,25 @@ term:
             $$ = $2;
             addChild( $$, $1);
             addChild( $$, $3);
+            if( $1 != NULL && $3 != NULL && $1->isConstant && $3->isConstant ) {
+                $$->isConstant = true;
+            }
         }
 	| unary-expression 
-		{ $$ = $1; }
+            { $$ = $1; }
 	;
 	
 mulop:
 	MULTIPLY 
-		{ 
+	{ 
             $$ = makeNode( ExpK, OpK, Integer, $1->lineno, $1 );
         }
 	| DIVIDE 
-		{ 
+	{ 
             $$ = makeNode( ExpK, OpK, Integer, $1->lineno, $1 );
         }
 	| MODULUS 
-		{ 
+	{ 
             $$ = makeNode( ExpK, OpK, Integer, $1->lineno, $1 );
         }
 	;
@@ -600,20 +618,28 @@ unary-expression:
         { 
             $$ = $1;
             addChild($$, $2);
+            if( $2 != NULL && $2->isConstant )
+            {
+                $$->isConstant = true;
+            }
+            else
+            {
+                $$->isConstant = false;
+            }
         }
 	| factor 
-		{ $$ = $1; }
+            { $$ = $1; }
 	;
 	
 unaryop:
 	MINUS
-		{ 
+        { 
             $$ = makeNode( ExpK, UnaryK, Integer, $1->lineno, $1 );
         }
 	| MULTIPLY
-		{ 
+            { 
             $$ = makeNode( ExpK, UnaryK, Integer, $1->lineno, $1 );
-        }
+            }
 	| QUESTION /* Question's type? */
 		{ 
             $$ = makeNode( ExpK, UnaryK, Integer, $1->lineno, $1 );
@@ -622,20 +648,20 @@ unaryop:
 	
 factor:
 	immutable 
-		{ $$ = $1; }
+            { $$ = $1; }
 	| mutable 
-		{ $$ = $1; }
+            { $$ = $1; }
 	;
 	
 mutable:
 	ID
-		{ 
+        { 
             $$ = makeNode( ExpK, IdK, Void, $1->lineno, $1 );
         }
 	| ID LBRACKET expression RBRACKET
         {
             $$ = makeNode( ExpK, IdK, Void, $1->lineno, $1 );
-            $$->isArray = true; 
+            //$$->isArray = true; 
             $3->isIndex = true;
             addChild( $$, $3);
             freeToken($2);
@@ -646,30 +672,29 @@ mutable:
 immutable:
 	LPAREN expression RPAREN
         { 
-        	$$ = $2;
-			freeToken($1);
-			freeToken($3);        
+            $$ = $2;
+            freeToken($1);
+            freeToken($3);        
          }
 	| call
-		{ $$ = $1; }	
+            { $$ = $1; }	
 	| constant 
-		{ $$ = $1; }	
+            { $$ = $1; }	
 	;
 	
 call:
 	ID LPAREN args RPAREN
-		{ 
-			if($3 != NULL) {
-	            $$ = makeNode( ExpK, CallK, $3->nodetype, $1->lineno, $1 );
-    	        addChild($$, $3);
-
-			}
-			else {
-				$$ = makeNode( ExpK, CallK, Void, $1->lineno, $1 );
-			}	
-			freeToken($2);
-           	freeToken($4);
+            { 
+		if ( $3 != NULL ) {
+                    $$ = makeNode( ExpK, CallK, $3->nodetype, $1->lineno, $1 );
+                    addChild($$, $3);
 		}
+		else {
+                    $$ = makeNode( ExpK, CallK, Void, $1->lineno, $1 );
+		}	
+                freeToken($2);
+                freeToken($4);
+            }
 	;
 	
 args:
@@ -693,19 +718,23 @@ constant:
 	NUMCONST
 		{ 
             $$ = makeNode( ExpK, ConstK, Integer, $1->lineno, $1 );
+            $$->isConstant = true;
         }
 	| CHARCONST 
 		{ 
             $$ = makeNode( ExpK, ConstK, Character, $1->lineno, $1 );
+            $$->isConstant = true;
         }
 	| STRINGCONST
 		{ 
             $$ = makeNode( ExpK, ConstK, Character, $1->lineno, $1 );
             $$->isArray = true;
+            $$->isConstant = true;
         }
 	| BOOLCONST
 		{ 
             $$ = makeNode( ExpK, ConstK, Boolean, $1->lineno, $1 );
+            $$->isConstant = true;
         }
 	;
 	
@@ -715,6 +744,6 @@ constant:
 // Defines yyerror for bison
 static void yyerror(const char *msg)
 {
-	fflush(stdout);
+    fflush(stdout);
     printf("ERROR(%d): %s\n", yylineno, msg ? msg : "");
 }

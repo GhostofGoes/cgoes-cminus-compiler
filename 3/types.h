@@ -51,6 +51,7 @@ typedef struct treeNode
 	bool isArray;                          	// Array?
 	bool isIndex;							// Array index?
 	bool isScoped;  // TODO: needed?
+        bool isConstant;
 
 } TreeNode;
 

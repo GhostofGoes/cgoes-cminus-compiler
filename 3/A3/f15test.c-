@@ -1,0 +1,41 @@
+main()
+{
+    int x;
+    bool b;
+    char c;
+
+    x = ?3;
+    x = ?'x';
+    x = ?"dogs";
+    x = ?true;
+
+    x *= 1;
+    x *= 'z';
+    x *= "dogs";
+    x *= true;
+
+    x /= 1;
+    x /= 'z';
+    x /= "dogs";
+    x /= true;
+
+    b *= 1;
+    b *= 'z';
+    b *= "dogs";
+    b *= true;
+
+    c *= 1;
+    c *= 'z';
+    c *= "dogs";
+    c *= true;
+
+    x = c = 3;
+    x = x = 'a';
+
+    x = undef = 3;
+    x = x = undef;
+
+    x *= c *= 3;
+    x *= x *= 'a';
+
+}

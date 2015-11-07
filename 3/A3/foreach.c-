@@ -1,0 +1,62 @@
+main()
+{
+    int x;
+    char c;
+    bool b;
+    int xa[5];
+    char ca[6];
+    bool ba[7];
+    int y, ya[10];
+
+    int a;
+    int stuff;
+
+    foreach (x in 20);
+    foreach (x in x);
+    foreach (x in c);
+    foreach (x in b);
+    foreach (x in xa);
+    foreach (x in ca);
+    foreach (x in ba);
+    foreach (c in ca);
+    foreach (c in "dogs");
+    foreach (b in ba);
+
+    foreach (x in *"dogs");
+    foreach (x in *ba);
+
+    foreach (x in y) stuff;
+    // if y is a scalar means
+    {
+        int p, limit;
+
+        p = 0;
+        limit = y;
+        while (p<limit) {
+            x = p;
+            stuff;
+            p++;
+        }
+    }
+
+
+    foreach (x in ya) stuff;
+    // if ya is an array it means
+    {
+        int p, limit;
+
+        p = 0;
+        limit = *ya;
+        while (p<limit) {
+            x = ya[p];
+            stuff;
+            p++;
+        }
+    }
+
+
+    foreach (ya in true) {
+        5+'c';
+        6+'c';
+        }
+}

@@ -122,7 +122,7 @@ TreeNode * allocNode() {
     tempNode->isStatic = false;
     tempNode->isArray = false;
     tempNode->isIndex = false;
-
+    tempNode->isConstant = false;
     return tempNode;
 }
 
