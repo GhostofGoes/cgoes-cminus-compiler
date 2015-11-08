@@ -942,10 +942,10 @@ void treeParse ( TreeNode * par, TreeNode * node, SymbolTable * symtable, bool i
                             printf("ERROR(%d): Function '%s' at line %d is expecting to return type %s but return has no return value.\n",
                                    line, svalResolve(func).c_str(), func->lineno, typeToStr(func->nodetype));
                             errors++;
-                        } else if ( func->nodetype != tree->nodetype )
+                        } else if ( func->nodetype != Void && func->nodetype != tree->nodetype )
                         {
                             printf("ERROR(%d): Function '%s' at line %d is expecting to return type %s but got %s.\n",
-                                   line, svalResolve(func).c_str(), func->lineno, typeToStr(func->nodetype), tree_type_str);
+                                   line, svalResolve(func).c_str(), func->lineno, typeToStr(func->nodetype), typeToStr(tree->nodetype));
                             errors++;
                         }
                     }

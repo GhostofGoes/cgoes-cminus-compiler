@@ -181,4 +181,5 @@ void freeToken( TokenData * token ) {
     }
 
     free(token);
+    token = NULL;
 }
