@@ -31,6 +31,9 @@ int errors = 0;
 bool testing = false;
 // TODO: move to same-indentation curly-braces {} 
 
+bool return_found = false;
+TreeNode * func = NULL;
+
 int main ( int argc, char * argv[] )
 {
 
@@ -503,7 +506,7 @@ void semanticAnalysis ( TreeNode * og )
         symtable->print(printTreeNode);
     }
 
-    treeParse(NULL, tree, symtable);
+    treeParse(NULL, tree, symtable, false);
 
     if ( testing )
     {
@@ -598,6 +601,15 @@ void typeResolution ( TreeNode * node, SymbolTable * symtable )
                     if ( temp != NULL )
                     {
                         tree->nodetype = temp->nodetype;
+                        if(temp->isArray && temp->child[0] != NULL && temp->child[0]->isIndex == false )
+                        {
+                            tree->isArray = true;
+                        }
+                        if ( temp->isStatic )
+                        {
+                            tree->isStatic = true;
+                        }
+                        
                     } else
                     {
                         tree->nodetype = Undef;
@@ -619,6 +631,14 @@ void typeResolution ( TreeNode * node, SymbolTable * symtable )
                     if ( temp != NULL )
                     {
                         tree->nodetype = temp->nodetype;
+                        if(temp->isArray && temp->child[0] != NULL && temp->child[0]->isIndex == false )
+                        {
+                            tree->isArray = true;
+                        }
+                        if ( temp->isStatic )
+                        {
+                            tree->isStatic = true;
+                        }                        
                     } else
                     {
                         tree->nodetype = Undef;
@@ -644,6 +664,14 @@ void typeResolution ( TreeNode * node, SymbolTable * symtable )
                     if ( temp != NULL )
                     {
                         tree->nodetype = temp->nodetype;
+                        if(temp->isArray && temp->child[0] != NULL && temp->child[0]->isIndex == false )
+                        {
+                            tree->isArray = true;
+                        }
+                        if ( temp->isStatic )
+                        {
+                            tree->isStatic = true;
+                        }                        
                     } else
                     {
                         tree->nodetype = Undef;
@@ -681,7 +709,7 @@ void typeResolution ( TreeNode * node, SymbolTable * symtable )
     } // end while
 }
 
-void treeParse ( TreeNode * par, TreeNode * node, SymbolTable * symtable )
+void treeParse ( TreeNode * par, TreeNode * node, SymbolTable * symtable, bool in_loop )
 {
 
     TreeNode * tree;
@@ -801,27 +829,7 @@ void treeParse ( TreeNode * par, TreeNode * node, SymbolTable * symtable )
                         errors++;
                     }
                     symtable->enter("Function " + tree_svalue);
-                    if ( tree->nodetype != Void )
-                    {
-                        bool returnPresent = false;
-                        if ( tree->child[0] != NULL && tree->child[0]->kind == CompoundK )
-                        {
-                            for (int i = 0; i < tree->child[0]->numChildren; i++)
-                            {
-                                if ( tree->child[0]->child[i] != NULL && tree->child[0]->child[i]->kind == ReturnK )
-                                {
-                                    returnPresent = true;
-                                    break;
-                                }
-                            }
-                        }
-                        if ( !returnPresent )
-                        {
-                            printf("WARNING(%d): Expecting to return type %s but function '%s' has no return statement.\n",
-                                   line, tree_type_str, tree_svalue.c_str());
-                            warnings++;
-                        }
-                    }
+                    func = tree;
                     break;
 
                   default:
@@ -857,6 +865,9 @@ void treeParse ( TreeNode * par, TreeNode * node, SymbolTable * symtable )
 
                   case CompoundK:
                     symtable->enter("Compound" + line);
+                    if(parent->kind == WhileK || parent->kind == ForeachK) {
+                        in_loop = true;
+                    }
                     break;
 
                   case ForeachK:
@@ -903,43 +914,39 @@ void treeParse ( TreeNode * par, TreeNode * node, SymbolTable * symtable )
                     break;
 
                   case ReturnK:
+                    return_found = true;
                     if ( tree->numChildren == 1 && tree->child[0] != NULL )
                     {
-                        if ( symtable->lookup(child0_sval) == NULL )
-                        {
-                            printf("ERROR(%d): Symbol '%s' is not defined.\n", line, child0_sval.c_str());
-                            errors++;
-                            tree->nodetype = Undef;
-                        } else if ( tree->child[0]->isArray )
+                        if ( tree->child[0]->isArray )
                         {
                             printf("ERROR(%d): Cannot return an array.\n", line);
                             errors++;
                         }
-
+                        tree->nodetype = tree->child[0]->nodetype;
                     }
-                    if ( parent->kind == FunK )
+                    if ( func != NULL )
                     {
-                        if ( parent->nodetype == Void && tree->nodetype != Void )
+                        if ( func->nodetype == Void && tree->nodetype != Void )
                         {
                             printf("ERROR(%d): Function '%s' at line %d is expecting no return value, but return has return value.\n",
-                                   line, parent->svalue ? parent->svalue : "", parent->lineno);
+                                   line, svalResolve(func).c_str(), func->lineno);
                             errors++;
-                        } else if ( parent->nodetype != Void && tree->nodetype == Void )
+                        } else if ( func->nodetype != Void && tree->nodetype == Void )
                         {
                             printf("ERROR(%d): Function '%s' at line %d is expecting to return type %s but return has no return value.\n",
-                                   line, parent->svalue ? parent->svalue : "", parent->lineno, typeToStr(parent->nodetype));
+                                   line, svalResolve(func).c_str(), func->lineno, typeToStr(func->nodetype));
                             errors++;
-                        } else if ( parent->nodetype != tree->nodetype )
+                        } else if ( func->nodetype != tree->nodetype )
                         {
                             printf("ERROR(%d): Function '%s' at line %d is expecting to return type %s but got %s.\n",
-                                   line, parent->svalue ? parent->svalue : "", parent->lineno, typeToStr(parent->nodetype), tree_type_str);
+                                   line, svalResolve(func).c_str(), func->lineno, typeToStr(func->nodetype), tree_type_str);
                             errors++;
                         }
                     }
                     break;
 
                   case BreakK:
-                    if ( parent->kind != ForeachK && parent->kind != WhileK )
+                    if ( in_loop == false )
                     {
                         printf("ERROR(%d): Cannot have a break statement outside of loop.\n", line);
                         errors++;
@@ -1073,7 +1080,6 @@ void treeParse ( TreeNode * par, TreeNode * node, SymbolTable * symtable )
                                            line, svalResolve(tmp).c_str(), tmp->lineno);
                                     errors++;
                                 }
-                                //tree->nodetype = temp->nodetype;
                             }
                         }
                     }
@@ -1175,7 +1181,7 @@ void treeParse ( TreeNode * par, TreeNode * node, SymbolTable * symtable )
                     break;
 
                   case UnaryK:
-                    if ( tree->numChildren == 1 )
+                    if ( tree->numChildren == 1 && tree->child[0] != NULL )
                     {
                         switch (tree->token->bval)
                           {
@@ -1211,8 +1217,6 @@ void treeParse ( TreeNode * par, TreeNode * node, SymbolTable * symtable )
                     break;
 
                   case ParamK:
-                    /*if (parent->kind == CallK) { // TODO: this is wrong place
-                    }*/
                     // TODO: paramK in expk? need to handle
                     break;
 
@@ -1220,8 +1224,7 @@ void treeParse ( TreeNode * par, TreeNode * node, SymbolTable * symtable )
                     tmp = (TreeNode *) symtable->lookup(tree_svalue);
                     if ( tmp != NULL )
                     {
-                        //tree->nodetype = tmp->nodetype;
-                        // TODO: variables in expressions
+                        // TODO: VarK (variables?) in expressions
                         if ( parent->kind == CallK )
                         {
                             if ( tmp->nodetype != tree->nodetype )
@@ -1292,11 +1295,11 @@ void treeParse ( TreeNode * par, TreeNode * node, SymbolTable * symtable )
             {
                 if ( tree->child[i] != NULL )
                 {
-                    treeParse(tree, tree->child[i], symtable);
+                    treeParse(tree, tree->child[i], symtable, in_loop );
                 }
             }
         }
-
+        
         if ( tree->kind == CompoundK || tree->kind == FunK )
         {
             if ( testing )
@@ -1304,7 +1307,23 @@ void treeParse ( TreeNode * par, TreeNode * node, SymbolTable * symtable )
                 std::cout << "Leaving symtable..." << std::endl;
                 symtable->print(printTreeNode);
             }
+            if(parent->kind == WhileK || parent->kind == ForeachK)
+            {
+                in_loop = false;
+            }
             symtable->leave();
+        }
+        
+        if ( tree->kind == FunK && tree->nodetype != Void )
+        {
+            if ( return_found == false )
+            {
+                printf("WARNING(%d): Expecting to return type %s but function '%s' has no return statement.\n",
+                       line, tree_type_str, tree_svalue.c_str());
+                warnings++;
+            }
+            return_found = false;
+            func = NULL;
         }
 
         tree = tree->sibling; // Jump to the next sibling

@@ -1,25 +1,15 @@
-ERROR(37): Cannot have a break statement outside of loop.
-WARNING(50): Expecting to return type bool but function 'penguin' has no return statement.
+ERROR(59): '=' requires that if one operand is an array so must the other operand.
+ERROR(60): '=' requires that if one operand is an array so must the other operand.
 ERROR(60): The operation '*' only works with arrays.
 ERROR(61): '=' requires that if one operand is an array so must the other operand.
 ERROR(65): If not an array, foreach requires lhs of 'in' be of type int but it is type char.
 ERROR(65): If not an array, foreach requires rhs of 'in' be of type int but it is type char.
-ERROR(65): Symbol '' is not defined.
 ERROR(66): The operation '*' only works with arrays.
 ERROR(66): Cannot have a break statement outside of loop.
-WARNING(70): Expecting to return type int but function 'Wendolene' has no return statement.
-ERROR(73): Symbol '+' is not defined.
 ERROR(73): The operation '*' only works with arrays.
-WARNING(77): Expecting to return type bool but function 'ramsBottom' has no return statement.
 ERROR(83): Expecting array in parameter 0 of call to 'Wendolene' defined on line 83.
 ERROR(83): Expecting array in parameter 0 of call to 'Wendolene' defined on line 83.
 ERROR(84): The operation '*' only works with arrays.
-ERROR(86): Symbol '!' is not defined.
-WARNING(89): Expecting to return type int but function 'cheese' has no return statement.
-ERROR(89): Symbol '%' is not defined.
-WARNING(91): Expecting to return type int but function 'Wensleydale' has no return statement.
-ERROR(91): Function '' at line 91 is expecting to return type int but return has no return value.
-WARNING(93): Expecting to return type int but function 'main' has no return statement.
 ERROR(99): The operation '*' only works with arrays.
 ERROR(100): The operation '*' only works with arrays.
 ERROR(100): The operation '*' only works with arrays.
@@ -247,10 +237,10 @@ Func input returns type int [line: -1]
 |   |   |   |   Child: 0  Const: 3 Type: int [line: 58]
 |   |   |   Child: 1  Id: Feathers Type: char [line: 58]
 |   |   |Sibling: 2  Assign: = Type: void [line: 59]
-|   |   |   Child: 0  Id: Wensleydale Type: char [line: 59]
+|   |   |   Child: 0  Id: Wensleydale Type: is array of char [line: 59]
 |   |   |   Child: 1  Id: McGraw Type: char [line: 59]
 |   |   |Sibling: 3  Assign: = Type: void [line: 60]
-|   |   |   Child: 0  Id: Wensleydale Type: char [line: 60]
+|   |   |   Child: 0  Id: Wensleydale Type: is array of char [line: 60]
 |   |   |   |   Child: 0  Op: * Type: int [line: 60]
 |   |   |   |   |   Child: 0  Id: McGraw Type: char [line: 60]
 |   |   |   Child: 1  Const: '*' Type: char [line: 60]
@@ -407,5 +397,5 @@ Func input returns type int [line: -1]
 " Type: is array of char [line: 112]
 |Sibling: 25  Var dog char [line: 113]
 |   Child: 0  Const: 't' Type: char [line: 113]
-Number of warnings: 6
-Number of errors: 21
+Number of warnings: 0
+Number of errors: 17
