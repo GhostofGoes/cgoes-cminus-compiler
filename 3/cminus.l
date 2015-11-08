@@ -85,7 +85,7 @@ stringbody	([^"])|(\\[^n])
 
 	/* Tokens */
 {letter}{letdig}*	{ return sToker(ID,         yytext, yylineno, yytext); }
-{digit}+			{ return iToker(NUMCONST,   yytext, yylineno, atoi(yytext)); }
+{digit}+		{ return iToker(NUMCONST,   yytext, yylineno, atoi(yytext)); }
 
 	/* String Constants */
 	/* TODO: proper errors */

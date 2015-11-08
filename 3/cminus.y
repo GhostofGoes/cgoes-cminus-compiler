@@ -21,9 +21,9 @@
     #include "toker.h"
 }
 
-// TODO: If i'm using a single type, can i just use the API?
 // %define api.value.type { Treenode *tree } 
-// Above would allow use of %token <TreeNode> instead of "tree". Unsure of the value, just a random thing.
+// API basically makes it a full type, which is great if i'm using a unified nodetype...
+// but alas not, since this is Bison and not Bison++
 %union 
 {
     TokenData * tok;
@@ -136,7 +136,7 @@ var-decl-initialize:
 	var-decl-id
 		{ $$ = $1; }
 	| var-decl-id COLON simple-expression
-		{
+	{
             $$ = $1;
             addChild( $$, $3);
             freeToken($2);
@@ -151,17 +151,18 @@ var-decl-id:
 	| ID LBRACKET NUMCONST RBRACKET
 		{ 
             $$ = makeNode( DeclK, VarK, Void, $1->lineno, $1 );
+            // TODO: handle NUMCONST!
             $$->isArray = true;
+            $$->arraySize = $3->ivalue;
             freeToken($2);
-           	freeToken($4);
+            freeToken($3);
+            freeToken($4);
         }
 	;
 
-/* TODO: issues with passing booleans up */
-
 scoped-type-specifier:
 	STATIC type-specifier
-		{ 
+	{ 
             $$ = $2;
             $$->isStatic = true; 
             $$->isScoped = true;
@@ -188,21 +189,21 @@ type-specifier:
 
 fun-declaration:
 	type-specifier ID LPAREN params RPAREN statement
-		{ 
+	{ 
             $$ = makeNode( DeclK, FunK, $1->nodetype, $2->lineno, $2 );
             addChild( $$, $4);
             addChild( $$, $6);
             freeToken($3);
-           	freeToken($5);
-		}
+            freeToken($5);
+	}
 	| ID LPAREN params RPAREN statement
-		{ 
+	{ 
             $$ = makeNode( DeclK, FunK, Void, $1->lineno, $1 );
             addChild( $$, $3);
             addChild( $$, $5);
             freeToken($2);
-           	freeToken($4);
-		}
+            freeToken($4);
+	}
 	;
 
 params:
@@ -215,8 +216,8 @@ params:
 param-list:
 	param-list SEMICOLON param-type-list 
 		{  
-			$$ = linkSiblings($1, $3);
-			freeToken($2);
+                    $$ = linkSiblings($1, $3);
+                    freeToken($2);
 		}
 	| param-type-list
 		{ $$ = $1; }
@@ -224,25 +225,25 @@ param-list:
 	
 param-type-list:
 	type-specifier param-id-list 
-		{ 
+	{ 
             $$ = $2;
             applyTypeToSiblings($$, $1->nodetype);
-		}
+	}
 	;
 	
 param-id-list:
 	param-id-list COMMA param-id 
-		{ 
+	{ 
             $$ = linkSiblings($1, $3);
             freeToken($2);
         }
 	| param-id 
-		{ $$ = $1; }
+            { $$ = $1; }
 	;
 	
 param-id:
 	ID 		
-		{ 
+	{ 
             $$ = makeNode( DeclK, ParamK, Void, $1->lineno, $1 );
         }
 	| ID LBRACKET RBRACKET
@@ -250,7 +251,7 @@ param-id:
             $$ = makeNode( DeclK, ParamK, Void, $1->lineno, $1 );
             $$->isArray = true; 
             freeToken($2);
-           	freeToken($3);
+            freeToken($3);
         }
 	;
 	
@@ -306,7 +307,7 @@ unmatched-selection-stmt:
             $$ = makeNode( StmtK, IfK, Void, $1->lineno, $1 );
             addChild( $$, $3);
             addChild( $$, $5);
-           	freeToken($2);
+            freeToken($2);
             freeToken($4);
         }
 	| IF LPAREN simple-expression RPAREN matched ELSE unmatched 
@@ -405,8 +406,8 @@ expression-stmt:
         }
 	| SEMICOLON /* EMPTY? */
 		{ 
-			$$ = NULL; 
-			freeToken($1);	
+                    $$ = NULL; 
+                    freeToken($1);	
 		}
 	;
 	

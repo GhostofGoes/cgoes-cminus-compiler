@@ -123,6 +123,7 @@ TreeNode * allocNode() {
     tempNode->isArray = false;
     tempNode->isIndex = false;
     tempNode->isConstant = false;
+    tempNode->arraySize = 0;
     return tempNode;
 }
 

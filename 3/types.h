@@ -52,7 +52,7 @@ typedef struct treeNode
 	bool isIndex;							// Array index?
 	bool isScoped;  // TODO: needed?
         bool isConstant;
-
+        int arraySize;
 } TreeNode;
 
 #endif

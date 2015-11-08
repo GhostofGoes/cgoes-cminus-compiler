@@ -29,7 +29,6 @@ TreeNode * annotatedTree = NULL;
 int warnings = 0;
 int errors = 0;
 bool testing = false;
-// TODO: move to same-indentation curly-braces {} 
 
 bool return_found = false;
 TreeNode * func = NULL;
@@ -84,10 +83,8 @@ int main ( int argc, char * argv[] )
     if ( abstract_tree )
     {
         printAbstractTree(syntaxTree);
-        freeTree(syntaxTree);
     }
 
-    // TODO: build I/O library tree
     if ( annotated_tree )
     {
         annotatedTree = syntaxTree;
@@ -101,15 +98,22 @@ int main ( int argc, char * argv[] )
         {
             printAnnotatedTree(annotatedTree);
         }
-
-        freeTree(annotatedTree);
     }
 
     if ( code_generation )
     {
         //generateCode();
     }
-
+    
+    if( annotated_tree )
+    {
+        freeTree(annotatedTree);
+    }
+    else
+    {
+        freeTree(syntaxTree);
+    }
+    
     printf("Number of warnings: %d\n", warnings);
     printf("Number of errors: %d\n", errors);
 
@@ -119,7 +123,6 @@ int main ( int argc, char * argv[] )
 
 
 // Recursively prints the abstract syntax tree
-// TODO: output redirection
 // TODO: null characters in char and string consts, store/print properly (check treeParse for solution, make function)
 
 void printAbstractTree ( TreeNode * og, int indent_count )
@@ -128,7 +131,8 @@ void printAbstractTree ( TreeNode * og, int indent_count )
     TreeNode * tree = og;
     int sibling_count = 0; // Keeps track of siblings
 
-    // Output buffer (TODO: string stream better option?)
+    // Output buffer 
+    // TODO: string stream better option?
     std::string outstr;
 
     // Prints all nodes of the tree
@@ -175,7 +179,7 @@ void printAbstractTree ( TreeNode * og, int indent_count )
               } else if ( tree->nodetype == Character )
               {
                   if ( tree->token->svalue != NULL )
-                  { // TODO: could use isArray here for stringconsts
+                  { //  could use isArray here for stringconsts
                       outstr += '"';
                       outstr += tree->token->svalue;
                       //fwrite( tree->token->svalue, sizeof(char), sizeof(tree->token->svalue), stdout);
@@ -486,11 +490,10 @@ void printAnnotatedTree ( TreeNode * og, int indent_count )
 
 void semanticAnalysis ( TreeNode * og )
 {
-    // TODO: add return
+    // add return?
     SymbolTable * symtable = new SymbolTable();
     SymbolTable * typetable = new SymbolTable();
     TreeNode * tree = og;
-    // TODO: initial node creations from Bison file
 
     if ( testing )
     {
@@ -595,7 +598,6 @@ void typeResolution ( TreeNode * node, SymbolTable * symtable )
                     }
                     symtable->enter("Function " + tree_svalue);
                     break;
-                    // TODO: can we do decls with ids?
                   case IdK:
                     temp = (TreeNode *) symtable->lookup(tree_svalue);
                     if ( temp != NULL )
@@ -785,7 +787,7 @@ void treeParse ( TreeNode * par, TreeNode * node, SymbolTable * symtable, bool i
                                 printf("ERROR(%d): Array '%s' must be of type char to be initialized, but is of type %s.\n",
                                        line, tree_svalue.c_str(), tree_type_str);
                                 errors++;
-                            }// TODO: Stringconst is an array of characters. check that in bison.
+                            }
                             else if ( lhs != Character )
                             {
                                 printf("ERROR(%d): Initializer for array variable '%s' must be a string, but is of nonarray type %s.\n",
@@ -1208,7 +1210,6 @@ void treeParse ( TreeNode * par, TreeNode * node, SymbolTable * symtable, bool i
                     tmp = (TreeNode *) symtable->lookup(tree_svalue);
                     if ( tmp != NULL )
                     {
-                        // TODO: VarK (variables?) in expressions
                         if ( parent->kind == CallK )
                         {
                             if ( tmp->nodetype != tree->nodetype )
