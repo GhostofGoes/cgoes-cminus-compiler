@@ -94,6 +94,10 @@ SymbolTable::SymbolTable()
     debugFlg = false;
 }
 
+SymbolTable::~SymbolTable()
+{
+    if (debugFlg) printf("DEBUG(SymbolTable): destroying this table.\n");    
+}
 
 void SymbolTable::debug(bool state)
 {

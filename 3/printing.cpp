@@ -178,4 +178,368 @@ void printTokenData(void * tok) {
     
 }
 
+// Recursively prints the abstract syntax tree
+// TODO: null characters in char and string consts, store/print properly (check treeParse for solution, make function)
+
+void printAbstractTree ( TreeNode * og, int indent_count )
+{
+
+    TreeNode * tree = og;
+    int sibling_count = 0; // Keeps track of siblings
+
+    // Output buffer 
+    // TODO: string stream better option?
+    std::string outstr;
+
+    // Prints all nodes of the tree
+    while (tree != NULL)
+    {
+
+        if ( sibling_count > 0 )
+        {
+            outstr.append("|Sibling: ");
+            outstr.append(std::to_string(sibling_count));
+            outstr.append("  ");
+            std::cout << applyIndents(outstr, indent_count);
+            std::cout.flush();
+            outstr.clear();
+        }
+
+        switch (tree->kind)
+          {
+            case OpK:
+              outstr += "Op: ";
+              outstr += svalResolve(tree);
+              /*
+              if (tree->token->svalue != NULL) {
+                  outstr += tree->token->svalue;
+              } else {
+                  outstr.push_back(tree->token->cvalue);
+              }
+               */
+              break;
+
+            case UnaryK:
+              outstr.append("Op: ");
+              outstr.append(svalResolve(tree));
+              break;
+
+            case ConstK:
+              outstr.append("Const: ");
+              if ( tree->nodetype == Boolean )
+              {
+                  outstr.append(iboolToString(tree->token->ivalue));
+              } else if ( tree->nodetype == Integer )
+              {
+                  outstr.append(std::to_string(tree->token->ivalue));
+              } else if ( tree->nodetype == Character )
+              {
+                  if ( tree->token->svalue != NULL )
+                  { //  could use isArray here for stringconsts
+                      outstr += '"';
+                      outstr += tree->token->svalue;
+                      //fwrite( tree->token->svalue, sizeof(char), sizeof(tree->token->svalue), stdout);
+                      outstr += '"';
+                  } else
+                  {
+                      outstr += '\'';
+                      outstr += tree->token->cvalue;
+                      outstr += '\'';
+                  }
+              }
+              break;
+
+            case IdK:
+              outstr.append("Id: ");
+              outstr.append(svalResolve(tree));
+              break;
+
+            case AssignK:
+              outstr.append("Assign: ");
+
+              if ( tree->nodetype == Void )
+              {
+                  outstr.append(svalResolve(tree));
+              }
+              if ( tree->nodetype == Integer )
+              {
+                  outstr += svalResolve(tree);
+              }
+
+              break;
+
+            case IfK:
+              outstr.append("If");
+              break;
+
+            case CompoundK:
+              outstr.append("Compound");
+              break;
+
+            case ForeachK:
+              outstr.append("Foreach");
+              break;
+
+            case WhileK:
+              outstr.append("While");
+              break;
+
+            case ReturnK:
+              outstr.append("Return");
+              break;
+
+            case BreakK:
+              outstr.append("Break");
+              break;
+
+            case VarK:
+            case ParamK:
+              if ( tree->kind == VarK )
+              {
+                  outstr.append("Var ");
+              } else
+              {
+                  outstr.append("Param ");
+              }
+              outstr.append(svalResolve(tree));
+              if ( tree->isArray )
+              {
+                  outstr.append(" is array");
+              }
+              outstr.append(" of type ");
+              outstr.append(typeToStr(tree->nodetype));
+              break;
+
+            case FunK:
+              outstr.append("Func ");
+              outstr.append(svalResolve(tree));
+              outstr.append(" returns type ");
+              outstr.append(typeToStr(tree->nodetype));
+              break;
+
+            case CallK:
+              outstr.append("Call: ");
+              outstr.append(svalResolve(tree));
+              break;
+            default:
+              outstr.append("\nWe shouldn't get here\n");
+              break;
+
+          } // end switch
+
+        std::cout << outstr << " [line: " << tree->lineno << "]" << std::endl;
+        std::cout.flush();
+        outstr.clear();
+
+        // Check if there are children
+        if ( tree->numChildren > 0 )
+        {
+            for (int i = 0; i < tree->numChildren; i++)
+            {
+                if ( tree->child[i] != NULL )
+                {
+                    outstr.append("|   Child: ");
+                    outstr.append(std::to_string(i));
+                    outstr.append("  ");
+                    std::cout << applyIndents(outstr, indent_count);
+                    std::cout.flush();
+                    outstr.clear();
+                    printAbstractTree(tree->child[i], indent_count + 1);
+                }
+            }
+        }
+
+        tree = tree->sibling; // Jump to the next sibling
+        sibling_count++;
+    } // end while
+
+}
+
+// Prints the Annotated Syntax Tree 
+
+void printAnnotatedTree ( TreeNode * og, int indent_count )
+{
+
+    TreeNode * tree = og;
+    int sibling_count = 0; // Keeps track of siblings
+    std::string outstr; // Output buffer
+
+    // Prints all nodes of the tree
+    while (tree != NULL)
+    {
+
+        if ( sibling_count > 0 )
+        {
+            outstr.append("|Sibling: ");
+            outstr.append(std::to_string(sibling_count));
+            outstr.append("  ");
+            std::cout << applyIndents(outstr, indent_count);
+            std::cout.flush();
+            outstr.clear();
+        }
+
+        switch (tree->kind)
+          {
+            case OpK:
+              outstr += "Op: ";
+              outstr += opToStr(tree->token);
+              outstr += (" Type: ");
+              outstr += typeToStr(tree->nodetype);
+              break;
+
+            case UnaryK:
+              outstr.append("Op: ");
+              outstr.append(svalResolve(tree));
+              outstr += (" Type: ");
+              outstr += typeToStr(tree->nodetype);
+              break;
+
+            case ConstK:
+              outstr.append("Const: ");
+              if ( tree->nodetype == Boolean )
+              {
+                  outstr.append(iboolToString(tree->token->ivalue));
+              } else if ( tree->nodetype == Integer )
+              {
+                  outstr.append(std::to_string(tree->token->ivalue));
+              } else if ( tree->nodetype == Character )
+              {
+                  if ( tree->token->svalue != NULL )
+                  {
+                      outstr += '"';
+                      outstr += tree->token->svalue;
+                      outstr += '"';
+                  } else
+                  {
+                      outstr += '\'';
+                      outstr += tree->token->cvalue;
+                      outstr += '\'';
+                  }
+              }
+
+              outstr.append(" Type: ");
+              if ( tree->isArray )
+              {
+                  outstr.append("is array of ");
+              }
+              outstr.append(typeToStr(tree->nodetype));
+              break;
+
+            case IdK:
+              outstr.append("Id: ");
+              outstr.append(svalResolve(tree));
+              outstr += (" Type: ");
+              if ( tree->isArray )
+              {
+                  outstr.append("is array of ");
+              }
+              outstr += typeToStr(tree->nodetype);
+              break;
+
+            case AssignK:
+              outstr.append("Assign: ");
+              outstr += opToStr(tree->token);
+              outstr += (" Type: ");
+              if ( tree->isArray )
+              {
+                  outstr.append("is array of ");
+              }
+              outstr += typeToStr(tree->nodetype);
+              break;
+
+            case IfK:
+              outstr.append("If");
+              break;
+
+            case CompoundK:
+              outstr.append("Compound");
+              break;
+
+            case ForeachK:
+              outstr.append("Foreach");
+              break;
+
+            case WhileK:
+              outstr.append("While");
+              break;
+
+            case ReturnK:
+              outstr.append("Return");
+              break;
+
+            case BreakK:
+              outstr.append("Break");
+              break;
+
+            case VarK:
+              outstr.append("Var ");
+              outstr.append(svalResolve(tree));
+              if ( tree->isArray )
+              {
+                  outstr.append(" is array of");
+              }
+              outstr += " ";
+              outstr.append(typeToStr(tree->nodetype));
+
+              break;
+
+            case ParamK:
+              outstr.append("Param ");
+              outstr.append(svalResolve(tree));
+              if ( tree->isArray )
+              {
+                  outstr.append(" is array of ");
+              }
+              outstr += " ";
+              outstr.append(typeToStr(tree->nodetype));
+              break;
+
+            case FunK:
+              outstr.append("Func ");
+              outstr.append(svalResolve(tree));
+              outstr.append(" returns type ");
+              outstr.append(typeToStr(tree->nodetype));
+              break;
+
+            case CallK:
+              outstr.append("Call: ");
+              outstr.append(svalResolve(tree));
+              outstr += (" Type: ");
+              outstr += typeToStr(tree->nodetype);
+              break;
+
+            default:
+              outstr.append("\nWe shouldn't get here\n");
+              break;
+
+          } // end switch
+
+        std::cout << outstr << " [line: " << tree->lineno << "]" << std::endl;
+        std::cout.flush();
+        outstr.clear();
+
+        // Check if there are children
+        if ( tree->numChildren > 0 )
+        {
+            for (int i = 0; i < tree->numChildren; i++)
+            {
+                if ( tree->child[i] != NULL )
+                {
+                    outstr.append("|   Child: ");
+                    outstr.append(std::to_string(i));
+                    outstr.append("  ");
+                    std::cout << applyIndents(outstr, indent_count);
+                    std::cout.flush();
+                    outstr.clear();
+                    printAnnotatedTree(tree->child[i], indent_count + 1);
+                }
+            }
+        }
+
+        tree = tree->sibling; // Jump to the next sibling
+        sibling_count++;
+    } // end while
+
+}
+
 

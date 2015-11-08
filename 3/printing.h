@@ -30,4 +30,11 @@ void printWarning( int line, std::string warn );
 void printTreeNode( void * node );
 void printTokenData( void * token );
 
+// TODO: combine the two print tree functions, or move bulk to another function?
+// Recursively prints the abstract syntax tree
+void printAbstractTree(TreeNode * tree, int indent_count = 0);
+
+// Recursively prints the annotated syntax tree
+void printAnnotatedTree(TreeNode * tree, int indent_count = 0);
+
 #endif
