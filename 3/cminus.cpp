@@ -601,7 +601,7 @@ void typeResolution ( TreeNode * node, SymbolTable * symtable )
                     if ( temp != NULL )
                     {
                         tree->nodetype = temp->nodetype;
-                        if(temp->isArray && temp->child[0] != NULL && temp->child[0]->isIndex == false )
+                        if(temp->isArray )
                         {
                             tree->isArray = true;
                         }
@@ -631,7 +631,8 @@ void typeResolution ( TreeNode * node, SymbolTable * symtable )
                     if ( temp != NULL )
                     {
                         tree->nodetype = temp->nodetype;
-                        if(temp->isArray && temp->child[0] != NULL && temp->child[0]->isIndex == false )
+                        //if(temp->isArray && temp->child[0] != NULL && temp->child[0]->isIndex == false )
+                        if(temp->isArray)
                         {
                             tree->isArray = true;
                         }
@@ -664,9 +665,13 @@ void typeResolution ( TreeNode * node, SymbolTable * symtable )
                     if ( temp != NULL )
                     {
                         tree->nodetype = temp->nodetype;
-                        if(temp->isArray && temp->child[0] != NULL && temp->child[0]->isIndex == false )
+                        if(temp->isArray)
                         {
                             tree->isArray = true;
+                        }
+                        if(temp->isIndex)
+                        {
+                            tree->isIndex = true;
                         }
                         if ( temp->isStatic )
                         {
@@ -865,12 +870,10 @@ void treeParse ( TreeNode * par, TreeNode * node, SymbolTable * symtable, bool i
 
                   case CompoundK:
                     symtable->enter("Compound" + line);
-                    if(parent->kind == WhileK || parent->kind == ForeachK) {
-                        in_loop = true;
-                    }
                     break;
 
                   case ForeachK:
+                    in_loop = true;
                     if ( tree->numChildren )
                     {
                         if ( tree->child[0]->isArray )
@@ -899,6 +902,7 @@ void treeParse ( TreeNode * par, TreeNode * node, SymbolTable * symtable, bool i
                     break;
 
                   case WhileK:
+                    in_loop = true;
                     if ( tree->numChildren == 2 )
                     {
                         if ( tree->child[0]->isArray )
@@ -979,7 +983,8 @@ void treeParse ( TreeNode * par, TreeNode * node, SymbolTable * symtable, bool i
                                          line, op.c_str(), lhs_str, rhs_str);
                                   errors++;
                               }
-                              if ( tree->child[0]->isArray != tree->child[1]->isArray )
+                              if ( (tree->child[0]->isArray && tree->child[0]->child[0] == NULL)
+                                   != (tree->child[1]->isArray && tree->child[1]->child[0] == NULL) )
                               {
                                   printf("ERROR(%d): '%s' requires that if one operand is an array so must the other operand.\n",
                                          line, op.c_str());
@@ -1022,30 +1027,6 @@ void treeParse ( TreeNode * par, TreeNode * node, SymbolTable * symtable, bool i
                             std::cerr << "Tried to access NULL token in ExpK: AssignK" << std::endl;
                         }
                     }
-
-                    // TODO: lookups then type checking? both? (ask him?)
-                    /*if (tree->numChildren == 1) {
-                        if (tree->child[0]->kind == VarK || tree->child[0]->kind == CallK) {
-                            if (symtable->lookup(child0_sval) == NULL) {
-                                printf("ERROR(%d): Symbol '%s' is not defined.\n", line, child0_sval.c_str());
-                                errors++;
-                                tree->child[0]->nodetype = Undef;
-                            }
-                        }
-                    } else if (tree->numChildren == 2) {
-                        if (tree->child[0]->kind == VarK || tree->child[0]->kind == CallK) {
-                            if (symtable->lookup(child0_sval) == NULL) {
-                                printf("ERROR(%d): Symbol '%s' is not defined.\n", line, child0_sval.c_str());
-                                errors++;
-                                tree->child[0]->nodetype = Undef;
-                            }
-                        }
-                        if (tree->child[1]->kind == VarK || tree->child[1]->kind == CallK) {
-                            if (symtable->lookup(child1_sval) == NULL) {
-                                printf("ERROR(%d): Symbol '%s' is not defined.\n", line, child1_sval.c_str());
-                                errors++;
-                            }
-                        }*/
                     break;
 
                   case CallK:
@@ -1093,7 +1074,8 @@ void treeParse ( TreeNode * par, TreeNode * node, SymbolTable * symtable, bool i
                   case OpK:
                     if ( tree->numChildren == 2 )
                     {
-                        if ( tree->child[0]->isArray != tree->child[1]->isArray )
+                        if ( (tree->child[0]->isArray && tree->child[0]->child[0] == NULL)
+                             != (tree->child[1]->isArray && tree->child[1]->child[0] == NULL) )
                         {
                             printf("ERROR(%d): '%s' requires that if one operand is an array so must the other operand.\n", line, op.c_str());
                             errors++;
@@ -1137,7 +1119,8 @@ void treeParse ( TreeNode * par, TreeNode * node, SymbolTable * symtable, bool i
                                              line, op.c_str(), "char or int", rhs_str);
                                       errors++;
                                   }
-                                  if ( tree->child[0]->isArray || tree->child[1]->isArray )
+                                  if ( (tree->child[0]->isArray && tree->child[0]->child[0] == NULL) 
+                                    || (tree->child[1]->isArray && tree->child[1]->child[0] == NULL) )
                                   {
                                       printf("ERROR(%d): The operation '%s' does not work with arrays.\n",
                                              line, op.c_str());
@@ -1172,10 +1155,11 @@ void treeParse ( TreeNode * par, TreeNode * node, SymbolTable * symtable, bool i
                             }
                         }
 
-                        if ( tree->child[0]->isArray != tree->child[1]->isArray )
+                        if ( (tree->child[0]->isArray && tree->child[0]->child[0] == NULL) 
+                              != (tree->child[1]->isArray && tree->child[1]->child[0] == NULL) )
                         {
-                            printf("ERROR(%d): '%s' requires that if one operand is an array so must the other operand.\n", line, op.c_str());
-                            errors++;
+                                printf("ERROR(%d): '%s' requires that if one operand is an array so must the other operand.\n", line, op.c_str());
+                                errors++;
                         }
                     }
                     break;
@@ -1307,11 +1291,13 @@ void treeParse ( TreeNode * par, TreeNode * node, SymbolTable * symtable, bool i
                 std::cout << "Leaving symtable..." << std::endl;
                 symtable->print(printTreeNode);
             }
-            if(parent->kind == WhileK || parent->kind == ForeachK)
-            {
-                in_loop = false;
-            }
+
             symtable->leave();
+        }
+
+        if(tree->kind == WhileK || tree->kind == ForeachK)
+        {
+            in_loop = false;
         }
         
         if ( tree->kind == FunK && tree->nodetype != Void )
