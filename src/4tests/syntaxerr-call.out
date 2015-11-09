@@ -1,0 +1,6 @@
+ERROR(6): Syntax error, unexpected while.
+ERROR(7): Syntax error, unexpected while.
+ERROR(10): Syntax error, unexpected ';'.
+ERROR(11): Syntax error, unexpected ')', expecting ';'.
+Number of warnings: 0
+Number of errors: 4

@@ -1,0 +1,22 @@
+ERROR(1): Syntax error, unexpected identifier 'be', expecting '('.
+WARNING(2): Invalid input character: '''.  Character ignored.
+ERROR(6): Syntax error, unexpected identifier 'more', expecting '('.
+ERROR(6): Syntax error, unexpected identifier 'by', expecting '('.
+WARNING(8): Invalid input character: '''.  Character ignored.
+WARNING(9): Invalid input character: '''.  Character ignored.
+WARNING(9): Invalid input character: '.'.  Character ignored.
+ERROR(10): Syntax error, unexpected identifier 'sleep', expecting '('.
+WARNING(10): Invalid input character: '''.  Character ignored.
+ERROR(11): Syntax error, unexpected in, expecting '('.
+WARNING(13): Invalid input character: '''.  Character ignored.
+ERROR(15): Syntax error, unexpected identifier 'who', expecting '('.
+WARNING(16): character is 22 characters and not a single character: 's wrong, the proud man'
+WARNING(17): Invalid input character: '''.  Character ignored.
+WARNING(24): Invalid input character: '''.  Character ignored.
+ERROR(29): Syntax error, unexpected identifier 'thus', expecting '('.
+WARNING(30): Invalid input character: '''.  Character ignored.
+WARNING(33): Invalid input character: '.'.  Character ignored.
+WARNING(35): Invalid input character: '''.  Character ignored.
+WARNING(35): Invalid input character: '.'.  Character ignored.
+Number of warnings: 13
+Number of errors: 7

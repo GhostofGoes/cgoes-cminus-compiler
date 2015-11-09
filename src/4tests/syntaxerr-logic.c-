@@ -1,0 +1,23 @@
+// C-F15
+  main()
+{
+    true | false;
+
+    true false;
+
+    | ;
+    true | ;
+    | false;
+    * | *;
+    zz;
+
+    true & false;
+    & ;
+    true & ;
+    & false;
+    * & *;
+
+    true & false | true;
+    & |; 
+    | &; 
+}

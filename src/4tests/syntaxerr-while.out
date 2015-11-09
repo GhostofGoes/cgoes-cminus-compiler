@@ -1,0 +1,21 @@
+ERROR(6): Syntax error, unexpected int, expecting '|' or ')'.
+ERROR(10): Syntax error, unexpected int.
+ERROR(14): Syntax error, unexpected int, expecting '('.
+ERROR(14): Syntax error, unexpected int, expecting ';'.
+ERROR(16): Syntax error, unexpected int, expecting '('.
+ERROR(18): Syntax error, unexpected int, expecting '('.
+ERROR(23): Syntax error, unexpected ';'.
+ERROR(27): Syntax error, unexpected ';'.
+ERROR(31): Syntax error, unexpected '*', expecting '('.
+ERROR(31): Syntax error, unexpected ';'.
+ERROR(33): Syntax error, unexpected '*', expecting '('.
+ERROR(33): Syntax error, unexpected ')', expecting ';'.
+ERROR(35): Syntax error, unexpected '*', expecting '('.
+ERROR(35): Syntax error, unexpected ';'.
+ERROR(40): Syntax error, unexpected ';', expecting '|' or ')'.
+ERROR(44): Syntax error, unexpected ';'.
+ERROR(48): Syntax error, unexpected identifier 'x', expecting '('.
+ERROR(50): Syntax error, unexpected ')', expecting '('.
+ERROR(52): Syntax error, unexpected ';', expecting '('.
+Number of warnings: 0
+Number of errors: 19

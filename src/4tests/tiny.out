@@ -1,0 +1,4 @@
+ERROR(8): '/' requires operands of type int but lhs is of type void.
+ERROR(LINKER): Procedure main is not defined.
+Number of warnings: 0
+Number of errors: 2

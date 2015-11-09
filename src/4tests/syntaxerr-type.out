@@ -1,0 +1,12 @@
+ERROR(2): Syntax error, unexpected ';', expecting identifier.
+ERROR(3): Syntax error, unexpected identifier 'b', expecting ';' or ','.
+ERROR(4): Syntax error, unexpected int, expecting identifier.
+ERROR(5): Syntax error, unexpected int, expecting identifier.
+ERROR(5): Syntax error, unexpected int, expecting ';' or ','.
+ERROR(7): Syntax error, unexpected bool, expecting ';' or ','.
+ERROR(8): Syntax error, unexpected ',', expecting identifier.
+ERROR(9): Syntax error, unexpected while, expecting identifier.
+ERROR(11): Syntax error, unexpected identifier 'b', expecting ';' or ','.
+ERROR(12): Syntax error, unexpected ';', expecting '('.
+Number of warnings: 0
+Number of errors: 10

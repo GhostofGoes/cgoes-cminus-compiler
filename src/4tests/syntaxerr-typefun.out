@@ -1,0 +1,48 @@
+ERROR(9): Syntax error, unexpected '*', expecting int or char or bool or ')'.
+ERROR(14): Syntax error, unexpected ';', expecting int or char or bool or ')'.
+ERROR(20): Syntax error, unexpected '(', expecting identifier.
+ERROR(22): Syntax error, unexpected '(', expecting identifier.
+ERROR(24): Syntax error, unexpected ')', expecting identifier.
+ERROR(26): Syntax error, unexpected ';', expecting identifier.
+ERROR(30): Syntax error, unexpected ';', expecting int or char or bool or ')'.
+ERROR(32): Syntax error, unexpected identifier 'dog', expecting int or char or bool.
+ERROR(34): Syntax error, unexpected ';', expecting '('.
+ERROR(36): Syntax error, unexpected '('.
+ERROR(38): Syntax error, unexpected '('.
+ERROR(40): Syntax error, unexpected ')'.
+ERROR(42): Syntax error, unexpected ';'.
+ERROR(45): Syntax error, unexpected '*', expecting int or char or bool or ')'.
+ERROR(47): Syntax error, unexpected '*', expecting int or char or bool or ')'.
+ERROR(49): Syntax error, unexpected '*', expecting ';' or ','.
+ERROR(51): Syntax error, unexpected '*', expecting ';' or ','.
+ERROR(53): Syntax error, unexpected '(', expecting identifier.
+ERROR(55): Syntax error, unexpected '(', expecting identifier.
+ERROR(57): Syntax error, unexpected '*', expecting identifier.
+ERROR(59): Syntax error, unexpected '*', expecting identifier.
+ERROR(61): Syntax error, unexpected '*', expecting int or char or bool or ')'.
+ERROR(63): Syntax error, unexpected '*', expecting int or char or bool or ')'.
+ERROR(65): Syntax error, unexpected '*', expecting '('.
+ERROR(67): Syntax error, unexpected '*', expecting '('.
+ERROR(69): Syntax error, unexpected '('.
+ERROR(71): Syntax error, unexpected '('.
+ERROR(73): Syntax error, unexpected '*'.
+ERROR(75): Syntax error, unexpected '*'.
+ERROR(81): Syntax error, unexpected break, expecting int or char or bool.
+ERROR(82): Syntax error, unexpected bool, expecting ')'.
+ERROR(82): Syntax error, unexpected ')', expecting ';' or ','.
+ERROR(84): Syntax error, unexpected bool, expecting ';' or ','.
+ERROR(86): Syntax error, unexpected '(', expecting identifier.
+ERROR(86): Syntax error, unexpected ')', expecting ';' or ','.
+ERROR(88): Syntax error, unexpected '(', expecting identifier.
+ERROR(90): Syntax error, unexpected bool, expecting identifier.
+ERROR(90): Syntax error, unexpected ')', expecting ';' or ','.
+ERROR(92): Syntax error, unexpected bool, expecting identifier.
+ERROR(98): Syntax error, unexpected identifier 'dog', expecting int or char or bool.
+ERROR(98): Syntax error, unexpected ')', expecting ';' or ','.
+ERROR(100): Syntax error, unexpected bool, expecting '('.
+ERROR(102): Syntax error, unexpected '('.
+ERROR(102): Syntax error, unexpected ')', expecting ';' or ','.
+ERROR(104): Syntax error, unexpected '('.
+ERROR(106): Syntax error, unexpected ')', expecting ';' or ','.
+Number of warnings: 0
+Number of errors: 46

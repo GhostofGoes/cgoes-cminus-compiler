@@ -1,0 +1,12 @@
+// C-F15
+  main()
+{
+        dog();
+        dog(111);
+        dog(while);
+        dog(while, while);
+        dog(dog(),cat());
+        
+        dog(;
+        dog);
+}

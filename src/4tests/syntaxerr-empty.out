@@ -1,0 +1,3 @@
+ERROR(2): Syntax error, unexpected end of input, expecting int or identifier or char or bool.
+Number of warnings: 0
+Number of errors: 1

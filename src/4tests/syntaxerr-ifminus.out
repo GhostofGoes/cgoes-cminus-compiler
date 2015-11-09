@@ -1,0 +1,89 @@
+ERROR(10): Syntax error, unexpected else.
+ERROR(12): Syntax error, unexpected else.
+ERROR(16): Syntax error, unexpected numeric constant '111', expecting '|' or ')'.
+ERROR(28): Syntax error, unexpected ')'.
+ERROR(30): Syntax error, unexpected ')'.
+ERROR(32): Syntax error, unexpected ')'.
+ERROR(34): Syntax error, unexpected ')'.
+ERROR(36): Syntax error, unexpected ')'.
+ERROR(38): Syntax error, unexpected ';', expecting '|' or ')'.
+ERROR(48): Syntax error, unexpected identifier 'x', expecting '('.
+ERROR(48): Syntax error, unexpected ')', expecting ';'.
+ERROR(48): Syntax error, unexpected else.
+ERROR(50): Syntax error, unexpected identifier 'x', expecting '('.
+ERROR(50): Syntax error, unexpected ')', expecting ';'.
+ERROR(52): Syntax error, unexpected identifier 'x', expecting '('.
+ERROR(52): Syntax error, unexpected ')', expecting ';'.
+ERROR(54): Syntax error, unexpected identifier 'x', expecting '('.
+ERROR(54): Syntax error, unexpected ')', expecting ';'.
+ERROR(56): Syntax error, unexpected identifier 'x', expecting '('.
+ERROR(56): Syntax error, unexpected ')', expecting ';'.
+ERROR(58): Syntax error, unexpected identifier 'x', expecting '('.
+ERROR(58): Syntax error, unexpected numeric constant '111', expecting ';'.
+ERROR(58): Syntax error, unexpected else.
+ERROR(60): Syntax error, unexpected identifier 'x', expecting '('.
+ERROR(60): Syntax error, unexpected numeric constant '111', expecting ';'.
+ERROR(60): Syntax error, unexpected else.
+ERROR(62): Syntax error, unexpected identifier 'x', expecting '('.
+ERROR(62): Syntax error, unexpected else, expecting ';'.
+ERROR(64): Syntax error, unexpected identifier 'x', expecting '('.
+ERROR(64): Syntax error, unexpected else, expecting ';'.
+ERROR(66): Syntax error, unexpected identifier 'x', expecting '('.
+ERROR(66): Syntax error, unexpected numeric constant '222', expecting ';'.
+ERROR(68): Syntax error, unexpected ')', expecting '('.
+ERROR(68): Syntax error, unexpected else.
+ERROR(70): Syntax error, unexpected ')', expecting '('.
+ERROR(70): Syntax error, unexpected else.
+ERROR(72): Syntax error, unexpected ')', expecting '('.
+ERROR(74): Syntax error, unexpected ')', expecting '('.
+ERROR(76): Syntax error, unexpected ')', expecting '('.
+ERROR(78): Syntax error, unexpected ')', expecting '('.
+ERROR(80): Syntax error, unexpected numeric constant '111', expecting '('.
+ERROR(80): Syntax error, unexpected else.
+ERROR(82): Syntax error, unexpected numeric constant '111', expecting '('.
+ERROR(82): Syntax error, unexpected else.
+ERROR(84): Syntax error, unexpected ';', expecting '('.
+ERROR(86): Syntax error, unexpected numeric constant '111', expecting ';'.
+ERROR(86): Syntax error, unexpected else.
+ERROR(88): Syntax error, unexpected numeric constant '111', expecting ';'.
+ERROR(88): Syntax error, unexpected else.
+ERROR(90): Syntax error, unexpected else, expecting ';'.
+ERROR(92): Syntax error, unexpected else, expecting ';'.
+ERROR(94): Syntax error, unexpected numeric constant '111', expecting ')'.
+ERROR(94): Syntax error, unexpected else.
+ERROR(96): Syntax error, unexpected numeric constant '111', expecting ')'.
+ERROR(96): Syntax error, unexpected else.
+ERROR(98): Syntax error, unexpected else, expecting ')'.
+ERROR(100): Syntax error, unexpected else, expecting ')'.
+ERROR(102): Syntax error, unexpected ')'.
+ERROR(102): Syntax error, unexpected else.
+ERROR(104): Syntax error, unexpected ')'.
+ERROR(104): Syntax error, unexpected else.
+ERROR(106): Syntax error, unexpected ')'.
+ERROR(108): Syntax error, unexpected ')'.
+ERROR(110): Syntax error, unexpected ';', expecting ')'.
+ERROR(110): Syntax error, unexpected else.
+ERROR(112): Syntax error, unexpected ';', expecting ')'.
+ERROR(112): Syntax error, unexpected else.
+ERROR(114): Syntax error, unexpected else.
+ERROR(116): Syntax error, unexpected else.
+ERROR(118): Syntax error, unexpected ')', expecting ';'.
+ERROR(118): Syntax error, unexpected else.
+ERROR(120): Syntax error, unexpected ')', expecting ';'.
+ERROR(120): Syntax error, unexpected else.
+ERROR(122): Syntax error, unexpected ')', expecting ';'.
+ERROR(124): Syntax error, unexpected ')', expecting ';'.
+ERROR(126): Syntax error, unexpected numeric constant '111', expecting ';'.
+ERROR(126): Syntax error, unexpected else.
+ERROR(128): Syntax error, unexpected numeric constant '111', expecting ';'.
+ERROR(128): Syntax error, unexpected else.
+ERROR(130): Syntax error, unexpected else, expecting ';'.
+ERROR(132): Syntax error, unexpected else, expecting ';'.
+ERROR(134): Syntax error, unexpected ')'.
+ERROR(134): Syntax error, unexpected else.
+ERROR(136): Syntax error, unexpected ')'.
+ERROR(136): Syntax error, unexpected else.
+ERROR(138): Syntax error, unexpected ')'.
+ERROR(140): Syntax error, unexpected ')'.
+Number of warnings: 0
+Number of errors: 87

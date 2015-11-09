@@ -1,0 +1,24 @@
+ERROR(2): Syntax error, unexpected '!', expecting int or identifier or char or bool.
+WARNING(2): Invalid input character: '@'.  Character ignored.
+WARNING(2): Invalid input character: '#'.  Character ignored.
+WARNING(2): Invalid input character: '$'.  Character ignored.
+WARNING(2): Invalid input character: '^'.  Character ignored.
+WARNING(2): Invalid input character: '_'.  Character ignored.
+WARNING(2): Invalid input character: '~'.  Character ignored.
+WARNING(2): Invalid input character: '`'.  Character ignored.
+WARNING(2): Invalid input character: '\'.  Character ignored.
+WARNING(2): Invalid input character: '.'.  Character ignored.
+WARNING(3): Invalid input character: '@'.  Character ignored.
+WARNING(3): Invalid input character: '#'.  Character ignored.
+WARNING(3): Invalid input character: '$'.  Character ignored.
+ERROR(3): Syntax error, unexpected '%'.
+WARNING(3): Invalid input character: '^'.  Character ignored.
+WARNING(3): Invalid input character: '_'.  Character ignored.
+WARNING(3): Invalid input character: '~'.  Character ignored.
+WARNING(3): Invalid input character: '`'.  Character ignored.
+WARNING(3): Invalid input character: '\'.  Character ignored.
+WARNING(3): Invalid input character: '.'.  Character ignored.
+WARNING(4): character is 11 characters and not a single character: 'dogs & cats'
+ERROR(4): Syntax error, unexpected character constant 'dogs & cats'.
+Number of warnings: 19
+Number of errors: 3

@@ -1,0 +1,53 @@
+// C-F15
+  main()
+{
+ while ( x );
+ zz;
+ while ( x int;
+ zz;
+ while ( int );
+ zz;
+ while ( int int;
+ zz;
+ while int x );
+ zz;
+ while int x int;
+ zz;
+ while int int );
+ zz;
+ while int int int;
+ zz;
+
+ while ( x );
+ zz;
+ while ( x *;
+ zz;
+ while ( * );
+ zz;
+ while ( * *;
+ zz;
+ while * x );
+ zz;
+ while * x *;
+ zz;
+ while * * );
+ zz;
+ while * * *;
+ zz;
+
+ while ( x );
+ zz;
+ while ( x ;
+ zz;
+ while ( );
+ zz;
+ while ( ;
+ zz;
+ while x );
+ zz;
+ while x ;
+ zz;
+ while );
+ zz;
+ while ;
+}

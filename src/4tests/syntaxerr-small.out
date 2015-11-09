@@ -1,0 +1,19 @@
+WARNING(4): Invalid input character: '^'.  Character ignored.
+ERROR(4): Syntax error, unexpected identifier 'k', expecting ']'.
+ERROR(6): Syntax error, unexpected '=', expecting '('.
+ERROR(7): Syntax error, unexpected identifier 'x0', expecting ';'.
+ERROR(8): Syntax error, unexpected '+'.
+ERROR(8): Syntax error, unexpected ';'.
+ERROR(9): Syntax error, unexpected else.
+ERROR(10): Syntax error, unexpected '=', expecting ';'.
+ERROR(11): Syntax error, unexpected if.
+ERROR(12): Syntax error, unexpected numeric constant '999', expecting ';'.
+ERROR(12): Syntax error, unexpected if, expecting ';'.
+ERROR(13): Syntax error, unexpected while.
+WARNING(13): Invalid input character: '@'.  Character ignored.
+WARNING(13): Invalid input character: '#'.  Character ignored.
+ERROR(14): Syntax error, unexpected ';', expecting ')'.
+ERROR(15): Syntax error, unexpected ')', expecting ';'.
+ERROR(18): Syntax error, unexpected '{', expecting int or char or bool or ')'.
+Number of warnings: 3
+Number of errors: 14

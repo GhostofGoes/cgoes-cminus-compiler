@@ -1,0 +1,10 @@
+ERROR(9): Syntax error, unexpected identifier 'x', expecting '('.
+ERROR(9): Syntax error, unexpected ')', expecting ';'.
+ERROR(9): Syntax error, unexpected numeric constant '666', expecting ';'.
+ERROR(10): Syntax error, unexpected else.
+ERROR(12): Syntax error, unexpected string constant "dogs", expecting ')'.
+ERROR(14): Syntax error, unexpected ')'.
+ERROR(17): Syntax error, unexpected '&'.
+ERROR(20): Syntax error, unexpected end of input, expecting ';'.
+Number of warnings: 0
+Number of errors: 8

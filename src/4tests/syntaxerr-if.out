@@ -1,0 +1,286 @@
+ERROR(6): Syntax error, unexpected '++'.
+ERROR(8): Syntax error, unexpected '++'.
+ERROR(8): Syntax error, unexpected numeric constant '222', expecting ';'.
+ERROR(10): Syntax error, unexpected '++'.
+ERROR(10): Syntax error, unexpected '++', expecting ';'.
+ERROR(12): Syntax error, unexpected '++'.
+ERROR(12): Syntax error, unexpected else, expecting ';'.
+ERROR(14): Syntax error, unexpected '++'.
+ERROR(14): Syntax error, unexpected else, expecting ';'.
+ERROR(16): Syntax error, unexpected '++'.
+ERROR(16): Syntax error, unexpected '++', expecting ';'.
+ERROR(16): Syntax error, unexpected numeric constant '222', expecting ';'.
+ERROR(18): Syntax error, unexpected '++'.
+ERROR(18): Syntax error, unexpected '++', expecting ';'.
+ERROR(18): Syntax error, unexpected '++', expecting ';'.
+ERROR(20): Syntax error, unexpected '++', expecting '|' or ')'.
+ERROR(36): Syntax error, unexpected '++'.
+ERROR(36): Syntax error, unexpected '++'.
+ERROR(38): Syntax error, unexpected '++'.
+ERROR(38): Syntax error, unexpected '++'.
+ERROR(38): Syntax error, unexpected numeric constant '222', expecting ';'.
+ERROR(40): Syntax error, unexpected '++'.
+ERROR(40): Syntax error, unexpected '++'.
+ERROR(40): Syntax error, unexpected '++', expecting ';'.
+ERROR(42): Syntax error, unexpected '++'.
+ERROR(42): Syntax error, unexpected else, expecting ';'.
+ERROR(44): Syntax error, unexpected '++'.
+ERROR(44): Syntax error, unexpected else, expecting ';'.
+ERROR(46): Syntax error, unexpected '++'.
+ERROR(46): Syntax error, unexpected '++', expecting ';'.
+ERROR(46): Syntax error, unexpected numeric constant '222', expecting ';'.
+ERROR(48): Syntax error, unexpected '++'.
+ERROR(48): Syntax error, unexpected '++', expecting ';'.
+ERROR(48): Syntax error, unexpected '++', expecting ';'.
+ERROR(50): Syntax error, unexpected '++'.
+ERROR(64): Syntax error, unexpected '++', expecting '('.
+ERROR(64): Syntax error, unexpected identifier 'x', expecting ';'.
+ERROR(64): Syntax error, unexpected ')', expecting ';'.
+ERROR(64): Syntax error, unexpected else.
+ERROR(66): Syntax error, unexpected '++', expecting '('.
+ERROR(66): Syntax error, unexpected identifier 'x', expecting ';'.
+ERROR(66): Syntax error, unexpected ')', expecting ';'.
+ERROR(66): Syntax error, unexpected '++'.
+ERROR(66): Syntax error, unexpected numeric constant '222', expecting ';'.
+ERROR(68): Syntax error, unexpected '++', expecting '('.
+ERROR(68): Syntax error, unexpected identifier 'x', expecting ';'.
+ERROR(68): Syntax error, unexpected ')', expecting ';'.
+ERROR(68): Syntax error, unexpected '++'.
+ERROR(68): Syntax error, unexpected '++', expecting ';'.
+ERROR(70): Syntax error, unexpected '++', expecting '('.
+ERROR(70): Syntax error, unexpected identifier 'x', expecting ';'.
+ERROR(70): Syntax error, unexpected ')', expecting ';'.
+ERROR(70): Syntax error, unexpected else, expecting ';'.
+ERROR(72): Syntax error, unexpected '++', expecting '('.
+ERROR(72): Syntax error, unexpected identifier 'x', expecting ';'.
+ERROR(72): Syntax error, unexpected ')', expecting ';'.
+ERROR(72): Syntax error, unexpected else, expecting ';'.
+ERROR(74): Syntax error, unexpected '++', expecting '('.
+ERROR(74): Syntax error, unexpected identifier 'x', expecting ';'.
+ERROR(74): Syntax error, unexpected ')', expecting ';'.
+ERROR(74): Syntax error, unexpected '++', expecting ';'.
+ERROR(74): Syntax error, unexpected numeric constant '222', expecting ';'.
+ERROR(76): Syntax error, unexpected '++', expecting '('.
+ERROR(76): Syntax error, unexpected identifier 'x', expecting ';'.
+ERROR(76): Syntax error, unexpected ')', expecting ';'.
+ERROR(76): Syntax error, unexpected '++', expecting ';'.
+ERROR(76): Syntax error, unexpected '++', expecting ';'.
+ERROR(78): Syntax error, unexpected '++', expecting '('.
+ERROR(78): Syntax error, unexpected identifier 'x', expecting ';'.
+ERROR(78): Syntax error, unexpected numeric constant '111', expecting ';'.
+ERROR(78): Syntax error, unexpected else.
+ERROR(80): Syntax error, unexpected '++', expecting '('.
+ERROR(80): Syntax error, unexpected identifier 'x', expecting ';'.
+ERROR(80): Syntax error, unexpected numeric constant '111', expecting ';'.
+ERROR(80): Syntax error, unexpected else.
+ERROR(82): Syntax error, unexpected '++', expecting '('.
+ERROR(82): Syntax error, unexpected identifier 'x', expecting ';'.
+ERROR(82): Syntax error, unexpected numeric constant '111', expecting ';'.
+ERROR(82): Syntax error, unexpected '++'.
+ERROR(82): Syntax error, unexpected numeric constant '222', expecting ';'.
+ERROR(84): Syntax error, unexpected '++', expecting '('.
+ERROR(84): Syntax error, unexpected identifier 'x', expecting ';'.
+ERROR(84): Syntax error, unexpected numeric constant '111', expecting ';'.
+ERROR(84): Syntax error, unexpected '++'.
+ERROR(84): Syntax error, unexpected '++', expecting ';'.
+ERROR(86): Syntax error, unexpected '++', expecting '('.
+ERROR(86): Syntax error, unexpected identifier 'x', expecting ';'.
+ERROR(86): Syntax error, unexpected '++', expecting ';'.
+ERROR(86): Syntax error, unexpected else, expecting ';'.
+ERROR(88): Syntax error, unexpected '++', expecting '('.
+ERROR(88): Syntax error, unexpected identifier 'x', expecting ';'.
+ERROR(88): Syntax error, unexpected '++', expecting ';'.
+ERROR(88): Syntax error, unexpected else, expecting ';'.
+ERROR(90): Syntax error, unexpected '++', expecting '('.
+ERROR(90): Syntax error, unexpected identifier 'x', expecting ';'.
+ERROR(90): Syntax error, unexpected '++', expecting ';'.
+ERROR(90): Syntax error, unexpected '++', expecting ';'.
+ERROR(90): Syntax error, unexpected numeric constant '222', expecting ';'.
+ERROR(92): Syntax error, unexpected '++', expecting '('.
+ERROR(92): Syntax error, unexpected '++', expecting ';'.
+ERROR(92): Syntax error, unexpected ')', expecting ';'.
+ERROR(92): Syntax error, unexpected else.
+ERROR(94): Syntax error, unexpected '++', expecting '('.
+ERROR(94): Syntax error, unexpected '++', expecting ';'.
+ERROR(94): Syntax error, unexpected ')', expecting ';'.
+ERROR(94): Syntax error, unexpected else.
+ERROR(96): Syntax error, unexpected '++', expecting '('.
+ERROR(96): Syntax error, unexpected '++', expecting ';'.
+ERROR(96): Syntax error, unexpected ')', expecting ';'.
+ERROR(96): Syntax error, unexpected '++'.
+ERROR(96): Syntax error, unexpected numeric constant '222', expecting ';'.
+ERROR(98): Syntax error, unexpected '++', expecting '('.
+ERROR(98): Syntax error, unexpected '++', expecting ';'.
+ERROR(98): Syntax error, unexpected ')', expecting ';'.
+ERROR(98): Syntax error, unexpected '++'.
+ERROR(98): Syntax error, unexpected '++', expecting ';'.
+ERROR(100): Syntax error, unexpected '++', expecting '('.
+ERROR(100): Syntax error, unexpected '++', expecting ';'.
+ERROR(100): Syntax error, unexpected ')', expecting ';'.
+ERROR(100): Syntax error, unexpected else, expecting ';'.
+ERROR(102): Syntax error, unexpected '++', expecting '('.
+ERROR(102): Syntax error, unexpected '++', expecting ';'.
+ERROR(102): Syntax error, unexpected ')', expecting ';'.
+ERROR(102): Syntax error, unexpected else, expecting ';'.
+ERROR(104): Syntax error, unexpected '++', expecting '('.
+ERROR(104): Syntax error, unexpected '++', expecting ';'.
+ERROR(104): Syntax error, unexpected ')', expecting ';'.
+ERROR(104): Syntax error, unexpected '++', expecting ';'.
+ERROR(104): Syntax error, unexpected numeric constant '222', expecting ';'.
+ERROR(106): Syntax error, unexpected '++', expecting '('.
+ERROR(106): Syntax error, unexpected '++', expecting ';'.
+ERROR(106): Syntax error, unexpected ')', expecting ';'.
+ERROR(106): Syntax error, unexpected '++', expecting ';'.
+ERROR(106): Syntax error, unexpected '++', expecting ';'.
+ERROR(108): Syntax error, unexpected '++', expecting '('.
+ERROR(108): Syntax error, unexpected '++', expecting ';'.
+ERROR(108): Syntax error, unexpected '++', expecting ';'.
+ERROR(108): Syntax error, unexpected numeric constant '111', expecting ';'.
+ERROR(108): Syntax error, unexpected else.
+ERROR(110): Syntax error, unexpected '++', expecting '('.
+ERROR(110): Syntax error, unexpected '++', expecting ';'.
+ERROR(110): Syntax error, unexpected '++', expecting ';'.
+ERROR(110): Syntax error, unexpected numeric constant '111', expecting ';'.
+ERROR(110): Syntax error, unexpected else.
+ERROR(112): Syntax error, unexpected '++', expecting '('.
+ERROR(112): Syntax error, unexpected '++', expecting ';'.
+ERROR(112): Syntax error, unexpected '++', expecting ';'.
+ERROR(112): Syntax error, unexpected numeric constant '111', expecting ';'.
+ERROR(112): Syntax error, unexpected '++'.
+ERROR(112): Syntax error, unexpected numeric constant '222', expecting ';'.
+ERROR(114): Syntax error, unexpected '++', expecting '('.
+ERROR(114): Syntax error, unexpected '++', expecting ';'.
+ERROR(114): Syntax error, unexpected '++', expecting ';'.
+ERROR(114): Syntax error, unexpected numeric constant '111', expecting ';'.
+ERROR(114): Syntax error, unexpected '++'.
+ERROR(114): Syntax error, unexpected '++', expecting ';'.
+ERROR(116): Syntax error, unexpected '++'.
+ERROR(116): Syntax error, unexpected '(', expecting ';'.
+ERROR(116): Syntax error, unexpected numeric constant '111', expecting ';'.
+ERROR(116): Syntax error, unexpected else.
+ERROR(118): Syntax error, unexpected '++'.
+ERROR(118): Syntax error, unexpected '(', expecting ';'.
+ERROR(118): Syntax error, unexpected numeric constant '111', expecting ';'.
+ERROR(118): Syntax error, unexpected else.
+ERROR(120): Syntax error, unexpected '++'.
+ERROR(120): Syntax error, unexpected '(', expecting ';'.
+ERROR(120): Syntax error, unexpected '++', expecting ';'.
+ERROR(120): Syntax error, unexpected else, expecting ';'.
+ERROR(122): Syntax error, unexpected '++'.
+ERROR(122): Syntax error, unexpected '(', expecting ';'.
+ERROR(122): Syntax error, unexpected '++', expecting ';'.
+ERROR(122): Syntax error, unexpected else, expecting ';'.
+ERROR(124): Syntax error, unexpected '++'.
+ERROR(124): Syntax error, unexpected '(', expecting ';'.
+ERROR(124): Syntax error, unexpected numeric constant '111', expecting ')'.
+ERROR(124): Syntax error, unexpected else.
+ERROR(126): Syntax error, unexpected '++'.
+ERROR(126): Syntax error, unexpected '(', expecting ';'.
+ERROR(126): Syntax error, unexpected numeric constant '111', expecting ')'.
+ERROR(126): Syntax error, unexpected else.
+ERROR(128): Syntax error, unexpected '++'.
+ERROR(128): Syntax error, unexpected '(', expecting ';'.
+ERROR(128): Syntax error, unexpected '++', expecting ')'.
+ERROR(128): Syntax error, unexpected else, expecting ')'.
+ERROR(130): Syntax error, unexpected '++'.
+ERROR(130): Syntax error, unexpected '(', expecting ';'.
+ERROR(130): Syntax error, unexpected '++', expecting ')'.
+ERROR(130): Syntax error, unexpected else, expecting ')'.
+ERROR(132): Syntax error, unexpected '++'.
+ERROR(132): Syntax error, unexpected '(', expecting ';'.
+ERROR(132): Syntax error, unexpected numeric constant '111', expecting ';'.
+ERROR(132): Syntax error, unexpected else.
+ERROR(134): Syntax error, unexpected '++'.
+ERROR(134): Syntax error, unexpected '(', expecting ';'.
+ERROR(134): Syntax error, unexpected numeric constant '111', expecting ';'.
+ERROR(134): Syntax error, unexpected else.
+ERROR(136): Syntax error, unexpected '++'.
+ERROR(136): Syntax error, unexpected '(', expecting ';'.
+ERROR(136): Syntax error, unexpected '++', expecting ';'.
+ERROR(136): Syntax error, unexpected else, expecting ';'.
+ERROR(138): Syntax error, unexpected '++'.
+ERROR(138): Syntax error, unexpected '(', expecting ';'.
+ERROR(138): Syntax error, unexpected '++', expecting ';'.
+ERROR(138): Syntax error, unexpected else, expecting ';'.
+ERROR(140): Syntax error, unexpected '++'.
+ERROR(140): Syntax error, unexpected '(', expecting ';'.
+ERROR(140): Syntax error, unexpected '++', expecting ')'.
+ERROR(140): Syntax error, unexpected numeric constant '111', expecting ')'.
+ERROR(140): Syntax error, unexpected else.
+ERROR(142): Syntax error, unexpected '++'.
+ERROR(142): Syntax error, unexpected '(', expecting ';'.
+ERROR(142): Syntax error, unexpected '++', expecting ')'.
+ERROR(142): Syntax error, unexpected numeric constant '111', expecting ')'.
+ERROR(142): Syntax error, unexpected else.
+ERROR(144): Syntax error, unexpected '++'.
+ERROR(144): Syntax error, unexpected '(', expecting ';'.
+ERROR(144): Syntax error, unexpected '++', expecting ')'.
+ERROR(144): Syntax error, unexpected '++', expecting ')'.
+ERROR(144): Syntax error, unexpected else, expecting ')'.
+ERROR(146): Syntax error, unexpected '++'.
+ERROR(146): Syntax error, unexpected '(', expecting ';'.
+ERROR(146): Syntax error, unexpected '++', expecting ')'.
+ERROR(146): Syntax error, unexpected '++', expecting ')'.
+ERROR(146): Syntax error, unexpected else, expecting ')'.
+ERROR(148): Syntax error, unexpected '++'.
+ERROR(148): Syntax error, unexpected '++', expecting ';'.
+ERROR(148): Syntax error, unexpected identifier 'x', expecting ';'.
+ERROR(148): Syntax error, unexpected ')', expecting ';'.
+ERROR(148): Syntax error, unexpected else.
+ERROR(150): Syntax error, unexpected '++'.
+ERROR(150): Syntax error, unexpected '++', expecting ';'.
+ERROR(150): Syntax error, unexpected identifier 'x', expecting ';'.
+ERROR(150): Syntax error, unexpected ')', expecting ';'.
+ERROR(150): Syntax error, unexpected else.
+ERROR(152): Syntax error, unexpected '++'.
+ERROR(152): Syntax error, unexpected '++', expecting ';'.
+ERROR(152): Syntax error, unexpected identifier 'x', expecting ';'.
+ERROR(152): Syntax error, unexpected ')', expecting ';'.
+ERROR(152): Syntax error, unexpected else, expecting ';'.
+ERROR(154): Syntax error, unexpected '++'.
+ERROR(154): Syntax error, unexpected '++', expecting ';'.
+ERROR(154): Syntax error, unexpected identifier 'x', expecting ';'.
+ERROR(154): Syntax error, unexpected ')', expecting ';'.
+ERROR(154): Syntax error, unexpected else, expecting ';'.
+ERROR(156): Syntax error, unexpected '++'.
+ERROR(156): Syntax error, unexpected '++', expecting ';'.
+ERROR(156): Syntax error, unexpected identifier 'x', expecting ';'.
+ERROR(156): Syntax error, unexpected numeric constant '111', expecting ';'.
+ERROR(156): Syntax error, unexpected else.
+ERROR(158): Syntax error, unexpected '++'.
+ERROR(158): Syntax error, unexpected '++', expecting ';'.
+ERROR(158): Syntax error, unexpected identifier 'x', expecting ';'.
+ERROR(158): Syntax error, unexpected numeric constant '111', expecting ';'.
+ERROR(158): Syntax error, unexpected else.
+ERROR(160): Syntax error, unexpected '++'.
+ERROR(160): Syntax error, unexpected '++', expecting ';'.
+ERROR(160): Syntax error, unexpected identifier 'x', expecting ';'.
+ERROR(160): Syntax error, unexpected '++', expecting ';'.
+ERROR(160): Syntax error, unexpected else, expecting ';'.
+ERROR(162): Syntax error, unexpected '++'.
+ERROR(162): Syntax error, unexpected '++', expecting ';'.
+ERROR(162): Syntax error, unexpected identifier 'x', expecting ';'.
+ERROR(162): Syntax error, unexpected '++', expecting ';'.
+ERROR(162): Syntax error, unexpected else, expecting ';'.
+ERROR(164): Syntax error, unexpected '++'.
+ERROR(164): Syntax error, unexpected '++', expecting ';'.
+ERROR(164): Syntax error, unexpected '++', expecting ';'.
+ERROR(164): Syntax error, unexpected ')', expecting ';'.
+ERROR(164): Syntax error, unexpected else.
+ERROR(166): Syntax error, unexpected '++'.
+ERROR(166): Syntax error, unexpected '++', expecting ';'.
+ERROR(166): Syntax error, unexpected '++', expecting ';'.
+ERROR(166): Syntax error, unexpected ')', expecting ';'.
+ERROR(166): Syntax error, unexpected else.
+ERROR(168): Syntax error, unexpected '++'.
+ERROR(168): Syntax error, unexpected '++', expecting ';'.
+ERROR(168): Syntax error, unexpected '++', expecting ';'.
+ERROR(168): Syntax error, unexpected ')', expecting ';'.
+ERROR(168): Syntax error, unexpected else, expecting ';'.
+ERROR(170): Syntax error, unexpected '++'.
+ERROR(170): Syntax error, unexpected '++', expecting ';'.
+ERROR(170): Syntax error, unexpected '++', expecting ';'.
+ERROR(170): Syntax error, unexpected ')', expecting ';'.
+ERROR(170): Syntax error, unexpected else, expecting ';'.
+Number of warnings: 0
+Number of errors: 284

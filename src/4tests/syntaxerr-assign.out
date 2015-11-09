@@ -1,0 +1,21 @@
+ERROR(10): Syntax error, unexpected ';'.
+ERROR(11): Syntax error, unexpected ';'.
+ERROR(12): Syntax error, unexpected ';'.
+ERROR(14): Syntax error, unexpected '='.
+ERROR(15): Syntax error, unexpected '+='.
+ERROR(16): Syntax error, unexpected '-='.
+ERROR(18): Syntax error, unexpected '='.
+ERROR(19): Syntax error, unexpected '+='.
+ERROR(20): Syntax error, unexpected '-='.
+ERROR(21): Syntax error, unexpected '++'.
+ERROR(22): Syntax error, unexpected '--'.
+ERROR(24): Syntax error, unexpected bool.
+ERROR(25): Syntax error, unexpected bool.
+ERROR(26): Syntax error, unexpected bool.
+ERROR(28): Syntax error, unexpected '='.
+ERROR(29): Syntax error, unexpected '+='.
+ERROR(30): Syntax error, unexpected '-='.
+ERROR(31): Syntax error, unexpected '++'.
+ERROR(32): Syntax error, unexpected '--'.
+Number of warnings: 0
+Number of errors: 19

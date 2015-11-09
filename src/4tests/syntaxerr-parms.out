@@ -1,0 +1,176 @@
+ERROR(4): Syntax error, unexpected ')', expecting identifier.
+ERROR(5): Syntax error, unexpected identifier 'z', expecting int or char or bool.
+ERROR(6): Syntax error, unexpected ')', expecting int or char or bool.
+ERROR(7): Syntax error, unexpected bool, expecting ')'.
+ERROR(7): Syntax error, unexpected ')', expecting ';' or ','.
+ERROR(8): Syntax error, unexpected bool, expecting ')'.
+ERROR(9): Syntax error, unexpected identifier 'z', expecting ')'.
+ERROR(11): Syntax error, unexpected ';', expecting identifier.
+ERROR(12): Syntax error, unexpected ';', expecting identifier.
+ERROR(13): Syntax error, unexpected ';', expecting identifier.
+ERROR(14): Syntax error, unexpected ';', expecting identifier.
+ERROR(15): Syntax error, unexpected bool, expecting identifier.
+ERROR(16): Syntax error, unexpected bool, expecting identifier.
+ERROR(18): Syntax error, unexpected ')', expecting identifier.
+ERROR(19): Syntax error, unexpected identifier 'y', expecting ')'.
+ERROR(19): Syntax error, unexpected ')', expecting ';' or ','.
+ERROR(20): Syntax error, unexpected identifier 'y', expecting ')'.
+ERROR(20): Syntax error, unexpected ')', expecting identifier.
+ERROR(21): Syntax error, unexpected identifier 'y', expecting ')'.
+ERROR(21): Syntax error, unexpected ')', expecting '('.
+ERROR(22): Syntax error, unexpected identifier 'y', expecting ')'.
+ERROR(22): Syntax error, unexpected ')'.
+ERROR(23): Syntax error, unexpected identifier 'y', expecting ')'.
+ERROR(23): Syntax error, unexpected ')', expecting ';' or ','.
+ERROR(24): Syntax error, unexpected identifier 'y', expecting ')'.
+ERROR(25): Syntax error, unexpected identifier 'y', expecting ')'.
+ERROR(26): Syntax error, unexpected identifier 'y', expecting ')'.
+ERROR(28): Syntax error, unexpected ')', expecting identifier.
+ERROR(29): Syntax error, unexpected identifier 'z', expecting int or char or bool.
+ERROR(30): Syntax error, unexpected ')', expecting int or char or bool.
+ERROR(31): Syntax error, unexpected bool, expecting ')'.
+ERROR(31): Syntax error, unexpected ')', expecting ';' or ','.
+ERROR(32): Syntax error, unexpected bool, expecting ')'.
+ERROR(33): Syntax error, unexpected identifier 'z', expecting ')'.
+ERROR(36): Syntax error, unexpected ',', expecting identifier.
+ERROR(37): Syntax error, unexpected ',', expecting identifier.
+ERROR(37): Syntax error, unexpected ')', expecting identifier.
+ERROR(38): Syntax error, unexpected ',', expecting identifier.
+ERROR(38): Syntax error, unexpected identifier 'z', expecting int or char or bool.
+ERROR(39): Syntax error, unexpected ',', expecting identifier.
+ERROR(39): Syntax error, unexpected ')', expecting int or char or bool.
+ERROR(40): Syntax error, unexpected ',', expecting identifier.
+ERROR(40): Syntax error, unexpected bool, expecting ')'.
+ERROR(40): Syntax error, unexpected ')', expecting ';' or ','.
+ERROR(41): Syntax error, unexpected ',', expecting identifier.
+ERROR(41): Syntax error, unexpected bool, expecting ')'.
+ERROR(42): Syntax error, unexpected ',', expecting identifier.
+ERROR(42): Syntax error, unexpected identifier 'z', expecting ')'.
+ERROR(43): Syntax error, unexpected ',', expecting identifier.
+ERROR(44): Syntax error, unexpected ',', expecting identifier.
+ERROR(45): Syntax error, unexpected ',', expecting identifier.
+ERROR(45): Syntax error, unexpected ')', expecting identifier.
+ERROR(46): Syntax error, unexpected ',', expecting identifier.
+ERROR(46): Syntax error, unexpected identifier 'z', expecting int or char or bool.
+ERROR(47): Syntax error, unexpected ',', expecting identifier.
+ERROR(47): Syntax error, unexpected ')', expecting int or char or bool.
+ERROR(48): Syntax error, unexpected ',', expecting identifier.
+ERROR(48): Syntax error, unexpected bool, expecting ')'.
+ERROR(48): Syntax error, unexpected ')', expecting ';' or ','.
+ERROR(49): Syntax error, unexpected ',', expecting identifier.
+ERROR(49): Syntax error, unexpected bool, expecting ')'.
+ERROR(50): Syntax error, unexpected ',', expecting identifier.
+ERROR(51): Syntax error, unexpected ',', expecting identifier.
+ERROR(53): Syntax error, unexpected ')', expecting identifier.
+ERROR(54): Syntax error, unexpected identifier 'z', expecting int or char or bool.
+ERROR(55): Syntax error, unexpected ')', expecting int or char or bool.
+ERROR(56): Syntax error, unexpected bool, expecting ')'.
+ERROR(56): Syntax error, unexpected ')', expecting ';' or ','.
+ERROR(57): Syntax error, unexpected bool, expecting ')'.
+ERROR(58): Syntax error, unexpected identifier 'z', expecting ')'.
+ERROR(60): Syntax error, unexpected ';', expecting identifier.
+ERROR(61): Syntax error, unexpected ';', expecting identifier.
+ERROR(62): Syntax error, unexpected ';', expecting identifier.
+ERROR(63): Syntax error, unexpected ';', expecting identifier.
+ERROR(64): Syntax error, unexpected bool, expecting identifier.
+ERROR(65): Syntax error, unexpected bool, expecting identifier.
+ERROR(67): Syntax error, unexpected ')', expecting identifier.
+ERROR(69): Syntax error, unexpected identifier 'x', expecting int or char or bool or ')'.
+ERROR(69): Syntax error, unexpected ')', expecting ';' or ','.
+ERROR(70): Syntax error, unexpected identifier 'x', expecting int or char or bool or ')'.
+ERROR(70): Syntax error, unexpected ')', expecting identifier.
+ERROR(71): Syntax error, unexpected identifier 'x', expecting int or char or bool or ')'.
+ERROR(71): Syntax error, unexpected ')', expecting '('.
+ERROR(72): Syntax error, unexpected identifier 'x', expecting int or char or bool or ')'.
+ERROR(72): Syntax error, unexpected ')'.
+ERROR(73): Syntax error, unexpected identifier 'x', expecting int or char or bool or ')'.
+ERROR(73): Syntax error, unexpected ')', expecting ';' or ','.
+ERROR(74): Syntax error, unexpected identifier 'x', expecting int or char or bool or ')'.
+ERROR(75): Syntax error, unexpected identifier 'x', expecting int or char or bool or ')'.
+ERROR(76): Syntax error, unexpected identifier 'x', expecting int or char or bool or ')'.
+ERROR(77): Syntax error, unexpected identifier 'x', expecting int or char or bool or ')'.
+ERROR(77): Syntax error, unexpected ')', expecting ';' or ','.
+ERROR(78): Syntax error, unexpected identifier 'x', expecting int or char or bool or ')'.
+ERROR(78): Syntax error, unexpected ')', expecting identifier.
+ERROR(79): Syntax error, unexpected identifier 'x', expecting int or char or bool or ')'.
+ERROR(79): Syntax error, unexpected ')', expecting '('.
+ERROR(80): Syntax error, unexpected identifier 'x', expecting int or char or bool or ')'.
+ERROR(80): Syntax error, unexpected ')'.
+ERROR(81): Syntax error, unexpected identifier 'x', expecting int or char or bool or ')'.
+ERROR(81): Syntax error, unexpected ')', expecting ';' or ','.
+ERROR(82): Syntax error, unexpected identifier 'x', expecting int or char or bool or ')'.
+ERROR(83): Syntax error, unexpected identifier 'x', expecting int or char or bool or ')'.
+ERROR(84): Syntax error, unexpected identifier 'x', expecting int or char or bool or ')'.
+ERROR(85): Syntax error, unexpected identifier 'x', expecting int or char or bool or ')'.
+ERROR(85): Syntax error, unexpected ')', expecting ';' or ','.
+ERROR(86): Syntax error, unexpected identifier 'x', expecting int or char or bool or ')'.
+ERROR(86): Syntax error, unexpected ')', expecting identifier.
+ERROR(87): Syntax error, unexpected identifier 'x', expecting int or char or bool or ')'.
+ERROR(87): Syntax error, unexpected ')', expecting '('.
+ERROR(88): Syntax error, unexpected identifier 'x', expecting int or char or bool or ')'.
+ERROR(88): Syntax error, unexpected ')'.
+ERROR(89): Syntax error, unexpected identifier 'x', expecting int or char or bool or ')'.
+ERROR(89): Syntax error, unexpected ')', expecting ';' or ','.
+ERROR(90): Syntax error, unexpected identifier 'x', expecting int or char or bool or ')'.
+ERROR(91): Syntax error, unexpected identifier 'x', expecting int or char or bool or ')'.
+ERROR(92): Syntax error, unexpected identifier 'x', expecting int or char or bool or ')'.
+ERROR(93): Syntax error, unexpected identifier 'x', expecting int or char or bool or ')'.
+ERROR(93): Syntax error, unexpected ')', expecting ';' or ','.
+ERROR(94): Syntax error, unexpected identifier 'x', expecting int or char or bool or ')'.
+ERROR(94): Syntax error, unexpected ')', expecting identifier.
+ERROR(95): Syntax error, unexpected identifier 'x', expecting int or char or bool or ')'.
+ERROR(95): Syntax error, unexpected ')', expecting '('.
+ERROR(96): Syntax error, unexpected identifier 'x', expecting int or char or bool or ')'.
+ERROR(96): Syntax error, unexpected ')'.
+ERROR(97): Syntax error, unexpected identifier 'x', expecting int or char or bool or ')'.
+ERROR(97): Syntax error, unexpected ')', expecting ';' or ','.
+ERROR(98): Syntax error, unexpected identifier 'x', expecting int or char or bool or ')'.
+ERROR(99): Syntax error, unexpected identifier 'x', expecting int or char or bool or ')'.
+ERROR(100): Syntax error, unexpected identifier 'x', expecting int or char or bool or ')'.
+ERROR(102): Syntax error, unexpected ',', expecting int or char or bool or ')'.
+ERROR(102): Syntax error, unexpected ')', expecting ';' or ','.
+ERROR(103): Syntax error, unexpected ',', expecting int or char or bool or ')'.
+ERROR(103): Syntax error, unexpected ')', expecting identifier.
+ERROR(104): Syntax error, unexpected ',', expecting int or char or bool or ')'.
+ERROR(104): Syntax error, unexpected ')', expecting '('.
+ERROR(105): Syntax error, unexpected ',', expecting int or char or bool or ')'.
+ERROR(105): Syntax error, unexpected ')'.
+ERROR(106): Syntax error, unexpected ',', expecting int or char or bool or ')'.
+ERROR(106): Syntax error, unexpected ')', expecting ';' or ','.
+ERROR(107): Syntax error, unexpected ',', expecting int or char or bool or ')'.
+ERROR(108): Syntax error, unexpected ',', expecting int or char or bool or ')'.
+ERROR(109): Syntax error, unexpected ',', expecting int or char or bool or ')'.
+ERROR(110): Syntax error, unexpected ',', expecting int or char or bool or ')'.
+ERROR(110): Syntax error, unexpected ')', expecting ';' or ','.
+ERROR(111): Syntax error, unexpected ',', expecting int or char or bool or ')'.
+ERROR(111): Syntax error, unexpected ')', expecting identifier.
+ERROR(112): Syntax error, unexpected ',', expecting int or char or bool or ')'.
+ERROR(112): Syntax error, unexpected ')', expecting '('.
+ERROR(113): Syntax error, unexpected ',', expecting int or char or bool or ')'.
+ERROR(113): Syntax error, unexpected ')'.
+ERROR(114): Syntax error, unexpected ',', expecting int or char or bool or ')'.
+ERROR(114): Syntax error, unexpected ')', expecting ';' or ','.
+ERROR(115): Syntax error, unexpected ',', expecting int or char or bool or ')'.
+ERROR(116): Syntax error, unexpected ',', expecting int or char or bool or ')'.
+ERROR(117): Syntax error, unexpected ',', expecting int or char or bool or ')'.
+ERROR(118): Syntax error, unexpected identifier 'y', expecting int or char or bool or ')'.
+ERROR(118): Syntax error, unexpected ')', expecting ';' or ','.
+ERROR(119): Syntax error, unexpected identifier 'y', expecting int or char or bool or ')'.
+ERROR(119): Syntax error, unexpected ')', expecting identifier.
+ERROR(120): Syntax error, unexpected identifier 'y', expecting int or char or bool or ')'.
+ERROR(120): Syntax error, unexpected ')', expecting '('.
+ERROR(121): Syntax error, unexpected identifier 'y', expecting int or char or bool or ')'.
+ERROR(121): Syntax error, unexpected ')'.
+ERROR(122): Syntax error, unexpected identifier 'y', expecting int or char or bool or ')'.
+ERROR(122): Syntax error, unexpected ')', expecting ';' or ','.
+ERROR(123): Syntax error, unexpected identifier 'y', expecting int or char or bool or ')'.
+ERROR(124): Syntax error, unexpected identifier 'y', expecting int or char or bool or ')'.
+ERROR(125): Syntax error, unexpected identifier 'y', expecting int or char or bool or ')'.
+ERROR(126): Syntax error, unexpected ';', expecting int or char or bool or ')'.
+ERROR(127): Syntax error, unexpected ';', expecting int or char or bool or ')'.
+ERROR(128): Syntax error, unexpected ';', expecting int or char or bool or ')'.
+ERROR(129): Syntax error, unexpected ';', expecting int or char or bool or ')'.
+ERROR(131): Syntax error, unexpected ')', expecting identifier.
+ERROR(132): Syntax error, unexpected identifier 'z', expecting int or char or bool or ')'.
+Number of warnings: 0
+Number of errors: 174

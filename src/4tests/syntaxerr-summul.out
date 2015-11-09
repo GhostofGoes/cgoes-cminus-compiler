@@ -1,0 +1,12 @@
+ERROR(6): Syntax error, unexpected numeric constant '222', expecting ';'.
+ERROR(8): Syntax error, unexpected '+'.
+ERROR(9): Syntax error, unexpected ';'.
+ERROR(10): Syntax error, unexpected '+'.
+ERROR(11): Syntax error, unexpected '+'.
+ERROR(15): Syntax error, unexpected ';'.
+ERROR(16): Syntax error, unexpected ';'.
+ERROR(18): Syntax error, unexpected ';'.
+ERROR(21): Syntax error, unexpected '+'.
+ERROR(22): Syntax error, unexpected '+'.
+Number of warnings: 0
+Number of errors: 10

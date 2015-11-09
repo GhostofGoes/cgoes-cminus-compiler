@@ -1,0 +1,83 @@
+ERROR(2): Syntax error, unexpected identifier 'of', expecting '('.
+ERROR(3): Syntax error, unexpected numeric constant '666', expecting ')'.
+ERROR(4): Syntax error, unexpected numeric constant '1729'.
+ERROR(5): Syntax error, unexpected identifier 'close', expecting '('.
+ERROR(5): Syntax error, unexpected numeric constant '11'.
+ERROR(6): Syntax error, unexpected numeric constant '666', expecting '('.
+ERROR(6): Syntax error, unexpected '='.
+ERROR(7): Syntax error, unexpected numeric constant '666'.
+ERROR(8): Syntax error, unexpected numeric constant '27182818', expecting '('.
+ERROR(9): Syntax error, unexpected numeric constant '666', expecting '('.
+ERROR(9): Syntax error, unexpected '/=', expecting '('.
+ERROR(10): Syntax error, unexpected '=', expecting '('.
+ERROR(11): Syntax error, unexpected '=', expecting '('.
+ERROR(13): Syntax error, unexpected '{'.
+ERROR(13): Syntax error, unexpected identifier 'a', expecting ';' or ','.
+ERROR(15): Syntax error, unexpected '}'.
+ERROR(16): Syntax error, unexpected '=', expecting '('.
+ERROR(19): Syntax error, unexpected if.
+ERROR(20): Syntax error, unexpected if.
+ERROR(21): Syntax error, unexpected else.
+ERROR(22): Syntax error, unexpected while.
+ERROR(22): Syntax error, unexpected ';', expecting identifier.
+ERROR(23): Syntax error, unexpected static.
+ERROR(23): Syntax error, unexpected '[', expecting '('.
+ERROR(24): Syntax error, unexpected if.
+ERROR(25): Syntax error, unexpected identifier 'gromit', expecting int or char or bool or ')'.
+ERROR(26): Syntax error, unexpected '{'.
+ERROR(26): Syntax error, unexpected numeric constant '666', expecting ';' or ','.
+ERROR(26): Syntax error, unexpected '=', expecting '('.
+ERROR(27): Syntax error, unexpected if.
+ERROR(29): Syntax error, unexpected in, expecting '('.
+ERROR(29): Syntax error, unexpected numeric constant '666'.
+ERROR(30): Syntax error, unexpected numeric constant '666', expecting int or char or bool.
+ERROR(31): Syntax error, unexpected ')', expecting ';' or ','.
+ERROR(32): Syntax error, unexpected numeric constant '666', expecting ';' or ','.
+ERROR(32): Syntax error, unexpected '[', expecting identifier.
+ERROR(33): Syntax error, unexpected identifier 'c', expecting ';' or ','.
+ERROR(34): Syntax error, unexpected '=', expecting '('.
+ERROR(34): Syntax error, unexpected '[', expecting '('.
+ERROR(36): Syntax error, unexpected '[', expecting '('.
+ERROR(37): Syntax error, unexpected '=', expecting '('.
+ERROR(37): Syntax error, unexpected '{'.
+ERROR(38): Syntax error, unexpected '|', expecting '('.
+ERROR(39): Syntax error, unexpected numeric constant '666'.
+ERROR(41): Syntax error, unexpected '}'.
+ERROR(42): Syntax error, unexpected identifier 'xxx', expecting ')'.
+ERROR(43): Syntax error, unexpected ']', expecting numeric constant.
+ERROR(43): Syntax error, unexpected numeric constant '666'.
+ERROR(45): Syntax error, unexpected '}'.
+ERROR(46): Syntax error, unexpected int.
+ERROR(47): Syntax error, unexpected numeric constant '2', expecting ';'.
+ERROR(47): Syntax error, unexpected ']', expecting ';'.
+ERROR(47): Syntax error, unexpected ',', expecting ';'.
+ERROR(48): Syntax error, unexpected Boolean constant 'false', expecting ')'.
+ERROR(49): Syntax error, unexpected ',', expecting ';'.
+ERROR(49): Syntax error, unexpected ')', expecting ';'.
+ERROR(49): Syntax error, unexpected '['.
+ERROR(49): Syntax error, unexpected numeric constant '666', expecting ';'.
+ERROR(49): Syntax error, unexpected numeric constant '1', expecting ';'.
+ERROR(49): Syntax error, unexpected ']', expecting ';'.
+ERROR(49): Syntax error, unexpected identifier 'xxx', expecting ';'.
+ERROR(50): Syntax error, unexpected return, expecting ';'.
+ERROR(50): Syntax error, unexpected '[', expecting ';'.
+ERROR(51): Syntax error, unexpected int, expecting ';'.
+ERROR(51): Syntax error, unexpected ',', expecting ';'.
+ERROR(51): Syntax error, unexpected ')', expecting ';'.
+ERROR(52): Syntax error, unexpected identifier 'y', expecting '|' or ')'.
+ERROR(52): Syntax error, unexpected identifier 'x', expecting ';'.
+ERROR(52): Syntax error, unexpected else.
+ERROR(53): Syntax error, unexpected int.
+ERROR(54): Syntax error, unexpected identifier 'xxx', expecting ';'.
+ERROR(54): Syntax error, unexpected int, expecting ';'.
+ERROR(54): Syntax error, unexpected return, expecting ';'.
+ERROR(56): Syntax error, unexpected numeric constant '666', expecting ';'.
+ERROR(56): Syntax error, unexpected identifier 'yarn', expecting ';'.
+ERROR(56): Syntax error, unexpected bool.
+ERROR(59): Syntax error, unexpected identifier 'xxx', expecting '|' or ')'.
+ERROR(60): Syntax error, unexpected identifier 'xxx', expecting '|' or ')'.
+ERROR(60): Syntax error, unexpected ',', expecting '|' or ')'.
+ERROR(63): Syntax error, unexpected numeric constant '666', expecting ';' or ','.
+ERROR(64): Syntax error, unexpected identifier 'xxx', expecting ';' or ','.
+Number of warnings: 0
+Number of errors: 81

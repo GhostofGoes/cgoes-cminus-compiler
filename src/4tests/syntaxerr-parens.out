@@ -1,0 +1,5 @@
+ERROR(5): Syntax error, unexpected ')', expecting ';'.
+ERROR(6): Syntax error, unexpected ';', expecting ')'.
+ERROR(7): Syntax error, unexpected ';', expecting ')'.
+Number of warnings: 0
+Number of errors: 3

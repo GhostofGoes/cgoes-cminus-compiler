@@ -1,0 +1,19 @@
+ERROR(1): Syntax error, unexpected Boolean constant 'true', expecting identifier.
+ERROR(1): Syntax error, unexpected character constant 'x', expecting ';' or ','.
+ERROR(3): Syntax error, unexpected numeric constant '666', expecting identifier.
+ERROR(5): Syntax error, unexpected Boolean constant 'false', expecting identifier.
+ERROR(5): Syntax error, unexpected ')', expecting ';' or ','.
+ERROR(7): Syntax error, unexpected Boolean constant 'true', expecting identifier.
+ERROR(7): Syntax error, unexpected character constant 'x', expecting ';' or ','.
+ERROR(8): Syntax error, unexpected '}'.
+ERROR(13): Syntax error, unexpected if.
+ERROR(14): Syntax error, unexpected numeric constant '999', expecting ';'.
+ERROR(14): Syntax error, unexpected if, expecting ';'.
+ERROR(15): Syntax error, unexpected while.
+WARNING(15): Invalid input character: '@'.  Character ignored.
+WARNING(15): Invalid input character: '#'.  Character ignored.
+ERROR(16): Syntax error, unexpected ';', expecting ')'.
+ERROR(17): Syntax error, unexpected ')', expecting ';'.
+ERROR(20): Syntax error, unexpected '{', expecting int or char or bool or ')'.
+Number of warnings: 2
+Number of errors: 15
