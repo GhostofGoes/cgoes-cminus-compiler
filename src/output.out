@@ -1,10 +1,18 @@
-ERROR(5): Variable 'y' is of type int but is being initialized with an expression of type bool.
-ERROR(11): '=' requires operands of the same type but lhs is type int and rhs is bool.
-ERROR(24): In foreach statement the variable to the left of 'in' must not be an array.
-ERROR(31): Cannot return an array.
-ERROR(31): Function 'main' at line 1 is expecting no return value, but return has return value.
-ERROR(35): '=' requires that if one operand is an array so must the other operand.
-ERROR(37): '*' requires operands of type int but rhs is of type bool.
-ERROR(37): '*' requires operands of the same type but lhs is type int and rhs is bool.
+ERROR(8): '<' requires operands of type char or int but rhs is of type bool.
+ERROR(8): '<' requires operands of the same type but lhs is type int and rhs is bool.
+ERROR(9): '<' requires operands of the same type but lhs is type int and rhs is char.
+ERROR(10): '<' requires operands of type char or int but lhs is of type bool.
+ERROR(10): '<' requires operands of the same type but lhs is type bool and rhs is int.
+ERROR(11): '<' requires operands of type char or int but lhs is of type bool.
+ERROR(11): '<' requires operands of type char or int but rhs is of type bool.
+ERROR(12): '<' requires operands of type char or int but lhs is of type bool.
+ERROR(12): '<' requires operands of the same type but lhs is type bool and rhs is char.
+ERROR(13): '<' requires operands of the same type but lhs is type char and rhs is int.
+ERROR(14): '<' requires operands of type char or int but rhs is of type bool.
+ERROR(14): '<' requires operands of the same type but lhs is type char and rhs is bool.
+ERROR(17): Symbol 'x' is not defined.
+ERROR(18): '<' requires operands of type char or int but rhs is of type bool.
+ERROR(18): Symbol 'x' is not defined.
+ERROR(19): Symbol 'x' is not defined.
 Number of warnings: 0
-Number of errors: 8
+Number of errors: 16

@@ -17,7 +17,8 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-
+// TODO: add comments attributing heckendorn's code to him
+// TODO: ensure licencing for h's code is gucci
 
 // C++ Libraries
 #include <iostream>
@@ -606,19 +607,19 @@ void treeParse ( TreeNode * par, TreeNode * node, SymbolTable * symtable, bool i
                         }
                         else if ( tree->child[1]->isArray == false )
                         {
-                            if ( lhs != Integer )
+                            if ( lhs != Undef && lhs != Integer )
                             {
                                 printf("ERROR(%d): If not an array, foreach requires lhs of 'in' be of type int but it is type %s.\n",
                                        line, lhs_str);
                                 errors++;
                             }
-                            if ( rhs != Integer )
+                            if ( rhs != Undef && rhs != Integer )
                             {
                                 printf("ERROR(%d): If not an array, foreach requires rhs of 'in' be of type int but it is type %s.\n",
                                        line, rhs_str);
                                 errors++;
                             }
-                        } else if ( lhs != rhs )
+                        } else if ( lhs != Undef && rhs != Undef && lhs != rhs )
                         {
                             printf("ERROR(%d): Foreach requires operands of 'in' be the same type but lhs is type %s and rhs array is type %s.\n",
                                    line, lhs_str, rhs_str);
@@ -636,11 +637,11 @@ void treeParse ( TreeNode * par, TreeNode * node, SymbolTable * symtable, bool i
                     in_loop = true;
                     if ( tree->numChildren == 2 && tree->child[0] != NULL )
                     {
-                        if ( tree->child[0]->isArray && tree->child[0]->isIndex == false )
+                        if ( lhs != Undef &&  tree->child[0]->isArray && tree->child[0]->isIndex == false )
                         {
                             printf("ERROR(%d): Cannot use array as test condition in while statement.\n", line);
                             errors++;
-                        } else if ( tree->child[0]->nodetype != Boolean )
+                        } else if ( lhs != Undef && lhs != Boolean )
                         {
                             printf("ERROR(%d): Expecting Boolean test condition in while statement but got type %s.\n", line, lhs_str);
                             errors++;
@@ -652,7 +653,7 @@ void treeParse ( TreeNode * par, TreeNode * node, SymbolTable * symtable, bool i
                     return_found = true;
                     if ( tree->numChildren == 1 && tree->child[0] != NULL )
                     {
-                        if ( tree->child[0]->isArray && tree->child[0]->child[0] == NULL )
+                        if ( lhs != Undef && tree->child[0]->isArray && tree->child[0]->child[0] == NULL )
                         {
                             printf("ERROR(%d): Cannot return an array.\n", line);
                             errors++;
@@ -661,17 +662,17 @@ void treeParse ( TreeNode * par, TreeNode * node, SymbolTable * symtable, bool i
                     }
                     if ( func != NULL )
                     {
-                        if ( func->nodetype == Void && tree->nodetype != Void )
+                        if ( func->nodetype == Void && tree->nodetype != Void && tree->nodetype != Undef )
                         {
                             printf("ERROR(%d): Function '%s' at line %d is expecting no return value, but return has return value.\n",
                                    line, svalResolve(func).c_str(), func->lineno);
                             errors++;
-                        } else if ( func->nodetype != Void && tree->nodetype == Void )
+                        } else if ( func->nodetype != Void && tree->nodetype == Void && tree->nodetype != Undef )
                         {
                             printf("ERROR(%d): Function '%s' at line %d is expecting to return type %s but return has no return value.\n",
                                    line, svalResolve(func).c_str(), func->lineno, typeToStr(func->nodetype));
                             errors++;
-                        } else if ( func->nodetype != Void && func->nodetype != tree->nodetype )
+                        } else if ( func->nodetype != Void && func->nodetype != Undef && tree->nodetype != Undef && func->nodetype != tree->nodetype )
                         {
                             printf("ERROR(%d): Function '%s' at line %d is expecting to return type %s but got %s.\n",
                                    line, svalResolve(func).c_str(), func->lineno, typeToStr(func->nodetype), typeToStr(tree->nodetype));
@@ -708,13 +709,13 @@ void treeParse ( TreeNode * par, TreeNode * node, SymbolTable * symtable, bool i
                         switch (tree->token->bval)
                           {
                             case ASSIGN:
-                              if ( lhs != rhs )
+                              if (  lhs != Undef &&  rhs != Undef && lhs != rhs )
                               {
                                   printf("ERROR(%d): '%s' requires operands of the same type but lhs is type %s and rhs is %s.\n",
                                          line, op.c_str(), lhs_str, rhs_str);
                                   errors++;
                               }
-                              if ( (tree->child[0]->isArray && tree->child[0]->child[0] == NULL)
+                              if ( lhs != Undef && rhs != Undef && (tree->child[0]->isArray && tree->child[0]->child[0] == NULL)
                                    != (tree->child[1]->isArray && tree->child[1]->child[0] == NULL) )
                               {
                                   printf("ERROR(%d): '%s' requires that if one operand is an array so must the other operand.\n",
@@ -727,8 +728,8 @@ void treeParse ( TreeNode * par, TreeNode * node, SymbolTable * symtable, bool i
                             case SUBASS:
                             case MULASS:
                             case DIVASS:
-                              if ( (tree->child[0]->isArray && tree->child[0]->child[0] == NULL)
-                                || (tree->child[1]->isArray && tree->child[1]->child[0] == NULL) )
+                              if ( ( tree->child[0]->isArray && tree->child[0]->child[0] == NULL)
+                                || ( tree->child[1]->isArray && tree->child[1]->child[0] == NULL) )
                               {
                                   printf("ERROR(%d): The operation '%s' does not work with arrays.\n",
                                          line, op.c_str());
@@ -747,6 +748,7 @@ void treeParse ( TreeNode * par, TreeNode * node, SymbolTable * symtable, bool i
                                   errors++;
                               }
                               break;
+                              // TODO: lhs != rhs checking?
 
                             case INC:
                             case DEC:
@@ -822,39 +824,50 @@ void treeParse ( TreeNode * par, TreeNode * node, SymbolTable * symtable, bool i
                                 case QUESTION:
                                   if ( testing )
                                   {
-                                      std::cerr << "Shouldn't reach Unary in a OpK" << std::endl;
+                                      std::cout << "Shouldn't reach Unary in a OpK" << std::endl;
                                   }
                                   break;
 
                                 case EQ:
                                 case NOTEQ:
                                   if ( (tree->child[0]->isArray && tree->child[0]->child[0] == NULL)
-                                       != (tree->child[1]->isArray && tree->child[1]->child[0] == NULL) )
+                                    != (tree->child[1]->isArray && tree->child[1]->child[0] == NULL) )
                                   {
                                       printf("ERROR(%d): '%s' requires that if one operand is an array so must the other operand.\n", line, op.c_str());
                                       errors++;
                                   }                                  
-                                  break;
+                                  if( lhs != Undef && rhs != Undef && lhs != rhs ) // TODO: don't print this if lhs/rhs type errors trigger
+                                  {
+                                      printf("ERROR(%d): '%s' requires operands of the same type but lhs is type %s and rhs is %s.\n",
+                                             line, op.c_str(), lhs_str, rhs_str);
+                                      errors++;
+                                  }                                   
+                                  break;                                  
 
                                 case LESSEQ:
                                 case LTHAN:
                                 case GRTEQ:
                                 case GTHAN:
-                                  if ( lhs != Integer && lhs != Character )
+                                  if ( lhs != Integer && lhs != Character  && lhs != Undef )
                                   {
                                       printf("ERROR(%d): '%s' requires operands of type %s but lhs is of type %s.\n",
                                              line, op.c_str(), "char or int", lhs_str);
                                       errors++;
                                   }
-                                  if ( rhs != Integer && rhs != Character )
+                                  if ( rhs != Integer && rhs != Character && rhs != Undef )
                                   {
                                       printf("ERROR(%d): '%s' requires operands of type %s but rhs is of type %s.\n",
                                              line, op.c_str(), "char or int", rhs_str);
                                       errors++;
                                   }
-                                  
-                                  if ( (tree->child[0]->isArray && tree->child[0]->child[0] == NULL) 
-                                    || (tree->child[1]->isArray && tree->child[1]->child[0] == NULL) )
+                                  if( lhs != Undef && rhs != Undef && lhs != rhs ) // TODO: don't print this if lhs/rhs type errors trigger
+                                  {
+                                      printf("ERROR(%d): '%s' requires operands of the same type but lhs is type %s and rhs is %s.\n",
+                                             line, op.c_str(), lhs_str, rhs_str);
+                                      errors++;
+                                  }                                                                     
+                                  if ( ( tree->child[0]->isArray && tree->child[0]->child[0] == NULL) 
+                                    || ( tree->child[1]->isArray && tree->child[1]->child[0] == NULL) )
                                   {
                                       printf("ERROR(%d): The operation '%s' does not work with arrays.\n",
                                              line, op.c_str());
@@ -876,25 +889,25 @@ void treeParse ( TreeNode * par, TreeNode * node, SymbolTable * symtable, bool i
                                 } 
                                 else
                                 {
-                                  if ( lhs != Integer )
+                                  if ( lhs != Integer && lhs != Undef )
                                   {
                                       printf("ERROR(%d): '%s' requires operands of type %s but lhs is of type %s.\n",
                                              line, op.c_str(), typeToStr(Integer), lhs_str);
                                       errors++;
                                   }
-                                  if ( rhs != Integer )
+                                  if ( rhs != Integer && rhs != Undef )
                                   {
                                       printf("ERROR(%d): '%s' requires operands of type %s but rhs is of type %s.\n",
                                              line, op.c_str(), typeToStr(Integer), rhs_str);
                                       errors++;
                                   }
                                   if ( (tree->child[0]->isArray && tree->child[0]->child[0] == NULL)
-                                       != (tree->child[1]->isArray && tree->child[1]->child[0] == NULL) )
+                                    != (tree->child[1]->isArray && tree->child[1]->child[0] == NULL) )
                                   {
                                       printf("ERROR(%d): '%s' requires that if one operand is an array so must the other operand.\n", line, op.c_str());
                                       errors++;
                                   }
-                                  if( lhs != rhs) // TODO: don't print this if lhs/rhs type errors trigger
+                                  if( lhs != Undef && rhs != Undef && lhs != rhs ) // TODO: don't print this if lhs/rhs type errors trigger
                                   {
                                       printf("ERROR(%d): '%s' requires operands of the same type but lhs is type %s and rhs is %s.\n",
                                              line, op.c_str(), lhs_str, rhs_str);
@@ -909,7 +922,7 @@ void treeParse ( TreeNode * par, TreeNode * node, SymbolTable * symtable, bool i
                         {
                             if ( testing )
                             {
-                                std::cerr << "Tried to access NULL token in ExpK: OpK" << std::endl;
+                                std::cerr << "Tried to access NULL token in ExpK: OpK, or something like that" << std::endl;
                             }
                         }
                     }
@@ -931,7 +944,7 @@ void treeParse ( TreeNode * par, TreeNode * node, SymbolTable * symtable, bool i
                               break;
 
                             case MINUS:
-                              if ( lhs != Integer )
+                              if ( lhs != Undef && lhs != Integer )
                               {
                                   printf("ERROR(%d): Unary '%s' requires an operand of type %s but was given %s.\n",
                                          line, tree_svalue.c_str(), typeToStr(Integer), lhs_str);
@@ -939,7 +952,7 @@ void treeParse ( TreeNode * par, TreeNode * node, SymbolTable * symtable, bool i
                               }
                               break;
                             case QUESTION:
-                              if ( lhs != Integer )
+                              if ( lhs != Undef && lhs != Integer )
                               {
                                   printf("ERROR(%d): Unary '%s' requires an operand of type %s but was given %s.\n",
                                          line, tree_svalue.c_str(), typeToStr(Integer), lhs_str);
@@ -954,7 +967,7 @@ void treeParse ( TreeNode * par, TreeNode * node, SymbolTable * symtable, bool i
                               break;
 
                             case NOT:
-                              if ( lhs != Boolean )
+                              if ( lhs != Undef && lhs != Boolean )
                               {
                                   printf("ERROR(%d): Unary '%s' requires an operand of type %s but was given %s.\n",
                                          line, tree_svalue.c_str(), typeToStr(Boolean), lhs_str);
