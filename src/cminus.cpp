@@ -727,7 +727,8 @@ void treeParse ( TreeNode * par, TreeNode * node, SymbolTable * symtable, bool i
                             case SUBASS:
                             case MULASS:
                             case DIVASS:
-                              if ( tree->child[0]->isArray && tree->child[0]->child[0] == NULL )
+                              if ( (tree->child[0]->isArray && tree->child[0]->child[0] == NULL)
+                                || (tree->child[1]->isArray && tree->child[1]->child[0] == NULL) )
                               {
                                   printf("ERROR(%d): The operation '%s' does not work with arrays.\n",
                                          line, op.c_str());
@@ -866,7 +867,8 @@ void treeParse ( TreeNode * par, TreeNode * node, SymbolTable * symtable, bool i
                                 case MINUS:
                                 case DIVIDE:
                                 case MODULUS:
-                                if ( tree->child[0]->isArray && tree->child[0]->child[0] == NULL )
+                                if ( (tree->child[0]->isArray && tree->child[0]->child[0] == NULL)
+                                  || (tree->child[1]->isArray && tree->child[1]->child[0] == NULL) )
                                 {
                                     printf("ERROR(%d): The operation '%s' does not work with arrays.\n",
                                            line, op.c_str());
@@ -919,7 +921,8 @@ void treeParse ( TreeNode * par, TreeNode * node, SymbolTable * symtable, bool i
                         switch (tree->token->bval)
                           {
                             case MULTIPLY:
-                              if ( tree->child[0]->isArray == false || tree->child[0]->child[0] != NULL )
+                              if ( tree->child[0]->isArray == false || 
+                                   tree->child[0]->child[0] != NULL )
                               {
                                   printf("ERROR(%d): The operation '%s' only works with arrays.\n",
                                          line, tree_svalue.c_str());
