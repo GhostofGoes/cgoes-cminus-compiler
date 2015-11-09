@@ -1,2 +1,10 @@
+ERROR(16): If not an array, foreach requires rhs of 'in' be of type int but it is type char.
+ERROR(17): If not an array, foreach requires rhs of 'in' be of type int but it is type bool.
+ERROR(19): Foreach requires operands of 'in' be the same type but lhs is type int and rhs array is type char.
+ERROR(20): Foreach requires operands of 'in' be the same type but lhs is type int and rhs array is type bool.
+ERROR(59): '+' requires operands of type int but rhs is of type char.
+ERROR(59): '+' requires operands of the same type but lhs is type int and rhs is char.
+ERROR(60): '+' requires operands of type int but rhs is of type char.
+ERROR(60): '+' requires operands of the same type but lhs is type int and rhs is char.
 Number of warnings: 0
-Number of errors: 0
+Number of errors: 8

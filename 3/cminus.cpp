@@ -558,31 +558,39 @@ void treeParse ( TreeNode * par, TreeNode * node, SymbolTable * symtable, bool i
 
                   case ForeachK:
                     in_loop = true;
-                    if ( tree->numChildren )
+                    if ( tree->numChildren == 2 )
                     {
                         if ( tree->child[0]->isArray )
                         {
                             printf("ERROR(%d): In foreach statement the variable to the left of 'in' must not be an array.\n", line);
                             errors++;
-                        } else if ( lhs != Integer )
-                        {
-                            printf("ERROR(%d): If not an array, foreach requires lhs of 'in' be of type int but it is type %s.\n",
-                                   line, lhs_str);
-                            errors++;
                         }
-                        if ( rhs != Integer )
+                        else if ( tree->child[1]->isArray == false )
                         {
-                            printf("ERROR(%d): If not an array, foreach requires rhs of 'in' be of type int but it is type %s.\n",
-                                   line, rhs_str);
-                            errors++;
-                        }
-                        if ( lhs != rhs )
+                            if ( lhs != Integer )
+                            {
+                                printf("ERROR(%d): If not an array, foreach requires lhs of 'in' be of type int but it is type %s.\n",
+                                       line, lhs_str);
+                                errors++;
+                            }
+                            if ( rhs != Integer )
+                            {
+                                printf("ERROR(%d): If not an array, foreach requires rhs of 'in' be of type int but it is type %s.\n",
+                                       line, rhs_str);
+                                errors++;
+                            }
+                        } else if ( lhs != rhs )
                         {
                             printf("ERROR(%d): Foreach requires operands of 'in' be the same type but lhs is type %s and rhs array is type %s.\n",
                                    line, lhs_str, rhs_str);
                             errors++;
                         }
                     }
+                    else if (testing)
+                    {
+                        std::cout << "Foreach didn't have 2 children!" << std::endl;
+                    }
+                        
                     break;
 
                   case WhileK:
