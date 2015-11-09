@@ -570,13 +570,13 @@ void treeParse ( TreeNode * par, TreeNode * node, SymbolTable * symtable, bool i
               switch (tree->kind)
                 {
                   case IfK:
-                    if ( tree->numChildren == 2 && tree->child[0] != NULL )
+                    if ( tree->numChildren > 0 && tree->child[0] != NULL )
                     {
-                        if ( tree->child[0]->isArray  && tree->child[0]->isIndex == false )
+                        if ( tree->child[0]->isArray && tree->child[0]->child[0] == NULL )
                         {
                             printf("ERROR(%d): Cannot use array as test condition in if statement.\n", line);
                             errors++;
-                        } else if ( tree->child[0]->nodetype != Boolean )
+                        } else if ( lhs != Undef && lhs != Boolean )
                         {
                             printf("ERROR(%d): Expecting Boolean test condition in if statement but got type %s.\n", line, lhs_str);
                             errors++;
@@ -598,14 +598,15 @@ void treeParse ( TreeNode * par, TreeNode * node, SymbolTable * symtable, bool i
 
                   case ForeachK:
                     in_loop = true;
-                    if ( tree->numChildren == 2 )
+                    if ( tree->numChildren == 2 && tree->child[0] != NULL && tree->child[1] != NULL )
                     {
-                        if ( tree->child[0]->isArray )
+                        if ( tree->child[0]->isArray && tree->child[0]->child[0] == NULL )
                         {
                             printf("ERROR(%d): In foreach statement the variable to the left of 'in' must not be an array.\n", line);
                             errors++;
                         }
-                        else if ( tree->child[1]->isArray == false )
+                        else if ( tree->child[1]->isArray == false || 
+                                ( tree->child[1]->isArray && tree->child[1]->child[0] != NULL ) )
                         {
                             if ( lhs != Undef && lhs != Integer )
                             {
@@ -635,9 +636,9 @@ void treeParse ( TreeNode * par, TreeNode * node, SymbolTable * symtable, bool i
 
                   case WhileK:
                     in_loop = true;
-                    if ( tree->numChildren == 2 && tree->child[0] != NULL )
+                    if ( tree->numChildren > 0 && tree->child[0] != NULL )
                     {
-                        if ( lhs != Undef &&  tree->child[0]->isArray && tree->child[0]->isIndex == false )
+                        if ( lhs != Undef &&  tree->child[0]->isArray && tree->child[0]->child[0] == NULL )
                         {
                             printf("ERROR(%d): Cannot use array as test condition in while statement.\n", line);
                             errors++;
@@ -646,6 +647,10 @@ void treeParse ( TreeNode * par, TreeNode * node, SymbolTable * symtable, bool i
                             printf("ERROR(%d): Expecting Boolean test condition in while statement but got type %s.\n", line, lhs_str);
                             errors++;
                         }
+                    }
+                    else if (testing)
+                    {
+                        std::cout << "While didn't have 2 children!" << std::endl;
                     }
                     break;
 

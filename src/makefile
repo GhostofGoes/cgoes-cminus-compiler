@@ -15,7 +15,7 @@ lex.yy.c: $(BIN).l $(BIN).tab.h
 	flex $(BIN).l
 
 all:    
-	#touch $(SRCS)
+	touch $(SRCS)
 	make
 
 clean:

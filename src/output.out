@@ -1,18 +1,30 @@
-ERROR(8): '<' requires operands of type char or int but rhs is of type bool.
-ERROR(8): '<' requires operands of the same type but lhs is type int and rhs is bool.
-ERROR(9): '<' requires operands of the same type but lhs is type int and rhs is char.
-ERROR(10): '<' requires operands of type char or int but lhs is of type bool.
-ERROR(10): '<' requires operands of the same type but lhs is type bool and rhs is int.
-ERROR(11): '<' requires operands of type char or int but lhs is of type bool.
-ERROR(11): '<' requires operands of type char or int but rhs is of type bool.
-ERROR(12): '<' requires operands of type char or int but lhs is of type bool.
-ERROR(12): '<' requires operands of the same type but lhs is type bool and rhs is char.
-ERROR(13): '<' requires operands of the same type but lhs is type char and rhs is int.
-ERROR(14): '<' requires operands of type char or int but rhs is of type bool.
-ERROR(14): '<' requires operands of the same type but lhs is type char and rhs is bool.
-ERROR(17): Symbol 'x' is not defined.
-ERROR(18): '<' requires operands of type char or int but rhs is of type bool.
-ERROR(18): Symbol 'x' is not defined.
-ERROR(19): Symbol 'x' is not defined.
+ERROR(14): '=' requires operands of the same type but lhs is type int and rhs is char.
+ERROR(15): '=' requires operands of the same type but lhs is type int and rhs is bool.
+ERROR(18): '=' requires that if one operand is an array so must the other operand.
+ERROR(19): '=' requires that if one operand is an array so must the other operand.
+ERROR(20): '=' requires that if one operand is an array so must the other operand.
+ERROR(21): '=' requires operands of the same type but lhs is type int and rhs is char.
+ERROR(21): '=' requires that if one operand is an array so must the other operand.
+ERROR(22): '=' requires operands of the same type but lhs is type int and rhs is bool.
+ERROR(22): '=' requires that if one operand is an array so must the other operand.
+ERROR(24): '=' requires that if one operand is an array so must the other operand.
+ERROR(25): '=' requires that if one operand is an array so must the other operand.
+ERROR(26): '=' requires that if one operand is an array so must the other operand.
+ERROR(27): '=' requires operands of the same type but lhs is type int and rhs is char.
+ERROR(27): '=' requires that if one operand is an array so must the other operand.
+ERROR(28): '=' requires operands of the same type but lhs is type int and rhs is bool.
+ERROR(28): '=' requires that if one operand is an array so must the other operand.
+ERROR(30): The operation '>' does not work with arrays.
+ERROR(31): The operation '<' does not work with arrays.
+ERROR(32): The operation '>=' does not work with arrays.
+ERROR(33): The operation '<=' does not work with arrays.
+ERROR(37): The operation '>' does not work with arrays.
+ERROR(38): The operation '>' does not work with arrays.
+ERROR(40): The operation '?' does not work with arrays.
+ERROR(43): The operation '*' only works with arrays.
+ERROR(44): Cannot index nonarray 'x'.
+ERROR(45): The operation '*' only works with arrays.
+ERROR(45): Cannot index nonarray 'x'.
+ERROR(47): The operation '*' only works with arrays.
 Number of warnings: 0
-Number of errors: 16
+Number of errors: 28
