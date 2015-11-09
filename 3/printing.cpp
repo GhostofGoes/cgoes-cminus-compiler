@@ -210,13 +210,6 @@ void printAbstractTree ( TreeNode * og, int indent_count )
             case OpK:
               outstr += "Op: ";
               outstr += svalResolve(tree);
-              /*
-              if (tree->token->svalue != NULL) {
-                  outstr += tree->token->svalue;
-              } else {
-                  outstr.push_back(tree->token->cvalue);
-              }
-               */
               break;
 
             case UnaryK:

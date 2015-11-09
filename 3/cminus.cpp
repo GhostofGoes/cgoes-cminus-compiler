@@ -44,6 +44,7 @@ int main ( int argc, char * argv[] )
     //testing = false;
     bool abstract_tree = false;
     bool annotated_tree = false;
+    bool error_checking = true;
     bool code_generation = false;
 
     // Command line options
@@ -85,7 +86,8 @@ int main ( int argc, char * argv[] )
         printAbstractTree(syntaxTree);
     }
 
-    if ( annotated_tree )
+    //annotated_tree = true;
+    if ( error_checking )
     {
         annotatedTree = syntaxTree;
         semanticAnalysis(annotatedTree);
@@ -94,25 +96,20 @@ int main ( int argc, char * argv[] )
         linkSiblings(io, syntaxTree);
         annotatedTree = io;
 
-        if ( !testing )
+        if ( annotated_tree )
         {
             printAnnotatedTree(annotatedTree);
         }
     }
 
+    
     if ( code_generation )
     {
         //generateCode();
     }
-    
-    if( annotated_tree )
-    {
-        freeTree(annotatedTree);
-    }
-    else
-    {
-        freeTree(syntaxTree);
-    }
+
+    //freeTree(annotatedTree);
+    //freeTree(syntaxTree);
     
     printf("Number of warnings: %d\n", warnings);
     printf("Number of errors: %d\n", errors);

@@ -42,9 +42,9 @@ TokenData * allocToken(int bval, char * input_text, int linenum) {
     TokenData * newToken = (TokenData *) calloc(1, sizeof (TokenData));
     newToken->bval = bval;
     if (input_text != NULL) {
-        newToken->input = (char *) malloc(sizeof (input_text));
-        memcpy(newToken->input, input_text, sizeof (input_text));
-        //newToken->input = strdup(input_text);
+        //newToken->input = (char *) malloc(sizeof (input_text));
+        //memcpy(newToken->input, input_text, sizeof (input_text));
+        newToken->input = strdup(input_text);
     } else {
         newToken->input = NULL;
     }
