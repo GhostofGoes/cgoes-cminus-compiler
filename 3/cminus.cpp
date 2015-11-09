@@ -192,7 +192,7 @@ void semanticAnalysis ( TreeNode * og )
 
     if ( symtable->lookup("main") == NULL )
     {
-        printf("ERROR(LINKER): Procedure main is not defined.");
+        printf("ERROR(LINKER): Procedure main is not defined.\n");
         errors++;
     }
     
@@ -272,7 +272,7 @@ void typeResolution ( TreeNode * node, SymbolTable * symtable )
                         //temp = (TreeNode *) symtable->lookup(tree_svalue);
                         //printf("ERROR(%d): Symbol '%s' is already defined at line %d.\n", line, tree_svalue.c_str(), temp->lineno);
                         //errors++;
-                    }
+                    }                 
                     break;
 
                   case FunK:
@@ -289,23 +289,27 @@ void typeResolution ( TreeNode * node, SymbolTable * symtable )
                     symtable->enter("Function " + tree_svalue);
                     break;
                   case IdK:
-                      if(testing)
-                      {
-                          std::cout << "Hit DeclK:IdK:" << tree_svalue << std::endl;
-                      }
+                    if ( testing )
+                    {
+                        std::cout << "Hit DeclK:IdK:" << tree_svalue << std::endl;
+                    }
                     temp = (TreeNode *) symtable->lookup(tree_svalue);
                     if ( temp != NULL )
                     {
                         tree->nodetype = temp->nodetype;
-                        if(temp->isArray )
+                        if ( temp->isArray )
                         {
                             tree->isArray = true;
+                        }
+                        if(temp->isIndex)
+                        {
+                            tree->isIndex = true;
                         }
                         if ( temp->isStatic )
                         {
                             tree->isStatic = true;
                         }
-                        
+
                     } else
                     {
                         tree->nodetype = Undef;
@@ -331,6 +335,10 @@ void typeResolution ( TreeNode * node, SymbolTable * symtable )
                         if(temp->isArray)
                         {
                             tree->isArray = true;
+                        }
+                        if(temp->isIndex)
+                        {
+                            tree->isIndex = true;
                         }
                         if ( temp->isStatic )
                         {
@@ -852,7 +860,9 @@ void treeParse ( TreeNode * par, TreeNode * node, SymbolTable * symtable, bool i
                                     printf("ERROR(%d): The operation '%s' does not work with arrays.\n",
                                            line, op.c_str());
                                     errors++;
-                                }                                    
+                                } 
+                                else
+                                {
                                   if ( lhs != Integer )
                                   {
                                       printf("ERROR(%d): '%s' requires operands of type %s but lhs is of type %s.\n",
@@ -870,15 +880,18 @@ void treeParse ( TreeNode * par, TreeNode * node, SymbolTable * symtable, bool i
                                   {
                                       printf("ERROR(%d): '%s' requires that if one operand is an array so must the other operand.\n", line, op.c_str());
                                       errors++;
-                                  }                                  
-                                  break;
-                              }
-                                  if ( lhs != rhs )
+                                  }
+                                  if( lhs != rhs) // TODO: don't print this if lhs/rhs type errors trigger
                                   {
                                       printf("ERROR(%d): '%s' requires operands of the same type but lhs is type %s and rhs is %s.\n",
                                              line, op.c_str(), lhs_str, rhs_str);
                                       errors++;
-                                  }                            
+                                  }                                   
+                                  break;
+                                }
+
+                              }
+                           
                         } else
                         {
                             if ( testing )
