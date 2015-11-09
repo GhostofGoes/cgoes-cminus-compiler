@@ -1,0 +1,37 @@
+int g;
+
+main()
+{
+    int x, x;
+    bool x, x;
+    char x, x;
+
+    int y, y[10];
+
+    int main;
+    bool main;
+    char main;
+
+    int g;
+}
+
+main(int a; bool b; char c; int a; bool b; char c) {
+    int a; bool b; char c;
+    int g;    
+    {
+        int g;    
+        int a; bool b; char c;
+        int a; bool b; char c;
+        {
+            int a; bool b; char c;
+            int main, g;
+        }
+    }
+}
+
+cat(int cat, g) {
+    int cat;
+}
+
+int cat, g;
+

@@ -286,7 +286,7 @@ void typeResolution ( TreeNode * node, SymbolTable * symtable )
                         //printf("ERROR(%d): Symbol '%s' is already defined at line %d.\n", line, tree_svalue.c_str(), temp->lineno);
                         //errors++;
                     }
-                    symtable->enter("Function " + tree_svalue);
+                    //symtable->enter("Function " + tree_svalue);
                     break;
                   case IdK:
                     if ( testing )
@@ -405,7 +405,8 @@ void typeResolution ( TreeNode * node, SymbolTable * symtable )
             }
         }
 
-        if ( tree->kind == CompoundK || tree->kind == FunK )
+        //if ( tree->kind == CompoundK || tree->kind == FunK )
+        if ( tree->kind == CompoundK )
         {
             if ( testing )
             {
@@ -538,7 +539,7 @@ void treeParse ( TreeNode * par, TreeNode * node, SymbolTable * symtable, bool i
                         printf("ERROR(%d): Symbol '%s' is already defined at line %d.\n", line, tree_svalue.c_str(), tmp->lineno);
                         errors++;
                     }
-                    symtable->enter("Function " + tree_svalue);
+                    //symtable->enter("Function " + tree_svalue);
                     func = tree;
                     break;
 
@@ -1023,7 +1024,8 @@ void treeParse ( TreeNode * par, TreeNode * node, SymbolTable * symtable, bool i
             }
         }
         
-        if ( tree->kind == CompoundK || tree->kind == FunK )
+        //if ( tree->kind == CompoundK || tree->kind == FunK )
+        if ( tree->kind == CompoundK )
         {
             if ( testing )
             {

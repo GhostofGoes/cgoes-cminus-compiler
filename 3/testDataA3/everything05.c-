@@ -9,12 +9,15 @@ wallace(int wrong, trousers)
 {
     bool close:true, shave:false;
    
+    1729;
     close;
+    11*22+33*44;
     close = shave;
     wrong = trousers % (666/wrong);
     gromit = wrong * trousers - gromit + -42;
     gromit += 27182818;
-    gromit -= 31415927;
+    gromit -= -31415927;
+    gromit /= (wrong *= 42);
     close = wrong < trousers & trousers <= gromit;
     shave = wrong > trousers & trousers >= gromit;
     {
@@ -44,19 +47,23 @@ wallace(int wrong, trousers)
 }       
 
 
-bool penguin(char Feathers, McGraw[]) 
+bool penguin(char Feathers, McGraw[]; bool moon, cheese; int launch) 
 {
     static char tottington:'x';
     char  Wensleydale[17]:"cheeeeeese";
+    char c;
+    int i;         
 
     tottington = Feathers;
-    McGraw = Feathers;
+    McGraw[3] = Feathers;
     Wensleydale = McGraw;
     Wensleydale[*McGraw] = '*';
     McGraw = "A Matter of Loaf and Death";
 
     { char c;
+      int i;
         foreach (c in McGraw) if (c=='f') return true;
+        foreach (i in *McGraw) if (McGraw[i]=='f') break;
     }
 }        
 
@@ -89,14 +96,19 @@ int main()
     bool shaun, preston[22];
 
     wallace(cheese(62, -311), gromit);
+    yarn[?*yarn];
     return Wendolene(*preston**yarn, shaun, yarn, preston);
 }
 
+null();
+MrNobody(int shaun, the, sheep);
+
 bool aBigLongVariableName6;
-int    odd  ,	separation 		,of,                  stuff ;
+int    odd  ,	separation 		,of,
+stuff ;
 
 char ant[10]:"\"'";
-char bat:"\'";
+char bat:'\'';
 char cat[10]:"\t\n\0\\";
 char dog:'\t';
 

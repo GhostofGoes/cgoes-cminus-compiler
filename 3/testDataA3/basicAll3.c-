@@ -1,0 +1,174 @@
+// C-F15
+//
+// IMPORTANT:
+//
+// This file has many if not all semantic errors.
+// The errors in the comments are not necessarily the
+// the exact text generated for each error not  not  not   Use the
+// error message text in the assignment.  If this doesn't
+// test all errors then let me know.  thanks, rh
+//
+char dog(char x)
+{
+    char x;   // SPECIAL CASE: params are in function compound statement
+              // Symbol %s is already defined at line %d
+    int b;
+
+    cat(10);  // Symbol 'cat' is not defined
+
+    return b; // Expecting return type of %s but got type %s
+}
+
+int dog(int x)  // Symbol %s is already defined at line %d
+{
+    {
+        int x;
+    }
+}               // missing return warning
+
+char cat(char x)
+{
+    int b;
+
+    return; // Expecting a return type of %s but got none
+}
+
+char cat;        // Symbol %s is already defined at line %d
+char unusedGlobal;  // we currently don't issue a warning for this
+
+int ibex(char x[])
+{
+    char unusedLocal;  // we currently don't issue a warning for this
+    return true;
+}
+
+ox(char y)
+{
+    return 666;  // Expecting no return value, but got one.
+}
+
+char emu(char x, y, z)
+{                    // Warning: There is no return
+}
+
+char main()
+{
+    char x, yuri;
+    char x;      // Symbol %s is already defined at line %d
+    int x;       // Symbol already defined but type of first declaration sticks
+
+    bool ba[8];
+    char aa[6];
+    char zz[6];
+    int bb[6], cc[6];
+
+    int b, c;
+
+    v;     // Variable %s cannot be declared of type  
+
+    if (x) x;          // Expecting intean test condition
+    while (x) x;       // Expecting intean test condition
+    while (ox(10)) x;  // Expecting intean test condition
+
+    x = cat;   // cannot use function cat as simple variable
+    x = b;     // %s requires things of the same type but lhs is %s and rhs is %s
+    x += b;    // %s requires rhs to be of type char
+    b -= x;    // %s requires lhs to be of type char
+    b > x;     // %s requires lhs to be of type char
+    b++;       // Unary %s requires things of type %s but was given type %s
+
+    if (bb) x;  // Cannot use array as test condition
+    while (bb) x;  // Cannot use array as test condition
+
+    break;      // break statement must be inside a while loop."
+
+    while (b) { break; }
+
+    aa + 6;     // The operation %s does not work with arrays
+    aa < zz;    // The operation %s does not work with arrays
+    bb < cc;    // The operation %s does not work with arrays
+
+    x == true;  // %s requires things of the same type but lhs is %s and rhs is %s
+    x == 1;
+    b == true;
+
+    false + x;  // %s requires things of type %s but lhs is of type %s
+
+    x * false;  // %s requires things of type %s but rhs is of type %s
+
+    ! x;      // Unary %s requires things of type %s but was given type %s
+    ! x+b;    // two errors
+    -b;         // Unary %s requires things of type %s but was given type %s
+
+    x[496];     // Cannot index nonarray %s
+    b = x==x+x*(x & x);   // lots of errors
+    b = x==x+x*(x & y);   // lots of errors
+    b = x==x | x*(x & x);   // lots of errors
+
+    *x;               // requires an array
+    *aa  &  b;      // %s requires things of type %s but lhs is of type %s
+    aa[*aa];    // OK but should not be :-)
+    aa[666];    // for some constant array sizes we might be able to check index but we don't
+
+    aa[b];      // Expecting array index to be of type char but got type %s
+
+    aa[cat];    // Cannot use function 'cat' as a simple variable.
+
+    aa[aa];     // Array index is the unindexed array 'aa'.
+    AA[1];      // variables are case sensitive
+
+    aa[meerkat]; // Symbol %s is not defined
+
+    xyzzy;      // Symbol %s is not defined
+    meerkat();  // Symbol %s is not defined
+    true & xyzzy/666;  // Symbol %s is not defined
+
+    flight( ! 5, -true, uu, y, x+x*b);  // even though flight is undefined the errors in the arg list should be triggered
+
+    x();        // %s is a simple variable and cannot be called
+
+    dog(3, 5);  // Wrong number of parameters for function %s defined on line %d
+    ibex();     // Wrong number of parameters for function %s defined on line %d
+
+    dog(true);  // Expecting %s in parameter %i of call %s defined on line %d
+
+    cat(aa);    // Not expecting array in parameter %i of call %s defined on line %d
+    cat(ba);
+
+    ibex(x);    // Expecting array in parameter %i of call %s defined on line %d
+    ibex(bb);   // Give priority to type error
+    ibex[3];    // Cannot index nonarray %s
+
+    ibex + 4;   //  Cannot use function %s as a simple variable
+    ibex;       //  Cannot use function %s as a simple variable
+
+    aa[zz[1]]; 
+    aa[zz];       // Array index is the unindexed array %s
+    aa[ox(true)]; // two errors
+
+    x = ox(28);  // '=' requires things of the same type but lhs is char and rhs is  
+    x = x + ox(6);  // '+' requires things of type char but rhs is of type  .
+    cat(ox(492));   // Expecting type char in parameter 1 of call to 'cat' defined on line 20 but got type  .
+    cat(true);      // Expecting type char in parameter 1 of call to 'cat' defined on line 20 but got type int.
+    cat(cat(492));
+
+    x = x = true;   // '=' requires things of the same type but lhs is char and rhs is int.
+    b = b = 666;    // '=' requires things of the same type but lhs is int and rhs is char.
+    x = b = x = b;
+        
+    x*b & b*x;
+
+    emu(x+b, parrot, b & x);
+    emu(false, true & emu(x+b, parrot, b & x), true, x*b);
+
+    bb;
+
+    foreach (c in true) x;      // If not an array, foreach requires rhs of 'in' be of type int but it is type bool.
+    foreach (aa in 144) aa[10]; // If not an array, foreach requires lhs of 'in' be of type int but it is type char.
+    // In foreach statement the variable to the left of 'in' must not be an array.
+
+    foreach (bb in 144);        // In foreach statement the variable to the left of 'in' must not be an array.
+    foreach (x in ba);          // foreach requires operands of in be same type
+
+    return aa;  // Cannot return an array
+}

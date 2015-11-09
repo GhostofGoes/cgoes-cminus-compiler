@@ -1,0 +1,13 @@
+bool a:true;
+char b:'y';
+int c:314159;
+fred(int a; bool b; char c)
+{
+        int x, y;
+        
+        if (b) fred(666, true, 'x')/341;
+        else {
+             b = ! false & true | x > 4+7*y;
+        }
+        while (x>=y) foreach (x in 12*y) 666;
+}

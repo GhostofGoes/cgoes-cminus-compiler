@@ -1,0 +1,231 @@
+// C-F13
+// C-F10
+// Assignment 5+ for CS445, Introduction To Compilers 
+//                         with Dr. Robert Heckendorn.
+//
+// Compiler Information:
+//    flex, bison, g++
+//
+// Student Information:
+//    Carl Miller          mill1010@uidaho.edu
+//
+// Computer Information:
+//    Operating System:    Unix
+//    Processor:           UI Sunsol: one of the planets
+//
+// File Information:
+//    battleships.c- - c- program simulating the battleships game.
+//
+// Usage Commands:
+//
+// first enter a number to be used to hide the battleship.
+// you then have 10 shots to sink it, if you score a hit on
+// your last shot, you get another. The current number of 
+// remaining shots is displayed above the target map.
+//
+// 4's represent concealed locations, 0's are misses, 1's are hits.
+//
+// Shots are aimed by entering a two digit integer, the high order 
+// digit represents the row, the low the column.
+// If a shot is out of range, -666 is displayed.
+//
+// The ship is represented by 3 7's, if you sink it a line of 1's is
+// displayed followed by a revealed map of the layout, if you fail to
+// sink it, a line of 0's is displayed before the final layout.
+//
+// Usage:
+//
+//	./c- battleships.c -o battleships.tm
+//  ./tm battleships.tm
+//
+// NOTE: the tm machine should be set to 500,000 instructions
+//       before halt, using the 'a' command.
+//
+// ---------------------------------------------------------------------
+// History:
+//    Apr-29-06:  Initial.
+// 
+//
+
+int shipsize, NumShots, NumHits;
+bool iseven;
+
+  Print( int what )
+{
+    output( what );
+}
+
+  NewLine( )
+{
+    outnl();
+}
+
+  Display( int arr[], dimension ) // assume square
+{
+    int r,c;
+    r = 0;
+    NewLine();
+    Print( NumShots );
+    NewLine();
+    while( r < dimension )
+    {
+        c = 0;
+        while( c < dimension )
+        {
+            if( arr[(r*10)+c] == 7 )
+                Print( 4 );
+            else
+                Print( arr[(r*10)+c] );
+            c = c + 1;
+        }
+        NewLine();
+        r++;
+    }
+}
+
+int Randomize( int seed, dim )
+{
+    iseven = ((seed % 2) == 0);
+
+    seed += dim;
+    seed = 17 * seed + 11;
+    seed = seed % (dim*dim);
+
+    return seed;
+}
+
+  HideShip( int arr[], dimen ) 
+{
+    int  pos, row, col, i;
+
+    pos = Randomize( input(), dimen );
+
+    row = pos / dimen;
+    col = pos - ((pos / dimen)*dimen);
+
+    if( iseven ){// lay horizontally
+        // make sure positon doesn't cause ship
+        // to extend beyond ocean border
+        if( col > dimen-shipsize )
+            col = dimen-shipsize;
+        i = 0;
+        while( i < shipsize )
+        {
+            arr[(row*dimen)+col] = 7;// 7 means part of the ship
+            col++;
+            i++;
+        }
+    }
+    else{ // lay vertically
+        if( row > dimen-shipsize )
+            row = dimen-shipsize;
+        i = 0;
+        while( i < shipsize )
+        {
+            arr[(row*dimen)+col] = 7;// 7 means part of the ship
+            col += dimen;
+            i++;
+        }
+    }
+
+}
+
+int Aim( )
+{
+    int shot;
+    shot = -666;
+    while( shot == -666 )
+    {
+        shot = input();
+        if( (shot < 0) | (shot > 99) )
+        {
+            shot = -666;
+            NewLine();
+            Print( shot );
+            NewLine();
+        }
+    }
+    NewLine();
+    return shot;
+}
+
+  RevealShip( int arr[], dimension )
+{
+    int r,c;
+    r = 0;
+    NewLine();
+    while( r < dimension )
+    {
+        c = 0;
+        while( c < dimension )
+        {
+            if( arr[(r*10)+c] == 4 )
+                Print( 2 );
+            else
+                Print( arr[(r*10)+c] );
+            c = c + 1;
+        }
+        NewLine();
+        r++;
+    }
+}
+
+int Fire( int arr[], shot )
+{
+    if( arr[shot] == 7 ){
+        arr[shot] = 1;
+        NumHits++;
+        if( NumShots == 1 )
+            NumShots = NumShots +1;
+    }
+    else{
+        arr[shot] = 0;
+    }
+    return NumHits;
+}
+
+  main( )
+{
+    int Ocean[100];
+    int i, Shot;
+    bool    bGotit;
+    
+
+    shipsize = 4;
+    i = 0;
+    while( i < 100 )
+    {
+        Ocean[i] = 4;// intialize to 'concealed'
+        i++;
+    }
+
+    HideShip( Ocean, 10 );
+
+    bGotit = false;
+    NumShots = 10;
+    NumHits = 0;
+    while( NumShots > 0 )
+    {
+        Display( Ocean, 10 );
+        Shot = Aim();
+        if( Fire( Ocean, Shot ) == shipsize ){
+            bGotit = true;
+            break;
+        }
+        NumShots -= 1;
+    }
+
+    NewLine();
+    i = 0;
+    while( i < 20 )
+    {
+        if( bGotit )
+            Print( 1 );
+        else
+            Print( 0 );
+        i++;
+    }
+    NewLine();
+    RevealShip( Ocean, 10 );
+}
+

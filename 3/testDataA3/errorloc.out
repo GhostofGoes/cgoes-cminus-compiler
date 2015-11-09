@@ -1,0 +1,44 @@
+ERROR(5): Variable 'y' is of type int but is being initialized with an expression of type bool.
+ERROR(11): '=' requires operands of the same type but lhs is type int and rhs is bool.
+ERROR(14): Expecting Boolean test condition in if statement but got type int.
+ERROR(19): Expecting Boolean test condition in while statement but got type int.
+ERROR(24): In foreach statement the variable to the left of 'in' must not be an array.
+ERROR(24): If not an array, foreach requires rhs of 'in' be of type int but it is type bool.
+ERROR(31): Function 'main' at line 1 is expecting no return value, but return has return value.
+ERROR(31): Cannot return an array.
+ERROR(37): '*' requires operands of type int but rhs is of type bool.
+ERROR(35): '=' requires that if one operand is an array so must the other operand.
+Func input returns type int [line: -1]
+|Sibling: 1  Func output returns type void [line: -1]
+|   Child: 0  Param *dummy* int [line: -1]
+|Sibling: 2  Func inputb returns type bool [line: -1]
+|Sibling: 3  Func outputb returns type void [line: -1]
+|   Child: 0  Param *dummy* bool [line: -1]
+|Sibling: 4  Func inputc returns type char [line: -1]
+|Sibling: 5  Func outputc returns type void [line: -1]
+|   Child: 0  Param *dummy* char [line: -1]
+|Sibling: 6  Func outnl returns type void [line: -1]
+|Sibling: 7  Func main returns type void [line: 1]
+|   Child: 1  Compound [line: 2]
+|   |   Child: 0  Var x is array of int [line: 3]
+|   |   |Sibling: 1  Var y int [line: 5]
+|   |   |   Child: 0  Const: true Type: bool [line: 7]
+|   |   Child: 1  Assign: = Type: int [line: 11]
+|   |   |   Child: 0  Id: y Type: int [line: 10]
+|   |   |   Child: 1  Const: true Type: bool [line: 12]
+|   |   |Sibling: 1  If [line: 14]
+|   |   |   Child: 0  Const: 34 Type: int [line: 16]
+|   |   |Sibling: 2  While [line: 19]
+|   |   |   Child: 0  Const: 34 Type: int [line: 21]
+|   |   |Sibling: 3  Foreach [line: 24]
+|   |   |   Child: 0  Id: x Type: is array of int [line: 26]
+|   |   |   Child: 1  Const: true Type: bool [line: 28]
+|   |   |Sibling: 4  Return [line: 31]
+|   |   |   Child: 0  Id: x Type: is array of int [line: 32]
+|   |   |Sibling: 5  Assign: = Type: int [line: 35]
+|   |   |   Child: 0  Id: x Type: is array of int [line: 34]
+|   |   |   Child: 1  Op: * Type: int [line: 37]
+|   |   |   |   Child: 0  Const: 5 Type: int [line: 36]
+|   |   |   |   Child: 1  Const: true Type: bool [line: 38]
+Number of warnings: 0
+Number of errors: 10

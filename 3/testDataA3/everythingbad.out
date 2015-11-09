@@ -1,0 +1,485 @@
+ERROR(10): Initializer for array variable 'close' must be a string, but is of nonarray type bool.
+ERROR(10): Variable 'shave' is of type char but is being initialized with an expression of type bool.
+ERROR(15): '=' requires that if one operand is an array so must the other operand.
+ERROR(16): '/' requires operands of type int but rhs is of type bool.
+ERROR(16): '%' requires operands of type int but lhs is of type bool.
+ERROR(16): '=' requires operands of the same type but lhs is type bool and rhs is int.
+ERROR(17): '*' requires operands of type int but lhs is of type bool.
+ERROR(17): '*' requires operands of type int but rhs is of type bool.
+ERROR(17): '-' requires operands of type int but rhs is of type bool.
+ERROR(17): '=' requires operands of the same type but lhs is type bool and rhs is int.
+ERROR(18): '+=' requires operands of type int but lhs is of type bool.
+ERROR(19): '-=' requires operands of type int but lhs is of type bool.
+ERROR(20): '*=' requires operands of type int but lhs is of type bool.
+ERROR(20): '/=' requires operands of type int but lhs is of type bool.
+ERROR(21): '<' requires operands of type char or int but lhs is of type bool.
+ERROR(21): '<' requires operands of type char or int but rhs is of type bool.
+ERROR(21): '<=' requires operands of type char or int but lhs is of type bool.
+ERROR(21): '<=' requires operands of type char or int but rhs is of type bool.
+ERROR(21): '=' requires operands of the same type but lhs is type char and rhs is bool.
+ERROR(21): '=' requires that if one operand is an array so must the other operand.
+ERROR(22): '>' requires operands of type char or int but lhs is of type bool.
+ERROR(22): '>' requires operands of type char or int but rhs is of type bool.
+ERROR(22): '>=' requires operands of type char or int but lhs is of type bool.
+ERROR(22): '>=' requires operands of type char or int but rhs is of type bool.
+ERROR(22): '=' requires operands of the same type but lhs is type char and rhs is bool.
+ERROR(24): Variable 'grand' is of type bool but is being initialized with an expression of type int.
+ERROR(24): Variable 'day' is of type bool but is being initialized with an expression of type int.
+ERROR(24): Variable 'out' is of type bool but is being initialized with an expression of type int.
+ERROR(25): '-=' requires operands of type int but lhs is of type bool.
+ERROR(25): '-=' requires operands of type int but rhs is of type bool.
+ERROR(25): '+=' requires operands of type int but lhs is of type bool.
+ERROR(25): '=' requires operands of the same type but lhs is type bool and rhs is int.
+ERROR(27): '=' requires operands of the same type but lhs is type char and rhs is bool.
+ERROR(27): '=' requires that if one operand is an array so must the other operand.
+ERROR(28): '=' requires operands of the same type but lhs is type char and rhs is bool.
+ERROR(29): '!=' requires that if one operand is an array so must the other operand.
+ERROR(29): Unary '!' requires an operand of type bool but was given char.
+ERROR(29): The operation '!' does not work with arrays.
+ERROR(29): '=' requires operands of the same type but lhs is type char and rhs is bool.
+ERROR(30): '==' requires that if one operand is an array so must the other operand.
+ERROR(30): Unary '!' requires an operand of type bool but was given char.
+ERROR(30): The operation '!' does not work with arrays.
+ERROR(30): '=' requires operands of the same type but lhs is type char and rhs is bool.
+ERROR(31): '=' requires operands of the same type but lhs is type char and rhs is bool.
+ERROR(31): '=' requires that if one operand is an array so must the other operand.
+ERROR(32): Expecting Boolean test condition in while statement but got type char.
+ERROR(36): '=' requires operands of the same type but lhs is type bool and rhs is int.
+ERROR(37): '<' requires operands of the same type but lhs is type bool and rhs is int.
+ERROR(37): '<' requires operands of type char or int but lhs is of type bool.
+ERROR(38): Unary '--' requires an operand of type int but was given bool.
+ERROR(38): Expecting type bool in parameter 1 of call to 'wallace' defined on line 8 but got int.
+ERROR(38): '-' requires operands of type int but lhs is of type bool.
+ERROR(38): '-' requires operands of type int but rhs is of type bool.
+ERROR(38): The operation '-' does not work with arrays.
+ERROR(38): Expecting type bool in parameter 2 of call to 'wallace' defined on line 8 but got int.
+ERROR(42): Unary '++' requires an operand of type int but was given bool.
+ERROR(42): '+=' requires operands of type int but lhs is of type bool.
+ERROR(42): '=' requires operands of the same type but lhs is type bool and rhs is int.
+ERROR(43): '==' requires that if one operand is an array so must the other operand.
+ERROR(43): Unary '--' requires an operand of type int but was given bool.
+ERROR(43): '=' requires operands of the same type but lhs is type bool and rhs is int.
+ERROR(52): Variable 'tottington' is of type int but is being initialized with an expression of type char.
+ERROR(53): Variable 'Wensleydale' is of type int but is being initialized with an expression of type char.
+ERROR(53): Initializer for nonarray variable 'Wensleydale' of type int cannot be initialized with an array.
+ERROR(59): '=' requires that if one operand is an array so must the other operand.
+ERROR(60): Cannot index nonarray 'Wensleydale'.
+ERROR(60): '=' requires operands of the same type but lhs is type int and rhs is char.
+ERROR(61): '=' requires operands of the same type but lhs is type int and rhs is char.
+ERROR(65): '==' requires operands of the same type but lhs is type int and rhs is char.
+ERROR(65): Function 'penguin' at line 50 is expecting to return type char but got bool.
+ERROR(66): If not an array, foreach requires lhs of 'in' be of type int but it is type bool.
+ERROR(66): Array 'McGraw' should be indexed by type int but got bool.
+ERROR(66): '==' requires operands of the same type but lhs is type int and rhs is char.
+ERROR(73): '+' requires operands of type int but lhs is of type bool.
+ERROR(73): '+' requires operands of type int but rhs is of type bool.
+ERROR(73): '*' requires operands of type int but rhs is of type bool.
+ERROR(73): '+' requires operands of type int but rhs is of type bool.
+ERROR(73): Function 'Wendolene' at line 70 is expecting to return type bool but got int.
+ERROR(83): Expecting type bool in parameter 1 of call to 'Wendolene' defined on line 70 but got int.
+ERROR(83): Expecting type char in parameter 2 of call to 'Wendolene' defined on line 70 but got bool.
+ERROR(83): '*' requires operands of type int but rhs is of type bool.
+ERROR(86): Unary '-' requires an operand of type int but was given bool.
+ERROR(86): '>=' requires operands of the same type but lhs is type bool and rhs is int.
+ERROR(86): '>=' requires operands of type char or int but lhs is of type bool.
+ERROR(86): Function 'ramsBottom' at line 77 is expecting to return type char but got bool.
+ERROR(89): '>' requires operands of the same type but lhs is type bool and rhs is int.
+ERROR(89): '>' requires operands of type char or int but lhs is of type bool.
+ERROR(89): '>' requires operands of the same type but lhs is type bool and rhs is int.
+ERROR(89): '>' requires operands of type char or int but lhs is of type bool.
+ERROR(89): Unary '--' requires an operand of type int but was given bool.
+ERROR(89): '*' requires operands of type int but lhs is of type bool.
+ERROR(89): '*' requires operands of type int but rhs is of type bool.
+ERROR(89): '%' requires operands of type int but rhs is of type bool.
+ERROR(89): Function 'cheese' at line 89 is expecting to return type bool but got int.
+ERROR(98): Expecting type bool in parameter 1 of call to 'cheese' defined on line 89 but got int.
+ERROR(98): Expecting type bool in parameter 2 of call to 'cheese' defined on line 89 but got int.
+ERROR(100): Expecting type bool in parameter 1 of call to 'Wendolene' defined on line 70 but got int.
+ERROR(110): Array 'ant' must be of type char to be initialized, but is of type int.
+ERROR(111): Variable 'bat' is of type int but is being initialized with an expression of type char.
+ERROR(112): Array 'cat' must be of type char to be initialized, but is of type int.
+ERROR(113): Variable 'dog' is of type int but is being initialized with an expression of type char.
+Func input returns type int [line: -1]
+|Sibling: 1  Func output returns type void [line: -1]
+|   Child: 0  Param *dummy* int [line: -1]
+|Sibling: 2  Func inputb returns type bool [line: -1]
+|Sibling: 3  Func outputb returns type void [line: -1]
+|   Child: 0  Param *dummy* bool [line: -1]
+|Sibling: 4  Func inputc returns type char [line: -1]
+|Sibling: 5  Func outputc returns type void [line: -1]
+|   Child: 0  Param *dummy* char [line: -1]
+|Sibling: 6  Func outnl returns type void [line: -1]
+|Sibling: 7  Var gromit bool [line: 6]
+|Sibling: 8  Func wallace returns type void [line: 8]
+|   Child: 0  Param wrong bool [line: 8]
+|   |Sibling: 1  Param trousers bool [line: 8]
+|   Child: 1  Compound [line: 9]
+|   |   Child: 0  Var close is array of char [line: 10]
+|   |   |   Child: 0  Const: true Type: bool [line: 10]
+|   |   |Sibling: 1  Var shave char [line: 10]
+|   |   |   Child: 0  Const: false Type: bool [line: 10]
+|   |   Child: 1  Const: 1729 Type: int [line: 12]
+|   |   |Sibling: 1  Id: close Type: is array of char [line: 13]
+|   |   |Sibling: 2  Op: + Type: int [line: 14]
+|   |   |   Child: 0  Op: * Type: int [line: 14]
+|   |   |   |   Child: 0  Const: 11 Type: int [line: 14]
+|   |   |   |   Child: 1  Const: 22 Type: int [line: 14]
+|   |   |   Child: 1  Op: * Type: int [line: 14]
+|   |   |   |   Child: 0  Const: 33 Type: int [line: 14]
+|   |   |   |   Child: 1  Const: 44 Type: int [line: 14]
+|   |   |Sibling: 3  Assign: = Type: char [line: 15]
+|   |   |   Child: 0  Id: close Type: is array of char [line: 15]
+|   |   |   Child: 1  Id: shave Type: char [line: 15]
+|   |   |Sibling: 4  Assign: = Type: bool [line: 16]
+|   |   |   Child: 0  Id: wrong Type: bool [line: 16]
+|   |   |   Child: 1  Op: % Type: int [line: 16]
+|   |   |   |   Child: 0  Id: trousers Type: bool [line: 16]
+|   |   |   |   Child: 1  Op: / Type: int [line: 16]
+|   |   |   |   |   Child: 0  Const: 666 Type: int [line: 16]
+|   |   |   |   |   Child: 1  Id: wrong Type: bool [line: 16]
+|   |   |Sibling: 5  Assign: = Type: bool [line: 17]
+|   |   |   Child: 0  Id: gromit Type: bool [line: 17]
+|   |   |   Child: 1  Op: + Type: int [line: 17]
+|   |   |   |   Child: 0  Op: - Type: int [line: 17]
+|   |   |   |   |   Child: 0  Op: * Type: int [line: 17]
+|   |   |   |   |   |   Child: 0  Id: wrong Type: bool [line: 17]
+|   |   |   |   |   |   Child: 1  Id: trousers Type: bool [line: 17]
+|   |   |   |   |   Child: 1  Id: gromit Type: bool [line: 17]
+|   |   |   |   Child: 1  Op: - Type: int [line: 17]
+|   |   |   |   |   Child: 0  Const: 42 Type: int [line: 17]
+|   |   |Sibling: 6  Assign: += Type: int [line: 18]
+|   |   |   Child: 0  Id: gromit Type: bool [line: 18]
+|   |   |   Child: 1  Const: 27182818 Type: int [line: 18]
+|   |   |Sibling: 7  Assign: -= Type: int [line: 19]
+|   |   |   Child: 0  Id: gromit Type: bool [line: 19]
+|   |   |   Child: 1  Op: - Type: int [line: 19]
+|   |   |   |   Child: 0  Const: 31415927 Type: int [line: 19]
+|   |   |Sibling: 8  Assign: /= Type: int [line: 20]
+|   |   |   Child: 0  Id: gromit Type: bool [line: 20]
+|   |   |   Child: 1  Assign: *= Type: int [line: 20]
+|   |   |   |   Child: 0  Id: wrong Type: bool [line: 20]
+|   |   |   |   Child: 1  Const: 42 Type: int [line: 20]
+|   |   |Sibling: 9  Assign: = Type: char [line: 21]
+|   |   |   Child: 0  Id: close Type: is array of char [line: 21]
+|   |   |   Child: 1  Op: & Type: bool [line: 21]
+|   |   |   |   Child: 0  Op: < Type: bool [line: 21]
+|   |   |   |   |   Child: 0  Id: wrong Type: bool [line: 21]
+|   |   |   |   |   Child: 1  Id: trousers Type: bool [line: 21]
+|   |   |   |   Child: 1  Op: <= Type: bool [line: 21]
+|   |   |   |   |   Child: 0  Id: trousers Type: bool [line: 21]
+|   |   |   |   |   Child: 1  Id: gromit Type: bool [line: 21]
+|   |   |Sibling: 10  Assign: = Type: char [line: 22]
+|   |   |   Child: 0  Id: shave Type: char [line: 22]
+|   |   |   Child: 1  Op: & Type: bool [line: 22]
+|   |   |   |   Child: 0  Op: > Type: bool [line: 22]
+|   |   |   |   |   Child: 0  Id: wrong Type: bool [line: 22]
+|   |   |   |   |   Child: 1  Id: trousers Type: bool [line: 22]
+|   |   |   |   Child: 1  Op: >= Type: bool [line: 22]
+|   |   |   |   |   Child: 0  Id: trousers Type: bool [line: 22]
+|   |   |   |   |   Child: 1  Id: gromit Type: bool [line: 22]
+|   |   |Sibling: 11  Compound [line: 23]
+|   |   |   Child: 0  Var a bool [line: 24]
+|   |   |   |Sibling: 1  Var grand bool [line: 24]
+|   |   |   |   Child: 0  Op: / Type: int [line: 24]
+|   |   |   |   |   Child: 0  Const: 1 Type: int [line: 24]
+|   |   |   |   |   Child: 1  Const: 2 Type: int [line: 24]
+|   |   |   |Sibling: 2  Var day bool [line: 24]
+|   |   |   |   Child: 0  Op: * Type: int [line: 24]
+|   |   |   |   |   Child: 0  Const: 3 Type: int [line: 24]
+|   |   |   |   |   Child: 1  Const: 4 Type: int [line: 24]
+|   |   |   |Sibling: 3  Var out bool [line: 24]
+|   |   |   |   Child: 0  Op: - Type: int [line: 24]
+|   |   |   |   |   Child: 0  Const: 9 Type: int [line: 24]
+|   |   |   Child: 1  Assign: = Type: bool [line: 25]
+|   |   |   |   Child: 0  Id: a Type: bool [line: 25]
+|   |   |   |   Child: 1  Assign: += Type: int [line: 25]
+|   |   |   |   |   Child: 0  Id: grand Type: bool [line: 25]
+|   |   |   |   |   Child: 1  Assign: -= Type: int [line: 25]
+|   |   |   |   |   |   Child: 0  Id: day Type: bool [line: 25]
+|   |   |   |   |   |   Child: 1  Id: out Type: bool [line: 25]
+|   |   |Sibling: 12  Assign: = Type: char [line: 27]
+|   |   |   Child: 0  Id: close Type: is array of char [line: 27]
+|   |   |   Child: 1  Op: & Type: bool [line: 27]
+|   |   |   |   Child: 0  Op: < Type: bool [line: 27]
+|   |   |   |   |   Child: 0  Op: + Type: int [line: 27]
+|   |   |   |   |   |   Child: 0  Op: * Type: int [line: 27]
+|   |   |   |   |   |   |   Child: 0  Op: - Type: int [line: 27]
+|   |   |   |   |   |   |   |   Child: 0  Const: 1 Type: int [line: 27]
+|   |   |   |   |   |   |   Child: 1  Const: 2 Type: int [line: 27]
+|   |   |   |   |   |   Child: 1  Const: 3 Type: int [line: 27]
+|   |   |   |   |   Child: 1  Op: * Type: int [line: 27]
+|   |   |   |   |   |   Child: 0  Const: 4 Type: int [line: 27]
+|   |   |   |   |   |   Child: 1  Const: 5 Type: int [line: 27]
+|   |   |   |   Child: 1  Op: > Type: bool [line: 27]
+|   |   |   |   |   Child: 0  Op: + Type: int [line: 27]
+|   |   |   |   |   |   Child: 0  Const: 6 Type: int [line: 27]
+|   |   |   |   |   |   Child: 1  Const: 7 Type: int [line: 27]
+|   |   |   |   |   Child: 1  Op: - Type: int [line: 27]
+|   |   |   |   |   |   Child: 0  Const: 3 Type: int [line: 27]
+|   |   |Sibling: 13  Assign: = Type: char [line: 28]
+|   |   |   Child: 0  Id: shave Type: char [line: 28]
+|   |   |   Child: 1  Op: | Type: bool [line: 28]
+|   |   |   |   Child: 0  Const: true Type: bool [line: 28]
+|   |   |   |   Child: 1  Op: & Type: bool [line: 28]
+|   |   |   |   |   Child: 0  Op: < Type: bool [line: 28]
+|   |   |   |   |   |   Child: 0  Op: - Type: int [line: 28]
+|   |   |   |   |   |   |   Child: 0  Op: * Type: int [line: 28]
+|   |   |   |   |   |   |   |   Child: 0  Const: 1 Type: int [line: 28]
+|   |   |   |   |   |   |   |   Child: 1  Op: + Type: int [line: 28]
+|   |   |   |   |   |   |   |   |   Child: 0  Const: 2 Type: int [line: 28]
+|   |   |   |   |   |   |   |   |   Child: 1  Const: 3 Type: int [line: 28]
+|   |   |   |   |   |   Child: 1  Op: * Type: int [line: 28]
+|   |   |   |   |   |   |   Child: 0  Const: 4 Type: int [line: 28]
+|   |   |   |   |   |   |   Child: 1  Const: 5 Type: int [line: 28]
+|   |   |   |   |   Child: 1  Op: > Type: bool [line: 28]
+|   |   |   |   |   |   Child: 0  Op: + Type: int [line: 28]
+|   |   |   |   |   |   |   Child: 0  Const: 6 Type: int [line: 28]
+|   |   |   |   |   |   |   Child: 1  Const: 7 Type: int [line: 28]
+|   |   |   |   |   |   Child: 1  Op: - Type: int [line: 28]
+|   |   |   |   |   |   |   Child: 0  Const: 3 Type: int [line: 28]
+|   |   |Sibling: 14  If [line: 29]
+|   |   |   Child: 0  Op: != Type: bool [line: 29]
+|   |   |   |   Child: 0  Id: shave Type: char [line: 29]
+|   |   |   |   Child: 1  Id: close Type: is array of char [line: 29]
+|   |   |   Child: 1  Assign: = Type: char [line: 29]
+|   |   |   |   Child: 0  Id: shave Type: char [line: 29]
+|   |   |   |   Child: 1  Op: ! Type: bool [line: 29]
+|   |   |   |   |   Child: 0  Id: close Type: is array of char [line: 29]
+|   |   |Sibling: 15  If [line: 30]
+|   |   |   Child: 0  Op: | Type: bool [line: 30]
+|   |   |   |   Child: 0  Op: ! Type: bool [line: 30]
+|   |   |   |   |   Child: 0  Op: == Type: bool [line: 30]
+|   |   |   |   |   |   Child: 0  Id: shave Type: char [line: 30]
+|   |   |   |   |   |   Child: 1  Id: close Type: is array of char [line: 30]
+|   |   |   |   Child: 1  Op: ! Type: bool [line: 30]
+|   |   |   |   |   Child: 0  Id: close Type: is array of char [line: 30]
+|   |   |   Child: 1  Assign: = Type: char [line: 30]
+|   |   |   |   Child: 0  Id: shave Type: char [line: 30]
+|   |   |   |   Child: 1  Const: true Type: bool [line: 30]
+|   |   |   Child: 2  Assign: = Type: char [line: 31]
+|   |   |   |   Child: 0  Id: close Type: is array of char [line: 31]
+|   |   |   |   Child: 1  Const: false Type: bool [line: 31]
+|   |   |Sibling: 16  While [line: 32]
+|   |   |   Child: 0  Id: shave Type: char [line: 32]
+|   |   |   Child: 1  Compound [line: 32]
+|   |   |   |   Child: 0  Var were bool [line: 33]
+|   |   |   |   |Sibling: 1  Var rabbit is array of bool [line: 33]
+|   |   |   |   |Sibling: 2  Var sheep is array of bool [line: 34]
+|   |   |   |   Child: 1  Assign: = Type: bool [line: 36]
+|   |   |   |   |   Child: 0  Id: sheep Type: bool [line: 36]
+|   |   |   |   |   |   Child: 0  Const: 2 Type: int [line: 36]
+|   |   |   |   |   Child: 1  Const: 1618 Type: int [line: 36]
+|   |   |   |   |Sibling: 1  If [line: 37]
+|   |   |   |   |   Child: 0  Op: < Type: bool [line: 37]
+|   |   |   |   |   |   Child: 0  Id: sheep Type: bool [line: 37]
+|   |   |   |   |   |   |   Child: 0  Const: 2 Type: int [line: 37]
+|   |   |   |   |   |   Child: 1  Const: 496 Type: int [line: 37]
+|   |   |   |   |   Child: 1  Break [line: 37]
+|   |   |   |   |Sibling: 2  Call: wallace Type: void [line: 38]
+|   |   |   |   |   Child: 0  Assign: -- Type: int [line: 38]
+|   |   |   |   |   |   Child: 0  Id: gromit Type: bool [line: 38]
+|   |   |   |   |   |Sibling: 1  Op: - Type: int [line: 38]
+|   |   |   |   |   |   Child: 0  Id: were Type: bool [line: 38]
+|   |   |   |   |   |   Child: 1  Id: rabbit Type: is array of bool [line: 38]
+|   |   |   |   |Sibling: 3  Compound [line: 39]
+|   |   |   |   |   Child: 0  Var the bool [line: 40]
+|   |   |   |   |   |Sibling: 1  Var wrong bool [line: 40]
+|   |   |   |   |   |Sibling: 2  Var trousers bool [line: 40]
+|   |   |   |   |   Child: 1  Assign: = Type: bool [line: 42]
+|   |   |   |   |   |   Child: 0  Id: the Type: bool [line: 42]
+|   |   |   |   |   |   Child: 1  Assign: += Type: int [line: 42]
+|   |   |   |   |   |   |   Child: 0  Id: wrong Type: bool [line: 42]
+|   |   |   |   |   |   |   Child: 1  Assign: ++ Type: int [line: 42]
+|   |   |   |   |   |   |   |   Child: 0  Id: trousers Type: bool [line: 42]
+|   |   |   |   |   |Sibling: 1  If [line: 43]
+|   |   |   |   |   |   Child: 0  Op: == Type: bool [line: 43]
+|   |   |   |   |   |   |   Child: 0  Id: were Type: bool [line: 43]
+|   |   |   |   |   |   |   Child: 1  Id: rabbit Type: is array of bool [line: 43]
+|   |   |   |   |   |   Child: 1  Assign: = Type: bool [line: 43]
+|   |   |   |   |   |   |   Child: 0  Id: were Type: bool [line: 43]
+|   |   |   |   |   |   |   Child: 1  Assign: -- Type: int [line: 43]
+|   |   |   |   |   |   |   |   Child: 0  Id: wrong Type: bool [line: 43]
+|   |   |Sibling: 17  Return [line: 46]
+|Sibling: 9  Func penguin returns type char [line: 50]
+|   Child: 0  Param Feathers int [line: 50]
+|   |Sibling: 1  Param McGraw is array of int [line: 50]
+|   |Sibling: 2  Param moon char [line: 50]
+|   |Sibling: 3  Param cheese char [line: 50]
+|   |Sibling: 4  Param launch bool [line: 50]
+|   Child: 1  Compound [line: 51]
+|   |   Child: 0  Var tottington int [line: 52]
+|   |   |   Child: 0  Const: 'x' Type: char [line: 52]
+|   |   |Sibling: 1  Var Wensleydale int [line: 53]
+|   |   |   Child: 0  Const: "cheeeeeese" Type: is array of char [line: 53]
+|   |   |Sibling: 2  Var c is array of int [line: 54]
+|   |   |Sibling: 3  Var i bool [line: 55]
+|   |   Child: 1  Assign: = Type: int [line: 57]
+|   |   |   Child: 0  Id: tottington Type: int [line: 57]
+|   |   |   Child: 1  Id: Feathers Type: int [line: 57]
+|   |   |Sibling: 1  Assign: = Type: int [line: 58]
+|   |   |   Child: 0  Id: McGraw Type: int [line: 58]
+|   |   |   |   Child: 0  Const: 3 Type: int [line: 58]
+|   |   |   Child: 1  Id: Feathers Type: int [line: 58]
+|   |   |Sibling: 2  Assign: = Type: int [line: 59]
+|   |   |   Child: 0  Id: Wensleydale Type: int [line: 59]
+|   |   |   Child: 1  Id: McGraw Type: is array of int [line: 59]
+|   |   |Sibling: 3  Assign: = Type: int [line: 60]
+|   |   |   Child: 0  Id: Wensleydale Type: int [line: 60]
+|   |   |   |   Child: 0  Op: * Type: int [line: 60]
+|   |   |   |   |   Child: 0  Id: McGraw Type: is array of int [line: 60]
+|   |   |   Child: 1  Const: '*' Type: char [line: 60]
+|   |   |Sibling: 4  Assign: = Type: int [line: 61]
+|   |   |   Child: 0  Id: McGraw Type: is array of int [line: 61]
+|   |   |   Child: 1  Const: "A Matter of Loaf and Death" Type: is array of char [line: 61]
+|   |   |Sibling: 5  Compound [line: 63]
+|   |   |   Child: 0  Var c int [line: 63]
+|   |   |   |Sibling: 1  Var i bool [line: 64]
+|   |   |   Child: 1  Foreach [line: 65]
+|   |   |   |   Child: 0  Id: c Type: int [line: 65]
+|   |   |   |   Child: 1  Id: McGraw Type: is array of int [line: 65]
+|   |   |   |   Child: 2  If [line: 65]
+|   |   |   |   |   Child: 0  Op: == Type: bool [line: 65]
+|   |   |   |   |   |   Child: 0  Id: c Type: int [line: 65]
+|   |   |   |   |   |   Child: 1  Const: 'f' Type: char [line: 65]
+|   |   |   |   |   Child: 1  Return [line: 65]
+|   |   |   |   |   |   Child: 0  Const: true Type: bool [line: 65]
+|   |   |   |Sibling: 1  Foreach [line: 66]
+|   |   |   |   Child: 0  Id: i Type: bool [line: 66]
+|   |   |   |   Child: 1  Op: * Type: int [line: 66]
+|   |   |   |   |   Child: 0  Id: McGraw Type: is array of int [line: 66]
+|   |   |   |   Child: 2  If [line: 66]
+|   |   |   |   |   Child: 0  Op: == Type: bool [line: 66]
+|   |   |   |   |   |   Child: 0  Id: McGraw Type: int [line: 66]
+|   |   |   |   |   |   |   Child: 0  Id: i Type: bool [line: 66]
+|   |   |   |   |   |   Child: 1  Const: 'f' Type: char [line: 66]
+|   |   |   |   |   Child: 1  Break [line: 66]
+|Sibling: 10  Func Wendolene returns type bool [line: 70]
+|   Child: 0  Param wool bool [line: 70]
+|   |Sibling: 1  Param shaun char [line: 70]
+|   |Sibling: 2  Param yarn is array of bool [line: 70]
+|   |Sibling: 3  Param preston is array of char [line: 70]
+|   Child: 1  Compound [line: 71]
+|   |   Child: 0  Var void bool [line: 72]
+|   |   Child: 1  Return [line: 73]
+|   |   |   Child: 0  Op: + Type: int [line: 73]
+|   |   |   |   Child: 0  Op: + Type: int [line: 73]
+|   |   |   |   |   Child: 0  Op: + Type: int [line: 73]
+|   |   |   |   |   |   Child: 0  Id: wool Type: bool [line: 73]
+|   |   |   |   |   |   Child: 1  Id: yarn Type: bool [line: 73]
+|   |   |   |   |   |   |   Child: 0  Const: 0 Type: int [line: 73]
+|   |   |   |   |   Child: 1  Op: * Type: int [line: 73]
+|   |   |   |   |   |   Child: 0  Id: yarn Type: is array of bool [line: 73]
+|   |   |   |   Child: 1  Id: yarn Type: bool [line: 73]
+|   |   |   |   |   Child: 0  Op: * Type: int [line: 73]
+|   |   |   |   |   |   Child: 0  Const: 7 Type: int [line: 73]
+|   |   |   |   |   |   Child: 1  Id: wool Type: bool [line: 73]
+|Sibling: 11  Func ramsBottom returns type char [line: 77]
+|   Child: 1  Compound [line: 78]
+|   |   Child: 0  Var chicken is array of bool [line: 79]
+|   |   |Sibling: 1  Var run is array of char [line: 80]
+|   |   |Sibling: 2  Var wallace is array of bool [line: 81]
+|   |   |Sibling: 3  Var gromit is array of bool [line: 81]
+|   |   Child: 1  Op: * Type: int [line: 83]
+|   |   |   Child: 0  Const: 42 Type: int [line: 83]
+|   |   |   Child: 1  Call: Wendolene Type: bool [line: 83]
+|   |   |   |   Child: 0  Op: + Type: int [line: 83]
+|   |   |   |   |   Child: 0  Op: + Type: int [line: 83]
+|   |   |   |   |   |   Child: 0  Const: 1 Type: int [line: 83]
+|   |   |   |   |   |   Child: 1  Const: 2 Type: int [line: 83]
+|   |   |   |   |   Child: 1  Const: 3 Type: int [line: 83]
+|   |   |   |   |Sibling: 1  Op: | Type: bool [line: 83]
+|   |   |   |   |   Child: 0  Op: ! Type: bool [line: 83]
+|   |   |   |   |   |   Child: 0  Const: true Type: bool [line: 83]
+|   |   |   |   |   Child: 1  Op: & Type: bool [line: 83]
+|   |   |   |   |   |   Child: 0  Const: true Type: bool [line: 83]
+|   |   |   |   |   |   Child: 1  Const: false Type: bool [line: 83]
+|   |   |   |   |Sibling: 2  Id: chicken Type: is array of bool [line: 83]
+|   |   |   |   |Sibling: 3  Id: run Type: is array of char [line: 83]
+|   |   |Sibling: 1  Id: run Type: char [line: 84]
+|   |   |   Child: 0  Op: - Type: int [line: 84]
+|   |   |   |   Child: 0  Op: * Type: int [line: 84]
+|   |   |   |   |   Child: 0  Id: run Type: is array of char [line: 84]
+|   |   |   |   Child: 1  Const: 1 Type: int [line: 84]
+|   |   |Sibling: 2  Return [line: 86]
+|   |   |   Child: 0  Op: ! Type: bool [line: 86]
+|   |   |   |   Child: 0  Op: >= Type: bool [line: 86]
+|   |   |   |   |   Child: 0  Id: wallace Type: bool [line: 86]
+|   |   |   |   |   |   Child: 0  Const: 1 Type: int [line: 86]
+|   |   |   |   |   Child: 1  Op: * Type: int [line: 86]
+|   |   |   |   |   |   Child: 0  Op: - Type: int [line: 86]
+|   |   |   |   |   |   |   Child: 0  Id: gromit Type: bool [line: 86]
+|   |   |   |   |   |   |   |   Child: 0  Const: 2 Type: int [line: 86]
+|   |   |   |   |   |   Child: 1  Const: 3 Type: int [line: 86]
+|Sibling: 12  Func cheese returns type bool [line: 89]
+|   Child: 0  Param x bool [line: 89]
+|   |Sibling: 1  Param y bool [line: 89]
+|   Child: 1  While [line: 89]
+|   |   Child: 0  Op: > Type: bool [line: 89]
+|   |   |   Child: 0  Id: x Type: bool [line: 89]
+|   |   |   Child: 1  Const: 0 Type: int [line: 89]
+|   |   Child: 1  If [line: 89]
+|   |   |   Child: 0  Op: > Type: bool [line: 89]
+|   |   |   |   Child: 0  Id: y Type: bool [line: 89]
+|   |   |   |   Child: 1  Const: 3 Type: int [line: 89]
+|   |   |   Child: 1  Assign: -- Type: int [line: 89]
+|   |   |   |   Child: 0  Id: x Type: bool [line: 89]
+|   |   |   Child: 2  Return [line: 89]
+|   |   |   |   Child: 0  Op: % Type: int [line: 89]
+|   |   |   |   |   Child: 0  Op: * Type: int [line: 89]
+|   |   |   |   |   |   Child: 0  Id: x Type: bool [line: 89]
+|   |   |   |   |   |   Child: 1  Id: x Type: bool [line: 89]
+|   |   |   |   |   Child: 1  Id: y Type: bool [line: 89]
+|Sibling: 13  Func Wensleydale returns type bool [line: 91]
+|   Child: 0  Param x bool [line: 91]
+|   |Sibling: 1  Param y bool [line: 91]
+|   Child: 1  Return [line: 91]
+|   |   Child: 0  Call: cheese Type: bool [line: 91]
+|   |   |   Child: 0  Id: x Type: bool [line: 91]
+|   |   |   |Sibling: 1  Id: gromit Type: bool [line: 91]
+|Sibling: 14  Func main returns type bool [line: 93]
+|   Child: 1  Compound [line: 94]
+|   |   Child: 0  Var wool bool [line: 95]
+|   |   |Sibling: 1  Var yarn is array of bool [line: 95]
+|   |   |Sibling: 2  Var shaun char [line: 96]
+|   |   |Sibling: 3  Var preston is array of char [line: 96]
+|   |   Child: 1  Call: wallace Type: void [line: 98]
+|   |   |   Child: 0  Call: cheese Type: bool [line: 98]
+|   |   |   |   Child: 0  Const: 62 Type: int [line: 98]
+|   |   |   |   |Sibling: 1  Op: - Type: int [line: 98]
+|   |   |   |   |   Child: 0  Const: 311 Type: int [line: 98]
+|   |   |   |Sibling: 1  Id: gromit Type: bool [line: 98]
+|   |   |Sibling: 1  Id: yarn Type: bool [line: 99]
+|   |   |   Child: 0  Op: ? Type: int [line: 99]
+|   |   |   |   Child: 0  Op: * Type: int [line: 99]
+|   |   |   |   |   Child: 0  Id: yarn Type: is array of bool [line: 99]
+|   |   |Sibling: 2  Return [line: 100]
+|   |   |   Child: 0  Call: Wendolene Type: bool [line: 100]
+|   |   |   |   Child: 0  Op: * Type: int [line: 100]
+|   |   |   |   |   Child: 0  Op: * Type: int [line: 100]
+|   |   |   |   |   |   Child: 0  Id: preston Type: is array of char [line: 100]
+|   |   |   |   |   Child: 1  Op: * Type: int [line: 100]
+|   |   |   |   |   |   Child: 0  Id: yarn Type: is array of bool [line: 100]
+|   |   |   |   |Sibling: 1  Id: shaun Type: char [line: 100]
+|   |   |   |   |Sibling: 2  Id: yarn Type: is array of bool [line: 100]
+|   |   |   |   |Sibling: 3  Id: preston Type: is array of char [line: 100]
+|Sibling: 15  Func null returns type void [line: 103]
+|Sibling: 16  Func MrNobody returns type void [line: 104]
+|   Child: 0  Param shaun bool [line: 104]
+|   |Sibling: 1  Param the bool [line: 104]
+|   |Sibling: 2  Param sheep bool [line: 104]
+|Sibling: 17  Var aBigLongVariableName6 char [line: 106]
+|Sibling: 18  Var odd bool [line: 107]
+|Sibling: 19  Var separation bool [line: 107]
+|Sibling: 20  Var of bool [line: 107]
+|Sibling: 21  Var stuff bool [line: 108]
+|Sibling: 22  Var ant is array of int [line: 110]
+|   Child: 0  Const: ""'" Type: is array of char [line: 110]
+|Sibling: 23  Var bat int [line: 111]
+|   Child: 0  Const: ''' Type: char [line: 111]
+|Sibling: 24  Var cat is array of int [line: 112]
+|   Child: 0  Const: "t
+" Type: is array of char [line: 112]
+|Sibling: 25  Var dog int [line: 113]
+|   Child: 0  Const: 't' Type: char [line: 113]
+Number of warnings: 0
+Number of errors: 101

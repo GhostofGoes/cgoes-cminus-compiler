@@ -1,0 +1,40 @@
+main()
+{
+        int x[2];
+        int
+        y
+        :
+        true
+        ;
+        
+        y
+        =
+        true
+        ;
+        if
+        (
+        34
+        )
+        ;
+        while
+        (
+        34
+        )
+        ;
+        foreach
+        (
+        x
+        in
+        true
+        )
+        ;
+        return
+        x
+        ;
+        x
+        =
+        5
+        *
+        true
+        ;
+}

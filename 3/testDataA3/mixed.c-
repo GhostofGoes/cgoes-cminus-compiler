@@ -1,0 +1,34 @@
+int a:1, b[4], c:3;
+main() {
+    foreach (a in 12)
+        while (true)
+            if (false)
+            {{{ b[2*a]; }}}
+            else break;
+    if (true);else;
+}
+        
+
+
+
+int gromit[10];
+int thelma(int a, b[]; bool c)
+{
+   int zz:666;
+
+   a = thelma(a, b, true) * 2;
+   if (a > 3) {
+       a = gromit[7];
+   }
+   else	return zz;
+}
+
+
+
+
+int thelma(int a, b; bool c)
+{
+   int zz:666;
+
+   a = thelma(a, b, true) * 2;
+}

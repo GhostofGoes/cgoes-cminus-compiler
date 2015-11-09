@@ -1,0 +1,30 @@
+main()
+{
+        int a[10], aa[10], aaa;
+        bool b[10], bb[10], bbb;
+        char c[10], cc[10], ccc;
+
+        a = aa;
+        aaa = aa;
+        aa = aaa;
+        a[0] = aaa;
+        aaa = a[0];
+
+        c = cc;
+        ccc = cc;
+        cc = ccc;
+        c[0] = ccc;
+        ccc = c[0];
+
+        a = cc;
+        aaa = cc;
+        aa = ccc;
+        a[0] = ccc;
+        aaa = c[0];
+
+        c == cc;
+        c != cc;
+        c > cc;
+
+        (c) == (cc);
+}
