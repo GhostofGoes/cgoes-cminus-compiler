@@ -613,7 +613,7 @@ void treeParse ( TreeNode * par, TreeNode * node, SymbolTable * symtable, bool i
                     return_found = true;
                     if ( tree->numChildren == 1 && tree->child[0] != NULL )
                     {
-                        if ( tree->child[0]->isArray && tree->child[0]->isIndex == false )
+                        if ( tree->child[0]->isArray && tree->child[0]->child[0] == NULL )
                         {
                             printf("ERROR(%d): Cannot return an array.\n", line);
                             errors++;
@@ -688,6 +688,12 @@ void treeParse ( TreeNode * par, TreeNode * node, SymbolTable * symtable, bool i
                             case SUBASS:
                             case MULASS:
                             case DIVASS:
+                              if ( tree->child[0]->isArray && tree->child[0]->child[0] == NULL )
+                              {
+                                  printf("ERROR(%d): The operation '%s' does not work with arrays.\n",
+                                         line, op.c_str());
+                                  errors++;
+                              }                                
                               if ( lhs != Integer )
                               {
                                   printf("ERROR(%d): '%s' requires operands of type %s but lhs is of type %s.\n",
@@ -782,12 +788,6 @@ void treeParse ( TreeNode * par, TreeNode * node, SymbolTable * symtable, bool i
 
                                 case EQ:
                                 case NOTEQ:
-                                  if ( lhs != rhs )
-                                  {
-                                      printf("ERROR(%d): '%s' requires operands of the same type but lhs is type %s and rhs is %s.\n",
-                                             line, op.c_str(), lhs_str, rhs_str);
-                                      errors++;
-                                  }
                                   if ( (tree->child[0]->isArray && tree->child[0]->child[0] == NULL)
                                        != (tree->child[1]->isArray && tree->child[1]->child[0] == NULL) )
                                   {
@@ -827,6 +827,12 @@ void treeParse ( TreeNode * par, TreeNode * node, SymbolTable * symtable, bool i
                                 case MINUS:
                                 case DIVIDE:
                                 case MODULUS:
+                                if ( tree->child[0]->isArray && tree->child[0]->child[0] == NULL )
+                                {
+                                    printf("ERROR(%d): The operation '%s' does not work with arrays.\n",
+                                           line, op.c_str());
+                                    errors++;
+                                }                                    
                                   if ( lhs != Integer )
                                   {
                                       printf("ERROR(%d): '%s' requires operands of type %s but lhs is of type %s.\n",
@@ -886,15 +892,16 @@ void treeParse ( TreeNode * par, TreeNode * node, SymbolTable * symtable, bool i
                               }
                               break;
                             case QUESTION:
+                              if ( lhs != Integer )
+                              {
+                                  printf("ERROR(%d): Unary '%s' requires an operand of type %s but was given %s.\n",
+                                         line, tree_svalue.c_str(), typeToStr(Integer), lhs_str);
+                                  errors++;
+                              }
                               if ( tree->child[0]->isArray && tree->child[0]->child[0] == NULL )
                               {
                                   printf("ERROR(%d): The operation '%s' does not work with arrays.\n",
                                          line, op.c_str());
-                                  errors++;
-                              } else if ( lhs != Integer )
-                              {
-                                  printf("ERROR(%d): Unary '%s' requires an operand of type %s but was given %s.\n",
-                                         line, tree_svalue.c_str(), typeToStr(Integer), lhs_str);
                                   errors++;
                               }
                               break;
@@ -906,6 +913,12 @@ void treeParse ( TreeNode * par, TreeNode * node, SymbolTable * symtable, bool i
                                          line, tree_svalue.c_str(), typeToStr(Boolean), lhs_str);
                                   errors++;
                               }
+                              if ( tree->child[0]->isArray && tree->child[0]->child[0] == NULL )
+                              {
+                                  printf("ERROR(%d): The operation '%s' does not work with arrays.\n",
+                                         line, op.c_str());
+                                  errors++;
+                              }                              
                               break;
                           }
                     }
