@@ -32,7 +32,7 @@ static void yyerror(const char *);
 
 // Creates the Annotated Syntax Tree
 void semanticAnalysis(TreeNode * tree );
-void typeResolution( TreeNode * node, SymbolTable * symtable );
+void typeResolution( TreeNode * parent, TreeNode * node, SymbolTable * symtable );
 void treeParse( TreeNode * parent, TreeNode * node, SymbolTable * symtable, bool in_loop );
 TreeNode * buildIOLibrary();
 void checkArgTypes( TreeNode * call, TreeNode * func );

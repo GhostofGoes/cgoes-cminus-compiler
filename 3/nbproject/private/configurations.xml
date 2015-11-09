@@ -4,12 +4,13 @@
     <df root="." name="0">
       <df name="A3">
       </df>
-      <df name="tests">
+      <df name="testDataA3">
       </df>
       <in>cminus.cpp</in>
       <in>cminus.h</in>
       <in>cminus.l</in>
       <in>cminus.tab.c</in>
+      <in>cminus.tab.h</in>
       <in>cminus.y</in>
       <in>lex.yy.c</in>
       <in>printing.cpp</in>
