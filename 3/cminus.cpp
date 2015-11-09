@@ -95,12 +95,13 @@ int main ( int argc, char * argv[] )
     //annotated_tree = true;
     if ( error_checking )
     {
-        annotatedTree = syntaxTree;
-        semanticAnalysis(annotatedTree);
+        //annotatedTree = syntaxTree;
+        //semanticAnalysis(annotatedTree);
 
         TreeNode * io = buildIOLibrary();
         linkSiblings(io, syntaxTree);
         annotatedTree = io;
+        semanticAnalysis(annotatedTree);
 
         if ( annotated_tree )
         {
@@ -869,8 +870,20 @@ void treeParse ( TreeNode * par, TreeNode * node, SymbolTable * symtable, bool i
                               break;
 
                             case MINUS:
-                            case QUESTION:
                               if ( lhs != Integer )
+                              {
+                                  printf("ERROR(%d): Unary '%s' requires an operand of type %s but was given %s.\n",
+                                         line, tree_svalue.c_str(), typeToStr(Integer), lhs_str);
+                                  errors++;
+                              }
+                              break;
+                            case QUESTION:
+                              if ( tree->child[0]->isArray && tree->child[0]->child[0] == NULL )
+                              {
+                                  printf("ERROR(%d): The operation '%s' does not work with arrays.\n",
+                                         line, op.c_str());
+                                  errors++;
+                              } else if ( lhs != Integer )
                               {
                                   printf("ERROR(%d): Unary '%s' requires an operand of type %s but was given %s.\n",
                                          line, tree_svalue.c_str(), typeToStr(Integer), lhs_str);
@@ -972,7 +985,7 @@ void treeParse ( TreeNode * par, TreeNode * node, SymbolTable * symtable, bool i
             in_loop = false;
         }
         
-        if ( tree->kind == FunK )
+        if ( tree->kind == FunK && tree->lineno > -1 )
         {
             if ( tree->nodetype != Void && return_found == false )
             {

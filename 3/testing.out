@@ -1,4 +1,2 @@
-ERROR(65): If not an array, foreach requires lhs of 'in' be of type int but it is type char.
-ERROR(65): If not an array, foreach requires rhs of 'in' be of type int but it is type char.
 Number of warnings: 0
-Number of errors: 2
+Number of errors: 0
