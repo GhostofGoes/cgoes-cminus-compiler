@@ -1,30 +1,36 @@
-ERROR(14): '=' requires operands of the same type but lhs is type int and rhs is char.
-ERROR(15): '=' requires operands of the same type but lhs is type int and rhs is bool.
-ERROR(18): '=' requires that if one operand is an array so must the other operand.
-ERROR(19): '=' requires that if one operand is an array so must the other operand.
-ERROR(20): '=' requires that if one operand is an array so must the other operand.
-ERROR(21): '=' requires operands of the same type but lhs is type int and rhs is char.
-ERROR(21): '=' requires that if one operand is an array so must the other operand.
-ERROR(22): '=' requires operands of the same type but lhs is type int and rhs is bool.
-ERROR(22): '=' requires that if one operand is an array so must the other operand.
-ERROR(24): '=' requires that if one operand is an array so must the other operand.
-ERROR(25): '=' requires that if one operand is an array so must the other operand.
-ERROR(26): '=' requires that if one operand is an array so must the other operand.
-ERROR(27): '=' requires operands of the same type but lhs is type int and rhs is char.
-ERROR(27): '=' requires that if one operand is an array so must the other operand.
-ERROR(28): '=' requires operands of the same type but lhs is type int and rhs is bool.
-ERROR(28): '=' requires that if one operand is an array so must the other operand.
-ERROR(30): The operation '>' does not work with arrays.
-ERROR(31): The operation '<' does not work with arrays.
-ERROR(32): The operation '>=' does not work with arrays.
-ERROR(33): The operation '<=' does not work with arrays.
-ERROR(37): The operation '>' does not work with arrays.
-ERROR(38): The operation '>' does not work with arrays.
-ERROR(40): The operation '?' does not work with arrays.
-ERROR(43): The operation '*' only works with arrays.
-ERROR(44): Cannot index nonarray 'x'.
-ERROR(45): The operation '*' only works with arrays.
-ERROR(45): Cannot index nonarray 'x'.
-ERROR(47): The operation '*' only works with arrays.
+ERROR(8): Unary '?' requires an operand of type int but was given char.
+ERROR(9): Unary '?' requires an operand of type int but was given char.
+ERROR(9): The operation '?' does not work with arrays.
+ERROR(10): Unary '?' requires an operand of type int but was given bool.
+ERROR(13): '*=' requires operands of type int but rhs is of type char.
+ERROR(14): The operation '*=' does not work with arrays.
+ERROR(14): '*=' requires operands of type int but rhs is of type char.
+ERROR(15): '*=' requires operands of type int but rhs is of type bool.
+ERROR(18): '/=' requires operands of type int but rhs is of type char.
+ERROR(19): The operation '/=' does not work with arrays.
+ERROR(19): '/=' requires operands of type int but rhs is of type char.
+ERROR(20): '/=' requires operands of type int but rhs is of type bool.
+ERROR(22): '*=' requires operands of type int but lhs is of type bool.
+ERROR(23): '*=' requires operands of type int but lhs is of type bool.
+ERROR(23): '*=' requires operands of type int but rhs is of type char.
+ERROR(24): The operation '*=' does not work with arrays.
+ERROR(24): '*=' requires operands of type int but lhs is of type bool.
+ERROR(24): '*=' requires operands of type int but rhs is of type char.
+ERROR(25): '*=' requires operands of type int but lhs is of type bool.
+ERROR(25): '*=' requires operands of type int but rhs is of type bool.
+ERROR(27): '*=' requires operands of type int but lhs is of type char.
+ERROR(28): '*=' requires operands of type int but lhs is of type char.
+ERROR(28): '*=' requires operands of type int but rhs is of type char.
+ERROR(29): The operation '*=' does not work with arrays.
+ERROR(29): '*=' requires operands of type int but lhs is of type char.
+ERROR(29): '*=' requires operands of type int but rhs is of type char.
+ERROR(30): '*=' requires operands of type int but lhs is of type char.
+ERROR(30): '*=' requires operands of type int but rhs is of type bool.
+ERROR(32): '=' requires operands of the same type but lhs is type char and rhs is int.
+ERROR(33): '=' requires operands of the same type but lhs is type int and rhs is char.
+ERROR(35): Symbol 'undef' is not defined.
+ERROR(36): Symbol 'undef' is not defined.
+ERROR(38): '*=' requires operands of type int but lhs is of type char.
+ERROR(39): '*=' requires operands of type int but rhs is of type char.
 Number of warnings: 0
-Number of errors: 28
+Number of errors: 34

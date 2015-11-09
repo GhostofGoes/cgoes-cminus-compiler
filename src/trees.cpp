@@ -20,6 +20,7 @@
 #include "symbolTable.h"
 #include "printing.h"
 #include "trees.h"
+//#include "semantic_errors.h"
 
 // Creates a new node for the syntax tree
 // TODO: combine with make parent?

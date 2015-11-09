@@ -40,6 +40,7 @@
 #include "symbolTable.h"
 #include "printing.h"
 #include "trees.h"
+#include "semantic_errors.h"
 
 // Tree pointers
 TreeNode * syntaxTree = NULL;
@@ -53,6 +54,7 @@ bool testing = false;
 bool return_found = false;
 TreeNode * func = NULL;
 
+// TODO: put different error types into their own methods in a "errors.cpp" file.
 
 int main ( int argc, char * argv[] )
 {
@@ -512,7 +514,7 @@ void treeParse ( TreeNode * par, TreeNode * node, SymbolTable * symtable, bool i
                         {
                             printf("ERROR(%d): Cannot index nonarray '%s'.\n", line, tree_svalue.c_str());
                             errors++;
-                        } else if ( tree->child[0]->isArray )
+                        } else if ( tree->child[0]->isArray && tree->child[0]->child[0] == NULL )
                         {
                             printf("ERROR(%d): Initializer for nonarray variable '%s' of type %s cannot be initialized with an array.\n",
                                    line, tree_svalue.c_str(), tree_type_str);
@@ -576,7 +578,7 @@ void treeParse ( TreeNode * par, TreeNode * node, SymbolTable * symtable, bool i
                         {
                             printf("ERROR(%d): Cannot use array as test condition in if statement.\n", line);
                             errors++;
-                        } else if ( lhs != Undef && lhs != Boolean )
+                        } else if ( isBoolean(lhs) == false )
                         {
                             printf("ERROR(%d): Expecting Boolean test condition in if statement but got type %s.\n", line, lhs_str);
                             errors++;
@@ -608,7 +610,7 @@ void treeParse ( TreeNode * par, TreeNode * node, SymbolTable * symtable, bool i
                         else if ( tree->child[1]->isArray == false || 
                                 ( tree->child[1]->isArray && tree->child[1]->child[0] != NULL ) )
                         {
-                            if ( lhs != Undef && lhs != Integer )
+                            if ( !isInteger(lhs) )
                             {
                                 printf("ERROR(%d): If not an array, foreach requires lhs of 'in' be of type int but it is type %s.\n",
                                        line, lhs_str);
@@ -714,7 +716,7 @@ void treeParse ( TreeNode * par, TreeNode * node, SymbolTable * symtable, bool i
                         switch (tree->token->bval)
                           {
                             case ASSIGN:
-                              if (  lhs != Undef &&  rhs != Undef && lhs != rhs )
+                              if (  lhs != Void && rhs != Void && lhs != Undef &&  rhs != Undef && lhs != rhs )
                               {
                                   printf("ERROR(%d): '%s' requires operands of the same type but lhs is type %s and rhs is %s.\n",
                                          line, op.c_str(), lhs_str, rhs_str);
@@ -740,13 +742,13 @@ void treeParse ( TreeNode * par, TreeNode * node, SymbolTable * symtable, bool i
                                          line, op.c_str());
                                   errors++;
                               }                                
-                              if ( lhs != Integer )
+                              if (  lhs != Void && lhs != Undef && lhs != Integer )
                               {
                                   printf("ERROR(%d): '%s' requires operands of type %s but lhs is of type %s.\n",
                                          line, op.c_str(), typeToStr(Integer), lhs_str);
                                   errors++;
                               }
-                              if ( rhs != Integer )
+                              if ( rhs != Void && rhs != Undef && rhs != Integer )
                               {
                                   printf("ERROR(%d): '%s' requires operands of type %s but rhs is of type %s.\n",
                                          line, op.c_str(), typeToStr(Integer), rhs_str);
@@ -757,7 +759,7 @@ void treeParse ( TreeNode * par, TreeNode * node, SymbolTable * symtable, bool i
 
                             case INC:
                             case DEC:
-                              if ( lhs != Integer )
+                              if (  lhs != Void && lhs != Undef && lhs != Integer )
                               {
                                   printf("ERROR(%d): '%s' requires operands of type %s but lhs is of type %s.\n",
                                          line, op.c_str(), typeToStr(Integer), lhs_str);
