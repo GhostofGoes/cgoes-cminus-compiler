@@ -35,5 +35,6 @@ void semanticAnalysis(TreeNode * tree );
 void typeResolution( TreeNode * node, SymbolTable * symtable );
 void treeParse( TreeNode * parent, TreeNode * node, SymbolTable * symtable, bool in_loop );
 TreeNode * buildIOLibrary();
+void checkArgTypes( TreeNode * call, TreeNode * func );
 
 #endif
