@@ -28,7 +28,7 @@ extern FILE * yyin;	// Input file stream for Flex
 extern TreeNode * syntaxTree;
 extern TreeNode * annotatedTree;
 
-static void yyerror(const char *);
+//static void yyerror(const char *);
 
 // Creates the Annotated Syntax Tree
 void semanticAnalysis(TreeNode * tree );

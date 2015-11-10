@@ -6,7 +6,9 @@
 #include "cminus.h"
 #include "types.h"
 #include "toker.h"
+#include "yyerrorHelper.h"
 
+    
 // String/Character parsing buffers
 char * stringbuffer;	// Holds initial position for stringconst parsing
 char * sbuf_ptr;		// keeps track of stringconst parsing
@@ -200,3 +202,42 @@ stringbody	([^"])|(\\[^n])
 .			{ return error(yytext, yylineno, "Invalid input character"); }
 
 %%
+
+// This is the yyerror called by the bison parser for errors.
+// It only does errors and not warnings.   
+void yyerror(const char *msg)
+{
+    char *space;
+    char *strs[100];
+    int numstrs;
+
+    // make a copy of msg string
+    space = strdup(msg);
+
+    // split out components
+    numstrs = split(space, strs, ' ');
+    if (numstrs>4) trim(strs[3]);
+
+    // translate components
+    for (int i=3; i<numstrs; i+=2) {
+        strs[i] = niceTokenStr(strs[i]);
+    }
+
+    // print components
+    printf("ERROR(%d): Syntax error, unexpected %s", yylineno, strs[3]);
+    if (elaborate(strs[3])) {
+        if (yytext[0]=='\'' || yytext[0]=='"') printf(" %s", yytext); 
+        else printf(" \'%s\'", yytext);
+    }
+    if (numstrs>4) printf(",");
+    tinySort(strs+5, numstrs-5, 2, true); 
+    for (int i=4; i<numstrs; i++) {
+        printf(" %s", strs[i]);
+    }
+    printf(".\n");
+    fflush(stdout);   // force a dump of the error
+
+    errors++;
+
+    free(space);
+}

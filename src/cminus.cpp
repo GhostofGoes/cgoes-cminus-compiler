@@ -268,12 +268,7 @@ void typeResolution ( TreeNode * par, TreeNode * node, SymbolTable * symtable )
                     if ( !symtable->insert(tree_svalue, tree) )
                     {
                         if(testing)
-                        {
                             std::cout << "Failed to insert DeclK:VarK:" << tree_svalue << std::endl;
-                        }
-                        //temp = (TreeNode *) symtable->lookup(tree_svalue);
-                        //printf("ERROR(%d): Symbol '%s' is already defined at line %d.\n", line, tree_svalue.c_str(), temp->lineno);
-                        //errors++;
                     }
                     break;
 
@@ -281,12 +276,7 @@ void typeResolution ( TreeNode * par, TreeNode * node, SymbolTable * symtable )
                     if ( !symtable->insert(tree_svalue, tree) )
                     {
                         if(testing)
-                        {
                             std::cout << "Failed to insert DeclK:ParamK:" << tree_svalue << std::endl;                            
-                        }
-                        //temp = (TreeNode *) symtable->lookup(tree_svalue);
-                        //printf("ERROR(%d): Symbol '%s' is already defined at line %d.\n", line, tree_svalue.c_str(), temp->lineno);
-                        //errors++;
                     }                 
                     break;
 
@@ -294,12 +284,7 @@ void typeResolution ( TreeNode * par, TreeNode * node, SymbolTable * symtable )
                     if ( !symtable->insert(tree_svalue, tree) )
                     {
                         if(testing)
-                        {
                             std::cout << "Failed to insert DeclK:FunK:" << tree_svalue << std::endl;
-                        }
-                        //temp = (TreeNode *) symtable->lookup(tree_svalue);
-                        //printf("ERROR(%d): Symbol '%s' is already defined at line %d.\n", line, tree_svalue.c_str(), temp->lineno);
-                        //errors++;
                     }
                     symtable->enter("Function " + tree_svalue);
                     break;
@@ -347,19 +332,12 @@ void typeResolution ( TreeNode * par, TreeNode * node, SymbolTable * symtable )
                     if ( temp != NULL )
                     {
                         tree->nodetype = temp->nodetype;
-                        //if(temp->isArray && temp->child[0] != NULL && temp->child[0]->isIndex == false )
                         if(temp->isArray)
-                        {
                             tree->isArray = true;
-                        }
                         if(temp->isIndex)
-                        {
                             tree->isIndex = true;
-                        }
                         if ( temp->isStatic )
-                        {
                             tree->isStatic = true;
-                        }                        
                     } else
                     {
                         tree->nodetype = Undef;
@@ -373,12 +351,9 @@ void typeResolution ( TreeNode * par, TreeNode * node, SymbolTable * symtable )
                   case CallK:
                     temp = (TreeNode *) symtable->lookup(tree_svalue);
                     if ( temp != NULL && temp->kind == FunK )
-                    {
                         tree->nodetype = temp->nodetype;
-                    } else
-                    {
+                    else
                         tree->nodetype = Undef;
-                    }
                     break;
                   case IdK:
                     temp = (TreeNode *) symtable->lookup(tree_svalue);
@@ -386,18 +361,11 @@ void typeResolution ( TreeNode * par, TreeNode * node, SymbolTable * symtable )
                     {
                         tree->nodetype = temp->nodetype;
                         if ( temp->isArray )
-                        {
                             tree->isArray = true;
-                        }
                         if ( temp->isIndex )
-                        {
                             tree->isIndex = true;
-                        }
                         if ( temp->isStatic )
-                        {
-                            tree->isStatic = true;
-                        }  
-                      
+                            tree->isStatic = true;                      
                     } else
                     {
                         tree->nodetype = Undef;
@@ -444,12 +412,9 @@ void treeParse ( TreeNode * par, TreeNode * node, SymbolTable * symtable, bool i
 
     TreeNode * parent;
     if ( par == NULL )
-    {
         parent = tree;
-    } else
-    {
+    else
         parent = par;
-    }
 
     while (tree != NULL)
     {
@@ -561,9 +526,7 @@ void treeParse ( TreeNode * par, TreeNode * node, SymbolTable * symtable, bool i
 
                   default:
                     if ( testing )
-                    {
                         std::cout << "Hit default case in DeclK switch" << std::endl;
-                    }
                     break;
 
                 } // end DeclK kind switch
@@ -593,6 +556,7 @@ void treeParse ( TreeNode * par, TreeNode * node, SymbolTable * symtable, bool i
                         if(testing)
                         {
                             std::cout << "Less than 2 children in a IfK..." << std::endl;
+                            printTreeNode(tree);
                         }
                     }
                     break;
@@ -1067,6 +1031,7 @@ void treeParse ( TreeNode * par, TreeNode * node, SymbolTable * symtable, bool i
               if ( testing )
               {
                   std::cout << "Hit default case in ExpK switch" << std::endl;
+                  printTreeNode(tree);
               }
               break;
           } // end nodekind switch

@@ -1,23 +1,26 @@
 %{
 #include <stdio.h>
 #include <stdlib.h>
-#include <getopt.h>
-#include <string.h>
+//#include <getopt.h>
+//#include <string.h>
 //#include <stdarg.h>
 
+    // TODO: code requires needed still, or get rid of these?
 #include "types.h"
 #include "cminus.h"
 #include "toker.h"
-#include "symbolTable.h"
+#include "yyerrorHelper.h"
+//#include "symbolTable.h"
 
 #define YYERROR_VERBOSE
 
 %}
 
 %code requires {
-	#define MAXCHILDREN 3
-	#include "types.h"
-	#include "cminus.h"
+    #define MAXCHILDREN 3
+    #include "yyerrorHelper.h"
+    #include "types.h"
+    #include "cminus.h"
     #include "toker.h"
 }
 
@@ -27,10 +30,10 @@
 %union 
 {
     TokenData * tok;
-	TreeNode * tree;
+    TreeNode * tree;
 }
 
-%token <tok> ERROR /* need to put a error incrementer/warning incrementer for ERROR */
+%token <tok> ERROR
 %token <tok> ID NUMCONST STRINGCONST CHARCONST  BOOLCONST
 %token <tok> ADDASS SUBASS MULASS DIVASS INC DEC LESSEQ GRTEQ EQ NOTEQ STATIC INT BOOL CHAR IF ELSE WHILE FOREACH IN RETURN BREAK
 %token <tok> SEMICOLON LPAREN RPAREN LBRACKET RBRACKET OR AND NOT ASSIGN PLUS MINUS MULTIPLY DIVIDE MODULUS QUESTION LTHAN GTHAN LBRACE RBRACE COMMA COLON 
@@ -743,8 +746,10 @@ constant:
 %%
 
 // Defines yyerror for bison
+/*
 static void yyerror(const char *msg)
 {
     fflush(stdout);
     printf("ERROR(%d): %s\n", yylineno, msg ? msg : "");
 }
+*/

@@ -24,6 +24,8 @@
       <in>trees.cpp</in>
       <in>trees.h</in>
       <in>types.h</in>
+      <in>yyerrorHelper.cpp</in>
+      <in>yyerrorHelper.h</in>
     </df>
   </logicalFolder>
   <projectmakefile>makefile</projectmakefile>
