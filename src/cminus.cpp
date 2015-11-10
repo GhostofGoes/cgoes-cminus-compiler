@@ -766,7 +766,7 @@ void treeParse ( TreeNode * par, TreeNode * node, SymbolTable * symtable, bool i
 
                             case INC:
                             case DEC:
-                              if (  lhs != Void && lhs != Undef && lhs != Integer )
+                              if ( lhs != Undef && lhs != Integer )
                               {
                                   printf("ERROR(%d): Unary '%s' requires operands of type %s but lhs is of type %s.\n",
                                          line, op.c_str(), typeToStr(Integer), lhs_str);
@@ -815,7 +815,7 @@ void treeParse ( TreeNode * par, TreeNode * node, SymbolTable * symtable, bool i
                                            line, svalResolve(tmp).c_str(), tmp->lineno);
                                     errors++;
                                 }
-                                checkArgTypes(tree->child[0], tmp->child[0]);
+                                checkArgTypes(tree, tmp);
                             }
     
                         }
@@ -1158,7 +1158,7 @@ TreeNode * buildIOLibrary ( )
     return in;
 }
 
-void checkArgTypes( TreeNode * call, TreeNode * func )
+void checkArgTypes( TreeNode * call, TreeNode * func)
 {
     if(call == NULL || func == NULL )
     {
@@ -1173,8 +1173,8 @@ void checkArgTypes( TreeNode * call, TreeNode * func )
     {
         std::cout << "Entering checkArgTypes..." << std::endl;
     }
-    TreeNode * temp_call = call;
-    TreeNode * temp_func = func;
+    TreeNode * temp_call = call->child[0];
+    TreeNode * temp_func = func->child[0];
     //TreeNode * tmp = NULL;
     int sibling_count = 1;
     
@@ -1187,7 +1187,7 @@ void checkArgTypes( TreeNode * call, TreeNode * func )
         if ( temp_func->nodetype != temp_call->nodetype )
         {
             printf("ERROR(%d): Expecting type %s in parameter %i of call to '%s' defined on line %d but got %s.\n",
-                   call->lineno, typeToStr(temp_func->nodetype), sibling_count, svalResolve(func).c_str(), func->lineno, typeToStr(call->nodetype));
+                   call->lineno, typeToStr(temp_func->nodetype), sibling_count, svalResolve(func).c_str(), func->lineno, typeToStr(temp_call->nodetype));
             errors++;
         }
         if ( temp_func->isArray && (!temp_call->isArray || (temp_call->isArray && temp_call->child[0] != NULL)) )

@@ -1,2 +1,207 @@
-Number of warnings: 0
-Number of errors: 0
+Failed to insert DeclK:VarK:x
+Failed to insert DeclK:FunK:dog
+Failed to insert DeclK:VarK:cat
+Failed to insert DeclK:VarK:x
+Failed to insert DeclK:VarK:x
+ExpK:ParamK...wat?
+TreeNode
+TokenData - NULL
+ |lineno: -1 |numChildren: 0 |isArray: 0 |isIndex: 0 |isStatic: 0 |isScoped: 0
+ |nodekind: ExpK |kind: 4 |nodetype: int
+ |svalue: *dummy*
+ExpK:ParamK...wat?
+TreeNode
+TokenData - NULL
+ |lineno: -1 |numChildren: 0 |isArray: 0 |isIndex: 0 |isStatic: 0 |isScoped: 0
+ |nodekind: ExpK |kind: 4 |nodetype: bool
+ |svalue: *dummy*
+ExpK:ParamK...wat?
+TreeNode
+TokenData - NULL
+ |lineno: -1 |numChildren: 0 |isArray: 0 |isIndex: 0 |isStatic: 0 |isScoped: 0
+ |nodekind: ExpK |kind: 4 |nodetype: char
+ |svalue: *dummy*
+ERROR(13): Symbol 'x' is already defined at line 11.
+ERROR(17): Symbol 'cat' is not defined.
+ERROR(19): Function 'dog' at line 11 is expecting to return type char but got int.
+ERROR(22): Symbol 'dog' is already defined at line 11.
+WARNING(22): Expecting to return type int but function 'dog' has no return statement.
+ERROR(33): Function 'cat' at line 29 is expecting to return type char but return has no return value.
+ERROR(36): Symbol 'cat' is already defined at line 29.
+ERROR(42): Function 'ibex' at line 39 is expecting to return type int but got bool.
+ERROR(47): Function 'ox' at line 45 is expecting no return value, but return has return value.
+WARNING(50): Expecting to return type char but function 'emu' has no return statement.
+ERROR(57): Symbol 'x' is already defined at line 56.
+ERROR(58): Symbol 'x' is already defined at line 56.
+ERROR(67): Symbol 'v' is not defined.
+ERROR(69): Expecting Boolean test condition in if statement but got type char.
+ERROR(70): Expecting Boolean test condition in while statement but got type char.
+ERROR(71): Expecting Boolean test condition in while statement but got type void.
+Entering checkArgTypes...
+checkArgTypes:sibling:1
+ERROR(71): Expecting type char in parameter 1 of call to 'ox' defined on line 45 but got int.
+ERROR(74): '=' requires operands of the same type but lhs is type char and rhs is int.
+ERROR(75): '+=' requires operands of type int but lhs is of type char.
+ERROR(76): '-=' requires operands of type int but rhs is of type char.
+ERROR(77): '>' requires operands of the same type but lhs is type int and rhs is char.
+ERROR(80): Cannot use array as test condition in if statement.
+ERROR(81): Cannot use array as test condition in while statement.
+ERROR(83): Cannot have a break statement outside of loop.
+ERROR(85): Expecting Boolean test condition in while statement but got type int.
+ERROR(87): '+' requires operands of type int but lhs is of type char.
+ERROR(87): The operation '+' does not work with arrays.
+ERROR(88): The operation '<' does not work with arrays.
+ERROR(89): The operation '<' does not work with arrays.
+ERROR(91): '==' requires operands of the same type but lhs is type char and rhs is bool.
+ERROR(92): '==' requires operands of the same type but lhs is type char and rhs is int.
+ERROR(93): '==' requires operands of the same type but lhs is type int and rhs is bool.
+ERROR(95): '+' requires operands of type int but lhs is of type bool.
+ERROR(95): '+' requires operands of type int but rhs is of type char.
+ERROR(97): '*' requires operands of type int but lhs is of type char.
+ERROR(97): '*' requires operands of type int but rhs is of type bool.
+ERROR(99): Unary '!' requires an operand of type bool but was given char.
+ERROR(100): Unary '!' requires an operand of type bool but was given int.
+ERROR(100): '+' requires operands of type int but lhs is of type char.
+ERROR(103): Cannot index nonarray 'x'.
+ERROR(104): '=' requires operands of the same type but lhs is type int and rhs is bool.
+ERROR(104): '==' requires operands of the same type but lhs is type char and rhs is int.
+ERROR(104): '+' requires operands of type int but lhs is of type char.
+ERROR(104): '*' requires operands of type int but lhs is of type char.
+ERROR(104): '*' requires operands of type int but rhs is of type bool.
+ERROR(104): '&' requires operands of type int but lhs is of type char.
+ERROR(104): '&' requires operands of type int but rhs is of type char.
+ERROR(105): '=' requires operands of the same type but lhs is type int and rhs is bool.
+ERROR(105): '==' requires operands of the same type but lhs is type char and rhs is int.
+ERROR(105): '+' requires operands of type int but lhs is of type char.
+ERROR(105): '*' requires operands of type int but lhs is of type char.
+ERROR(105): '*' requires operands of type int but rhs is of type bool.
+ERROR(105): '&' requires operands of type int but lhs is of type char.
+ERROR(105): Symbol 'y' is not defined.
+ERROR(106): '=' requires operands of the same type but lhs is type int and rhs is bool.
+ERROR(106): '|' requires operands of type int but rhs is of type int.
+ERROR(106): '*' requires operands of type int but lhs is of type char.
+ERROR(106): '*' requires operands of type int but rhs is of type bool.
+ERROR(106): '&' requires operands of type int but lhs is of type char.
+ERROR(106): '&' requires operands of type int but rhs is of type char.
+ERROR(108): The operation '*' only works with arrays.
+ERROR(109): '&' requires operands of type int but lhs is of type int.
+ERROR(109): '&' requires operands of type int but rhs is of type int.
+ERROR(115): Array 'aa' should be indexed by type int but got char.
+ERROR(117): Array index is the unindexed array 'aa'.
+ERROR(118): Symbol 'AA' is not defined.
+ERROR(120): Array 'aa' should be indexed by type int but got undefined type.
+ERROR(120): Symbol 'meerkat' is not defined.
+ERROR(122): Symbol 'xyzzy' is not defined.
+ERROR(123): Symbol 'meerkat' is not defined.
+ERROR(124): '&' requires operands of type int but rhs is of type int.
+ERROR(124): Symbol 'xyzzy' is not defined.
+ERROR(126): Symbol 'flight' is not defined.
+ERROR(126): Unary '!' requires an operand of type bool but was given int.
+ERROR(126): Unary '-' requires an operand of type int but was given bool.
+ERROR(126): Symbol 'uu' is not defined.
+ERROR(126): Symbol 'y' is not defined.
+ERROR(126): '+' requires operands of type int but lhs is of type char.
+ERROR(126): '*' requires operands of type int but lhs is of type char.
+ERROR(128): 'x' is a simple variable and cannot be called.
+ERROR(130): Too many parameters passed for function 'dog' defined on line 11.
+Entering checkArgTypes...
+checkArgTypes:sibling:1
+ERROR(130): Expecting type char in parameter 1 of call to 'dog' defined on line 11 but got int.
+Entering checkArgTypes...
+Entering checkArgTypes...
+checkArgTypes:sibling:1
+ERROR(133): Expecting type char in parameter 1 of call to 'dog' defined on line 11 but got bool.
+Entering checkArgTypes...
+checkArgTypes:sibling:1
+ERROR(135): Not expecting array in parameter 1 of call to 'cat' defined on line 29.
+Entering checkArgTypes...
+checkArgTypes:sibling:1
+ERROR(136): Expecting type char in parameter 1 of call to 'cat' defined on line 29 but got bool.
+ERROR(136): Not expecting array in parameter 1 of call to 'cat' defined on line 29.
+Entering checkArgTypes...
+checkArgTypes:sibling:1
+ERROR(138): Expecting array in parameter 1 of call to 'ibex' defined on line 39.
+Entering checkArgTypes...
+checkArgTypes:sibling:1
+ERROR(139): Expecting type char in parameter 1 of call to 'ibex' defined on line 39 but got int.
+ERROR(140): Cannot index nonarray 'ibex'.
+ERROR(145): Array 'aa' should be indexed by type int but got char.
+ERROR(146): Array 'aa' should be indexed by type int but got char.
+ERROR(147): Array 'aa' should be indexed by type int but got void.
+Entering checkArgTypes...
+checkArgTypes:sibling:1
+ERROR(147): Expecting type char in parameter 1 of call to 'ox' defined on line 45 but got bool.
+ERROR(149): '=' requires operands of the same type but lhs is type char and rhs is void.
+Entering checkArgTypes...
+checkArgTypes:sibling:1
+ERROR(149): Expecting type char in parameter 1 of call to 'ox' defined on line 45 but got int.
+ERROR(150): '=' requires operands of the same type but lhs is type char and rhs is int.
+ERROR(150): '+' requires operands of type int but lhs is of type char.
+ERROR(150): '+' requires operands of type int but rhs is of type void.
+Entering checkArgTypes...
+checkArgTypes:sibling:1
+ERROR(150): Expecting type char in parameter 1 of call to 'ox' defined on line 45 but got int.
+Entering checkArgTypes...
+checkArgTypes:sibling:1
+ERROR(151): Expecting type char in parameter 1 of call to 'cat' defined on line 29 but got void.
+Entering checkArgTypes...
+checkArgTypes:sibling:1
+ERROR(151): Expecting type char in parameter 1 of call to 'ox' defined on line 45 but got int.
+Entering checkArgTypes...
+checkArgTypes:sibling:1
+ERROR(152): Expecting type char in parameter 1 of call to 'cat' defined on line 29 but got bool.
+Entering checkArgTypes...
+checkArgTypes:sibling:1
+Entering checkArgTypes...
+checkArgTypes:sibling:1
+ERROR(153): Expecting type char in parameter 1 of call to 'cat' defined on line 29 but got int.
+ERROR(155): '=' requires operands of the same type but lhs is type char and rhs is void.
+ERROR(155): '=' requires operands of the same type but lhs is type char and rhs is bool.
+ERROR(156): '=' requires operands of the same type but lhs is type int and rhs is void.
+ERROR(157): '=' requires operands of the same type but lhs is type char and rhs is void.
+ERROR(157): '=' requires operands of the same type but lhs is type int and rhs is void.
+ERROR(157): '=' requires operands of the same type but lhs is type char and rhs is int.
+ERROR(159): '&' requires operands of type int but lhs is of type int.
+ERROR(159): '&' requires operands of type int but rhs is of type int.
+ERROR(159): '*' requires operands of type int but lhs is of type char.
+ERROR(159): '*' requires operands of type int but rhs is of type char.
+Entering checkArgTypes...
+checkArgTypes:sibling:1
+ERROR(161): Expecting type char in parameter 1 of call to 'emu' defined on line 50 but got int.
+checkArgTypes:sibling:2
+ERROR(161): Expecting type char in parameter 2 of call to 'emu' defined on line 50 but got undefined type.
+checkArgTypes:sibling:3
+ERROR(161): Expecting type char in parameter 3 of call to 'emu' defined on line 50 but got bool.
+ERROR(161): '+' requires operands of type int but lhs is of type char.
+ERROR(161): Symbol 'parrot' is not defined.
+ERROR(161): '&' requires operands of type int but lhs is of type int.
+ERROR(161): '&' requires operands of type int but rhs is of type char.
+ERROR(162): Too many parameters passed for function 'emu' defined on line 50.
+Entering checkArgTypes...
+checkArgTypes:sibling:1
+ERROR(162): Expecting type char in parameter 1 of call to 'emu' defined on line 50 but got bool.
+checkArgTypes:sibling:2
+ERROR(162): Expecting type char in parameter 2 of call to 'emu' defined on line 50 but got bool.
+checkArgTypes:sibling:3
+ERROR(162): Expecting type char in parameter 3 of call to 'emu' defined on line 50 but got bool.
+ERROR(162): '&' requires operands of type int but rhs is of type char.
+Entering checkArgTypes...
+checkArgTypes:sibling:1
+ERROR(162): Expecting type char in parameter 1 of call to 'emu' defined on line 50 but got int.
+checkArgTypes:sibling:2
+ERROR(162): Expecting type char in parameter 2 of call to 'emu' defined on line 50 but got undefined type.
+checkArgTypes:sibling:3
+ERROR(162): Expecting type char in parameter 3 of call to 'emu' defined on line 50 but got bool.
+ERROR(162): '+' requires operands of type int but lhs is of type char.
+ERROR(162): Symbol 'parrot' is not defined.
+ERROR(162): '&' requires operands of type int but lhs is of type int.
+ERROR(162): '&' requires operands of type int but rhs is of type char.
+ERROR(162): '*' requires operands of type int but lhs is of type char.
+ERROR(166): If not an array, foreach requires rhs of 'in' be of type int but it is type bool.
+ERROR(167): In foreach statement the variable to the left of 'in' must not be an array.
+ERROR(167): If not an array, foreach requires lhs of 'in' be of type int but it is type char.
+ERROR(170): In foreach statement the variable to the left of 'in' must not be an array.
+ERROR(171): Foreach requires operands of 'in' be the same type but lhs is type char and rhs array is type bool.
+ERROR(173): Cannot return an array.
+Number of warnings: 2
+Number of errors: 137
