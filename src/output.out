@@ -1,36 +1,138 @@
-ERROR(8): Unary '?' requires an operand of type int but was given char.
-ERROR(9): Unary '?' requires an operand of type int but was given char.
-ERROR(9): The operation '?' does not work with arrays.
-ERROR(10): Unary '?' requires an operand of type int but was given bool.
-ERROR(13): '*=' requires operands of type int but rhs is of type char.
-ERROR(14): The operation '*=' does not work with arrays.
-ERROR(14): '*=' requires operands of type int but rhs is of type char.
-ERROR(15): '*=' requires operands of type int but rhs is of type bool.
-ERROR(18): '/=' requires operands of type int but rhs is of type char.
-ERROR(19): The operation '/=' does not work with arrays.
-ERROR(19): '/=' requires operands of type int but rhs is of type char.
-ERROR(20): '/=' requires operands of type int but rhs is of type bool.
-ERROR(22): '*=' requires operands of type int but lhs is of type bool.
-ERROR(23): '*=' requires operands of type int but lhs is of type bool.
-ERROR(23): '*=' requires operands of type int but rhs is of type char.
-ERROR(24): The operation '*=' does not work with arrays.
-ERROR(24): '*=' requires operands of type int but lhs is of type bool.
-ERROR(24): '*=' requires operands of type int but rhs is of type char.
-ERROR(25): '*=' requires operands of type int but lhs is of type bool.
-ERROR(25): '*=' requires operands of type int but rhs is of type bool.
-ERROR(27): '*=' requires operands of type int but lhs is of type char.
-ERROR(28): '*=' requires operands of type int but lhs is of type char.
-ERROR(28): '*=' requires operands of type int but rhs is of type char.
-ERROR(29): The operation '*=' does not work with arrays.
-ERROR(29): '*=' requires operands of type int but lhs is of type char.
-ERROR(29): '*=' requires operands of type int but rhs is of type char.
-ERROR(30): '*=' requires operands of type int but lhs is of type char.
-ERROR(30): '*=' requires operands of type int but rhs is of type bool.
-ERROR(32): '=' requires operands of the same type but lhs is type char and rhs is int.
-ERROR(33): '=' requires operands of the same type but lhs is type int and rhs is char.
-ERROR(35): Symbol 'undef' is not defined.
-ERROR(36): Symbol 'undef' is not defined.
-ERROR(38): '*=' requires operands of type int but lhs is of type char.
-ERROR(39): '*=' requires operands of type int but rhs is of type char.
+ExpK:ParamK...wat?
+TreeNode
+TokenData - NULL
+ |lineno: -1 |numChildren: 0 |isArray: 0 |isIndex: 0 |isStatic: 0 |isScoped: 0
+ |nodekind: ExpK |kind: 4 |nodetype: int
+ |svalue: *dummy*
+ExpK:ParamK...wat?
+TreeNode
+TokenData - NULL
+ |lineno: -1 |numChildren: 0 |isArray: 0 |isIndex: 0 |isStatic: 0 |isScoped: 0
+ |nodekind: ExpK |kind: 4 |nodetype: bool
+ |svalue: *dummy*
+ExpK:ParamK...wat?
+TreeNode
+TokenData - NULL
+ |lineno: -1 |numChildren: 0 |isArray: 0 |isIndex: 0 |isStatic: 0 |isScoped: 0
+ |nodekind: ExpK |kind: 4 |nodetype: char
+ |svalue: *dummy*
+ERROR(10): Initializer for array variable 'close' must be a string, but is of nonarray type bool.
+ERROR(10): Variable 'shave' is of type char but is being initialized with an expression of type bool.
+ERROR(15): '=' requires that if one operand is an array so must the other operand.
+ERROR(16): '=' requires operands of the same type but lhs is type bool and rhs is int.
+ERROR(16): '%' requires operands of type int but lhs is of type bool.
+ERROR(16): '/' requires operands of type int but rhs is of type bool.
+ERROR(17): '=' requires operands of the same type but lhs is type bool and rhs is int.
+ERROR(17): '-' requires operands of type int but rhs is of type bool.
+ERROR(17): '*' requires operands of type int but lhs is of type bool.
+ERROR(17): '*' requires operands of type int but rhs is of type bool.
+ERROR(18): '+=' requires operands of type int but lhs is of type bool.
+ERROR(19): '-=' requires operands of type int but lhs is of type bool.
+ERROR(20): '/=' requires operands of type int but lhs is of type bool.
+ERROR(20): '*=' requires operands of type int but lhs is of type bool.
+ERROR(21): '=' requires operands of the same type but lhs is type char and rhs is bool.
+ERROR(21): '=' requires that if one operand is an array so must the other operand.
+ERROR(21): '<' requires operands of type char or int but lhs is of type bool.
+ERROR(21): '<' requires operands of type char or int but rhs is of type bool.
+ERROR(21): '<=' requires operands of type char or int but lhs is of type bool.
+ERROR(21): '<=' requires operands of type char or int but rhs is of type bool.
+ERROR(22): '=' requires operands of the same type but lhs is type char and rhs is bool.
+ERROR(22): '>' requires operands of type char or int but lhs is of type bool.
+ERROR(22): '>' requires operands of type char or int but rhs is of type bool.
+ERROR(22): '>=' requires operands of type char or int but lhs is of type bool.
+ERROR(22): '>=' requires operands of type char or int but rhs is of type bool.
+ERROR(24): Variable 'grand' is of type bool but is being initialized with an expression of type int.
+ERROR(24): Variable 'day' is of type bool but is being initialized with an expression of type int.
+ERROR(24): Variable 'out' is of type bool but is being initialized with an expression of type int.
+ERROR(25): '=' requires operands of the same type but lhs is type bool and rhs is int.
+ERROR(25): '+=' requires operands of type int but lhs is of type bool.
+ERROR(25): '-=' requires operands of type int but lhs is of type bool.
+ERROR(25): '-=' requires operands of type int but rhs is of type bool.
+ERROR(27): '=' requires operands of the same type but lhs is type char and rhs is bool.
+ERROR(27): '=' requires that if one operand is an array so must the other operand.
+ERROR(28): '=' requires operands of the same type but lhs is type char and rhs is bool.
+ERROR(29): '!=' requires that if one operand is an array so must the other operand.
+ERROR(29): '=' requires operands of the same type but lhs is type char and rhs is bool.
+ERROR(29): Unary '!' requires an operand of type bool but was given char.
+ERROR(29): The operation '!' does not work with arrays.
+ERROR(30): '==' requires that if one operand is an array so must the other operand.
+ERROR(30): Unary '!' requires an operand of type bool but was given char.
+ERROR(30): The operation '!' does not work with arrays.
+ERROR(30): '=' requires operands of the same type but lhs is type char and rhs is bool.
+ERROR(31): '=' requires operands of the same type but lhs is type char and rhs is bool.
+ERROR(31): '=' requires that if one operand is an array so must the other operand.
+ERROR(32): Expecting Boolean test condition in while statement but got type char.
+ERROR(36): '=' requires operands of the same type but lhs is type bool and rhs is int.
+ERROR(37): '<' requires operands of type char or int but lhs is of type bool.
+Entering checkArgTypes...
+checkArgTypes:sibling:1
+ERROR(38): Expecting type bool in parameter 1 of call to 'wrong' defined on line 8 but got int.
+checkArgTypes:sibling:2
+ERROR(38): Expecting type bool in parameter 2 of call to 'wrong' defined on line 8 but got int.
+ERROR(38): '--' requires operands of type int but lhs is of type bool.
+ERROR(38): '-' requires operands of type int but lhs is of type bool.
+ERROR(38): '-' requires operands of type int but rhs is of type bool.
+ERROR(38): The operation '-' does not work with arrays.
+ERROR(42): '=' requires operands of the same type but lhs is type bool and rhs is int.
+ERROR(42): '+=' requires operands of type int but lhs is of type bool.
+ERROR(42): '++' requires operands of type int but lhs is of type bool.
+ERROR(43): '==' requires that if one operand is an array so must the other operand.
+ERROR(43): '=' requires operands of the same type but lhs is type bool and rhs is int.
+ERROR(43): '--' requires operands of type int but lhs is of type bool.
+ERROR(52): Variable 'tottington' is of type int but is being initialized with an expression of type char.
+ERROR(53): Initializer for nonarray variable 'Wensleydale' of type int cannot be initialized with an array.
+ERROR(59): '=' requires that if one operand is an array so must the other operand.
+ERROR(60): '=' requires operands of the same type but lhs is type int and rhs is char.
+ERROR(60): Cannot index nonarray 'Wensleydale'.
+ERROR(61): '=' requires operands of the same type but lhs is type int and rhs is char.
+ERROR(65): '==' requires operands of the same type but lhs is type int and rhs is char.
+ERROR(65): Function 'penguin' at line 50 is expecting to return type char but got bool.
+ERROR(66): If not an array, foreach requires lhs of 'in' be of type int but it is type bool.
+ERROR(66): '==' requires operands of the same type but lhs is type int and rhs is char.
+ERROR(66): Array 'McGraw' should be indexed by type int but got bool.
+ERROR(73): Function 'Wendolene' at line 70 is expecting to return type bool but got int.
+ERROR(73): '+' requires operands of type int but rhs is of type bool.
+ERROR(73): '+' requires operands of type int but lhs is of type bool.
+ERROR(73): '+' requires operands of type int but rhs is of type bool.
+ERROR(73): '*' requires operands of type int but rhs is of type bool.
+ERROR(83): '*' requires operands of type int but rhs is of type bool.
+Entering checkArgTypes...
+checkArgTypes:sibling:1
+ERROR(83): Expecting type bool in parameter 1 of call to 'wool' defined on line 70 but got int.
+checkArgTypes:sibling:2
+ERROR(83): Expecting type char in parameter 2 of call to 'wool' defined on line 70 but got int.
+checkArgTypes:sibling:3
+checkArgTypes:sibling:4
+ERROR(86): Function 'ramsBottom' at line 77 is expecting to return type char but got bool.
+ERROR(86): '>=' requires operands of type char or int but lhs is of type bool.
+ERROR(86): Unary '-' requires an operand of type int but was given bool.
+ERROR(89): '>' requires operands of type char or int but lhs is of type bool.
+ERROR(89): '>' requires operands of type char or int but lhs is of type bool.
+ERROR(89): '--' requires operands of type int but lhs is of type bool.
+ERROR(89): Function 'cheese' at line 89 is expecting to return type bool but got int.
+ERROR(89): '%' requires operands of type int but rhs is of type bool.
+ERROR(89): '*' requires operands of type int but lhs is of type bool.
+ERROR(89): '*' requires operands of type int but rhs is of type bool.
+Entering checkArgTypes...
+checkArgTypes:sibling:1
+checkArgTypes:sibling:2
+Entering checkArgTypes...
+checkArgTypes:sibling:1
+checkArgTypes:sibling:2
+Entering checkArgTypes...
+checkArgTypes:sibling:1
+ERROR(98): Expecting type bool in parameter 1 of call to 'x' defined on line 89 but got int.
+checkArgTypes:sibling:2
+ERROR(98): Expecting type bool in parameter 2 of call to 'x' defined on line 89 but got int.
+Entering checkArgTypes...
+checkArgTypes:sibling:1
+ERROR(100): Expecting type bool in parameter 1 of call to 'wool' defined on line 70 but got int.
+checkArgTypes:sibling:2
+checkArgTypes:sibling:3
+checkArgTypes:sibling:4
+ERROR(110): Array 'ant' must be of type char to be initialized, but is of type int.
+ERROR(111): Variable 'bat' is of type int but is being initialized with an expression of type char.
+ERROR(112): Array 'cat' must be of type char to be initialized, but is of type int.
+ERROR(113): Variable 'dog' is of type int but is being initialized with an expression of type char.
 Number of warnings: 0
-Number of errors: 34
+Number of errors: 96

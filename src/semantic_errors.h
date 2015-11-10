@@ -20,6 +20,7 @@ bool isUndef( Type t );
 
 bool typeCompare( Type a, Type b );
 
+bool hasType( Type t );
 
 #endif	/* SEMANTIC_ERRORS_H */
 

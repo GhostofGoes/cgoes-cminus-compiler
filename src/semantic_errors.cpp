@@ -10,40 +10,22 @@
 #include "printing.h"
 #include "types.h"
 
+// TODO: don't use this for actual program logic, just error checking part!
+// why? because it suppresses voids/undefs
+
 bool isBoolean( Type t )
 {
-    if( t != Undef && t != Void )
-    {
-        return typeCompare( t, Boolean );
-    }
-    else
-    {
-        return false;
-    }
+    return typeCompare( t, Boolean );
 }
 
 bool isInteger( Type t )
 {
-    if( t != Undef && t != Void )
-    {
-        return typeCompare( t, Integer );    
-    }
-    else
-    {
-        return false;
-    }    
+    return typeCompare( t, Integer );    
 }
 
 bool isCharacter( Type t )
 {
-    if( t != Undef && t != Void )
-    {
-        return typeCompare( t, Character );    
-    }
-    else
-    {
-        return false;
-    } 
+    return typeCompare( t, Character );    
 }
 
 bool isVoid( Type t )
@@ -54,10 +36,20 @@ bool isVoid( Type t )
 bool isUndef( Type t )
 {
     return t == Undef ? true : false;
-
 }
 
 bool typeCompare( Type a, Type b )
 {
-    return a == b ? true : false;
+    if( a != Undef && b != Undef  )
+        return a == b;
+    else
+        return true;
+}
+
+bool hasType( Type t )
+{
+    if( t != Undef  )
+        return true;
+    else
+        return false;
 }
