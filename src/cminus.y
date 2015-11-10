@@ -92,6 +92,7 @@ program:
             $$ = $1; 
             syntaxTree = $$; 
         }
+    | error { $$ = NULL; }
 	;
 
 declaration-list: 
@@ -113,16 +114,23 @@ var-declaration:
         { 
             $$ = $2;
             applyTypeToSiblings($$, $1->nodetype);
+            yyerrok;
         }
+    | error SEMICOLON { yyerrok; }
 	;
 
 scoped-var-declaration:
 	scoped-type-specifier var-decl-list SEMICOLON
         { 
             $$ = $2;
-            if($1->isStatic) { $$->isStatic = true; }
+            if($1->isStatic) { $$->isStatic = true; 
+        yyerrok;
+            }
             applyTypeToSiblings($$, $1->nodetype);
         }
+     | type-specifier var-decl-list SEMICOLON { yyerrok; }
+     | type-specifier error { $$ = NULL; }
+     | error SEMICOLON { yyerrok; }
 	;
 
 var-decl-list:

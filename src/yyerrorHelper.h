@@ -8,6 +8,8 @@
 #ifndef YYERRORHELPER_H
 #define	YYERRORHELPER_H
 
+extern char * yytext;
+
 int split(char *s, char *strs[], char breakchar);
 
 // trim off the last character
@@ -41,7 +43,7 @@ void tinySort(char *base[], int num, int step, bool up);
 
 // This is the yyerror called by the bison parser for errors.
 // It only does errors and not warnings.   
-//void yyerror(const char *msg);
+void yyerror(const char *msg);
 
 #endif	/* YYERRORHELPER_H */
 
