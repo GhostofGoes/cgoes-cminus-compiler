@@ -1,2 +1,13 @@
 Does C- have a heap?
 
+changing ordering of operators changes emitted code.
+
+(sdiff command )
+
+scheme
+	put answer in register 3 (of a instruction)
+	IF statement example: test is a expression, results of expression goes in register 3, so we check register 3 for the IF statement
+	when return, take stuff from register 3 and put into register 2
+	
+
+(most compilers operate with infinite number of registers, then allocate all at the end? NP-complete optimization problems lol)

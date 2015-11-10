@@ -1,0 +1,117 @@
+program              
+declarationList      
+declaration          
+                     | error                                                 { $$ = NULL;
+varDeclaration       : typeSpecifier varDeclList ';'                         { yyerrok;
+                     | error ';'                                             { yyerrok;
+scopedVarDeclaration : STATIC typeSpecifier varDeclList ';'                  { yyerrok;
+                     | typeSpecifier varDeclList ';'                         { yyerrok;
+                     | typeSpecifier error                                   { $$ = NULL; 
+                     | error ';'                                             { yyerrok;
+varDeclList          
+                     | error ',' varDeclInitialize                           { yyerrok;
+                     | varDeclList ',' error                                 { $$ = NULL;
+varDeclInitialize    
+                     | error ':' simpleExpression                            { yyerrok;
+                     | varDeclId ':' error                                   { $$ = NULL; 
+                     | error                                                 { $$ = NULL; 
+varDeclId            : ID                                                    { yyerrok;
+                     | ID '[' NUMCONST ']'                                   { yyerrok;
+                     | ID '[' error                                          { $$ = NULL;
+                     | error ']'                                             { yyerrok;
+typeSpecifier        
+funDeclaration       
+                     | typeSpecifier error                                   { $$ = NULL; 
+                     | typeSpecifier ID '(' error                            { $$ = NULL; 
+                     | typeSpecifier ID '('  params ')' error                { $$ = NULL; 
+                     | ID '('  error                                         { $$ = NULL; 
+                     | ID '('  params ')' error                              { $$ = NULL; 
+params               
+paramList            : paramList ';' paramTypeList                           { yyerrok;
+                     | error ';' paramTypeList                               { yyerrok;
+                     | paramList ';' error                                   { $$ = NULL; 
+paramTypeList        
+                     | typeSpecifier error                                   { $$ = NULL; 
+paramIdList          : paramIdList ',' paramId                               { yyerrok;
+                     |  error ',' paramId                                    { yyerrok;
+                     |  paramIdList ',' error                                { $$ = NULL; 
+paramId              : ID                                                    { yyerrok;
+                     | ID '[' ']'                                            { yyerrok;
+                     | error                                                 { $$ = NULL;
+compoundStmt         : '{' localDeclarations statementList '}'               { yyerrok;
+                     | '{' error statementList '}'                           { $$ = NULL; 
+                     | '{' localDeclarations error '}'                       { yyerrok;
+localDeclarations    
+statementList        
+                     | statementList error                                   { $$ = NULL; 
+statement            
+matched              
+                     | IF '(' error ')' matched ELSE matched                 { $$ = NULL; 
+                     | WHILE '(' error ')' matched                           { $$ = NULL; 
+                     | FOREACH '(' error ')' matched                         { $$ = NULL; 
+                     | error                                                 { $$ = NULL; 
+unmatched            
+                     | IF '(' error ')' statement                            { $$ = NULL; 
+                     | IF '(' error ')' matched ELSE unmatched               { $$ = NULL; 
+                     | WHILE '(' error ')' unmatched                         { $$ = NULL; 
+                     | FOREACH '(' error ')' unmatched                       { $$ = NULL; 
+expressionStmt       : expression ';'                                        { yyerrok;
+                     | error ';'                                             { yyerrok;
+                     | ';'                                                   { yyerrok;
+returnStmt           : RETURN ';'                                            { yyerrok;
+                     | RETURN expression ';'                                 { yyerrok;
+breakStmt            : BREAK ';'                                             { yyerrok;
+expression           
+                     | error assignop expression                             { yyerrok;
+                     | mutable assignop error                                { $$ = NULL; 
+                     | error assignop error                                  { $$ = NULL; 
+                     | mutable INC                                           { yyerrok;
+                     | error INC                                             { yyerrok;
+                     | mutable DEC                                           { yyerrok;
+                     | error DEC                                             { yyerrok;
+assignop             
+simpleExpression     
+                     | error '|' andExpression                               { yyerrok;
+                     | simpleExpression '|' error                            { $$ = NULL;
+                     | error '|' error                                       { $$ = NULL;
+andExpression         
+                     | error '&' unaryRelExpression                          { yyerrok;
+                     | andExpression '&' error                               { $$ = NULL;
+                     | error '&' error                                       { $$ = NULL;
+unaryRelExpression   
+                     | '!' error                                             { $$ = NULL;
+relExpression        
+                     | error relop additiveExpression                        { yyerrok;
+                     | additiveExpression relop error                        { $$ = NULL;
+                     | error relop error                                     { $$ = NULL;
+relop                
+additiveExpression   
+                     | error sumop term                                      { yyerrok;
+                     | additiveExpression sumop error                        { $$ = NULL;
+                     | error sumop error                                     { $$ = NULL;
+sumop                
+term                 
+                     | error mulop unaryExpression                           { yyerrok;
+                     | term mulop error                                      { $$ = NULL;
+                     | error mulop error                                     { $$ = NULL;
+mulop                
+unaryExpression      
+                     | unaryop error                                         { $$ = NULL;
+unaryop              
+factor               
+mutable              : ID                                                    { yyerrok;
+                     | ID '[' expression ']'                                 { yyerrok;
+                     | ID '[' error                                          { $$ = NULL;
+                     | error ']'                                             { yyerrok;
+immutable            : '(' expression ')'                                    { yyerrok;
+                     | '(' error                                             { $$ = NULL;
+call                 : ID '(' args ')'                                       { yyerrok;
+                     | ID '(' error                                          { $$ = NULL;
+args                 
+argList              : argList ',' expression                                { yyerrok;
+                     | error ',' expression                                  { yyerrok;
+                     | argList ',' error                                     { $$ = NULL;
+constant             : NUMCONST                                              { yyerrok;
+                     | CHARCONST                                             { yyerrok;
+                     | STRINGCONST                                           { yyerrok;
+                     | BOOLCONST                                             { yyerrok;

@@ -141,6 +141,8 @@ var-decl-list:
         }
 	| var-decl-initialize 
 		{ $$ = $1; }
+	| error COMMA var-decl-initialize { yyerrok; }
+	| var-decl-list COMMA error { $$ = NULL; }
 	;				
 
 var-decl-initialize:
@@ -152,12 +154,16 @@ var-decl-initialize:
             addChild( $$, $3);
             freeToken($2);
         }
+    | error COLON simple-expression { yyerrok; }
+    | var-decl-id COLON error { $$ = NULL; }
+    | error { $$ = NULL; }
 	;
 
 var-decl-id:
 	ID
 		{ 
             $$ = makeNode( DeclK, VarK, Void, $1->lineno, $1 );
+            yyerrok;
         }
 	| ID LBRACKET NUMCONST RBRACKET
 		{ 
@@ -168,7 +174,10 @@ var-decl-id:
             freeToken($2);
             freeToken($3);
             freeToken($4);
+            yyerrok;
         }
+     | ID LBRACKET error { $$ = NULL; }
+     | error RBRACKET { yyerrok; }
 	;
 
 scoped-type-specifier:
@@ -215,6 +224,11 @@ fun-declaration:
             freeToken($2);
             freeToken($4);
 	}
+	| type-specifier error { $$ = NULL; }
+	| type-specifier ID LPAREN error { $$ = NULL; }
+	| type-specifier ID LPAREN params RPAREN error { $$ = NULL; }
+	| ID LPAREN error { $$ = NULL; }
+	| ID LPAREN params RPAREN error { $$ = NULL; }
 	;
 
 params:
@@ -229,9 +243,12 @@ param-list:
 		{  
                     $$ = linkSiblings($1, $3);
                     freeToken($2);
+                    yyerrok;
 		}
 	| param-type-list
 		{ $$ = $1; }
+	| error SEMICOLON param-type-list { yyerrok; }
+	| param-list SEMICOLON error { $$ = NULL; }
 	;
 	
 param-type-list:
@@ -247,15 +264,19 @@ param-id-list:
 	{ 
             $$ = linkSiblings($1, $3);
             freeToken($2);
+            yyerrok;
         }
 	| param-id 
             { $$ = $1; }
+    | error COMMA param-id { yyerrok; }
+    | param-id-list COMMA error { $$ = NULL; }
 	;
 	
 param-id:
 	ID 		
 	{ 
             $$ = makeNode( DeclK, ParamK, Void, $1->lineno, $1 );
+            yyerrok;
         }
 	| ID LBRACKET RBRACKET
 		{ 
@@ -263,7 +284,9 @@ param-id:
             $$->isArray = true; 
             freeToken($2);
             freeToken($3);
+            yyerrok;
         }
+     | error { $$ = NULL; }
 	;
 	
 statement:
@@ -288,6 +311,7 @@ matched:
 		{ $$ = $1; }
 	| break-stmt 
 		{ $$ = $1; }
+	| error { $$ = NULL; }
 	;
 
 unmatched:
@@ -310,6 +334,7 @@ matched-selection-stmt:
             freeToken($4);
             freeToken($6);
         }
+    | IF LPAREN error RPAREN matched ELSE matched { $$ = NULL; }
 	;
 
 unmatched-selection-stmt:
@@ -331,6 +356,8 @@ unmatched-selection-stmt:
             freeToken($4);
             freeToken($6);
         }
+    | IF LPAREN error RPAREN statement { $$ = NULL; }
+    | IF LPAREN error RPAREN matched ELSE unmatched { $$ = NULL; }
 	;
 	
 matched-while-stmt:
@@ -342,6 +369,7 @@ matched-while-stmt:
             freeToken($2);
             freeToken($4);
         }
+    | WHILE LPAREN error RPAREN matched { $$ = NULL; }
 	;
 
 unmatched-while-stmt:
@@ -353,6 +381,7 @@ unmatched-while-stmt:
             freeToken($2);
             freeToken($4);
         }
+    | WHILE LPAREN error RPAREN unmatched { $$ = NULL; }
 	;
 	
 matched-foreach-stmt:
@@ -366,6 +395,7 @@ matched-foreach-stmt:
             freeToken($4);
             freeToken($6);
         }
+    | FOREACH LPAREN error RPAREN matched { $$ = NULL; }
 	;
 	
 unmatched-foreach-stmt:
@@ -379,6 +409,7 @@ unmatched-foreach-stmt:
             freeToken($4);
             freeToken($6);
         }
+    | FOREACH LPAREN error RPAREN unmatched { $$ = NULL; }
 	;
 	
 compound-stmt:
@@ -389,7 +420,10 @@ compound-stmt:
             addChild( $$, $3);
             freeToken($1);
             freeToken($4);
+            yyerrok;
         }
+    | LBRACE error statement-list RBRACE { $$ = NULL; }
+    | LBRACE local-declarations error RBRACE { yyerrok; }
 	;
 
 local-declarations:
@@ -406,6 +440,7 @@ statement-list:
 		}
 	| /* empty */
 		{ $$ = NULL; }
+	| statement-list error { $$ = NULL; }
 	;
 	
 expression-stmt:
