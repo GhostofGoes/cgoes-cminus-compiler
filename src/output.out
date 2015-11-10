@@ -1,23 +1,2 @@
-ERROR(5): Symbol 'x' is already defined at line 5.
-ERROR(6): Symbol 'x' is already defined at line 5.
-ERROR(6): Symbol 'x' is already defined at line 5.
-ERROR(7): Symbol 'x' is already defined at line 5.
-ERROR(7): Symbol 'x' is already defined at line 5.
-ERROR(9): Symbol 'y' is already defined at line 9.
-ERROR(12): Symbol 'main' is already defined at line 11.
-ERROR(13): Symbol 'main' is already defined at line 11.
-ERROR(18): Symbol 'main' is already defined at line 3.
-ERROR(18): Symbol 'a' is already defined at line 18.
-ERROR(18): Symbol 'b' is already defined at line 18.
-ERROR(18): Symbol 'c' is already defined at line 18.
-ERROR(19): Symbol 'a' is already defined at line 18.
-ERROR(19): Symbol 'b' is already defined at line 18.
-ERROR(19): Symbol 'c' is already defined at line 18.
-ERROR(24): Symbol 'a' is already defined at line 23.
-ERROR(24): Symbol 'b' is already defined at line 23.
-ERROR(24): Symbol 'c' is already defined at line 23.
-ERROR(33): Symbol 'cat' is already defined at line 32.
-ERROR(36): Symbol 'cat' is already defined at line 32.
-ERROR(36): Symbol 'g' is already defined at line 1.
 Number of warnings: 0
-Number of errors: 21
+Number of errors: 0

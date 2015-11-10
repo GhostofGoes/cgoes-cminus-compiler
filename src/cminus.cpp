@@ -768,7 +768,7 @@ void treeParse ( TreeNode * par, TreeNode * node, SymbolTable * symtable, bool i
                             case DEC:
                               if (  lhs != Void && lhs != Undef && lhs != Integer )
                               {
-                                  printf("ERROR(%d): '%s' requires operands of type %s but lhs is of type %s.\n",
+                                  printf("ERROR(%d): Unary '%s' requires operands of type %s but lhs is of type %s.\n",
                                          line, op.c_str(), typeToStr(Integer), lhs_str);
                                   errors++;
                               }
@@ -1031,7 +1031,7 @@ void treeParse ( TreeNode * par, TreeNode * node, SymbolTable * symtable, bool i
                     {
                         if ( tree->child[0] != NULL && tree->child[0]->isIndex )
                         {
-                            if ( tmp->isArray && tmp->child[0] == NULL )
+                            if ( tmp->isArray ) // TODO: possible subtle error, if add "child[0] == null" check we have...issues. do everything05.c-
                             {
                                 if ( child0_sval == tree_svalue )
                                 {
