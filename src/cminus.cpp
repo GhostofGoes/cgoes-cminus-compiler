@@ -877,7 +877,8 @@ void treeParse ( TreeNode * par, TreeNode * node, SymbolTable * symtable, bool i
                                                  line, op.c_str(), "char or int", rhs_str);
                                           errors++;
                                       }
-                                  } else if ( !typeCompare(lhs, rhs) )
+                                  }
+                                  if ( !typeCompare(lhs, rhs) )
                                   {
                                       printf("ERROR(%d): '%s' requires operands of the same type but lhs is type %s and rhs is %s.\n",
                                              line, op.c_str(), lhs_str, rhs_str);
@@ -967,7 +968,7 @@ void treeParse ( TreeNode * par, TreeNode * node, SymbolTable * symtable, bool i
                           {
                             case MULTIPLY:
                               if ( tree->child[0]->isArray == false || 
-                                   tree->child[0]->child[0] != NULL )
+                                 ( tree->child[0]->isArray && tree->child[0]->child[0] != NULL ) )
                               {
                                   printf("ERROR(%d): The operation '%s' only works with arrays.\n",
                                          line, tree_svalue.c_str());
@@ -1030,7 +1031,7 @@ void treeParse ( TreeNode * par, TreeNode * node, SymbolTable * symtable, bool i
                     {
                         if ( tree->child[0] != NULL && tree->child[0]->isIndex )
                         {
-                            if ( tmp->isArray )
+                            if ( tmp->isArray && tmp->child[0] == NULL )
                             {
                                 if ( child0_sval == tree_svalue )
                                 {
