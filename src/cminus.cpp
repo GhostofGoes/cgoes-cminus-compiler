@@ -68,9 +68,8 @@ int main ( int argc, char * argv[] )
     //testing = false;
     bool abstract_tree = false;
     bool annotated_tree = false;
-    bool error_checking = false;
+    bool error_checking = true;
     bool code_generation = false;
-    bool syntax_error_checking = true;
     
     initTokenMaps();
 
@@ -120,11 +119,6 @@ int main ( int argc, char * argv[] )
     if ( abstract_tree )
     {
         printAbstractTree(syntaxTree);
-    }
-
-    if ( syntax_error_checking )
-    {
-        // syntax error checking
     }
     
     //annotated_tree = true;

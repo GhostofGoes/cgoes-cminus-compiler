@@ -21,7 +21,7 @@ int cToker(int bval, char * tok_text, int line_number, char value) {
 
 int sToker(int bval,  char * tok_text, int line_number, char * value) {
 	yylval.tok = allocToken(bval, tok_text, line_number);
-	yylval.tok->svalue = value;
+	//yylval.tok->svalue = value;
 	if(value != NULL) {
             //yylval.tok->svalue = (char *)malloc(sizeof(value));
             //memcpy( yylval.tok->svalue, value, sizeof(value));
@@ -30,13 +30,13 @@ int sToker(int bval,  char * tok_text, int line_number, char * value) {
 	return bval;
 }
 
-int error(char * tok_text, int line_number, const char * msg) {
+/*int error(char * tok_text, int line_number, const char * msg) {
 	yylval.tok = allocToken( ERROR, tok_text, line_number );
 	if(msg != NULL) {
 		yylval.tok->svalue = strdup(msg);
 	}
 	return ERROR;
-}
+}*/
 
 TokenData * allocToken(int bval, char * input_text, int linenum) {
     TokenData * newToken = (TokenData *) calloc(1, sizeof (TokenData));
