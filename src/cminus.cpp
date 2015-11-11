@@ -56,7 +56,7 @@ bool return_found = false;
 TreeNode * func = NULL;
 
 // TODO: put different error types into their own methods in a "errors.cpp" file.
-
+// TODO: free tokens matched by error terminal in bison
 int main ( int argc, char * argv[] )
 {
 
@@ -68,8 +68,9 @@ int main ( int argc, char * argv[] )
     //testing = false;
     bool abstract_tree = false;
     bool annotated_tree = false;
-    bool error_checking = true;
+    bool error_checking = false;
     bool code_generation = false;
+    bool syntax_error_checking = true;
 
     // Command line options
     while ((option = getopt(argc, argv, "dpPtz")) != EOF)
@@ -119,8 +120,13 @@ int main ( int argc, char * argv[] )
         printAbstractTree(syntaxTree);
     }
 
+    if ( syntax_error_checking )
+    {
+        // syntax error checking
+    }
+    
     //annotated_tree = true;
-    if ( error_checking )
+    if ( error_checking && (errors == 0) )
     {
         //annotatedTree = syntaxTree;
         //semanticAnalysis(annotatedTree);

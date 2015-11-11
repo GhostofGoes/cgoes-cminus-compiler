@@ -38,6 +38,8 @@
 %token <tok> ADDASS SUBASS MULASS DIVASS INC DEC LESSEQ GRTEQ EQ NOTEQ STATIC INT BOOL CHAR IF ELSE WHILE FOREACH IN RETURN BREAK
 %token <tok> SEMICOLON LPAREN RPAREN LBRACKET RBRACKET OR AND NOT ASSIGN PLUS MINUS MULTIPLY DIVIDE MODULUS QUESTION LTHAN GTHAN LBRACE RBRACE COMMA COLON 
 
+%type <tok> assignop     
+        
 %type <tree> program
 %type <tree> declaration-list
 %type <tree> declaration
@@ -87,13 +89,13 @@
 %%
 	
 program:	
-	declaration-list	
-		{ 
-            $$ = $1; 
-            syntaxTree = $$; 
-        }
+    declaration-list	
+    { 
+        $$ = $1; 
+        syntaxTree = $$; 
+    }
     | error { $$ = NULL; }
-	;
+    ;
 
 declaration-list: 
 	declaration-list declaration
@@ -194,15 +196,15 @@ scoped-type-specifier:
 
 type-specifier:
 	INT 
-		{ 
+	{ 
             $$ = makeNode( DeclK, TypeK, Integer, $1->lineno, $1 );
         }
 	| BOOL 
-		{ 
+	{ 
             $$ = makeNode( DeclK, TypeK, Boolean, $1->lineno, $1 );
         }
 	| CHAR 
-		{ 
+	{ 
             $$ = makeNode( DeclK, TypeK, Character, $1->lineno, $1 );
         }
 	;
@@ -437,10 +439,10 @@ statement-list:
 	statement-list statement
         { 
             $$ = linkSiblings($1, $2); 
-		}
+	}
+	| statement-list error { $$ = NULL; }
 	| /* empty */
 		{ $$ = NULL; }
-	| statement-list error { $$ = NULL; }
 	;
 	
 expression-stmt:
@@ -449,25 +451,30 @@ expression-stmt:
         	$$ = $1;
          	/* does expression occur at semicolon for line counting? */ 
          	freeToken($2);
+                yyerrok;
         }
 	| SEMICOLON /* EMPTY? */
 		{ 
                     $$ = NULL; 
-                    freeToken($1);	
+                    freeToken($1);
+                    yyerrok;
 		}
+        | error SEMICOLON { yyerrok; }
 	;
 	
 return-stmt:
 	RETURN SEMICOLON 
         { 
             $$ = makeNode( StmtK, ReturnK, Void, $1->lineno, $1 );
-            freeToken($2);    
+            freeToken($2);
+            yyerrok;
         }
 	| RETURN expression SEMICOLON
         {
             $$ = makeNode( StmtK, ReturnK, $2->nodetype, $1->lineno, $1 );     
             addChild( $$, $2);
             freeToken($3);
+            yyerrok;
         }
 	;
 	
@@ -475,7 +482,8 @@ break-stmt:
 	BREAK SEMICOLON
         { 
             $$ = makeNode( StmtK, BreakK, Void, $1->lineno, $1 );   
-            freeToken($2);  
+            freeToken($2);
+            yyerrok;
         }
 	;
 	
@@ -486,6 +494,16 @@ expression:
             addChild( $$, $1);
             addChild( $$, $3);
         }
+        | mutable assignop expression
+        { 
+            $$ = makeNode( ExpK, AssignK, Integer, $2->lineno, $2 );     
+            addChild( $$, $1);
+            addChild( $$, $3);
+        }
+        | error assignop expression { yyerrok; }
+        | mutable assignop error { $$ = NULL; }
+        | error assignop error { $$ = NULL; }
+        /*
 	| mutable ADDASS expression
         { 
             $$ = makeNode( ExpK, AssignK, Integer, $2->lineno, $2 );     
@@ -510,20 +528,35 @@ expression:
             addChild( $$, $1);
             addChild( $$, $3);
         }
+        */
 	| mutable INC
         { 
             $$ = makeNode( ExpK, AssignK, Integer, $2->lineno, $2 );     
             addChild( $$, $1);
+            yyerrok;
         }
 	| mutable DEC
         { 
             $$ = makeNode( ExpK, AssignK, Integer, $2->lineno, $2 );     
             addChild( $$, $1);
+            yyerrok;
         }
 	| simple-expression
 		{ $$ = $1; }
+        | error INC { yyerrok; }
+        | error DEC { yyerrok; }
+        | mutable ASSIGN 
 	;
-	
+
+assignop: 
+      ASSIGN
+    | ADDASS
+    | SUBASS
+    | MULASS
+    | DIVASS
+    ;
+
+
 simple-expression:
 	simple-expression OR and-expression 
         { 
@@ -536,6 +569,9 @@ simple-expression:
         }
 	| and-expression 
 		{ $$ = $1; }
+        | error OR and-expression { yyerrok; }
+        | simple-expression OR error { $$ = NULL; }
+        | error OR error { $$ = NULL; }
 	;
 	
 and-expression:
@@ -546,10 +582,13 @@ and-expression:
             addChild( $$, $3);
             if( $1 != NULL && $3 != NULL && $1->isConstant && $3->isConstant ) {
                 $$->isConstant = true;
-            }            
+            }
         }
 	| unary-rel-expression 
 		{ $$ = $1; }
+        | error AND unary-rel-expression { yyerrok; }
+        | and-expression AND error { $$ = NULL; }
+        | error AND error { $$ = NULL; }
 	;
 	/* remember, void here would be children's type, type checker to compare the children */
 unary-rel-expression:
@@ -563,6 +602,7 @@ unary-rel-expression:
         }
 	| rel-expression 
 		{ $$ = $1; }
+        | NOT error { $$ = NULL; }
 	;
 	
 rel-expression:
@@ -577,6 +617,9 @@ rel-expression:
         } 
 	| sum-expression 
 		{ $$ = $1; }
+        | error relop sum-expression { yyerrok; }
+        | sum-expression relop error { $$ = NULL; }
+        | error AND error { $$ = NULL; }
 	;
 	
 relop:
@@ -618,6 +661,9 @@ sum-expression:
         } 
 	| term 
             { $$ = $1; }
+        | error sumop term { yyerrok; }
+        | sum-expression sumop error { $$ = NULL; }
+        | error sumop error { $$ = NULL; }
 	;
 	
 sumop:
@@ -643,6 +689,9 @@ term:
         }
 	| unary-expression 
             { $$ = $1; }
+        | error mulop unary-expression { yyerrok; }
+        | term mulop error { $$ = NULL; }
+        | error mulop error { $$ = NULL; }
 	;
 	
 mulop:
@@ -676,6 +725,7 @@ unary-expression:
         }
 	| factor 
             { $$ = $1; }
+        | unaryop error { $$ = NULL; }
 	;
 	
 unaryop:
@@ -704,6 +754,7 @@ mutable:
 	ID
         { 
             $$ = makeNode( ExpK, IdK, Void, $1->lineno, $1 );
+            yyerrok;
         }
 	| ID LBRACKET expression RBRACKET
         {
@@ -713,7 +764,10 @@ mutable:
             addChild( $$, $3);
             freeToken($2);
             freeToken($4);
+            yyerrok;
         }
+        | ID LBRACKET error { $$ = NULL; }
+        | error RBRACKET { yyerrok; }
 	;
 	
 immutable:
@@ -721,12 +775,14 @@ immutable:
         { 
             $$ = $2;
             freeToken($1);
-            freeToken($3);        
+            freeToken($3);
+            yyerrok;
          }
 	| call
             { $$ = $1; }	
 	| constant 
             { $$ = $1; }	
+        | LPAREN error { $$ = NULL; }
 	;
 	
 call:
@@ -741,7 +797,9 @@ call:
 		}	
                 freeToken($2);
                 freeToken($4);
+                yyerrok;
             }
+        | ID LPAREN error { $$ = NULL; }
 	;
 	
 args:
@@ -756,32 +814,39 @@ arg-list:
 		{ 
 		    $$ = linkSiblings($1, $3); 
 		    freeToken($2);
+                    yyerrok;
 		}
 	| expression 
 		{ $$ = $1; }	
+        | error COMMA expression { yyerrok; }
+        | arg-list COMMA error { $$ = NULL; }
 	;
 	
 constant:
 	NUMCONST
-		{ 
+	{ 
             $$ = makeNode( ExpK, ConstK, Integer, $1->lineno, $1 );
             $$->isConstant = true;
+            yyerrok;
         }
 	| CHARCONST 
-		{ 
+	{ 
             $$ = makeNode( ExpK, ConstK, Character, $1->lineno, $1 );
             $$->isConstant = true;
+            yyerrok;
         }
 	| STRINGCONST
-		{ 
+	{ 
             $$ = makeNode( ExpK, ConstK, Character, $1->lineno, $1 );
             $$->isArray = true;
             $$->isConstant = true;
+            yyerrok;
         }
 	| BOOLCONST
-		{ 
+	{ 
             $$ = makeNode( ExpK, ConstK, Boolean, $1->lineno, $1 );
             $$->isConstant = true;
+            yyerrok;
         }
 	;
 	
