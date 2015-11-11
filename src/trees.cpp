@@ -54,9 +54,7 @@ TreeNode * makeParent( NodeKind nk, Kind k, Type t, int l, const char * svalue )
 void addChild(TreeNode * parent, TreeNode * child) {
     if (parent == NULL || child == NULL) {
         return;
-    }
-
-    if (parent->numChildren >= 0 && parent->numChildren < 3) {
+    } else if (parent->numChildren >= 0 && parent->numChildren < 3) {
         parent->child[parent->numChildren] = child;
         parent->numChildren++;
     }
@@ -67,12 +65,24 @@ TreeNode * linkSiblings( TreeNode * sib1, TreeNode * sib2 ) {
 
     if (sib1 == NULL) {
         return sib2;
-    } else if (sib2 == NULL) {
+    }
+    if (sib2 == NULL) {
         return sib1;
-    } else {
+    } 
+    else if(sib1 != NULL && sib2 != NULL)
+    {
         TreeNode * temp = sib1;
 
-        while (temp->sibling != NULL) {
+        if(testing)
+        {
+            std::cout << "Temp\n";
+            printTreeNode(temp);
+            std::cout << std::endl;
+            std::cout << "temp->sibling\n";
+            printTreeNode(temp->sibling);
+            std::cout << std::endl;
+        }
+        while (temp != NULL && temp->sibling != NULL) {
             temp = temp->sibling;
         }
         temp->sibling = sib2;

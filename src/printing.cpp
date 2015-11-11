@@ -129,9 +129,6 @@ void printTreeNode(void * node) {
     TreeNode * data = (TreeNode *)node;
     std::cout << "TreeNode" << std::endl;
 
-    
-    printTokenData(data->token);
-    
     std::cout << " |lineno: " << data->lineno;
     std::cout << " |numChildren: " << data->numChildren;
     std::cout << " |isArray: " << data->isArray;
@@ -152,9 +149,11 @@ void printTreeNode(void * node) {
         std::cout << std::endl;
     }
     
-    
     std::cout << " |svalue: " << data->svalue != NULL ? data->svalue : "";
-    std::cout << std::endl;
+    std::cout << "\n\n" <<  std::endl;
+    
+        printTokenData(data->token);
+
 }
 
 void printTokenData(void * tok) {
@@ -173,6 +172,7 @@ void printTokenData(void * tok) {
     std::cout << " |ivalue: " << token->ivalue << std::endl;
     
     std::cout << " |svalue: " << token->svalue != NULL ? token->svalue : "";
+    std::cout << std::endl;
     std::cout << " |input: " << token->input != NULL ? token->input : "";
     std::cout << std::endl;
     

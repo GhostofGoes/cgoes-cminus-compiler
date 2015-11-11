@@ -160,6 +160,7 @@ stringbody	([^"])|(\\[^n])
                 {
                     strcat(literalbuffer, yytext);
                     warnCharLength(yytext, clength, yylineno);
+                    cToker(CHARCONST, literalbuffer, yylineno, ctemp);
                     free(literalbuffer);
                     BEGIN(INITIAL);
                     return CHARCONST;
