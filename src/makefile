@@ -19,7 +19,7 @@ all:
 	make
 
 clean:
-	rm -f $(OBJS) $(BIN) lex.yy.c $(BIN).tab.h $(BIN).tab.c $(BIN).tar *~
+	rm -f c- $(OBJS) $(BIN) lex.yy.c $(BIN).tab.h $(BIN).tab.c $(BIN).tar *~ $(BIN).output
 
 pdf:    $(BIN).y $(BIN).l makefile
 	mktex $(BIN).y

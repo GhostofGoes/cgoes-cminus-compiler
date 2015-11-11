@@ -535,16 +535,16 @@ expression:
             addChild( $$, $1);
             yyerrok;
         }
+        | error INC { yyerrok; }
 	| mutable DEC
         { 
             $$ = makeNode( ExpK, AssignK, Integer, $2->lineno, $2 );     
             addChild( $$, $1);
             yyerrok;
         }
+        | error DEC { yyerrok; }
 	| simple-expression
 		{ $$ = $1; }
-        | error INC { yyerrok; }
-        | error DEC { yyerrok; }
 	;
 
 assignop: 
