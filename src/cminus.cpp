@@ -71,6 +71,8 @@ int main ( int argc, char * argv[] )
     bool error_checking = false;
     bool code_generation = false;
     bool syntax_error_checking = true;
+    
+    initTokenMaps();
 
     // Command line options
     while ((option = getopt(argc, argv, "dpPtz")) != EOF)

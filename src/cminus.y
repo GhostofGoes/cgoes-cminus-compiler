@@ -94,7 +94,6 @@ program:
         $$ = $1; 
         syntaxTree = $$; 
     }
-    | error { $$ = NULL; }
     ;
 
 declaration-list: 
@@ -109,6 +108,7 @@ declaration:
 		{ $$ = $1; }
 	| fun-declaration
 		{ $$ = $1; }
+        | error { $$ = NULL; }
 	;
 
 var-declaration:
@@ -122,15 +122,13 @@ var-declaration:
 	;
 
 scoped-var-declaration:
-	scoped-type-specifier var-decl-list SEMICOLON
-        { 
-            $$ = $2;
-            if($1->isStatic) { $$->isStatic = true; 
+    scoped-type-specifier var-decl-list SEMICOLON
+     { 
+        $$ = $2;
+        if($1->isStatic) { $$->isStatic = true; }
+        applyTypeToSiblings($$, $1->nodetype);
         yyerrok;
-            }
-            applyTypeToSiblings($$, $1->nodetype);
-        }
-     | type-specifier var-decl-list SEMICOLON { yyerrok; }
+     }
      | type-specifier error { $$ = NULL; }
      | error SEMICOLON { yyerrok; }
 	;
@@ -187,7 +185,7 @@ scoped-type-specifier:
 	{ 
             $$ = $2;
             $$->isStatic = true; 
-            $$->isScoped = true;
+            //$$->isScoped = true;
             freeToken($1);
         }
 	| type-specifier
@@ -259,6 +257,7 @@ param-type-list:
             $$ = $2;
             applyTypeToSiblings($$, $1->nodetype);
 	}
+        | type-specifier error { $$ = NULL; }
 	;
 	
 param-id-list:
@@ -453,13 +452,14 @@ expression-stmt:
          	freeToken($2);
                 yyerrok;
         }
-	| SEMICOLON /* EMPTY? */
+        | error SEMICOLON { yyerrok; }
+	| SEMICOLON
 		{ 
                     $$ = NULL; 
                     freeToken($1);
                     yyerrok;
 		}
-        | error SEMICOLON { yyerrok; }
+
 	;
 	
 return-stmt:
@@ -545,11 +545,10 @@ expression:
 		{ $$ = $1; }
         | error INC { yyerrok; }
         | error DEC { yyerrok; }
-        | mutable ASSIGN 
 	;
 
 assignop: 
-      ASSIGN
+    ASSIGN
     | ADDASS
     | SUBASS
     | MULASS
@@ -619,7 +618,7 @@ rel-expression:
 		{ $$ = $1; }
         | error relop sum-expression { yyerrok; }
         | sum-expression relop error { $$ = NULL; }
-        | error AND error { $$ = NULL; }
+        | error relop error { $$ = NULL; }
 	;
 	
 relop:

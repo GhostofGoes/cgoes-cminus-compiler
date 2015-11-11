@@ -33,6 +33,7 @@
 #include <string.h>
 
 #include <map>
+#include <string>
 
 #include "cminus.tab.h"
 #include "types.h"
@@ -74,6 +75,30 @@ static std::map<std::string , char *> niceTokenNameMap;    // use an ordered map
 // (strings returned as error message) --> (human readable strings)
 //
 void initTokenMaps() {
+    
+    niceTokenNameMap["AND"] = (char *)"'&'";
+    niceTokenNameMap["OR"] = (char *)"'|'";
+    niceTokenNameMap["NOT"] = (char *)"'!'";
+    niceTokenNameMap["SEMICOLON"] = (char *)"';'";
+    niceTokenNameMap["LPAREN"] = (char *)"'!'";
+    niceTokenNameMap["RPAREN"] = (char *)"'!'";
+    niceTokenNameMap["LBRACKET"] = (char *)"'!'";
+    niceTokenNameMap["RBRACKET"] = (char *)"'!'";
+    niceTokenNameMap["ASSIGN"] = (char *)"'!'";
+    niceTokenNameMap["PLUS"] = (char *)"'!'";
+    niceTokenNameMap["MINUS"] = (char *)"'!'";
+    niceTokenNameMap["MULTIPLY"] = (char *)"'!'";
+    niceTokenNameMap["DIVIDE"] = (char *)"'!'";
+    niceTokenNameMap["MODULUS"] = (char *)"'!'";
+    niceTokenNameMap["QUESTION"] = (char *)"'!'";
+    niceTokenNameMap["LTHAN"] = (char *)"'!'";
+    niceTokenNameMap["GTHAN"] = (char *)"'!'";
+    niceTokenNameMap["LBRACE"] = (char *)"'!'";
+    niceTokenNameMap["RBRACE"] = (char *)"'!'";
+    niceTokenNameMap["COMMA"] = (char *)"'!'";
+    niceTokenNameMap["COLON"] = (char *)"'!'";
+   
+    
     niceTokenNameMap["NOTEQ"] = (char *)"'!='";
     niceTokenNameMap["MULASS"] = (char *)"'*='";
     niceTokenNameMap["INC"] = (char *)"'++'";
@@ -111,7 +136,7 @@ char *niceTokenStr(char *tokenName ) {
     if (niceTokenNameMap.find(tokenName) == niceTokenNameMap.end()) {
         printf("ERROR(SYSTEM): niceTokenStr fails to find string '%s'\n", tokenName); 
         fflush(stdout);
-        exit(1);
+        //exit(1);
     }
     return niceTokenNameMap[tokenName];
 }
