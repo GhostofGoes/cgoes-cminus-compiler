@@ -105,17 +105,17 @@ stringbody	([^"])|(\\[^n])
 	\"  {
 		strcat(literalbuffer, yytext);
 		*sbuf_ptr = '\0';
-		BEGIN(INITIAL);
                 sToker(STRINGCONST, literalbuffer, yylineno, stringbuffer);
                 free(literalbuffer);
                 free(stringbuffer);
+                BEGIN(INITIAL);
                 return STRINGCONST;
 	}
 	\n  {
+                warnInputChar(yytext[0], yylineno);
 		free(literalbuffer);
                 free(stringbuffer);
 		BEGIN(INITIAL);
-                warnInputChar(yytext[0], yylineno);
 		//return error(yytext, yylineno, "Invalid input character");
 	}
 	\\n { 
@@ -139,7 +139,8 @@ stringbody	([^"])|(\\[^n])
 	/* Character Constants  */
 
 \'		{ 
-                    literalbuffer = (char *)calloc(5, sizeof(char));
+                    // buffer size was causing problems. oh, wish i could use a C++ string...
+                    literalbuffer = (char *)calloc(100, sizeof(char)); 
                     strcat(literalbuffer, yytext);
                     clength = 0;
                     //monitor = false;
@@ -150,23 +151,24 @@ stringbody	([^"])|(\\[^n])
                 if( clength < 2 ) // ALL GOOD MATE
                 {
                     strcat(literalbuffer, yytext);
-                    BEGIN(INITIAL);
                     cToker(CHARCONST, literalbuffer, yylineno, ctemp);
                     free(literalbuffer);
+                    BEGIN(INITIAL);
                     return CHARCONST;
                 }
-                else // OH NO, TOO MANY CHARACTERS! AN ERROR!
+                else // OH NO, TOO MANY CHARACTERS!
                 {
                     strcat(literalbuffer, yytext);
-                    BEGIN(INITIAL);
                     warnCharLength(yytext, clength, yylineno);
                     free(literalbuffer);
+                    BEGIN(INITIAL);
+                    return CHARCONST;
                 }
             }
 	\n  {
+                warnInputChar(yytext[0], yylineno);
                 free(literalbuffer);
                 BEGIN(INITIAL);
-                warnInputChar(yytext[0], yylineno);
                 //return error(yytext, yylineno, "Invalid input character");
             }
 	\\n { 
