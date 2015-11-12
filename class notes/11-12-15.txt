@@ -1,0 +1,20 @@
+backpatching.
+
+if statement: determine instructions we need to jump around, then put the jump to jump past it, and backpatch the jmp before the chunk being jumped.
+
+else
+backpatch for else to jump past else code
+
+test : if false, jump to else. so need to know size of then block
+then : if true, jmp past jump to else, then backpatch so we can jump past the else block
+else
+
+short cutting and
+	if first expression is false, don't even evaluate second
+	in cminus, we don't do this
+	backpatching chained relationals (shortcutting)
+
+
+
+
+
