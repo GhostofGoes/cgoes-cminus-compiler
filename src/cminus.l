@@ -105,6 +105,7 @@ stringbody	([^"])|(\\[^n])
 	\"  {
 		strcat(literalbuffer, yytext);
 		*sbuf_ptr = '\0';
+                yytext = strdup(stringbuffer);
                 sToker(STRINGCONST, literalbuffer, yylineno, stringbuffer);
                 free(literalbuffer);
                 free(stringbuffer);
@@ -112,10 +113,13 @@ stringbody	([^"])|(\\[^n])
                 return STRINGCONST;
 	}
 	\n  {
+                yytext = strdup(stringbuffer);
                 warnInputChar(yytext[0], yylineno);
+                sToker(STRINGCONST, literalbuffer, yylineno, stringbuffer);                
 		free(literalbuffer);
                 free(stringbuffer);
 		BEGIN(INITIAL);
+                return STRINGCONST;
 		//return error(yytext, yylineno, "Invalid input character");
 	}
 	\\n { 
@@ -151,6 +155,7 @@ stringbody	([^"])|(\\[^n])
                 if( clength < 2 ) // ALL GOOD MATE
                 {
                     strcat(literalbuffer, yytext);
+                    yytext = strdup(literalbuffer);
                     cToker(CHARCONST, literalbuffer, yylineno, ctemp);
                     free(literalbuffer);
                     BEGIN(INITIAL);
@@ -159,6 +164,7 @@ stringbody	([^"])|(\\[^n])
                 else // OH NO, TOO MANY CHARACTERS!
                 {
                     strcat(literalbuffer, yytext);
+                    yytext = strdup(literalbuffer);
                     warnCharLength(yytext, clength, yylineno);
                     cToker(CHARCONST, literalbuffer, yylineno, ctemp);
                     free(literalbuffer);
@@ -168,7 +174,7 @@ stringbody	([^"])|(\\[^n])
             }
 	\n  {
                 warnInputChar(yytext[0], yylineno);
-                free(literalbuffer);
+                //free(literalbuffer);
                 BEGIN(INITIAL);
                 //return error(yytext, yylineno, "Invalid input character");
             }
