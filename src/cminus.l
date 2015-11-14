@@ -13,9 +13,9 @@
 char * stringbuffer;	// Holds initial position for stringconst parsing
 char * sbuf_ptr;		// keeps track of stringconst parsing
 char * literalbuffer;	// Input string buffer for constant processing (strings/chars)
-char ctemp;				// Character constant temporary
+char ctemp = 0;				// Character constant temporary
 int clength = 0;
-//bool monitor = false; 	// Character constant length checking
+int start_line = 0;
 
 void warnInputChar( const char msg, const int line );
 void warnCharLength( const char * msg, const int num_chars, const int line );
@@ -98,29 +98,31 @@ stringbody	([^"])|(\\[^n])
             stringbuffer = (char *)calloc(100, sizeof(char));
             sbuf_ptr = stringbuffer;
             literalbuffer = (char *)calloc(110, sizeof(char)); 
-            strcat(literalbuffer, yytext);
+            start_line = yylineno;
+            //strcat(literalbuffer, yytext);
             BEGIN(scond); 
 	}
 <scond>{
 	\"  {
-		strcat(literalbuffer, yytext);
+		//strcat(literalbuffer, yytext);
 		*sbuf_ptr = '\0';
                 yytext = strdup(stringbuffer);
-                sToker(STRINGCONST, literalbuffer, yylineno, stringbuffer);
+                sToker(STRINGCONST, literalbuffer, start_line, stringbuffer);
                 free(literalbuffer);
                 free(stringbuffer);
                 BEGIN(INITIAL);
                 return STRINGCONST;
 	}
 	\n  {
-                yytext = strdup(stringbuffer);
-                warnInputChar(yytext[0], yylineno);
-                sToker(STRINGCONST, literalbuffer, yylineno, stringbuffer);                
+                // TODO: should we be returning on newline?
+                //yytext = strdup(stringbuffer);
+                warnInputChar('\"', start_line);
+                //warnInputChar(yytext[0], yylineno);
+                //sToker(STRINGCONST, literalbuffer, yylineno, stringbuffer);                
 		free(literalbuffer);
                 free(stringbuffer);
 		BEGIN(INITIAL);
-                return STRINGCONST;
-		//return error(yytext, yylineno, "Invalid input character");
+                //return STRINGCONST;
 	}
 	\\n { 
 		*sbuf_ptr++ = '\n';
@@ -145,9 +147,9 @@ stringbody	([^"])|(\\[^n])
 \'		{ 
                     // buffer size was causing problems. oh, wish i could use a C++ string...
                     literalbuffer = (char *)calloc(100, sizeof(char)); 
-                    strcat(literalbuffer, yytext);
+                    //strcat(literalbuffer, yytext);
                     clength = 0;
-                    //monitor = false;
+                    start_line = yylineno;
                     BEGIN(ccond);
 		}
 <ccond>{
@@ -156,27 +158,28 @@ stringbody	([^"])|(\\[^n])
                 {
                     strcat(literalbuffer, yytext);
                     yytext = strdup(literalbuffer);
-                    cToker(CHARCONST, literalbuffer, yylineno, ctemp);
+                    cToker(CHARCONST, literalbuffer, start_line, ctemp);
                     free(literalbuffer);
                     BEGIN(INITIAL);
                     return CHARCONST;
                 }
                 else // OH NO, TOO MANY CHARACTERS!
                 {
-                    strcat(literalbuffer, yytext);
+                    //strcat(literalbuffer, yytext);
                     yytext = strdup(literalbuffer);
                     warnCharLength(yytext, clength, yylineno);
-                    cToker(CHARCONST, literalbuffer, yylineno, ctemp);
+                    cToker(CHARCONST, literalbuffer, start_line, ctemp);
                     free(literalbuffer);
                     BEGIN(INITIAL);
                     return CHARCONST;
                 }
             }
 	\n  {
-                warnInputChar(yytext[0], yylineno);
-                //free(literalbuffer);
+                
+                //warnInputChar(yytext[0], yylineno);
+                warnInputChar('\'', start_line);
+                free(literalbuffer);
                 BEGIN(INITIAL);
-                //return error(yytext, yylineno, "Invalid input character");
             }
 	\\n { 
 
