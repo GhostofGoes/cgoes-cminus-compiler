@@ -12,6 +12,8 @@
       <in>cminus.tab.c</in>
       <in>cminus.tab.h</in>
       <in>cminus.y</in>
+      <in>codegen.cpp</in>
+      <in>codegen.h</in>
       <in>lex.yy.c</in>
       <in>printing.cpp</in>
       <in>printing.h</in>
@@ -19,6 +21,7 @@
       <in>semantic_errors.h</in>
       <in>symbolTable.cpp</in>
       <in>symbolTable.h</in>
+      <in>tm.c</in>
       <in>toker.c</in>
       <in>toker.h</in>
       <in>trees.cpp</in>

@@ -175,39 +175,34 @@ stringbody	([^"])|(\\[^n])
                 }
             }
 	\n  {
-                
-                //warnInputChar(yytext[0], yylineno);
                 warnInputChar('\'', start_line);
                 free(literalbuffer);
                 BEGIN(INITIAL);
             }
 	\\n { 
 
-		ctemp = '\n';
+		if(clength < 1)
+                    ctemp = '\n';
 		strcat(literalbuffer, yytext);
                 clength++;
 	}
 	\\0 {
- 
-		ctemp = '\0'; 
+		if(clength < 1) 
+                    ctemp = '\0'; 
 		strcat(literalbuffer, yytext);
                 clength++;
 	}
 	\\. {
-
-                ctemp = yytext[1]; 
+		if(clength < 1)
+                    ctemp = yytext[1]; 
                 strcat(literalbuffer, yytext);
                 clength++;
 	}
 	.   {
-                //if(monitor) { <--- what we used to do for all of these 
-                //    return error(yytext, yylineno, "Invalid input character");
-                //} else {
-                //    monitor = true;
-                //}
-		ctemp = yytext[0]; 
+		if(clength < 1)            
+                    ctemp = yytext[0]; 
 		strcat(literalbuffer, yytext);
-                clength++; // <--- what we do now
+                clength++;
         }	
 }
 
