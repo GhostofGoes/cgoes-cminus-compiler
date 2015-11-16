@@ -281,7 +281,7 @@ void typeResolution ( TreeNode * par, TreeNode * node, SymbolTable * symtable )
                     if ( temp != NULL )
                     {
                         tree->nodetype = temp->nodetype;
-                        if ( temp->isArray )
+                        if ( temp->isArray && temp->child[0] == NULL )
                         {
                             tree->isArray = true;
                         }
@@ -319,7 +319,7 @@ void typeResolution ( TreeNode * par, TreeNode * node, SymbolTable * symtable )
                     if ( temp != NULL )
                     {
                         tree->nodetype = temp->nodetype;
-                        if(temp->isArray)
+                        if(temp->isArray && temp->child[0] == NULL)
                             tree->isArray = true;
                         if(temp->isIndex)
                             tree->isIndex = true;
@@ -347,8 +347,10 @@ void typeResolution ( TreeNode * par, TreeNode * node, SymbolTable * symtable )
                     if ( temp != NULL )
                     {
                         tree->nodetype = temp->nodetype;
-                        if ( temp->isArray )
+                        if ( temp->isArray && temp->child[0] == NULL ) // TODO: could it have a non-null child, and still be an array?
                             tree->isArray = true;
+                        else
+                            tree->isArray = false;
                         if ( temp->isIndex )
                             tree->isIndex = true;
                         if ( temp->isStatic )
@@ -1020,6 +1022,7 @@ void treeParse ( TreeNode * par, TreeNode * node, SymbolTable * symtable, bool i
                     {
                         if ( tree->child[0] != NULL && tree->child[0]->isIndex )
                         {
+                            tree->isArray = false; // can we have arr[] be a thing?
                             if ( tmp->isArray ) // TODO: possible subtle error, if add "child[0] == null" check we have...issues. do everything05.c-
                             {
                                 if ( child0_sval == tree_svalue )
