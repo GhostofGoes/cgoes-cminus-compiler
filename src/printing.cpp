@@ -447,7 +447,7 @@ void printAnnotatedTree ( TreeNode * og, int indent_count )
             case CompoundK:
               outstr.append("Compound");
               outstr += " with size ";
-              outstr += tree->size;
+              outstr += std::to_string(tree->size);
               outstr += " at end of it's declarations";                     
               break;
 
@@ -484,9 +484,9 @@ void printAnnotatedTree ( TreeNode * og, int indent_count )
               if(tree->isStatic)
                   outstr += "Static";
               outstr += " of size ";
-              outstr += tree->size;
+              outstr += std::to_string(tree->size);
               outstr += " and data location ";
-              outstr += tree->location;
+              outstr += std::to_string(tree->location);
               break;
 
             case ParamK:
@@ -501,9 +501,9 @@ void printAnnotatedTree ( TreeNode * og, int indent_count )
               outstr += " allocated as ";
               outstr += "Parameter";
               outstr += " of size ";
-              outstr += tree->size;
+              outstr += std::to_string(tree->size);
               outstr += " and data location ";
-              outstr += tree->location;
+              outstr += std::to_string(tree->location);
               break;
 
             case FunK:
@@ -517,9 +517,9 @@ void printAnnotatedTree ( TreeNode * og, int indent_count )
               else
                   outstr += "Local";
               outstr += " of size ";
-              outstr += tree->size;
+              outstr += std::to_string(tree->size);
               outstr += " and exec location ";
-              outstr += tree->location;              
+              outstr += std::to_string(tree->location);              
               break;
 
             case CallK:
