@@ -6,8 +6,10 @@
 /* Kenneth C. Louden                                */
 /****************************************************/
 
-#include "globals.h"
-#include "code.h"
+#include "cminus.h"
+#include "emit.h"
+#include "codegen.h"
+#include "symtab.h"
 
 /* TM location number for current instruction emission */
 static int emitLoc = 0 ;
@@ -20,8 +22,8 @@ static int highEmitLoc = 0;
 /* Procedure emitComment prints a comment line 
  * with comment c in the code file
  */
-void emitComment( char * c )
-{ if (TraceCode) fprintf(code,"* %s\n",c);}
+void emitComment( const char * c )
+{ printf("* %s\n",c);}
 
 /* Procedure emitRO emits a register-only
  * TM instruction
@@ -31,10 +33,10 @@ void emitComment( char * c )
  * t = 2nd source register
  * c = a comment to be printed if TraceCode is TRUE
  */
-void emitRO( char *op, int r, int s, int t, char *c)
-{ fprintf(code,"%3d:  %5s  %d,%d,%d ",emitLoc++,op,r,s,t);
-  if (TraceCode) fprintf(code,"\t%s",c) ;
-  fprintf(code,"\n") ;
+void emitRO( const char *op, int r, int s, int t, const char *c)
+{ printf("%3d:  %5s  %d,%d,%d ",emitLoc++,op,r,s,t);
+  printf("\t%s",c) ;
+  printf("\n") ;
   if (highEmitLoc < emitLoc) highEmitLoc = emitLoc ;
 } /* emitRO */
 
@@ -46,10 +48,10 @@ void emitRO( char *op, int r, int s, int t, char *c)
  * s = the base register
  * c = a comment to be printed if TraceCode is TRUE
  */
-void emitRM( char * op, int r, int d, int s, char *c)
-{ fprintf(code,"%3d:  %5s  %d,%d(%d) ",emitLoc++,op,r,d,s);
-  if (TraceCode) fprintf(code,"\t%s",c) ;
-  fprintf(code,"\n") ;
+void emitRM( const char * op, int r, int d, int s, const char *c)
+{ printf("%3d:  %5s  %d,%d(%d) ",emitLoc++,op,r,d,s);
+  printf("\t%s",c) ;
+  printf("\n") ;
   if (highEmitLoc < emitLoc)  highEmitLoc = emitLoc ;
 } /* emitRM */
 
@@ -87,11 +89,11 @@ void emitRestore(void)
  * a = the absolute location in memory
  * c = a comment to be printed if TraceCode is TRUE
  */
-void emitRM_Abs( char *op, int r, int a, char * c)
-{ fprintf(code,"%3d:  %5s  %d,%d(%d) ",
+void emitRM_Abs( const char *op, int r, int a, const char * c)
+{ printf("%3d:  %5s  %d,%d(%d) ",
                emitLoc,op,r,a-(emitLoc+1),pc);
   ++emitLoc ;
-  if (TraceCode) fprintf(code,"\t%s",c) ;
-  fprintf(code,"\n") ;
+  printf("\t%s",c) ;
+  printf("\n") ;
   if (highEmitLoc < emitLoc) highEmitLoc = emitLoc ;
 } /* emitRM_Abs */

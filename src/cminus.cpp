@@ -66,10 +66,10 @@ int main ( int argc, char * argv[] )
 
     // Flags
     //testing = false;
-    bool abstract_tree = false;
-    bool annotated_tree = false;
+    bool print_syntax_tree = false;
+    bool print_annotated_tree = false;
     bool error_checking = true;
-    bool code_generation = false;
+    bool code_generation = true;
     
     initTokenMaps();
 
@@ -82,10 +82,10 @@ int main ( int argc, char * argv[] )
               yydebug = 1;
               break;
             case 'p':
-              abstract_tree = true;
+              print_syntax_tree = true;
               break;
             case 'P':
-              annotated_tree = true;
+              print_annotated_tree = true;
               break;
             case 't':
               testing = true;
@@ -116,7 +116,7 @@ int main ( int argc, char * argv[] )
         yyparse();
     } while (!feof(yyin));
 
-    if ( abstract_tree )
+    if ( print_syntax_tree )
     {
         printAbstractTree(syntaxTree);
     }
@@ -124,15 +124,12 @@ int main ( int argc, char * argv[] )
     //annotated_tree = true;
     if ( error_checking && (errors == 0) )
     {
-        //annotatedTree = syntaxTree;
-        //semanticAnalysis(annotatedTree);
-
         TreeNode * io = buildIOLibrary();
         linkSiblings(io, syntaxTree);
         annotatedTree = io;
         semanticAnalysis(annotatedTree);
 
-        if ( annotated_tree )
+        if ( print_annotated_tree )
         {
             printAnnotatedTree(annotatedTree);
         }

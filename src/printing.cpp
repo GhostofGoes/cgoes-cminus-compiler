@@ -134,7 +134,7 @@ void printTreeNode(void * node) {
     std::cout << " |isArray: " << data->isArray;
     std::cout << " |isIndex: " << data->isIndex;
     std::cout << " |isStatic: " << data->isStatic;
-    std::cout << " |isScoped: " << data->isScoped;
+    //std::cout << " |isScoped: " << data->isScoped;
     std::cout << std::endl;
     
     std::cout << " |nodekind: " << nodekindToStr(data->nodekind);
