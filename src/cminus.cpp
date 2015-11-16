@@ -133,7 +133,6 @@ int main ( int argc, char * argv[] )
         annotatedTree = io;
         semanticAnalysis(annotatedTree);
 
-        memorySizing(annotatedTree);
         
         if ( print_annotated_tree )
         {
@@ -197,6 +196,8 @@ void semanticAnalysis ( TreeNode * og )
     }
     
     treeParse(NULL, tree, symtable, false);
+    
+    
 
     if ( debugging )
     {
@@ -209,6 +210,8 @@ void semanticAnalysis ( TreeNode * og )
         printf("ERROR(LINKER): Procedure main is not defined.\n");
         errors++;
     }
+    
+    memorySizing(annotatedTree, symtable);
     
     if( debugging )
     {
