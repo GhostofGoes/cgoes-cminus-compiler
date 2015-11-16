@@ -20,6 +20,8 @@
       <in>cminus.tab.c</in>
       <in>cminus.tab.h</in>
       <in>cminus.y</in>
+      <in>codeGeneration.cpp</in>
+      <in>codeGeneration.h</in>
       <in>codegen.cpp</in>
       <in>codegen.h</in>
       <in>emit.cpp</in>

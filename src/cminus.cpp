@@ -1230,12 +1230,19 @@ void memorySizing( TreeNode * node, SymbolTable * symtable )
                     {
                         tree->size = 1;
                     }
-                    tree->location = local_offset;
-                    local_offset -= tree->size;
-                    if(symtable->depth() > 0)
+                    
+                    if(symtable->depth() > 1)
+                    {
                         tree->offsetReg = local;
+                        tree->location = local_offset;
+                        local_offset -= tree->size;
+                    }
                     else
+                    {
                         tree->offsetReg = global;
+                        tree->location = global_offset;
+                        global_offset -= tree->size;
+                    }
                     break;
 
                   case ParamK:
