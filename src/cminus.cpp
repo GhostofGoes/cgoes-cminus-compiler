@@ -385,6 +385,7 @@ void typeResolution ( TreeNode * par, TreeNode * node, SymbolTable * symtable )
             }
             symtable->leave();
         } 
+        // TODO: need to verify i'm not overwriting proper types i got from bison
         else if ( tree->kind == OpK )
         {
             switch (tree->token->bval)
@@ -1221,10 +1222,8 @@ void memorySizing( TreeNode * node, SymbolTable * symtable )
               switch (tree->kind)
                 {
                   case VarK:
-                    if(tree->isArray && tree->child[0] != NULL )
+                    if(tree->isArray  )
                     {
-                        if(tree->child[0]->isIndex)
-                            tree->arraySize = tree->child[0]->token->ivalue;
                         tree->size = tree->arraySize + 1;
                     }
                     else
