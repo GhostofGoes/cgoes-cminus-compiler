@@ -150,7 +150,9 @@ int main ( int argc, char * argv[] )
     //freeTree(annotatedTree);
     //freeTree(syntaxTree);
     
-    printf("Offset for end of global space: %d\n", global_offset);
+    if(print_annotated_tree)
+        printf("Offset for end of global space: %d\n", global_offset);
+    
     printf("Number of warnings: %d\n", warnings);
     printf("Number of errors: %d\n", errors);
 
@@ -443,6 +445,8 @@ void treeParse ( TreeNode * par, TreeNode * node, SymbolTable * symtable, bool i
     else
         parent = par;
 
+    bool iloop = in_loop;
+    
     while (tree != NULL)
     {
 
@@ -477,6 +481,13 @@ void treeParse ( TreeNode * par, TreeNode * node, SymbolTable * symtable, bool i
         rhs_str = typeToStr(rhs);
 
 
+        if(testing)
+        {
+            printf("\niloop: %d\n", iloop);
+            printf("Tree\n");
+            fflush(stdout);
+            printTreeNode(tree);
+        }
         // Switch on NodeKind (Declaration, Statement, Expression), then Kind
         switch (tree->nodekind)
           {
@@ -595,7 +606,7 @@ void treeParse ( TreeNode * par, TreeNode * node, SymbolTable * symtable, bool i
 
                     // TODO: change all if statements to use error checking methods
                   case ForeachK:
-                    in_loop = true;
+                    iloop = true;
                     if ( tree->numChildren > 1 && tree->child[0] != NULL && tree->child[1] != NULL )
                     {
                         if ( tree->child[0]->isArray && tree->child[0]->child[0] == NULL )
@@ -634,7 +645,7 @@ void treeParse ( TreeNode * par, TreeNode * node, SymbolTable * symtable, bool i
                     break;
 
                   case WhileK:
-                    in_loop = true;
+                    iloop = true;
                     if ( tree->numChildren > 0 && tree->child[0] != NULL )
                     {
                         if ( lhs != Undef &&  tree->child[0]->isArray && tree->child[0]->child[0] == NULL )
@@ -687,7 +698,10 @@ void treeParse ( TreeNode * par, TreeNode * node, SymbolTable * symtable, bool i
                     break;
 
                   case BreakK:
-                    if ( in_loop == false )
+                      if(testing)
+                          printf("Hit break\n");
+                      
+                    if ( iloop == false )
                     {
                         printf("ERROR(%d): Cannot have a break statement outside of loop.\n", line);
                         errors++;
@@ -1072,13 +1086,12 @@ void treeParse ( TreeNode * par, TreeNode * node, SymbolTable * symtable, bool i
             {
                 if ( tree->child[i] != NULL )
                 {
-                    treeParse(tree, tree->child[i], symtable, in_loop );
+                    treeParse(tree, tree->child[i], symtable, iloop );
                 }
             }
         }
         
         if ( (tree->kind == CompoundK && parent->kind != FunK) || tree->kind == FunK )
-        //if ( tree->kind == FunK )
         {
             if ( debugging )
             {
@@ -1088,10 +1101,9 @@ void treeParse ( TreeNode * par, TreeNode * node, SymbolTable * symtable, bool i
 
             symtable->leave();
         }
-
-        if(tree->kind == WhileK || tree->kind == ForeachK)
+        else if(tree->kind == WhileK || tree->kind == ForeachK)
         {
-            in_loop = false;
+            iloop = false;
         }
         
         if ( tree->kind == FunK && tree->lineno > -1 )
@@ -1227,7 +1239,7 @@ void memorySizing( TreeNode * node, SymbolTable * symtable )
                   case VarK:
                     if(tree->isArray  )
                     {
-                        tree->size = tree->arraySize + 1;
+                        tree->size = tree->arraySize + 1; // +1 for pointer
                     }
                     else
                     {
@@ -1253,7 +1265,7 @@ void memorySizing( TreeNode * node, SymbolTable * symtable )
                     break;
 
                   case ParamK:
-                    tree->size = 1;
+                    tree->size = 1; // since its just a param, regardless of array?
                     param_count++;
                     tree->location = local_offset;
                     tree->offsetReg = o_param;
@@ -1265,7 +1277,7 @@ void memorySizing( TreeNode * node, SymbolTable * symtable )
                     tree->location = 0;
                     tree->offsetReg = global;
                     symtable->enter("Function " + tree_svalue);
-                    tree->size = 2;
+                    tree->size = 2; // remember, just printing minus for now...
                     param_count = 0;
                     local_offset -= tree->size;
                     break;
