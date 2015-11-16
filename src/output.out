@@ -86,7 +86,7 @@ Func input returns type int allocated as Global of size -2 and exec location 0 [
 |Sibling: 11  Func main returns type void allocated as Global of size -2 and exec location 0 [line: 50]
 |   Child: 0  Compound with size -18 at end of it's declarations [line: 51]
 |   |   Child: 0  Var y int allocated as Local of size 1 and data location -2 [line: 52]
-|   |   |Sibling: 1  Var ya is array of int allocated as Local of size 14 and data location -3 [line: 53]
+|   |   |Sibling: 1  Var ya is array of int allocated as Local of size 14 and data location -4 [line: 53]
 |   |   Child: 1  Assign: = Type: int [line: 55]
 |   |   |   Child: 0  Id: y Type: int [line: 55]
 |   |   |   Child: 1  Const: 0 Type: int [line: 55]

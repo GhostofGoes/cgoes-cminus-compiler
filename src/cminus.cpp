@@ -1246,6 +1246,10 @@ void memorySizing( TreeNode * node, SymbolTable * symtable )
                         tree->location = global_offset;
                         global_offset -= tree->size;
                     }
+                    
+                    // -1 for size of the array, put data loc pointer at the start of the actual array
+                    if(tree->isArray)
+                        tree->location--; 
                     break;
 
                   case ParamK:
