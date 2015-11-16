@@ -241,33 +241,7 @@ void typeResolution ( TreeNode * par, TreeNode * node, SymbolTable * symtable )
         TreeNode * temp; // Temporary TreeNode
         int sibling_count = 0; // Keeps track of siblings
         int line = tree->lineno; // Node's line number
-
-        Type lhs = Void; // Left hand side (child[0])'s type
-        Type rhs = Void; // Right hand side (child[1])'s type
-
-        std::string child0_sval;
-        std::string child1_sval;
         std::string tree_svalue = svalResolve(tree);
-        std::string op = opToStr(tree->token);
-
-        if ( tree->child[0] != NULL )
-        {
-            lhs = tree->child[0]->nodetype;
-            child0_sval = svalResolve(tree->child[0]);
-        }
-        if ( tree->child[1] != NULL )
-        {
-            rhs = tree->child[1]->nodetype;
-            child1_sval = svalResolve(tree->child[1]);
-        }
-
-        const char * lhs_str;
-        const char * rhs_str;
-        const char * tree_type_str;
-        tree_type_str = typeToStr(tree->nodetype);
-        lhs_str = typeToStr(lhs);
-        rhs_str = typeToStr(rhs);
-
 
         switch (tree->nodekind)
           {
@@ -410,6 +384,43 @@ void typeResolution ( TreeNode * par, TreeNode * node, SymbolTable * symtable )
                 symtable->print(printTreeNode);
             }
             symtable->leave();
+        } 
+        else if ( tree->kind == OpK )
+        {
+            switch (tree->token->bval)
+              {
+                case MULTIPLY:
+                case PLUS:
+                case MINUS:
+                case DIVIDE:
+                case MODULUS:
+                  tree->nodetype = Integer;
+                  break;
+                default:
+                  tree->nodetype = Boolean;
+                  break;
+              }
+        } 
+        else if(tree->kind == AssignK )
+        {  
+            if ( tree->token->bval == ASSIGN )
+                tree->nodetype = tree->child[0]->nodetype;
+            else
+                tree->nodetype = Integer;
+        } 
+        else if ( tree->kind == UnaryK )
+        {
+            switch(tree->token->bval)
+              {
+                case NOT:
+                case AND:
+                case OR:
+                    tree->nodetype = Boolean;
+                    break;
+                default:
+                    tree->nodetype = Integer;
+                    break;
+              }
         }
 
         tree = tree->sibling; // Jump to the next sibling
@@ -436,8 +447,8 @@ void treeParse ( TreeNode * par, TreeNode * node, SymbolTable * symtable, bool i
         int sibling_count = 0; // Keeps track of siblings
         int line = tree->lineno; // Node's line number
 
-        Type lhs = Void; // Left hand side (child[0])'s type
-        Type rhs = Void; // Right hand side (child[1])'s type
+        Type lhs = Undef; // Left hand side (child[0])'s type
+        Type rhs = Undef; // Right hand side (child[1])'s type
 
         std::string child0_sval;
         std::string child1_sval;
@@ -700,7 +711,7 @@ void treeParse ( TreeNode * par, TreeNode * node, SymbolTable * symtable, bool i
                         switch (tree->token->bval)
                           {
                             case ASSIGN:
-                              if ( !typeCompare(lhs, rhs) )
+                              if ( lhs != Undef && rhs != Undef && lhs != rhs )
                               {
                                   printf("ERROR(%d): '%s' requires operands of the same type but lhs is type %s and rhs is %s.\n",
                                          line, op.c_str(), lhs_str, rhs_str);
@@ -1202,33 +1213,7 @@ void memorySizing( TreeNode * node, SymbolTable * symtable )
         TreeNode * temp; // Temporary TreeNode
         int sibling_count = 0; // Keeps track of siblings
         int line = tree->lineno; // Node's line number
-
-        Type lhs = Void; // Left hand side (child[0])'s type
-        Type rhs = Void; // Right hand side (child[1])'s type
-
-        std::string child0_sval;
-        std::string child1_sval;
         std::string tree_svalue = svalResolve(tree);
-        std::string op = opToStr(tree->token);
-
-        if ( tree->child[0] != NULL )
-        {
-            lhs = tree->child[0]->nodetype;
-            child0_sval = svalResolve(tree->child[0]);
-        }
-        if ( tree->child[1] != NULL )
-        {
-            rhs = tree->child[1]->nodetype;
-            child1_sval = svalResolve(tree->child[1]);
-        }
-
-        const char * lhs_str;
-        const char * rhs_str;
-        const char * tree_type_str;
-        tree_type_str = typeToStr(tree->nodetype);
-        lhs_str = typeToStr(lhs);
-        rhs_str = typeToStr(rhs);
-
 
         switch (tree->nodekind)
           {
