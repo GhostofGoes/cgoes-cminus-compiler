@@ -1,0 +1,47 @@
+// C-F15
+// Brute force sieve for primes
+
+int main ()
+{
+  int max, k;
+  bool n[1001];
+
+  max = 1000;
+
+  k = 2;
+  while (k<=max) { n[k] = true; k++; }
+
+  k = 2;
+  while (k*k <= max) {
+      int j;
+
+      j=k*k;
+      while (j<=max) {
+	  n[j] = false;  
+	  j=j+k;
+      }
+      k++;
+      while ((k <= max)  &   ! n[k]) k++;
+  }
+
+  {
+      int numPrimes;
+      
+      k=2;
+      numPrimes=0;
+      while (k <= max) {
+          if (n[k]) {
+              numPrimes++;
+              output(k);
+              outnl();
+          }
+          k++;
+      }
+
+      outnl();
+      output(numPrimes);
+      outnl();
+  }
+
+  return 0;
+}

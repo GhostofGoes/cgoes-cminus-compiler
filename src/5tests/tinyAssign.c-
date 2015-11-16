@@ -1,0 +1,17 @@
+int gx, gy[10];
+main(int px, py[])
+{
+    int x, y[10];
+    static int sx, sy[10];
+    
+    gx = 111;
+    gy[9] = 222;
+    x = 333;
+    y[9] = 444;
+    px = 555;
+    py[9] = 666;
+    sx = 777;
+    sy[9] = 888;
+}
+
+   

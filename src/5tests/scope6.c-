@@ -1,0 +1,11 @@
+int comp(int x, y) if (777+x*x > 666+y*y) return x; else return y;
+
+main()
+{
+    output(comp(2, 2));
+    output(comp(2, 10));
+    output(comp(2, 20));
+    output(comp(10, 2));
+    output(comp(20, 2));
+    outnl();
+}

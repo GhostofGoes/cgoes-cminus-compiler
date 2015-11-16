@@ -1,0 +1,46 @@
+char a[3];
+char x[3]:"ant";
+
+outputs(char x[])
+{
+   char c;
+
+   foreach (c in x) {
+      if (c == '\0') break;
+      outputc(c);
+   }
+}
+
+
+int run(char c[])
+{
+    return *c;
+}
+
+
+main()
+{
+     char b[7], c[11];
+
+     a = "dog";          // dog
+     b = a;              // dog
+     a = "cats";         // cat
+     c = "elephants";    // elephants
+     c = a;              // elephants
+     a == c;             // true
+     a != c;             // false
+     a = "fox";          // fox
+     a == c;             // false
+     a != c;             // true
+     a = "ele";          // ele     
+     a == c;             // false
+     a != c;             // true
+
+     {
+        char y[4]:"wolverine", z[5]:"pig";
+
+        run(x);
+        run(y);
+     }
+}
+

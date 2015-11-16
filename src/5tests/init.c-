@@ -1,0 +1,30 @@
+int a:666;
+bool b:true;
+char c:'x';
+int main() {
+    int la:777;
+    bool lb:false;
+    char lc:'y';
+
+    static int sa:888;
+    static bool sb:true;
+    static char sc:'z';
+
+    output(a);
+    output(la);
+    output(sa);
+    outnl();
+
+    outputb(b);
+    outputb(lb);
+    outputb(sb);
+    outnl();
+
+    outputc(c);
+    outputc(lc);
+    outputc(sc);
+    outnl();
+
+    return 999;
+}
+

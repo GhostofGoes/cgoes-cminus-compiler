@@ -349,7 +349,7 @@ void printAbstractTree ( TreeNode * og, int indent_count )
 }
 
 // Prints the Annotated Syntax Tree 
-
+// TODO: combine print tree functions, pass an enum 'flag' to turn on different printing features
 void printAnnotatedTree ( TreeNode * og, int indent_count )
 {
 
@@ -446,6 +446,9 @@ void printAnnotatedTree ( TreeNode * og, int indent_count )
 
             case CompoundK:
               outstr.append("Compound");
+              outstr += " with size ";
+              outstr += tree->size;
+              outstr += " at end of it's declarations";                     
               break;
 
             case ForeachK:
@@ -464,7 +467,7 @@ void printAnnotatedTree ( TreeNode * og, int indent_count )
               outstr.append("Break");
               break;
 
-            case VarK:
+            case VarK: // TODO: negative sizes??
               outstr.append("Var ");
               outstr.append(svalResolve(tree));
               if ( tree->isArray )
@@ -473,7 +476,17 @@ void printAnnotatedTree ( TreeNode * og, int indent_count )
               }
               outstr += " ";
               outstr.append(typeToStr(tree->nodetype));
-
+              outstr += " allocated as ";
+              if( tree->offsetReg == global )
+                  outstr += "Global";
+              else
+                  outstr += "Local";
+              if(tree->isStatic)
+                  outstr += "Static";
+              outstr += " of size ";
+              outstr += tree->size;
+              outstr += " and data location ";
+              outstr += tree->location;
               break;
 
             case ParamK:
@@ -485,6 +498,12 @@ void printAnnotatedTree ( TreeNode * og, int indent_count )
               }
               outstr += " ";
               outstr.append(typeToStr(tree->nodetype));
+              outstr += " allocated as ";
+              outstr += "Parameter";
+              outstr += " of size ";
+              outstr += tree->size;
+              outstr += " and data location ";
+              outstr += tree->location;
               break;
 
             case FunK:
@@ -492,6 +511,15 @@ void printAnnotatedTree ( TreeNode * og, int indent_count )
               outstr.append(svalResolve(tree));
               outstr.append(" returns type ");
               outstr.append(typeToStr(tree->nodetype));
+              outstr += " allocated as ";
+              if( tree->offsetReg == global )
+                  outstr += "Global";
+              else
+                  outstr += "Local";
+              outstr += " of size ";
+              outstr += tree->size;
+              outstr += " and exec location ";
+              outstr += tree->location;              
               break;
 
             case CallK:

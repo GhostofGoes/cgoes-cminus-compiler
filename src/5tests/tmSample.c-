@@ -1,0 +1,19 @@
+// C-F15
+int dog(int x)
+{
+	int y;
+	int z;
+
+	y = x*111+222;
+	z = y;
+
+	return z;
+}
+
+main()
+{
+	output(dog(666));
+        outnl();
+}
+
+

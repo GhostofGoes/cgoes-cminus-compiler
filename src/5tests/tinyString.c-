@@ -1,0 +1,15 @@
+char gx, gy[10];
+main(char px, py[])
+{
+    char x, y[10];
+    static char sx, sy[10];
+    
+    x = 'A';
+    y = "ant";
+    px = 'B';
+    py = "bat";
+    gx = 'C';
+    gy = "cat";
+    sx = 'D';
+    sy = "dog";
+}

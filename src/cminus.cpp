@@ -55,6 +55,10 @@ bool debugging = false;
 bool return_found = false;
 TreeNode * func = NULL;
 
+int global_offset = 0; // TODO: keep?
+int local_offset = 0;
+int param_count = 0;
+
 // TODO: put different error types into their own methods in a "errors.cpp" file.
 // TODO: free tokens matched by error terminal in bison
 int main ( int argc, char * argv[] )
@@ -129,10 +133,13 @@ int main ( int argc, char * argv[] )
         annotatedTree = io;
         semanticAnalysis(annotatedTree);
 
+        memorySizing(annotatedTree);
+        
         if ( print_annotated_tree )
         {
             printAnnotatedTree(annotatedTree);
         }
+        
     }
 
     
@@ -144,6 +151,7 @@ int main ( int argc, char * argv[] )
     //freeTree(annotatedTree);
     //freeTree(syntaxTree);
     
+    printf("Offset for end of global space: %d\n", global_offset);
     printf("Number of warnings: %d\n", warnings);
     printf("Number of errors: %d\n", errors);
 
@@ -324,6 +332,9 @@ void typeResolution ( TreeNode * par, TreeNode * node, SymbolTable * symtable )
                   case CompoundK:
                     if(parent->kind != FunK)
                         symtable->enter("Compound" + line);
+                    else
+                        tree->isFuncCompound = true;
+
                     break;
 
                   case IdK:
@@ -1173,4 +1184,128 @@ void checkArgTypes( TreeNode * call, TreeNode * func)
     }
     
     
+}
+
+
+// TODO: update symboltable values?
+void memorySizing( TreeNode * node, SymbolTable * symtable )
+{
+    TreeNode * tree;
+    tree = node;
+
+
+    while (tree != NULL)
+    {
+        TreeNode * temp; // Temporary TreeNode
+        int sibling_count = 0; // Keeps track of siblings
+        int line = tree->lineno; // Node's line number
+
+        Type lhs = Void; // Left hand side (child[0])'s type
+        Type rhs = Void; // Right hand side (child[1])'s type
+
+        std::string child0_sval;
+        std::string child1_sval;
+        std::string tree_svalue = svalResolve(tree);
+        std::string op = opToStr(tree->token);
+
+        if ( tree->child[0] != NULL )
+        {
+            lhs = tree->child[0]->nodetype;
+            child0_sval = svalResolve(tree->child[0]);
+        }
+        if ( tree->child[1] != NULL )
+        {
+            rhs = tree->child[1]->nodetype;
+            child1_sval = svalResolve(tree->child[1]);
+        }
+
+        const char * lhs_str;
+        const char * rhs_str;
+        const char * tree_type_str;
+        tree_type_str = typeToStr(tree->nodetype);
+        lhs_str = typeToStr(lhs);
+        rhs_str = typeToStr(rhs);
+
+
+        switch (tree->nodekind)
+          {
+            case DeclK:
+              switch (tree->kind)
+                {
+                  case VarK:
+                    if(tree->isArray && tree->child[0] != NULL )
+                    {
+                        if(tree->child[0]->isIndex)
+                            tree->arraySize = tree->child[0]->token->ivalue;
+                        tree->size = tree->arraySize + 1;
+                    }
+                    else
+                    {
+                        tree->size = 1;
+                    }
+                    tree->location = local_offset;
+                    local_offset += tree->size;
+                    break;
+
+                  case ParamK:
+                    tree->size = 1;
+                    param_count++;
+                    tree->location = local_offset;
+                    local_offset += tree->size;
+                    break;
+
+                  case FunK:
+                    local_offset = 0;
+                    tree->location = 0;
+                    symtable->enter("Function " + tree_svalue);
+                    tree->size = 2;
+                    param_count = 0;
+                    local_offset += tree->size;
+                    break;
+                }
+              break;
+
+            case StmtK:
+              switch (tree->kind)
+                {
+                  case CompoundK:
+                    if(tree->isFuncCompound == false)
+                    {    
+                        symtable->enter("Compound" + line);
+                        local_offset = 0;
+                    }
+                    break;
+                }
+              break;
+          }
+
+        if ( tree->numChildren > 0 )
+        {
+            for (int i = 0; i < tree->numChildren; i++)
+            {
+                if ( tree->child[i] != NULL )
+                {
+                    memorySizing(tree->child[i], symtable);
+                }
+            }
+        }
+
+        if ( (tree->kind == CompoundK && tree->isFuncCompound == false) )
+        {
+            if ( debugging )
+            {
+                symtable->print(printTreeNode);
+            }
+            symtable->leave();
+        }
+        
+        if(tree->kind == FunK)
+        {
+            tree->size += param_count;
+            symtable->leave();
+        }
+
+        tree = tree->sibling; // Jump to the next sibling
+        sibling_count++;
+    } // end while    
 }

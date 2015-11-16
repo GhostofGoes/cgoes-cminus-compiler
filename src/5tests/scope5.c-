@@ -1,0 +1,40 @@
+int x:111;
+
+int inc()
+{
+   static int x:222;
+   return x++;
+}
+
+int fred()
+{
+   static int x:333;
+
+   x++;
+   output(x);   
+   {
+      static int x:444;
+
+      x++;
+      output(x);
+   }
+   output(x);
+   outnl();
+
+   return x;
+}
+
+main()
+{
+   output(fred());
+   outnl();
+   output(fred());
+   outnl();
+
+   output(inc());
+   output(inc());
+   output(inc());
+   output(inc());
+   outnl();
+}
+

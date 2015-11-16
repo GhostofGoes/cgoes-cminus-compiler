@@ -1,0 +1,23 @@
+// C-F15
+// A program to perform Euclid's
+//   Algorithm to compute gcd of two numbers you give.
+
+int gcd(int u; int v)
+{
+    if (v == 0)  // note you can't say:  if (v) 
+	return u;
+    else
+	return gcd(v, u - u/v*v);
+}
+
+main()
+{
+    int x, y;
+    int result;
+
+    x = input();
+    y = input();
+    result = gcd(x, y);
+    output(result);
+    outnl();
+}

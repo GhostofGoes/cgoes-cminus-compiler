@@ -1,0 +1,71 @@
+stuff(int x) output(x);
+
+// THE MEANING OF: foreach (x in y) stuff;
+// if y is a scalar means
+// NOTE: what happens to x if the loop doesn't go e.g.
+//   x=666; foreach(x in 0); output(x)
+// compare with array version!
+foreachScalar(int x, y)
+{
+    int p, limit;
+
+    p = 0;
+    limit = y;
+    while (p<limit) {
+        x = p;
+        stuff(x);
+        p++;
+    }
+}
+
+
+foreachScalar2(int x, y)
+{
+    int p, limit;
+
+    x = 0;
+    limit = y;
+    while (p<limit) {
+        stuff(x);
+        x++;
+    }
+}
+
+
+//  THE MEANING OF: foreach (x in ya) stuff;
+// if ya is an array it means
+foreachArray(int x, ya[])
+{
+    int p, limit;
+
+    p = 0;
+    limit = *ya;          // this changes from above by *ya
+    while (p<limit) {
+        x = ya[p];        // this changes from above by indexing the array
+        stuff(x);
+        p++;
+    }
+}
+
+main()
+{
+    int y;
+    int ya[13];
+
+    y = 0;
+    while (y<13) {
+          ya[y] = y*y;
+          y++;
+    }
+
+    y = 10;
+
+    {
+       int x;
+
+       foreachScalar(x, y);
+       outnl();
+       foreachArray(x, ya);
+    }
+}
+

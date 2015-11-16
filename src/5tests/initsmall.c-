@@ -1,0 +1,13 @@
+int x:666;
+int main() {
+  int y:777;
+  static int z:888;
+
+  output(x);
+  output(y);
+  output(z);
+  outnl();
+
+  return 999;
+}
+

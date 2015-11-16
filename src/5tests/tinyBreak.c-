@@ -1,0 +1,9 @@
+main()
+{
+    while (true) {
+        666;
+        break;
+        777;
+        break;
+    }
+}

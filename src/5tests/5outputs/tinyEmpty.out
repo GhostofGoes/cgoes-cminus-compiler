@@ -1,0 +1,14 @@
+Func input returns type int allocated as Global of size -2 and exec location 0 [line: -1]
+|Sibling: 1  Func output returns type void allocated as Global of size -3 and exec location 0 [line: -1]
+|   Child: 0  Param *dummy* int allocated as Parameter of size 1 and data location -2 [line: -1]
+|Sibling: 2  Func inputb returns type bool allocated as Global of size -2 and exec location 0 [line: -1]
+|Sibling: 3  Func outputb returns type void allocated as Global of size -3 and exec location 0 [line: -1]
+|   Child: 0  Param *dummy* bool allocated as Parameter of size 1 and data location -2 [line: -1]
+|Sibling: 4  Func inputc returns type char allocated as Global of size -2 and exec location 0 [line: -1]
+|Sibling: 5  Func outputc returns type void allocated as Global of size -3 and exec location 0 [line: -1]
+|   Child: 0  Param *dummy* char allocated as Parameter of size 1 and data location -2 [line: -1]
+|Sibling: 6  Func outnl returns type void allocated as Global of size -2 and exec location 0 [line: -1]
+|Sibling: 7  Func main returns type void allocated as Global of size -2 and exec location 0 [line: 1]
+Offset for end of global space: 0
+Number of warnings: 0
+Number of errors: 0

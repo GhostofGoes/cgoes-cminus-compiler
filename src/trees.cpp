@@ -123,8 +123,9 @@ TreeNode * allocNode() {
     tempNode->token = NULL;
     tempNode->lineno = 0;
     tempNode->svalue = NULL;
-    tempNode->nodetype = Void;
+    tempNode->nodetype = Undef;
     tempNode->nodekind = DefaultK;
+    tempNode->kind = k_undef;
     tempNode->child[0] = NULL;
     tempNode->child[1] = NULL;
     tempNode->child[2] = NULL;
@@ -134,7 +135,11 @@ TreeNode * allocNode() {
     tempNode->isArray = false;
     tempNode->isIndex = false;
     tempNode->isConstant = false;
+    tempNode->isFuncCompound = false;
     tempNode->arraySize = 0;
+    tempNode->size = 0;
+    tempNode->location = 0;
+    tempNode->offsetReg = o_undef;
     return tempNode;
 }
 

@@ -28,6 +28,7 @@ extern FILE * yyin;	// Input file stream for Flex
 extern TreeNode * syntaxTree;
 extern TreeNode * annotatedTree;
 
+extern int global_offset;
 //static void yyerror(const char *);
 
 // Creates the Annotated Syntax Tree
@@ -36,5 +37,6 @@ void typeResolution( TreeNode * parent, TreeNode * node, SymbolTable * symtable 
 void treeParse( TreeNode * parent, TreeNode * node, SymbolTable * symtable, bool in_loop );
 TreeNode * buildIOLibrary();
 void checkArgTypes( TreeNode * call, TreeNode * func );
+void memorySizing( TreeNode * tree, SymbolTable * symtable );
 
 #endif

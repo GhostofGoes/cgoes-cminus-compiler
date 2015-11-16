@@ -6,6 +6,8 @@
       </df>
       <df name="4tests">
       </df>
+      <df name="5tests">
+      </df>
       <in>cminus.cpp</in>
       <in>cminus.h</in>
       <in>cminus.l</in>
