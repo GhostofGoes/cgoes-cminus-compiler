@@ -30,7 +30,7 @@ typedef enum {
 
 typedef enum {Void, Integer, Boolean, Character, Undef } Type;
 
-typedef enum {local, global, o_undef} Offset;
+typedef enum {local, global, o_param, o_undef} Offset;
 
 /*** TREENODE ***/
 typedef struct treeNode

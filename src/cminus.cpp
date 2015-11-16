@@ -1247,23 +1247,29 @@ void memorySizing( TreeNode * node, SymbolTable * symtable )
                         tree->size = 1;
                     }
                     tree->location = local_offset;
-                    local_offset += tree->size;
+                    local_offset -= tree->size;
+                    if(symtable->depth() > 0)
+                        tree->offsetReg = local;
+                    else
+                        tree->offsetReg = global;
                     break;
 
                   case ParamK:
                     tree->size = 1;
                     param_count++;
                     tree->location = local_offset;
-                    local_offset += tree->size;
+                    tree->offsetReg = o_param;
+                    local_offset -= tree->size;
                     break;
 
                   case FunK:
                     local_offset = 0;
                     tree->location = 0;
+                    tree->offsetReg = global;
                     symtable->enter("Function " + tree_svalue);
                     tree->size = 2;
                     param_count = 0;
-                    local_offset += tree->size;
+                    local_offset -= tree->size;
                     break;
                 }
               break;
@@ -1299,12 +1305,15 @@ void memorySizing( TreeNode * node, SymbolTable * symtable )
             {
                 symtable->print(printTreeNode);
             }
+            tree->location = local_offset;
+            local_offset = 0;
             symtable->leave();
         }
         
         if(tree->kind == FunK)
         {
             tree->size += param_count;
+            local_offset = 0;
             symtable->leave();
         }
 

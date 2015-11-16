@@ -516,7 +516,7 @@ void printAnnotatedTree ( TreeNode * og, int indent_count )
                   outstr += "Global";
               else
                   outstr += "Local";
-              outstr += " of size ";
+              outstr += " of size -"; // TODO: printing as negative for now, ask in class?
               outstr += std::to_string(tree->size);
               outstr += " and exec location ";
               outstr += std::to_string(tree->location);              
