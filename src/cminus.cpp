@@ -1115,19 +1115,19 @@ TreeNode * buildIOLibrary ( )
 
     in = makeParent(DeclK, FunK, Integer, -1, "input");
     out = makeParent(DeclK, FunK, Void, -1, "output");
-    idummy = makeParent(ExpK, ParamK, Integer, -1, "*dummy*");
+    idummy = makeParent(DeclK, ParamK, Integer, -1, "*dummy*");
     addChild(out, idummy);
     linkSiblings(in, out);
     inputb = makeParent(DeclK, FunK, Boolean, -1, "inputb");
     linkSiblings(in, inputb);
     outputb = makeParent(DeclK, FunK, Void, -1, "outputb");
-    bdummy = makeParent(ExpK, ParamK, Boolean, -1, "*dummy*");
+    bdummy = makeParent(DeclK, ParamK, Boolean, -1, "*dummy*");
     addChild(outputb, bdummy);
     linkSiblings(in, outputb);
     inputc = makeParent(DeclK, FunK, Character, -1, "inputc");
     linkSiblings(in, inputc);
     outputc = makeParent(DeclK, FunK, Void, -1, "outputc");
-    cdummy = makeParent(ExpK, ParamK, Character, -1, "*dummy*");
+    cdummy = makeParent(DeclK, ParamK, Character, -1, "*dummy*");
     addChild(outputc, cdummy);
     linkSiblings(in, outputc);
     outnl = makeParent(DeclK, FunK, Void, -1, "outnl");
@@ -1281,7 +1281,6 @@ void memorySizing( TreeNode * node, SymbolTable * symtable )
                     if(tree->isFuncCompound == false)
                     {    
                         symtable->enter("Compound" + line);
-                        local_offset = 0;
                     }
                     break;
                 }
@@ -1305,9 +1304,13 @@ void memorySizing( TreeNode * node, SymbolTable * symtable )
             {
                 symtable->print(printTreeNode);
             }
-            tree->location = local_offset;
-            local_offset = 0;
+            //tree->location = local_offset;
             symtable->leave();
+        }
+        
+        if(tree->kind == CompoundK)
+        {
+            tree->size = local_offset;
         }
         
         if(tree->kind == FunK)
