@@ -1,0 +1,10 @@
+int a[11];
+
+main()
+{
+   int b[22];           // size inited locally
+   static int c[33];
+
+   999;
+}
+

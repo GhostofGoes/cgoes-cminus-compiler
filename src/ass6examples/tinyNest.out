@@ -1,0 +1,19 @@
+TM version 3.4 (enter h for help)...
+
+Memory Configuration: Data Addresses: 0-9999  Instruction Addresses: 0-9999
+Abort Limit: 50000
+Loading file: tinyNest.tm
+Enter command: command: g
+6 7 8 9 10 
+666 666 8 9 666 
+11 12 13 14 15 
+11 12 13 14 15 
+16 17 18 19 20 
+16 17 18 19 20 
+666 666 666 19 666 
+16 17 18 4 20 
+Status: Halted
+Last executed cmd:  436: HALT  0,  0, 0   | before:  r[0]: 9999  r[0]: 9999  r[0]: 9999  |  
+PC was 436, PC is now 437
+command: x
+Bye.

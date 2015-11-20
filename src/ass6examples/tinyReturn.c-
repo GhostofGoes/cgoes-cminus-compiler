@@ -1,0 +1,10 @@
+int fred()
+{
+}
+
+
+int main()
+{
+   fred();
+   return 666-777;
+}

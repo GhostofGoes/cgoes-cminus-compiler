@@ -1,0 +1,46 @@
+\documentclass{standalone}
+\usepackage{tikz, xcolor}
+\usetikzlibrary{shapes,arrows}
+
+\begin{document}
+
+\begin{tikzpicture}[thick, scale=2.0]
+\tikzstyle{vertexr}=[rectangle, draw=blue, thick, minimum size=14pt, inner sep=2pt]
+\tikzstyle{vertexc}=[circle, draw=blue, thick, inner sep=2pt]
+\tikzstyle{drawstyle}=[thick, ->]
+
+\node[vertexr] (G0x0) at (0,0) {int g};
+\node[vertexr] (G1x0) at (1,0) {void Func main};
+\node[vertexr] (G1x1) at (1,-1) {int p};
+\draw[drawstyle] (G1x0) -- (G1x1);
+\node[vertexr] (G2x1) at (2,-1) {Compound};
+\node[vertexr] (G2x2) at (2,-2) {int a};
+\draw[drawstyle] (G2x1) -- (G2x2);
+\node[vertexr] (G3x2) at (3,-2) {Compound};
+\node[vertexr] (G3x3) at (3,-3) {int b};
+\draw[drawstyle] (G3x2) -- (G3x3);
+\node[vertexr] (G4x2) at (4,-2) {Compound};
+\node[vertexr] (G4x3) at (4,-3) {int c};
+\draw[drawstyle] (G4x2) -- (G4x3);
+\node[vertexr] (G5x2) at (5,-2) {Compound};
+\node[vertexc] (G5x3) at (5,-3) {.};
+\draw[drawstyle] (G5x2) -- (G5x3);
+\node[vertexr] (G6x3) at (6,-3) {Compound};
+\node[vertexr] (G6x4) at (6,-4) {int b};
+\draw[drawstyle] (G6x3) -- (G6x4);
+\node[vertexr] (G7x3) at (7,-3) {Compound};
+\node[vertexr] (G7x4) at (7,-4) {int c};
+\draw[drawstyle] (G7x3) -- (G7x4);
+\draw[drawstyle] (G6x3) -- (G7x3);
+\draw[drawstyle] (G5x2) -- (G6x3);
+\draw[drawstyle] (G4x2) -- (G5x2);
+\draw[drawstyle] (G3x2) -- (G4x2);
+\draw[drawstyle] (G2x1) -- (G3x2);
+\draw[drawstyle] (G1x0) -- (G2x1);
+\node[vertexr] (G8x0) at (8,0) {int h};
+\draw[drawstyle] (G1x0) -- (G8x0);
+\draw[drawstyle] (G0x0) -- (G1x0);
+\end{tikzpicture}
+\end{document}
+Number of warnings: 0
+Number of errors: 0

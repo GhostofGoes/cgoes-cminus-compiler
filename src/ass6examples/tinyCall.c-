@@ -1,0 +1,67 @@
+cheyenne(int a; bool b; char c)
+{
+    output(a);
+    outputb(b);
+    outputc(c);
+    outnl();
+}
+
+
+sioux(int a[]; bool b[]; char c[])
+{
+    output(a[1]);
+    outputb(b[2]);
+    outputc(c[3]);
+    outnl();
+}
+
+
+comanche(int z[])
+{
+    bool b[5];
+    char c[5];
+
+    b[2] = true;
+    c[3] = 'z';
+    sioux(z, b, c);
+}
+
+
+
+int ga[5];
+bool gb[6];
+char gc[7];
+
+main()
+{
+    int a[5];
+    bool b[6];
+    char c[7];
+
+    a[1] = 555;
+    b[2] = true;
+    c[3] = 'z';
+    cheyenne(666, true, 'c');
+    cheyenne(777, false, 'd');
+    sioux(a, b, c);
+    comanche(a);
+
+    ga[1] = 888;
+    gb[2] = false;
+    gc[3] = 'g';
+    sioux(ga, gb, gc);
+    comanche(ga);
+
+    {
+        static int ga[5];
+        static bool gb[6];
+        static char gc[7];
+        ga[1] = 999;
+        gb[2] = true;
+        gc[3] = 's';
+
+        sioux(ga, gb, gc);
+        comanche(ga);
+
+    }
+}

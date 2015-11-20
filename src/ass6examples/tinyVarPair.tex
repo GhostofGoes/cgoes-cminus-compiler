@@ -1,0 +1,98 @@
+\documentclass{standalone}
+\usepackage{tikz, xcolor}
+\usetikzlibrary{shapes,arrows}
+
+\begin{document}
+
+\begin{tikzpicture}[thick, scale=2.0]
+\tikzstyle{vertexr}=[rectangle, draw=blue, thick, minimum size=14pt, inner sep=2pt]
+\tikzstyle{vertexc}=[circle, draw=blue, thick, inner sep=2pt]
+\tikzstyle{drawstyle}=[thick, ->]
+
+\node[vertexr] (G0x0) at (0,0) {int gx};
+\node[vertexr] (G1x0) at (1,0) {int gy};
+\node[vertexr] (G2x0) at (2,0) {void Func main};
+\node[vertexr] (G2x1) at (2,-1) {int px};
+\node[vertexr] (G3x1) at (3,-1) {int py};
+\draw[drawstyle] (G2x1) -- (G3x1);
+\draw[drawstyle] (G2x0) -- (G2x1);
+\node[vertexr] (G4x1) at (4,-1) {Compound};
+\node[vertexr] (G4x2) at (4,-2) {int x};
+\node[vertexr] (G5x2) at (5,-2) {int y};
+\node[vertexr] (G6x2) at (6,-2) {int sx};
+\node[vertexr] (G7x2) at (7,-2) {int sy};
+\draw[drawstyle] (G6x2) -- (G7x2);
+\draw[drawstyle] (G5x2) -- (G6x2);
+\draw[drawstyle] (G4x2) -- (G5x2);
+\draw[drawstyle] (G4x1) -- (G4x2);
+\node[vertexr] (G8x2) at (8,-2) {=};
+\node[vertexr] (G8x3) at (8,-3) {gx};
+\draw[drawstyle] (G8x2) -- (G8x3);
+\node[vertexr] (G9x3) at (9,-3) {gx};
+\draw[drawstyle] (G8x2) -- (G9x3);
+\node[vertexr] (G10x2) at (10,-2) {=};
+\node[vertexr] (G10x3) at (10,-3) {gy};
+\node[vertexr] (G10x4) at (10,-4) {9};
+\draw[drawstyle] (G10x3) -- (G10x4);
+\draw[drawstyle] (G10x2) -- (G10x3);
+\node[vertexr] (G11x3) at (11,-3) {gy};
+\node[vertexr] (G11x4) at (11,-4) {9};
+\draw[drawstyle] (G11x3) -- (G11x4);
+\draw[drawstyle] (G10x2) -- (G11x3);
+\node[vertexr] (G12x2) at (12,-2) {=};
+\node[vertexr] (G12x3) at (12,-3) {x};
+\draw[drawstyle] (G12x2) -- (G12x3);
+\node[vertexr] (G13x3) at (13,-3) {x};
+\draw[drawstyle] (G12x2) -- (G13x3);
+\node[vertexr] (G14x2) at (14,-2) {=};
+\node[vertexr] (G14x3) at (14,-3) {y};
+\node[vertexr] (G14x4) at (14,-4) {9};
+\draw[drawstyle] (G14x3) -- (G14x4);
+\draw[drawstyle] (G14x2) -- (G14x3);
+\node[vertexr] (G15x3) at (15,-3) {y};
+\node[vertexr] (G15x4) at (15,-4) {9};
+\draw[drawstyle] (G15x3) -- (G15x4);
+\draw[drawstyle] (G14x2) -- (G15x3);
+\node[vertexr] (G16x2) at (16,-2) {=};
+\node[vertexr] (G16x3) at (16,-3) {px};
+\draw[drawstyle] (G16x2) -- (G16x3);
+\node[vertexr] (G17x3) at (17,-3) {px};
+\draw[drawstyle] (G16x2) -- (G17x3);
+\node[vertexr] (G18x2) at (18,-2) {=};
+\node[vertexr] (G18x3) at (18,-3) {py};
+\node[vertexr] (G18x4) at (18,-4) {9};
+\draw[drawstyle] (G18x3) -- (G18x4);
+\draw[drawstyle] (G18x2) -- (G18x3);
+\node[vertexr] (G19x3) at (19,-3) {py};
+\node[vertexr] (G19x4) at (19,-4) {9};
+\draw[drawstyle] (G19x3) -- (G19x4);
+\draw[drawstyle] (G18x2) -- (G19x3);
+\node[vertexr] (G20x2) at (20,-2) {=};
+\node[vertexr] (G20x3) at (20,-3) {sx};
+\draw[drawstyle] (G20x2) -- (G20x3);
+\node[vertexr] (G21x3) at (21,-3) {sx};
+\draw[drawstyle] (G20x2) -- (G21x3);
+\node[vertexr] (G22x2) at (22,-2) {=};
+\node[vertexr] (G22x3) at (22,-3) {sy};
+\node[vertexr] (G22x4) at (22,-4) {9};
+\draw[drawstyle] (G22x3) -- (G22x4);
+\draw[drawstyle] (G22x2) -- (G22x3);
+\node[vertexr] (G23x3) at (23,-3) {sy};
+\node[vertexr] (G23x4) at (23,-4) {9};
+\draw[drawstyle] (G23x3) -- (G23x4);
+\draw[drawstyle] (G22x2) -- (G23x3);
+\draw[drawstyle] (G20x2) -- (G22x2);
+\draw[drawstyle] (G18x2) -- (G20x2);
+\draw[drawstyle] (G16x2) -- (G18x2);
+\draw[drawstyle] (G14x2) -- (G16x2);
+\draw[drawstyle] (G12x2) -- (G14x2);
+\draw[drawstyle] (G10x2) -- (G12x2);
+\draw[drawstyle] (G8x2) -- (G10x2);
+\draw[drawstyle] (G4x1) -- (G8x2);
+\draw[drawstyle] (G2x0) -- (G4x1);
+\draw[drawstyle] (G1x0) -- (G2x0);
+\draw[drawstyle] (G0x0) -- (G1x0);
+\end{tikzpicture}
+\end{document}
+Number of warnings: 0
+Number of errors: 0

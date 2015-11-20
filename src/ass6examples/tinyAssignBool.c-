@@ -1,0 +1,34 @@
+bool gx, gy[10];
+
+esperanza(bool px, py[])
+{
+    bool x, y[10];
+    static bool sx, sy[10];
+    
+    gx = true;
+    outputb(gx);
+    gy[9] = true;
+    outputb(gy[9]);
+    x = true;
+    outputb(x);
+    y[9] = true;
+    outputb(y[9]);
+    outnl();
+
+    px = true;
+    outputb(px);
+    py[9] = true;
+    outputb(py[9]);
+    sx = true;
+    outputb(sx);
+    sy[9] = true;
+    outputb(sy[9]);
+    outnl();
+}
+
+
+main()
+{
+    bool zx, zy[10];
+    esperanza(zx, zy);
+}   

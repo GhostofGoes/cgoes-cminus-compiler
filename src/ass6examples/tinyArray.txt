@@ -1,0 +1,19 @@
+Func input returns type int allocated as Global of size -2 and exec location 0 [line: -1]
+|Sibling: 1  Func output returns type void allocated as Global of size -3 and exec location 0 [line: -1]
+|   Child: 0  Param *dummy* int allocated as Parameter of size 1 and data location -2 [line: -1]
+|Sibling: 2  Func inputb returns type bool allocated as Global of size -2 and exec location 0 [line: -1]
+|Sibling: 3  Func outputb returns type void allocated as Global of size -3 and exec location 0 [line: -1]
+|   Child: 0  Param *dummy* bool allocated as Parameter of size 1 and data location -2 [line: -1]
+|Sibling: 4  Func inputc returns type char allocated as Global of size -2 and exec location 0 [line: -1]
+|Sibling: 5  Func outputc returns type void allocated as Global of size -3 and exec location 0 [line: -1]
+|   Child: 0  Param *dummy* char allocated as Parameter of size 1 and data location -2 [line: -1]
+|Sibling: 6  Func outnl returns type void allocated as Global of size -2 and exec location 0 [line: -1]
+|Sibling: 7  Var a is array of int allocated as Global of size 12 and data location -1 [line: 1]
+|Sibling: 8  Func main returns type void allocated as Global of size -2 and exec location 0 [line: 3]
+|   Child: 1  Compound with size -25 at end of it's declarations [line: 4]
+|   |   Child: 0  Var b is array of int allocated as Local of size 23 and data location -3 [line: 5]
+|   |   |Sibling: 1  Var c is array of int allocated as LocalStatic of size 34 and data location -13 [line: 6]
+|   |   Child: 1  Const: 999 Type: int [line: 8]
+Offset for end of global space: -46
+Number of warnings: 0
+Number of errors: 0

@@ -1,0 +1,18 @@
+int gx, gy[10];
+main(int px, py[])
+{
+    int x, y[10];
+    static int sx, sy[10];
+    
+    gx = gx;
+    gy[9] = gy[9];
+
+    x = x;
+    y[9] = y[9];
+
+    px = px;
+    py[9] = py[9];
+
+    sx = sx;
+    sy[9] = sy[9];
+}

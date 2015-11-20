@@ -1,0 +1,23 @@
+int g;                       // gloc: 0
+                             
+main(int p)                  // size: 3
+{                            // size: 3
+    static int a;            // gloc: 1
+    {                        // size: 3
+        static int b;        // gloc: 2
+    }                        
+    {                        // size: 3
+        static int c;        // gloc: 3
+    }                        
+    {                        // size: 3
+        {                    // size: 3
+            static int b;    // gloc: 4
+        }                    
+        {                    // size: 3
+            static int c;    // gloc: 5
+        }                    
+    }                        
+}                            
+                             
+int h;                       // gloc: 6
+                             

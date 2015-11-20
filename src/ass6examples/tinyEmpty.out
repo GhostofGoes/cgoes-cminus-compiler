@@ -1,0 +1,11 @@
+TM version 3.4 (enter h for help)...
+
+Memory Configuration: Data Addresses: 0-9999  Instruction Addresses: 0-9999
+Abort Limit: 50000
+Loading file: tinyEmpty.tm
+Enter command: command: g
+Status: Halted
+Last executed cmd:   52: HALT  0,  0, 0   | before:  r[0]: 9999  r[0]: 9999  r[0]: 9999  |  
+PC was 52, PC is now 53
+command: x
+Bye.
