@@ -1,0 +1,11 @@
+TM version 3.4 (enter h for help)...
+
+Memory Configuration: Data Addresses: 0-9999  Instruction Addresses: 0-9999
+Abort Limit: 50000
+Loading file: tinyVarPair.tm
+Enter command: command: g
+Status: ERROR: Data Memory Fault
+Last executed cmd:   80:   ST  3,   0(5)  | before:  r[3]: -1    r[5]: -9   Store variable py
+PC was 80, PC is now 81
+command: x
+Bye.

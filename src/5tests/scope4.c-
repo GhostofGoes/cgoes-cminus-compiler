@@ -1,0 +1,97 @@
+int a;
+int aa[11];
+
+fox(int fpa; int fpaa[])
+{
+    output(fpa);
+    output(*fpaa);
+    output(fpaa[0]);
+    output(fpaa[*fpaa-1]);
+    outnl();
+}
+
+
+bat(int fpa; int fpaa[])
+{
+    outputc('B');
+    fox(fpa, fpaa);
+}
+
+int th(int fpa) return 1000 + fpa;
+
+int tha(int fpaa[]) return 1000 + fpaa[0];
+
+main(int pa; int paa[])
+{
+    int b;
+    int bb[11];
+
+    a = 111;
+    aa[0] = 110;
+    aa[10] = 112;
+
+    b = 222;
+    bb[0] = 220;
+    bb[10] = 222;
+
+    fox(a, aa);
+    fox(b, bb);
+
+    {
+        int c;
+        int cc[11];
+
+        c = 333;
+        cc[0] = 330;
+        cc[10] = 334;
+
+        outnl();
+        fox(a, aa);
+        fox(b, bb);
+        fox(c, cc);
+    }
+    {
+        int d;
+        int dd[11];
+
+        d = 444;
+        dd[0] = 440;
+        dd[10] = 445;
+
+        outnl();
+        fox(a, aa);
+        fox(b, bb);
+        fox(d, dd);
+
+        outnl();
+        bat(a, aa);
+        bat(b, bb);
+        bat(d, dd);
+    }
+    {
+        static int e;
+        static int ee[11];
+
+        e = 555;
+        ee[0] = 550;
+        ee[10] = 556;
+
+        outnl();
+        fox(a, aa);
+        fox(b, bb);
+        fox(e, ee);
+
+        outnl();
+        bat(a, aa);
+        bat(b, bb);
+        bat(e, ee);
+    }
+
+    outnl();
+    output(th(a));
+    output(tha(aa));
+    outnl();
+    bat(th(a), aa);
+    outnl();
+}
+

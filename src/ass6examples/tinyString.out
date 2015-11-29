@@ -1,0 +1,23 @@
+TM version 3.4 (enter h for help)...
+
+Memory Configuration: Data Addresses: 0-9999  Instruction Addresses: 0-9999
+Abort Limit: 50000
+Loading file: tinyString.tm
+Enter command: command: g
+MOV: dMem[9969] <-  dMem[3]
+MOV: dMem[9968] <-  dMem[2]
+MOV: dMem[9967] <-  dMem[1]
+MOV: dMem[9972] <-  dMem[7]
+MOV: dMem[9971] <-  dMem[6]
+MOV: dMem[9970] <-  dMem[5]
+MOV: dMem[9997] <-  dMem[11]
+MOV: dMem[9996] <-  dMem[10]
+MOV: dMem[9995] <-  dMem[9]
+MOV: dMem[9985] <-  dMem[15]
+MOV: dMem[9984] <-  dMem[14]
+MOV: dMem[9983] <-  dMem[13]
+Status: Halted
+Last executed cmd:   90: HALT  0,  0, 0   | before:  r[0]: 9999  r[0]: 9999  r[0]: 9999  |  
+PC was 90, PC is now 91
+command: x
+Bye.

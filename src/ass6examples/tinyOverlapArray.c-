@@ -1,0 +1,18 @@
+main(int p[])          // size: 3
+{                      // size: 6
+    int a[2]; 
+    {                  // size: 10
+        int b[3];
+    }
+    {                  // size: 11
+        int c[4];
+    }
+    {                  // size: 6
+        {              // size: 12
+            int b[5];
+        }
+        {              // size: 13
+            int c[6];
+        }
+    }
+}

@@ -1,0 +1,61 @@
+int gx, gy[10];
+esperanza(int px, py[])
+{
+    int x, y[10];
+    static int sx, sy[10];
+    gx = 444;
+    x = 555;
+    sx = 666;
+    
+    gy[9] = 222;
+    output(gy[9]);
+    gx = gx;
+    output(gx);
+    gy[8] = gy[9];
+    output(gy[8]);
+    outnl();
+
+    y[9] = 333;
+    output(y[9]);
+    x = x;
+    output(x);
+    y[7] = *y;
+    output(y[7]);
+    outnl();
+
+    px = px;
+    output(px);
+    px = 101;
+    py[8] = py[9];
+    output(py[8]);
+    py[8] = 102;
+    py[7] = *py;
+    output(py[7]);
+    outnl();
+
+    sy[9] = 444;
+    output(sy[9]);
+    sx = sx;
+    output(sx);
+    sy[7] = *sy;
+    output(sy[7]);
+    outnl();
+}
+
+   
+main()
+{
+    int zx, zy[10];
+
+    zx = 999;
+    zy[9] = 111;    
+    output(zx);
+    output(zy[9]);
+    outnl();
+    
+    esperanza(zx, zy);
+
+    output(zx);
+    output(zy[9]);
+    outnl();
+}

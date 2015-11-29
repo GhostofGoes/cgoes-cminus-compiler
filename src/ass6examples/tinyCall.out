@@ -1,0 +1,19 @@
+TM version 3.4 (enter h for help)...
+
+Memory Configuration: Data Addresses: 0-9999  Instruction Addresses: 0-9999
+Abort Limit: 50000
+Loading file: tinyCall.tm
+Enter command: command: g
+666 T c
+777 F d
+555 T z
+555 T z
+888 F g
+888 T z
+999 T s
+999 T z
+Status: Halted
+Last executed cmd:  314: HALT  0,  0, 0   | before:  r[0]: 9999  r[0]: 9999  r[0]: 9999  |  
+PC was 314, PC is now 315
+command: x
+Bye.

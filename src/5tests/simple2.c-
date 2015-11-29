@@ -1,0 +1,23 @@
+int g:111*9, h;
+
+int dog(int cat)
+{
+   int tmp;
+
+   tmp = cat * 1000;
+   return tmp;   
+}
+
+main() {
+   int x, y;
+
+   x = 666;
+   h = 777;
+   
+   y = dog(x);
+   y = dog(g);
+   output(y);
+   output(h);
+   outnl();
+}
+

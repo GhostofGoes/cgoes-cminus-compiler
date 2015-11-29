@@ -1,0 +1,13 @@
+// globals
+int a[11];
+int x:666;
+
+main()
+{
+   int b[22];
+   int y:777;
+   static int c[33];
+   static int z:888;
+
+   z=999;
+}

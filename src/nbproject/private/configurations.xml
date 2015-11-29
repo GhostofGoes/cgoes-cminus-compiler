@@ -3,8 +3,16 @@
   <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
     <df root="." name="0">
       <df name="3tests">
+        <df name="3outputs">
+        </df>
       </df>
       <df name="4tests">
+        <df name="4outputs">
+        </df>
+      </df>
+      <df name="5tests">
+        <df name="5outputs">
+        </df>
       </df>
       <in>cminus.cpp</in>
       <in>cminus.h</in>
@@ -12,6 +20,12 @@
       <in>cminus.tab.c</in>
       <in>cminus.tab.h</in>
       <in>cminus.y</in>
+      <in>codeGeneration.cpp</in>
+      <in>codeGeneration.h</in>
+      <in>codegen.cpp</in>
+      <in>codegen.h</in>
+      <in>emit.cpp</in>
+      <in>emit.h</in>
       <in>lex.yy.c</in>
       <in>printing.cpp</in>
       <in>printing.h</in>
@@ -19,7 +33,10 @@
       <in>semantic_errors.h</in>
       <in>symbolTable.cpp</in>
       <in>symbolTable.h</in>
-      <in>toker.c</in>
+      <in>symtab.cpp</in>
+      <in>symtab.h</in>
+      <in>tm.c</in>
+      <in>toker.cpp</in>
       <in>toker.h</in>
       <in>trees.cpp</in>
       <in>trees.h</in>

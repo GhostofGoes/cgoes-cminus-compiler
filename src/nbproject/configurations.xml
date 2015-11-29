@@ -4,15 +4,18 @@
     <df root="." name="0">
       <in>cminus.cpp</in>
       <in>cminus.tab.c</in>
+      <in>codeGeneration.cpp</in>
+      <in>codeGeneration.h</in>
+      <in>codegen.cpp</in>
+      <in>emit.cpp</in>
       <in>lex.yy.c</in>
       <in>printing.cpp</in>
       <in>semantic_errors.cpp</in>
-      <in>semantic_errors.h</in>
       <in>symbolTable.cpp</in>
-      <in>toker.c</in>
+      <in>symtab.cpp</in>
+      <in>toker.cpp</in>
       <in>trees.cpp</in>
       <in>yyerrorHelper.cpp</in>
-      <in>yyerrorHelper.h</in>
     </df>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"
@@ -52,21 +55,37 @@
       </item>
       <item path="cminus.tab.c" ex="false" tool="1" flavor2="4">
       </item>
+      <item path="codeGeneration.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="codeGeneration.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="codegen.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="emit.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
       <item path="lex.yy.c" ex="false" tool="1" flavor2="4">
       </item>
       <item path="printing.cpp" ex="false" tool="1" flavor2="8">
         <ccTool flags="0">
         </ccTool>
       </item>
-      <item path="semantic_errors.cpp" ex="false" tool="1" flavor2="0">
-      </item>
-      <item path="semantic_errors.h" ex="false" tool="3" flavor2="0">
+      <item path="semantic_errors.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+        </ccTool>
       </item>
       <item path="symbolTable.cpp" ex="false" tool="1" flavor2="8">
         <ccTool flags="0">
         </ccTool>
       </item>
-      <item path="toker.c" ex="false" tool="1" flavor2="8">
+      <item path="symtab.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="toker.cpp" ex="false" tool="1" flavor2="8">
         <ccTool flags="0">
         </ccTool>
       </item>
@@ -74,9 +93,9 @@
         <ccTool flags="0">
         </ccTool>
       </item>
-      <item path="yyerrorHelper.cpp" ex="false" tool="1" flavor2="0">
-      </item>
-      <item path="yyerrorHelper.h" ex="false" tool="3" flavor2="0">
+      <item path="yyerrorHelper.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+        </ccTool>
       </item>
     </conf>
   </confs>

@@ -1,0 +1,252 @@
+// C-F15
+// Kyle King
+// minesweeper.c-
+// Compiler Design Fall 2006 - Robert Heckendorn
+//
+// A c- program to play a rondom 10x10 game of minesweeper
+// The tiny machine must be set to allow about 100,000 instructions.
+// 
+// The first number input into the program should be a seed 
+// for the random number generator. There should be (with relatively 
+// little collision ) a unique game for each seed. 
+//
+// The grid will print after each move the user makes. Each move 
+// requires two inputs from the user: the row and the column.
+//
+// When the game is over the grid will print unobscured followed by the
+// letter "T" if the user won and "F" if the user lost. When the grid 
+// prints, mines will appear as "T"s
+//
+// Enjoy
+
+// the seed for our random number generator
+int seed;
+
+// the playing board
+int  board [100];
+
+// the squares our user has guessed
+bool guess [100];
+
+// randomly generate a number between 0 and 99
+// based on the random number generator presented in
+// "The C Programming Language" by Kernighan and Ritchie
+int Random()
+{
+    int rand;
+    seed = seed * 333331 + 3331;
+      	
+    if ( seed < 0 )
+        return -seed % 100;
+    else
+        return seed % 100;
+}
+
+// initializes a 10x10 board with 15 random bombs
+CreateBoard()
+{
+    int i, j;
+	
+    // initialize the guess table
+    i=0;
+    while ( i<100 )
+    {
+        guess[i] = false;
+        i+=1;
+    }
+		
+    // initialize the board to all zeros
+    i=0;
+    while ( i<100 )
+    {
+        board[i] = 0;
+        i+=1;
+    }
+	
+    // randomly place 15 bombs on the board
+    i=0;
+    while ( i<=15 )
+    {
+        int rand; 
+		
+        while( true )
+        {
+            rand = Random();
+
+            if ( board[rand] != -1 )
+            {
+		// place the mine
+                board[rand] = -1;
+				
+		// update surrounding cells numbers to reflect
+		// how many mines they touch
+				
+                if ( rand % 10 != 0  &  rand > 9 )
+                    if ( board[rand-11] != -1 )
+                        board[rand-11] += 1;
+					
+                if ( rand > 9 )
+                    if ( board[rand-10] != -1 )
+                        board[rand-10] += 1;
+				
+                if ( rand % 9 != 0  &  rand > 9 )
+                    if ( board[rand-9] != -1 )
+                        board[rand-9] += 1;
+				
+                if ( rand % 10 != 0 )
+                    if ( board[rand-1] != -1 )
+                        board[rand-1] += 1;
+				
+                if ( rand % 9 != 0  |  rand == 0 )
+                    if ( board[rand+1] != -1 )
+                        board[rand+1] += 1;
+				
+                if ( rand % 10 != 0  &  rand < 90 )
+                    if ( board[rand+9] != -1 )
+                        board[rand+9] += 1;
+				
+                if ( rand < 90 )
+                    if ( board[rand+10] != -1 )
+                        board[rand+10] += 1;
+				
+                if ( rand % 9 != 0  &  rand < 90 )
+                    if ( board[rand+11] != -1 )
+                        board[rand+11] += 1;
+				
+                break;
+            }
+        }
+	
+        i+=1;
+    }
+}
+
+// prints the squares the user has guessed
+PrintBoard()
+{
+    int i;
+	
+    i=1;
+    outnl();
+	
+    while ( i<101 )
+    {
+        if ( guess[i-1] )
+        {
+            // print a "T" where a bomb is
+            if ( board[i-1] == -1 )
+                outputb(true);
+            else
+                output(board[i-1]);
+        }
+        else
+            outputb(false);
+		
+        if ( i%10 == 0 )
+            outnl();
+		
+        i+=1;
+    }
+    outnl();
+}
+
+Move( int m )
+{
+    guess[m] = true;
+	
+    // show connecting connecting zeros, but ! the 
+    // squares that are kiddy c|ner
+    if ( board[m] == 0 )
+    {		
+        if ( m > 9 )
+            if ( board[m-10] == 0  &  ! guess[m-10] )
+                Move(m-10);
+		
+        if ( m % 10 != 0 )
+            if ( board[m-1] == 0  &  ! guess[m-1] )
+                Move(m-1);
+		
+        if ( m % 9 != 0  |  m == 0)
+            if ( board[m+1] == 0  &  ! guess[m+1] )
+                Move(m+1);
+		
+        if ( m < 90 )
+            if ( board[m+10] == 0  &  ! guess[m+10] )
+                Move(m+10);
+    }
+}
+
+main()
+{	
+    // an iterator...
+    int i;
+	
+	// the x and y coordinates the user guesses
+    int x, y;
+	
+    // seed our random number generator
+    seed = input();
+	
+    // create the board for this play
+    CreateBoard();
+	
+    // print our newly created board
+    while ( true )
+    {
+        PrintBoard();
+		
+        // get the users move
+        x = input() - 1;
+        y = input() - 1;
+		
+        // check for bad input
+        if ( x > 9  |  y > 9  |  x<0  |  y<0)
+        {
+            outputc('B');
+            outputc('Y');
+            outputc('E');
+            outnl();
+            break;
+        }
+		
+        // check if they lost
+        if ( board[x*10 + y] == -1 )
+        {
+            i=0;
+            while ( i<100 )
+            {
+                guess[i] = true;
+                i+=1;
+            }
+			
+            PrintBoard();
+            outputc('B');
+            outputc('O');
+            outputc('O');
+            outputc('M');
+            outputc('!');
+            outnl();
+            break;
+        }
+		
+        // check if they won
+        i=0;
+        while ( guess[i] == true  &  i < 100 )
+            i+=1;
+		
+        // they won! 
+        if ( i == 100 )
+        {
+            PrintBoard();
+            outputc('Y');
+            outputc('A');
+            outputc('Y');
+            outputc('!');
+            outnl();
+            break;
+        }
+		
+        // apply the move
+        Move(x+y*10);
+    }
+}

@@ -1,0 +1,10 @@
+main() 
+{
+   int x;
+   x = 666 * 7777;
+   output(x);
+   outnl();
+
+   return;
+}
+

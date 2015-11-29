@@ -25,11 +25,12 @@ typedef enum {
 	OpK, AssignK, VarK, FunK, ParamK,
 	CompoundK, IfK, ForeachK, WhileK,
 	ReturnK, BreakK, CallK,
-	ConstK, IdK, TypeK, UnaryK
+	ConstK, IdK, TypeK, UnaryK, ReadK, WriteK, k_undef
 } Kind;
 
 typedef enum {Void, Integer, Boolean, Character, Undef } Type;
 
+typedef enum {local, global, o_param, o_undef} Offset;
 
 /*** TREENODE ***/
 typedef struct treeNode
@@ -44,15 +45,22 @@ typedef struct treeNode
 	struct treeNode *sibling;              	// siblings for the node
 
 	NodeKind nodekind;                     	// General kind
-	Kind kind;								// Precise kind (eg Return, Call, etc)
-	Type nodetype;							// Type of the node
-	//ExpType expType;		           		// used when ExpK for type checking
+	Kind kind;				// Precise kind (eg Return, Call, etc)
+	Type nodetype;				// Type of the node
+
 	bool isStatic;                         	// is statically allocated? TODO: needed?
 	bool isArray;                          	// Array?
-	bool isIndex;							// Array index?
-	bool isScoped;  // TODO: needed?
+	bool isIndex;				// Array index?
         bool isConstant;
+        bool isFuncCompound;
+        
         int arraySize;
+
+        Offset offsetReg; // offset register: global, local
+        int size; // size in memory
+        int location; // location in memory?
+        
+        
 } TreeNode;
 
 #endif

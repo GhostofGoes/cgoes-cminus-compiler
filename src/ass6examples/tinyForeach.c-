@@ -1,0 +1,8 @@
+main()
+{
+    int x, y[10];
+
+    foreach (x in 666) 777;
+
+    foreach (x in y) 888;
+}

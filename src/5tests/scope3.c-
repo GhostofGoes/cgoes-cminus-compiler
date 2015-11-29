@@ -1,0 +1,47 @@
+int a;
+bool b;
+char c;
+int aa[11];
+bool bb[22];
+char cc[33];
+
+main(int pa; bool pb; char pc; int paa[]; bool pbb[]; char pcc[])
+{
+    int la;
+    bool lb;
+    char lc;
+    int laa[11];
+    bool lbb[22];
+    char lcc[33];
+    {
+        int sla;
+        bool slb;
+        char slc;
+        int slaa[11];
+        bool slbb[22];
+        char slcc[33];
+    }
+    {
+        int tla;
+        bool tlb;
+        char tlc;
+        int tlaa[11];
+        bool tlbb[22];
+        char tlcc[33];
+    }
+    {
+        static int sa;
+        static bool sb;
+        static char sc;
+        static int saa[11];
+        static bool sbb[22];
+        static char scc[33];
+    }
+}
+
+int d, ee[10];
+
+fox(int fpa; bool fpb; char fpc; int fpaa[]; bool fpbb[]; char fpcc[])
+{
+   int foxa; 
+}
