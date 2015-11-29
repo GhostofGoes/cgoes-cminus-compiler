@@ -208,7 +208,7 @@ void yyerror(const char *msg)
 
     errors++;
 
-    free(space);
+    //free(space);
 }
 
 

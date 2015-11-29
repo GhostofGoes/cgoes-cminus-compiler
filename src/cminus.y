@@ -113,9 +113,10 @@ declaration:
 var-declaration:
 	type-specifier var-decl-list SEMICOLON
         { 
+            yyerrok;
             $$ = $2;
             applyTypeToSiblings($$, $1->nodetype);
-            yyerrok;
+            
         }
     | error SEMICOLON { yyerrok; }
 	;
@@ -123,10 +124,11 @@ var-declaration:
 scoped-var-declaration:
     scoped-type-specifier var-decl-list SEMICOLON
      { 
+        yyerrok;
         $$ = $2;
         if($1->isStatic) { $$->isStatic = true; }
         applyTypeToSiblings($$, $1->nodetype);
-        yyerrok;
+        
      }
      | type-specifier error { $$ = NULL; }
      | error SEMICOLON { yyerrok; }
@@ -166,6 +168,7 @@ var-decl-id:
         }
 	| ID LBRACKET NUMCONST RBRACKET
 		{ 
+            yyerrok;
             $$ = makeNode( DeclK, VarK, Void, $1->lineno, $1 );
             // TODO: handle NUMCONST!
             $$->isArray = true;
@@ -173,7 +176,7 @@ var-decl-id:
             //freeToken($2);
             //freeToken($3);
             //freeToken($4);
-            yyerrok;
+            
         }
      | ID LBRACKET error { $$ = NULL; }
      | error RBRACKET { yyerrok; }
@@ -240,9 +243,10 @@ params:
 param-list:
 	param-list SEMICOLON param-type-list 
 		{  
+                    yyerrok;
                     $$ = linkSiblings($1, $3);
                     ////freeToken($2);
-                    yyerrok;
+                    
 		}
 	| param-type-list
 		{ $$ = $1; }
@@ -262,9 +266,10 @@ param-type-list:
 param-id-list:
 	param-id-list COMMA param-id 
 	{ 
+            yyerrok;
             $$ = linkSiblings($1, $3);
             //freeToken($2);
-            yyerrok;
+            
         }
 	| param-id 
             { $$ = $1; }
@@ -275,16 +280,18 @@ param-id-list:
 param-id:
 	ID 		
 	{ 
-            $$ = makeNode( DeclK, ParamK, Void, $1->lineno, $1 );
             yyerrok;
+            $$ = makeNode( DeclK, ParamK, Void, $1->lineno, $1 );
+            
         }
 	| ID LBRACKET RBRACKET
 		{ 
+            yyerrok;
             $$ = makeNode( DeclK, ParamK, Void, $1->lineno, $1 );
             $$->isArray = true; 
             //freeToken($2);
             //freeToken($3);
-            yyerrok;
+            
         }
      | error { $$ = NULL; }
 	;
@@ -415,12 +422,13 @@ unmatched-foreach-stmt:
 compound-stmt:
 	LBRACE local-declarations statement-list RBRACE
         { 
+            yyerrok;
             $$ = makeNode( StmtK, CompoundK, Void, $1->lineno, $1 );
             addChild( $$, $2);
             addChild( $$, $3);
             //freeToken($1);
             //freeToken($4);
-            yyerrok;
+            
         }
     | LBRACE error statement-list RBRACE { $$ = NULL; }
     | LBRACE local-declarations error RBRACE { yyerrok; }
@@ -464,25 +472,28 @@ expression-stmt:
 return-stmt:
 	RETURN SEMICOLON 
         { 
+            yyerrok;
             $$ = makeNode( StmtK, ReturnK, Void, $1->lineno, $1 );
             //freeToken($2);
-            yyerrok;
+            
         }
 	| RETURN expression SEMICOLON
         {
+            yyerrok;
             $$ = makeNode( StmtK, ReturnK, $2->nodetype, $1->lineno, $1 );     
             addChild( $$, $2);
             //freeToken($3);
-            yyerrok;
+            
         }
 	;
 	
 break-stmt:
 	BREAK SEMICOLON
         { 
+            yyerrok;
             $$ = makeNode( StmtK, BreakK, Void, $1->lineno, $1 );   
             //freeToken($2);
-            yyerrok;
+            
         }
 	;
 	
@@ -530,16 +541,18 @@ expression:
         */
 	| mutable INC
         { 
+            yyerrok;
             $$ = makeNode( ExpK, AssignK, Integer, $2->lineno, $2 );     
             addChild( $$, $1);
-            yyerrok;
+            
         }
         | error INC { yyerrok; }
 	| mutable DEC
         { 
+            yyerrok;
             $$ = makeNode( ExpK, AssignK, Integer, $2->lineno, $2 );     
             addChild( $$, $1);
-            yyerrok;
+            
         }
         | error DEC { yyerrok; }
 	| simple-expression
@@ -756,13 +769,14 @@ mutable:
         }
 	| ID LBRACKET expression RBRACKET
         {
+            yyerrok;
             $$ = makeNode( ExpK, IdK, Void, $1->lineno, $1 );
             //$$->isArray = true; 
             $3->isIndex = true;
             addChild( $$, $3);
             //freeToken($2);
             //freeToken($4);
-            yyerrok;
+            
         }
         | ID LBRACKET error { $$ = NULL; }
         | error RBRACKET { yyerrok; }
@@ -771,10 +785,11 @@ mutable:
 immutable:
 	LPAREN expression RPAREN
         { 
+            yyerrok;
             $$ = $2;
             //freeToken($1);
             //freeToken($3);
-            yyerrok;
+            
          }
 	| call
             { $$ = $1; }	
@@ -786,6 +801,7 @@ immutable:
 call:
 	ID LPAREN args RPAREN
             { 
+                yyerrok;
 		if ( $3 != NULL ) {
                     $$ = makeNode( ExpK, CallK, $3->nodetype, $1->lineno, $1 );
                     addChild($$, $3);
@@ -795,7 +811,7 @@ call:
 		}	
                 //freeToken($2);
                 //freeToken($4);
-                yyerrok;
+                
             }
         | ID LPAREN error { $$ = NULL; }
 	;
@@ -810,9 +826,10 @@ args:
 arg-list:
 	arg-list COMMA expression 
 		{ 
+                    yyerrok;
 		    $$ = linkSiblings($1, $3); 
 		    //freeToken($2);
-                    yyerrok;
+                    
 		}
 	| expression 
 		{ $$ = $1; }	
@@ -823,28 +840,32 @@ arg-list:
 constant:
 	NUMCONST
 	{ 
-            $$ = makeNode( ExpK, ConstK, Integer, $1->lineno, $1 );
+    yyerrok;        
+    $$ = makeNode( ExpK, ConstK, Integer, $1->lineno, $1 );
             $$->isConstant = true;
-            yyerrok;
+            
         }
 	| CHARCONST 
 	{ 
+            yyerrok;
             $$ = makeNode( ExpK, ConstK, Character, $1->lineno, $1 );
             $$->isConstant = true;
-            yyerrok;
+            
         }
 	| STRINGCONST
 	{ 
+            yyerrok;
             $$ = makeNode( ExpK, ConstK, Character, $1->lineno, $1 );
             $$->isArray = true;
             $$->isConstant = true;
-            yyerrok;
+            
         }
 	| BOOLCONST
 	{ 
+            yyerrok;
             $$ = makeNode( ExpK, ConstK, Boolean, $1->lineno, $1 );
             $$->isConstant = true;
-            yyerrok;
+            
         }
 	;
 	

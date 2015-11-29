@@ -106,15 +106,15 @@ stringbody	([^"])|(\\[^n])
 		strcat(literalbuffer, yytext);
 		*sbuf_ptr = '\0';
                 sToker(STRINGCONST, literalbuffer, yylineno, stringbuffer);
-                free(literalbuffer);
-                free(stringbuffer);
+                //free(literalbuffer);
+                //free(stringbuffer);
                 BEGIN(INITIAL);
                 return STRINGCONST;
 	}
 	\n  {
                 warnInputChar(yytext[0], yylineno);
-		free(literalbuffer);
-                free(stringbuffer);
+		//free(literalbuffer);
+                //free(stringbuffer);
 		BEGIN(INITIAL);
 		//return error(yytext, yylineno, "Invalid input character");
 	}
@@ -152,7 +152,7 @@ stringbody	([^"])|(\\[^n])
                 {
                     strcat(literalbuffer, yytext);
                     cToker(CHARCONST, literalbuffer, yylineno, ctemp);
-                    free(literalbuffer);
+                    //free(literalbuffer);
                     BEGIN(INITIAL);
                     return CHARCONST;
                 }
@@ -161,14 +161,14 @@ stringbody	([^"])|(\\[^n])
                     strcat(literalbuffer, yytext);
                     warnCharLength(yytext, clength, yylineno);
                     cToker(CHARCONST, literalbuffer, yylineno, ctemp);
-                    free(literalbuffer);
+                    //free(literalbuffer);
                     BEGIN(INITIAL);
                     return CHARCONST;
                 }
             }
 	\n  {
                 warnInputChar(yytext[0], yylineno);
-                free(literalbuffer);
+                //free(literalbuffer);
                 BEGIN(INITIAL);
                 //return error(yytext, yylineno, "Invalid input character");
             }

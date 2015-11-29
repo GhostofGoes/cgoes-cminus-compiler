@@ -180,7 +180,7 @@ void semanticAnalysis ( TreeNode * og )
         typetable->print(printTreeNode);
         std::cout << "Deleting typetable..." << std::endl;
     }
-    delete typetable;
+    //delete typetable;
 
     // *** Semantic Analysis *** //
     if ( debugging ) 
@@ -209,7 +209,7 @@ void semanticAnalysis ( TreeNode * og )
     {
         std::cout << "Deleting symtable..." << std::endl;
     }
-    delete symtable;
+    //delete symtable;
 }
 
 // Like a ninja...silent insertion into symbol table and annotating of types. Few errors.
