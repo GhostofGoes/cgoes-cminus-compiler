@@ -1,0 +1,40 @@
+11/30 Notes
+Foreach implementation example
+************
+
+C- foreach is very pythonic.
+
+Example
+foreachScalar( int x, y)
+{
+	int p, limit;
+	p = 0;
+	limit = y;
+	while(p < limit)
+	{
+		x = p;
+		<do some action>;
+		p++;
+	}
+}
+
+Array version is almost identical, just with array pointers.
+
+Need to make sure break works still!
+
+(have a switch to emit comments/not emit comments)
+
+come to foreach node, replace with tree that contains while code and all the foreach stuff, in C-. So then the code generator will come through and process it. (basically, a post-semantic macro)
+
+(idea: write a tree-parsing function, then write functions that are passed, and operate on the tree. keep context information in a datastructure. could use for printing, parsing, etc.)
+(look at C++ books for how to do this)
+
+(cast const char *'s as (char *) when passing to functions)
+(debugging: testing assumptions)
+
+(Need to understand the codegen commands)
+
+
+
+
+
