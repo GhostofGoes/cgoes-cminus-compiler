@@ -106,25 +106,14 @@ stringbody	([^"])|(\\[^n])
 	\"  {
 		//strcat(literalbuffer, yytext);
 		*sbuf_ptr = '\0';
-<<<<<<< HEAD
-                sToker(STRINGCONST, literalbuffer, yylineno, stringbuffer);
-                //free(literalbuffer);
-                //free(stringbuffer);
-=======
                 yytext = strdup(stringbuffer);
                 sToker(STRINGCONST, literalbuffer, start_line, stringbuffer);
                 free(literalbuffer);
                 free(stringbuffer);
->>>>>>> b842e549f1de314539e7c6315c18649eb80e73ff
                 BEGIN(INITIAL);
                 return STRINGCONST;
 	}
 	\n  {
-<<<<<<< HEAD
-                warnInputChar(yytext[0], yylineno);
-		//free(literalbuffer);
-                //free(stringbuffer);
-=======
                 // TODO: should we be returning on newline?
                 //yytext = strdup(stringbuffer);
                 warnInputChar('\"', start_line);
@@ -132,7 +121,6 @@ stringbody	([^"])|(\\[^n])
                 //sToker(STRINGCONST, literalbuffer, yylineno, stringbuffer);                
 		free(literalbuffer);
                 free(stringbuffer);
->>>>>>> b842e549f1de314539e7c6315c18649eb80e73ff
 		BEGIN(INITIAL);
                 //return STRINGCONST;
 	}
@@ -169,14 +157,9 @@ stringbody	([^"])|(\\[^n])
                 if( clength < 2 ) // ALL GOOD MATE
                 {
                     strcat(literalbuffer, yytext);
-<<<<<<< HEAD
-                    cToker(CHARCONST, literalbuffer, yylineno, ctemp);
-                    //free(literalbuffer);
-=======
                     yytext = strdup(literalbuffer);
                     cToker(CHARCONST, literalbuffer, start_line, ctemp);
                     free(literalbuffer);
->>>>>>> b842e549f1de314539e7c6315c18649eb80e73ff
                     BEGIN(INITIAL);
                     return CHARCONST;
                 }
@@ -185,25 +168,15 @@ stringbody	([^"])|(\\[^n])
                     //strcat(literalbuffer, yytext);
                     yytext = strdup(literalbuffer);
                     warnCharLength(yytext, clength, yylineno);
-<<<<<<< HEAD
-                    cToker(CHARCONST, literalbuffer, yylineno, ctemp);
-                    //free(literalbuffer);
-=======
                     cToker(CHARCONST, literalbuffer, start_line, ctemp);
                     free(literalbuffer);
->>>>>>> b842e549f1de314539e7c6315c18649eb80e73ff
                     BEGIN(INITIAL);
                     return CHARCONST;
                 }
             }
 	\n  {
-<<<<<<< HEAD
-                warnInputChar(yytext[0], yylineno);
-                //free(literalbuffer);
-=======
                 warnInputChar('\'', start_line);
                 free(literalbuffer);
->>>>>>> b842e549f1de314539e7c6315c18649eb80e73ff
                 BEGIN(INITIAL);
             }
 	\\n { 
