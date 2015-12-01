@@ -93,7 +93,6 @@ stringbody	([^"])|(\\[^n])
 {digit}+		{ return iToker(NUMCONST,   yytext, yylineno, atoi(yytext)); }
 
 	/* String Constants */
-	/* TODO: proper errors */
 \"	{ 
             stringbuffer = (char *)calloc(100, sizeof(char));
             sbuf_ptr = stringbuffer;
@@ -212,8 +211,7 @@ stringbody	([^"])|(\\[^n])
 	/* Count lines? */
 \n	{  }
 
-	/* Shouldn't reach here. Unless its a invalid token. Then we print. */
-	/*. { return error(yytext, yylineno, "Invalid input character"); }*/
+	/* If we reach the catch-all, it is an invalid character */
 .       { warnInputChar(yytext[0], yylineno); }
 
 %%

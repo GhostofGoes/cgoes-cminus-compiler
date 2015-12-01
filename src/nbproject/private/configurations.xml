@@ -14,6 +14,8 @@
         <df name="5outputs">
         </df>
       </df>
+      <df name="ass6examples">
+      </df>
       <in>cminus.cpp</in>
       <in>cminus.h</in>
       <in>cminus.l</in>
