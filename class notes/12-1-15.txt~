@@ -1,0 +1,24 @@
+Don't have to produce the same TM code he does, just the same output when that code is run using the TM.
+
+make sure using TM 3.4b (his version /w a fix)
+
+emit code has include in globals?
+
+remember: 50/80 point bounty for interesting piece of C- code
+
+emit skip: leaves open space for backpatch (in case of emitSkip(0))
+
+relative addressing
+
+he is putting C++ emit example code on site, while loop.
+
+local variables when generating loops (in compiler's code)
+
+
+(register thre333)
+
+global( and static): register 0
+local( and paramaters): register 1
+
+
+
