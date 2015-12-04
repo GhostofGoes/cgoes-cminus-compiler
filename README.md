@@ -1,13 +1,12 @@
 # uidaho CS445 - Compilers - Fall 2015
+Project for CS445 - Compilers class at the University of Idaho.
+
 # Cgoes Cminus Compiler (CCC)
-A compiler for Robert Heckendorn's C- (cminus) languager. 
-Project for CS445:Compilers class at the University of Idaho.
-
-
+A compiler for Robert Heckendorn's C- (cminus) language. 
 VIEWER BEWARE! NSFL CODE!
 
 # License
-    cgoes-cs445 is free software: you can redistribute it and/or modify
+    cgoes_cminus_compiler is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
