@@ -18,6 +18,7 @@ public:
     codegenTM( TreeNode * annotatedTree, SymbolTable * symtable, int global_offset );
     ~codegenTM();
 private:
+    void generateDeclaration( TreeNode * node );
     void generateStatement( TreeNode * node );    
     void generateExpression( TreeNode * node );
     void treeTraversal( TreeNode * tree );

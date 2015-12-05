@@ -48,6 +48,7 @@
       <in>yyerrorHelper.cpp</in>
       <in>yyerrorHelper.h</in>
     </df>
+    <itemPath>bison_values.txt</itemPath>
   </logicalFolder>
   <projectmakefile>makefile</projectmakefile>
   <confs>

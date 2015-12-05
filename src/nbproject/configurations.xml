@@ -25,6 +25,7 @@
                    kind="IMPORTANT_FILES_FOLDER">
       <itemPath>makefile</itemPath>
     </logicalFolder>
+    <itemPath>bison_values.txt</itemPath>
   </logicalFolder>
   <sourceFolderFilter>^(nbproject)$</sourceFolderFilter>
   <sourceRootList>
@@ -51,6 +52,8 @@
           <executablePath>c-</executablePath>
         </makeTool>
       </makefileType>
+      <item path="bison_values.txt" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="cminus.cpp" ex="false" tool="1" flavor2="8">
         <ccTool flags="0">
         </ccTool>

@@ -9,6 +9,10 @@
 #ifndef _CODE_H_
 #define _CODE_H_
 
+#include <string>
+
+using namespace std;
+
 // pc = program counter
 #define  pc 7
 
@@ -29,7 +33,8 @@
 // code emitting utilities //
 
 // Prints a comment line with comment c in the code file
-void emitComment( const char * c );
+//void emitComment( const char * c );
+void emitComment( string s );
 
 /* Procedure emitRO emits a register-only
  * TM instruction

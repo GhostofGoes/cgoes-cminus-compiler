@@ -10,6 +10,11 @@
 #include "emit.h"
 #include "codegen.h"
 #include "symtab.h"
+#include <string>
+#include <iostream>
+
+using namespace std;
+
 
 /* TM location number for current instruction emission */
 static int emitLoc = 0 ;
@@ -22,8 +27,12 @@ static int highEmitLoc = 0;
 /* Procedure emitComment prints a comment line 
  * with comment c in the code file
  */
-void emitComment( const char * c )
-{ printf("* %s\n",c);}
+//void emitComment( const char * c )
+//{ printf("* %s\n",c);}
+void emitComment( string s )
+{
+    cout << "* " << s << endl;
+}
 
 /* Procedure emitRO emits a register-only
  * TM instruction
