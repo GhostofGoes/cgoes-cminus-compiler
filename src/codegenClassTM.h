@@ -48,7 +48,7 @@ private:
     void emitRM( const char * op, int r, int d, int s, const char *c);
     int emitSkip( int howMany);
     void emitBackup( int loc);
-    void emitRestore(void);
+    void emitRestore();
     void emitRM_Abs( const char *op, int r, int a, const char * c);
     
     
