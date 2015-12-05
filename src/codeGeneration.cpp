@@ -9,7 +9,27 @@
 #include "types.h"
 #include "cminus.h"
 
-void generateTMCode( TreeNode * node, SymbolTable symtable, int global_offset )
+SymbolTable * symtab = NULL;
+
+void generateTMCode( TreeNode * annotatedTree, SymbolTable * symtable, int global_offset )
 {
-    TreeNode * tree = node;
+    TreeNode * tree = annotatedTree; // Copy the pointer so we can iterate
+    symtab = symtable;
+    
+    
+}
+
+void genStmt( TreeNode * node )
+{
+    
+}
+
+void genExp( TreeNode * node )
+{
+    
+}
+
+void treeTraversal( TreeNode * tree )
+{
+    
 }

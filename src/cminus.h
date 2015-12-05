@@ -32,9 +32,11 @@ extern int global_offset;
 //static void yyerror(const char *);
 
 // Creates the Annotated Syntax Tree
-void semanticAnalysis(TreeNode * tree );
+SymbolTable * semanticAnalysis(TreeNode * tree );
 void typeResolution( TreeNode * parent, TreeNode * node, SymbolTable * symtable );
 void treeParse( TreeNode * parent, TreeNode * node, SymbolTable * symtable, bool in_loop );
+void generateCode( TreeNode * tree, SymbolTable * symtable );
+
 TreeNode * buildIOLibrary();
 void checkArgTypes( TreeNode * call, TreeNode * func );
 void memorySizing( TreeNode * tree, SymbolTable * symtable );

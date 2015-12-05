@@ -41,16 +41,20 @@
 #include "printing.h"
 #include "trees.h"
 #include "semantic_errors.h"
+#include "codegenClassTM.h"
 
 // Tree pointers
 TreeNode * syntaxTree = NULL;
 TreeNode * annotatedTree = NULL;
 
+// SymbolTable
+SymbolTable * symtab = NULL;
+
 // Globally keep track of warnings and errors
 int warnings = 0;
 int errors = 0;
 bool testing = false;
-bool debugging = false;
+bool semantic_debugging = false;
 
 bool return_found = false;
 TreeNode * func = NULL;
@@ -78,10 +82,9 @@ int main ( int argc, char * argv[] )
     initTokenMaps();
 
     // Command line options
-    while ((option = getopt(argc, argv, "dpPtz")) != EOF)
+    while ((option = getopt(argc, argv, "dpPts")) != EOF)
     {
-        switch (option)
-          {
+        switch (option) {
             case 'd':
               yydebug = 1;
               break;
@@ -94,15 +97,15 @@ int main ( int argc, char * argv[] )
             case 't':
               testing = true;
               break;
-            case 'z':
-              debugging = true;
+            case 's':
+              semantic_debugging = true;
               break;
             case 'e':
-                error_checking = true;
-                break;
-            case 'g':
-                code_generation = true;
-                break;
+              error_checking = true;
+              break;
+            case 'o':
+              code_generation = true;
+              break;
             default:
               break;
           }
@@ -131,7 +134,7 @@ int main ( int argc, char * argv[] )
         TreeNode * io = buildIOLibrary();
         linkSiblings(io, syntaxTree);
         annotatedTree = io;
-        semanticAnalysis(annotatedTree);
+        symtab = semanticAnalysis(annotatedTree);
 
         
         if ( print_annotated_tree )
@@ -142,13 +145,12 @@ int main ( int argc, char * argv[] )
     }
 
     
-    if ( code_generation )
+    if ( code_generation && (errors == 0) )
     {
-        //generateCode();
+        generateCode(annotatedTree, symtab);
     }
 
-    //freeTree(annotatedTree);
-    //freeTree(syntaxTree);
+
     
     if(print_annotated_tree)
         printf("Offset for end of global space: %d\n", global_offset);
@@ -156,31 +158,43 @@ int main ( int argc, char * argv[] )
     printf("Number of warnings: %d\n", warnings);
     printf("Number of errors: %d\n", errors);
 
+    
+    /* Cleanup memory */
     fclose(yyin);
+    
+    if(symtab != NULL)
+        delete symtab;
+    
+    /*
+    if(syntaxTree != NULL)
+        //freeTree(syntaxTree);
+    if(annotatedTree != NULL)
+        //freeTree(annotatedTree);
+    */
+
     return 0;
 }
 
 // Performs semantic analysis, generating the Annotated Syntax Tree
-
-void semanticAnalysis ( TreeNode * og )
+SymbolTable * semanticAnalysis ( TreeNode * og )
 {
-    // add return?
     SymbolTable * symtable = new SymbolTable();
     SymbolTable * typetable = new SymbolTable();
     TreeNode * tree = og;
 
-    // *** Type annotation *** //
-    if ( debugging )
+    
+    if ( semantic_debugging )
     {
         std::cout << "Enabling typetable debug flags..." << std::endl;
         typetable->debug(true);
         std::cout << "Pre-typeResolution" << std::endl;
         typetable->print(printTreeNode);
     }
-
+    
+    // *** Type annotation *** //
     typeResolution(NULL, tree, typetable);
 
-    if ( debugging )
+    if ( semantic_debugging )
     {
         std::cout << "Post-typeResolution" << std::endl;
         typetable->print(printTreeNode);
@@ -188,8 +202,7 @@ void semanticAnalysis ( TreeNode * og )
     }
     //delete typetable;
 
-    // *** Semantic Analysis *** //
-    if ( debugging ) 
+    if ( semantic_debugging ) 
     {
         std::cout << "Enabling symtable debug flags..." << std::endl;
         symtable->debug(true);
@@ -197,11 +210,12 @@ void semanticAnalysis ( TreeNode * og )
         symtable->print(printTreeNode);        
     }
     
+    // *** Semantic Analysis *** //
     treeParse(NULL, tree, symtable, false);
     
     
 
-    if ( debugging )
+    if ( semantic_debugging )
     {
         std::cout << "Post-treeParse" << std::endl;
         symtable->print(printTreeNode);
@@ -215,11 +229,12 @@ void semanticAnalysis ( TreeNode * og )
     
     memorySizing(annotatedTree, symtable);
     
-    if( debugging )
+    if( semantic_debugging )
     {
         std::cout << "Deleting symtable..." << std::endl;
     }
-    //delete symtable;
+    
+    return symtable;
 }
 
 // Like a ninja...silent insertion into symbol table and annotating of types. Few errors.
@@ -383,7 +398,7 @@ void typeResolution ( TreeNode * par, TreeNode * node, SymbolTable * symtable )
         if ( (tree->kind == CompoundK && parent->kind != FunK) || tree->kind == FunK )
         //if ( tree->kind == FunK )
         {
-            if ( debugging )
+            if ( semantic_debugging )
             {
                 symtable->print(printTreeNode);
             }
@@ -1093,7 +1108,7 @@ void treeParse ( TreeNode * par, TreeNode * node, SymbolTable * symtable, bool i
         
         if ( (tree->kind == CompoundK && parent->kind != FunK) || tree->kind == FunK )
         {
-            if ( debugging )
+            if ( semantic_debugging )
             {
                 std::cout << "Leaving symtable..." << std::endl;
                 symtable->print(printTreeNode);
@@ -1124,8 +1139,15 @@ void treeParse ( TreeNode * par, TreeNode * node, SymbolTable * symtable, bool i
     } // end while
 }
 
-// Creates the tree of IO functions
+void generateCode( TreeNode * tree, SymbolTable * symtable )
+{
+    class codegenTM * cg = new codegenTM(tree, symtable, 0 );
+}
 
+
+
+
+// Creates the tree of IO functions
 TreeNode * buildIOLibrary ( )
 {
 
@@ -1310,7 +1332,7 @@ void memorySizing( TreeNode * node, SymbolTable * symtable )
 
         if ( (tree->kind == CompoundK && tree->isFuncCompound == false) )
         {
-            if ( debugging )
+            if ( semantic_debugging )
             {
                 symtable->print(printTreeNode);
             }

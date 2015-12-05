@@ -7,6 +7,8 @@
       <in>codeGeneration.cpp</in>
       <in>codeGeneration.h</in>
       <in>codegen.cpp</in>
+      <in>codegenClassTM.cpp</in>
+      <in>codegenClassTM.h</in>
       <in>emit.cpp</in>
       <in>lex.yy.c</in>
       <in>printing.cpp</in>
@@ -62,6 +64,10 @@
       <item path="codegen.cpp" ex="false" tool="1" flavor2="8">
         <ccTool flags="0">
         </ccTool>
+      </item>
+      <item path="codegenClassTM.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="codegenClassTM.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="emit.cpp" ex="false" tool="1" flavor2="8">
         <ccTool flags="0">

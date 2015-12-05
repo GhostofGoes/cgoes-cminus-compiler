@@ -11,7 +11,7 @@
 #include "types.h"
 #include "cminus.h"
 
-void generateTMCode( TreeNode * tree, SymbolTable symtable, int global_offset );
+void generateTMCode( TreeNode * annotatedTree, SymbolTable * symtable, int global_offset );
 
 #endif	/* CODEGENERATION_H */
 

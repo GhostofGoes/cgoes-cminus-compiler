@@ -26,6 +26,8 @@
       <in>codeGeneration.h</in>
       <in>codegen.cpp</in>
       <in>codegen.h</in>
+      <in>codegenClassTM.cpp</in>
+      <in>codegenClassTM.h</in>
       <in>emit.cpp</in>
       <in>emit.h</in>
       <in>lex.yy.c</in>
