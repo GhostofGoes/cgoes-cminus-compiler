@@ -16,14 +16,14 @@
 using namespace std;
 
 
-codegenTM::codegenTM ( TreeNode * annotatedTree, SymbolTable * symtable, int global_offset, FILE * output_file ) 
+codegenTM::codegenTM ( TreeNode * annotatedTree, SymbolTable * symtable, int global_offset, string filename ) 
 { 
     symtab = symtable;
     tree = annotatedTree;
-    outfile = output_file;
+    outfile.open(filename, ofstream::out);
     
     gOffset = global_offset;
-    tmpOffset = 0;
+    tOffset = 0;
 
     emitLoc = 0;
     highEmitLoc = 0;

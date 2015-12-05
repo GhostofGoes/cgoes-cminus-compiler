@@ -79,7 +79,7 @@ int main ( int argc, char * argv[] )
     bool error_checking = true;
     bool code_generation = true;
     
-    FILE * outfileTM = NULL;
+    string outfileTM = "fred.tm";
     
     initTokenMaps();
     
@@ -109,9 +109,11 @@ int main ( int argc, char * argv[] )
             case 'o':
               code_generation = true;
               if(argv[optind] == "-")
-                outfileTM = stdout;
+                //outfileTM = stdout;
+                  outfileTM = "";
               else
-                outfileTM = fopen(argv[optind], "w");
+                //outfileTM = fopen(argv[optind], "w");
+                outfileTM = argv[optind];
               break;
             default:
               break;
@@ -124,10 +126,10 @@ int main ( int argc, char * argv[] )
         yyin = fopen(argv[optind], "r");
     }
     
-    if(outfileTM == NULL)
+    /*if(outfileTM == NULL)
     {
         outfileTM = fopen("fred.tm", "w");
-    }
+    }*/
 
     // Main parsing loop. Goes until end of input
     do
@@ -174,8 +176,8 @@ int main ( int argc, char * argv[] )
     /* Cleanup memory */
     fclose(yyin);
     
-    if(outfileTM != stdout && outfileTM != NULL)
-        fclose(outfileTM);
+    /*if(outfileTM != stdout && outfileTM != NULL)
+        fclose(outfileTM);*/
     
     if(symtab != NULL)
         delete symtab;
@@ -1154,7 +1156,7 @@ void treeParse ( TreeNode * par, TreeNode * node, SymbolTable * symtable, bool i
     } // end while
 }
 
-void generateCode( TreeNode * tree, SymbolTable * symtable, FILE * output_file )
+void generateCode( TreeNode * tree, SymbolTable * symtable, std::string output_file )
 {
     class codegenTM * cg = new codegenTM(tree, symtable, 0, output_file );
 }

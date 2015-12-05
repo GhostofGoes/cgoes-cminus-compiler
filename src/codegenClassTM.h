@@ -12,13 +12,14 @@
 #include "symbolTable.h"
 #include "types.h"
 #include <string>
+#include <fstream>
 
 using namespace std;
 
 class codegenTM {
 public:
     void generateCode();
-    codegenTM( TreeNode * annotatedTree, SymbolTable * symtable, int global_offset, FILE * output_file );
+    codegenTM( TreeNode * annotatedTree, SymbolTable * symtable, int global_offset, string filename );
     ~codegenTM();
     
 private:
@@ -31,7 +32,8 @@ private:
     int gOffset;
     TreeNode * tree;
     int tOffset;
-    FILE * outfile;
+    //FILE * outfile;
+    ofstream outfile;
     
     /* TM location number for current instruction emission */
     int emitLoc;
