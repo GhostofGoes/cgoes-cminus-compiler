@@ -79,7 +79,10 @@ int main ( int argc, char * argv[] )
     bool error_checking = true;
     bool code_generation = true;
     
+    FILE * outfileTM = NULL;
+    
     initTokenMaps();
+    
 
     // Command line options
     while ((option = getopt(argc, argv, "dpPts")) != EOF)
@@ -105,6 +108,10 @@ int main ( int argc, char * argv[] )
               break;
             case 'o':
               code_generation = true;
+              if(argv[optind] == "-")
+                outfileTM = stdout;
+              else
+                outfileTM = fopen(argv[optind], "w");
               break;
             default:
               break;
@@ -115,6 +122,11 @@ int main ( int argc, char * argv[] )
     if ( argc > 1 && optind < argc )
     {
         yyin = fopen(argv[optind], "r");
+    }
+    
+    if(outfileTM == NULL)
+    {
+        outfileTM = fopen("fred.tm", "w");
     }
 
     // Main parsing loop. Goes until end of input
@@ -147,7 +159,7 @@ int main ( int argc, char * argv[] )
     
     if ( code_generation && (errors == 0) )
     {
-        generateCode(annotatedTree, symtab);
+        generateCode(annotatedTree, symtab, outfileTM);
     }
 
 
@@ -161,6 +173,9 @@ int main ( int argc, char * argv[] )
     
     /* Cleanup memory */
     fclose(yyin);
+    
+    if(outfileTM != stdout && outfileTM != NULL)
+        fclose(outfileTM);
     
     if(symtab != NULL)
         delete symtab;
@@ -1139,9 +1154,9 @@ void treeParse ( TreeNode * par, TreeNode * node, SymbolTable * symtable, bool i
     } // end while
 }
 
-void generateCode( TreeNode * tree, SymbolTable * symtable )
+void generateCode( TreeNode * tree, SymbolTable * symtable, FILE * output_file )
 {
-    class codegenTM * cg = new codegenTM(tree, symtable, 0 );
+    class codegenTM * cg = new codegenTM(tree, symtable, 0, output_file );
 }
 
 
