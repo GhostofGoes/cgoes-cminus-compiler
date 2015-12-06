@@ -32,6 +32,8 @@ typedef enum {Void, Integer, Boolean, Character, Undef } Type;
 
 typedef enum {local, global, o_param, o_undef} Offset;
 
+typedef enum {InputI, OutputI, InputB, OutputB, InputC, OutputC, OutNL, Nopeput} IO;
+
 /*** TREENODE ***/
 typedef struct treeNode
 {
@@ -57,6 +59,7 @@ typedef struct treeNode
         int arraySize;
 
         Offset offsetReg; // offset register: global, local
+        IO isIO; // Will be set if input/output routine, otherwise Nopeput
         int size; // size in memory
         int location; // location in memory?
         

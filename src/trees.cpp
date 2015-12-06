@@ -140,6 +140,7 @@ TreeNode * allocNode() {
     tempNode->size = 0;
     tempNode->location = 0;
     tempNode->offsetReg = o_undef;
+    tempNode->isIO = Nopeput;
     return tempNode;
 }
 

@@ -1163,7 +1163,7 @@ void generateCode( std::string output_file )
 // Creates the tree of IO functions
 TreeNode * buildIOLibrary ( )
 {
-
+    // TODO: put in one declaration lol
     TreeNode * in;
     TreeNode * out;
     TreeNode * inputb;
@@ -1175,26 +1175,47 @@ TreeNode * buildIOLibrary ( )
     TreeNode * bdummy;
     TreeNode * cdummy;
 
+    /* Integer Input */
     in = makeParent(DeclK, FunK, Integer, -1, "input");
+    in->isIO = InputI;
+    
+    /* Integer Output */
     out = makeParent(DeclK, FunK, Void, -1, "output");
+    out->isIO = OutputI;
     idummy = makeParent(DeclK, ParamK, Integer, -1, "*dummy*");
     addChild(out, idummy);
     linkSiblings(in, out);
+    
+    /* Boolean Input */
     inputb = makeParent(DeclK, FunK, Boolean, -1, "inputb");
+    inputb->isIO = InputB;
     linkSiblings(in, inputb);
+    
+    /* Boolean Output */
     outputb = makeParent(DeclK, FunK, Void, -1, "outputb");
-    bdummy = makeParent(DeclK, ParamK, Boolean, -1, "*dummy*");
+    outputb->isIO = OutputB;
+    bdummy = makeParent(DeclK, ParamK, Boolean, -1, "*dummy*"); // Parent? lol naming ftw
     addChild(outputb, bdummy);
     linkSiblings(in, outputb);
+    
+    /* Character Input */
     inputc = makeParent(DeclK, FunK, Character, -1, "inputc");
+    inputc->isIO = InputC;
     linkSiblings(in, inputc);
+    
+    /* Character Output */
     outputc = makeParent(DeclK, FunK, Void, -1, "outputc");
+    outputc->isIO = OutputC;
     cdummy = makeParent(DeclK, ParamK, Character, -1, "*dummy*");
     addChild(outputc, cdummy);
     linkSiblings(in, outputc);
+    
+    /* Newline */
     outnl = makeParent(DeclK, FunK, Void, -1, "outnl");
+    outnl->isIO = OutNL;
     linkSiblings(in, outnl);
 
+    // Return beginning of the sibling list
     return in;
 }
 

@@ -68,6 +68,7 @@ void codegenTM::generateCode()
     
     
     /* Instruction generation */
+    emitRMAbs( "LDA", PC, highEmitLoc, "Jump to init");
     treeTraversal(aTree);
     initSetup();
 }
@@ -98,6 +99,17 @@ void codegenTM::generateDeclaration(TreeNode* node)
             emitComment("FUNCTION " + treestr);
             
             emitRM("ST", RET, -1, FP, "Store return address");
+            
+            if(treestr == "input")
+            {
+                
+            }
+            else if(treestr == "output")
+            {
+                
+            }
+            
+            
             
             emitRM("LDA", PC, 0, RET, "Return");
             
@@ -246,7 +258,6 @@ void codegenTM::initSetup()
 {
     // TODO: keep track of init start
     emitComment("INIT");
-    emitRMAbs( "LDA", PC, highEmitLoc, "Jump to init");
     
     initGlobals();
     
