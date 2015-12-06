@@ -34,8 +34,9 @@ private:
     void treeTraversal( TreeNode * tree );
     
     /* Typing saving functions  */
-    void saveRet(); // LDA, 3, 1(pc)
-    void standardRet();
+    void saveRet();     // save return addr
+    void standardRet(); // zero out return first
+    void funRet();      // Load ret addr, adjust FP, return 
     void IOroutines( IO io );
     
     /* Helper functions */

@@ -143,15 +143,18 @@ void codegenTM::generateDeclaration(TreeNode* node)
             emitRM("ST", val, -1, fp, "Store return address");
             
             if(tree->isIO != Nopeput)
+            {
                 IOroutines(tree->isIO);
+                funRet();
+            }
             else
             {
                 // TODO: any more function code?
                 generateDeclaration(tree->child[0]); // Paramaters
                 generateStatement(tree->child[1]); // Compound
+                standardRet();
             }
             
-            standardRet();
             emitComment("END FUNCTION " + treestr);
             break;
             
@@ -192,10 +195,15 @@ void codegenTM::generateStatement( TreeNode * node )
             break;
             
         case CompoundK:
+            emitComment("COMPOUND");
             // TODO: function body!
+            emitComment("END COMPOUND");
             break;
             
         case ReturnK:
+            emitComment("Return");
+            // TODO: function returns!
+            funRet();
             break;
             
         case BreakK:
@@ -224,6 +232,7 @@ void codegenTM::generateExpression( TreeNode * node )
     
     switch(tree->kind) { 
         case AssignK:
+            // TODO: variable assignment
             break;
             
         case OpK:
@@ -297,18 +306,24 @@ void codegenTM::treeTraversal( TreeNode * node )
 
 /* Helper functions */
 
-void codegenTM::saveRet()
+void codegenTM::saveRet() // save return addr
 {
     emitRM("LDA", 3, 1, pc, "Save return address");
 }
 
-void codegenTM::standardRet()
+void codegenTM::standardRet() // comment, zero out return, funRet
 {
     emitComment("Failsafe return");
     emitRM("LDC", 2, 0, 0, "Zero out return value");
+    funRet();
+
+}
+
+void codegenTM::funRet() // Load ret addr, adjust FP, return
+{
     emitRM("LD", 3, -1, fp, "Load return address");
     emitRM("LD", 1, 0, fp, "Adjust frame pointer");
-    emitRM("LDA", 3, 0, val, "Return!");
+    emitRM("LDA", 7, 0, val, "Return!");
 }
 
 void codegenTM::IOroutines(IO io)

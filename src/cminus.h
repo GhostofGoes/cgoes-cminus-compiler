@@ -29,7 +29,6 @@ extern TreeNode * syntaxTree;
 extern TreeNode * annotatedTree;
 
 extern int global_offset;
-//static void yyerror(const char *);
 
 // Creates the Annotated Syntax Tree
 SymbolTable * semanticAnalysis(TreeNode * tree );
