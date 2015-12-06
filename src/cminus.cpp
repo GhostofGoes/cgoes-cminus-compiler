@@ -73,7 +73,6 @@ int main ( int argc, char * argv[] )
     // Flags
     bool print_syntax_tree = false;
     bool print_annotated_tree = false;
-    bool error_checking = true;
     bool code_generation = true;
     int parseStatus = 0;
     
@@ -88,7 +87,7 @@ int main ( int argc, char * argv[] )
 
     // Command line options
     // TODO: -h/--help flag listing options
-    while ((option = getopt(argc, argv, "dpPtseo:")) != EOF)
+    while ((option = getopt(argc, argv, "dpPsto:")) != EOF)
     {
         switch (option) {
             case 'd':
@@ -100,29 +99,24 @@ int main ( int argc, char * argv[] )
             case 'P':
               print_annotated_tree = true;
               break;
-            case 't':
-              testing = true;
-              break;
             case 's':
               semantic_debugging = true;
               break;
-            case 'e':
-              error_checking = true;
-              break;
+            case 't':
+                testing = true;
+                break;
             case 'o':
               code_generation = true;
               if(optarg == "-")
               {
-                //outfileTM = stdout;
                 outfileTM = "stdout";
               }
               else
               {
-                //outfileTM = fopen(argv[optind], "w");
-                  if(optarg != NULL)
+                if(optarg != NULL)
                     outfileTM.assign(optarg);
-                  else
-                      std::cerr << "NULL optarg!" << std::endl;
+                else
+                    std::cerr << "NULL optarg!" << std::endl;
               }
               break;
             default:
@@ -150,7 +144,7 @@ int main ( int argc, char * argv[] )
         printAbstractTree(syntaxTree);
     
     //annotated_tree = true;
-    if ( error_checking && (errors == 0) )
+    if ( errors == 0 )
     {
         TreeNode * io = buildIOLibrary();
         linkSiblings(io, syntaxTree);

@@ -16,6 +16,14 @@
       </df>
       <df name="6tests">
       </df>
+      <df name="7tests">
+        <df name="BroadTests">
+        </df>
+        <df name="TinyTests">
+        </df>
+        <df name="UnitTests">
+        </df>
+      </df>
       <df name="ass6examples">
       </df>
       <in>cminus.cpp</in>

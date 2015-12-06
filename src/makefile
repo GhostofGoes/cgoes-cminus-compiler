@@ -35,7 +35,5 @@ pdf:    $(BIN).y $(BIN).l makefile
 tar:
 	tar -cvf $(BIN).tar $(SRCS) makefile 
 
-test:
-	make clean
-	make all
-	./c-
+tm:
+	gcc tm.c -o tm
