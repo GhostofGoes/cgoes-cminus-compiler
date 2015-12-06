@@ -8,7 +8,7 @@
 #include "codegenClassTM.h"
 #include "cminus.h"
 #include "types.h"
-#include "emit.h"
+//#include "emit.h"
 #include <iostream>
 #include <cstdlib>
 #include <string>
@@ -64,7 +64,7 @@ void codegenTM::generateCode()
     //emitComment( "Generated at: " + timestamp() ); some std::badalloc error bahhumbug.jpg
     
     /* Instruction generation */
-    //treeTraversal(aTree);
+    treeTraversal(aTree);
 }
 
 void codegenTM::generateDeclaration(TreeNode* node)
@@ -92,6 +92,9 @@ void codegenTM::generateDeclaration(TreeNode* node)
         case FunK:
             emitComment("FUNCTION " + treestr);
             
+            emitRM("ST", 3, -1, 1, "Store return address");
+            
+            emitRM("LDA", 7, 0, 3, "Return");
             
             emitComment("END FUNCTION " + treestr);
             break;
@@ -234,6 +237,13 @@ void codegenTM::treeTraversal( TreeNode * node )
     }
 }
 
+void codegenTM::initSetup()
+{
+    // TODO: keep track of init start
+    emitRMAbs( "LDA", PC, highEmitLoc, "Jump to init");
+}
+
+
 // Prints a comment line with comment s in the code file
 void codegenTM::emitComment( string s )
 {
@@ -251,7 +261,7 @@ void codegenTM::emitComment( string s )
  * t = 2nd source register
  * c = a comment to be printed
  */
-void codegenTM::emitRO( const char *op, int r, int s, int t, string *c )
+void codegenTM::emitRO( const char *op, int r, int s, int t, string c )
 { 
     //printf("%3d:  %5s  %d,%d,%d ",emitLoc++,op,r,s,t);
     //printf("\t%s",c) ;
@@ -285,7 +295,7 @@ void codegenTM::emitRO( const char *op, int r, int s, int t, string *c )
  * s = the base register
  * c = a comment to be printed
  */
-void codegenTM::emitRM( const char * op, int r, int d, int s, string *c )
+void codegenTM::emitRM( const char * op, int r, int d, int s, string c )
 { 
     //printf("%3d:  %5s  %d,%d(%d) ",emitLoc++,op,r,d,s);
     //printf("\t%s",c) ;
@@ -354,7 +364,7 @@ void codegenTM::emitRestore()
  * a = the absolute location in memory
  * c = a comment to be printed
  */
-void codegenTM::emitRM_Abs( const char *op, int r, int a, string * c )
+void codegenTM::emitRMAbs( const char *op, int r, int a, string c )
 { 
     //printf("%3d:  %5s  %d,%d(%d) ", emitLoc,op,r,a-(emitLoc+1),pc);
     //++emitLoc ;
@@ -365,14 +375,14 @@ void codegenTM::emitRM_Abs( const char *op, int r, int a, string * c )
     {
     outfile << setw(3) << emitLoc 
             << ":  " << setw(5) << op 
-            << "  " << r << "," << a - (emitLoc + 1) << "(" << pc << ")"
+            << "  " << r << "," << a - (emitLoc + 1) << "(" << PC << ")"
             << " \t" << c << endl; /* append comment */
     }
     else
     {
     cout << setw(3) << emitLoc 
             << ":  " << setw(5) << op 
-            << "  " << r << "," << a - (emitLoc + 1) << "(" << pc << ")"
+            << "  " << r << "," << a - (emitLoc + 1) << "(" << PC << ")"
             << " \t" << c << endl; /* append comment */        
     }
     emitLoc++;
@@ -380,7 +390,10 @@ void codegenTM::emitRM_Abs( const char *op, int r, int a, string * c )
     if (highEmitLoc < emitLoc) 
         highEmitLoc = emitLoc ;
     
-} /* emitRM_Abs */
+} /* emitRMAbs */
+
+
+
 
 string codegenTM::timestamp()
 {
@@ -392,3 +405,5 @@ string codegenTM::timestamp()
     timeinfo = localtime (&rawtime);
     string timestamp = asctime(timeinfo);    
 }
+
+

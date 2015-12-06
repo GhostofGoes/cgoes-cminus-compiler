@@ -25,6 +25,7 @@ private:
     void generateStatement( TreeNode * node );    
     void generateExpression( TreeNode * node );
     void treeTraversal( TreeNode * tree );
+    void initSetup();
     
     SymbolTable * symtable;
     int gOffset;
@@ -41,21 +42,22 @@ private:
     /* Highest TM location emitted so far. Used with: emitSkip, emitBackup, emitRestore */
     int highEmitLoc;
     
+    //int emitCounter; // count number of instructions emitted thus far, for 
+    
     void emitComment( std::string s );
-    void emitRO( const char *op, int r, int s, int t, std::string *c);
-    void emitRM( const char * op, int r, int d, int s, std::string *c);
+    void emitRO( const char *op, int r, int s, int t, std::string c);
+    void emitRM( const char * op, int r, int d, int s, std::string c);
     int emitSkip( int howMany);
     void emitBackup( int loc);
     void emitRestore();
-    void emitRM_Abs( const char *op, int r, int a, std::string * c);
+    void emitRMAbs( const char *op, int r, int a, std::string c);
     
     
     /* EMIT CONSTANTS - DO NOT MODIFY! */
-    const int pc = 7;
-    const int mp = 6;
-    const int gp = 5;
-    const int ac = 0;
-    const int ac1 = 1;
+    const int PC = 7;
+    const int GO = 0; // Global offset
+    const int LO = 1; // Local offset
+    const int RET = 0; // Return register
 
     /* HELPER FUNCTIONS */
     std::string timestamp();
