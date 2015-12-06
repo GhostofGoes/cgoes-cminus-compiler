@@ -19,7 +19,7 @@ A compiler for Robert Heckendorn's C- (cminus) language.
 (Default: "fred.tm". <filename>: outputs to the filename. '-': stdout)
 ```
 
-# Using this program
+# Using the CCC
 ## Environment requirements
     Bison 3.0 or higher (Hard requirement, can confirm 2.5 freaks out)
     Flex 2.5.39 or higher (I think flex 2.5.37 will work as well)
