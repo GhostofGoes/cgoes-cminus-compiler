@@ -58,6 +58,9 @@ codegenTM::~codegenTM ( )
 
 void codegenTM::generateCode()
 {
+    int start = 0;
+    //int currLoc = -99;
+    
     /* Header comments*/
     if(emitToFile)
     {
@@ -71,9 +74,14 @@ void codegenTM::generateCode()
     
     
     /* Instruction generation */
-    emitSkip(1); // so we can have our jump to init
+    start = emitSkip(1); // so we can have our jump to init
+    
     treeTraversal(aTree);
+    
+    emitBackup(start);
     emitRMAbs( "LDA", pc, highEmitLoc, "Jump to init");
+    emitRestore();
+    
     initSetup();
 }
 
