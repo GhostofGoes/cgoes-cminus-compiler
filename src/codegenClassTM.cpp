@@ -76,13 +76,13 @@ void codegenTM::generateCode()
     /* Instruction generation */
     start = emitSkip(1); // so we can have our jump to init
     
-    treeTraversal(aTree);
+    treeTraversal(aTree); // Main code generation
     
-    emitBackup(start);
+    emitBackup(start); // Go back to the beginnnnning of time
     emitRMAbs( "LDA", pc, highEmitLoc, "Jump to init");
-    emitRestore();
+    emitRestore(); // Pow! We're back to the present!
     
-    initSetup();
+    initSetup(); // Do our init jam
 }
 
 
@@ -94,7 +94,7 @@ void codegenTM::initSetup()
     emitComment("INIT");
     emitRM("LD", 0, 0, 0, "Set global pointer");
     
-    initGlobals();
+    //initGlobals(); not doing this quite yet...
     
     emitRM("LDA", 1, gOffset, gp, "Set frame to end of globals");
     emitRM("ST", 1, 0, fp, "Store old frame pointer");
@@ -135,6 +135,7 @@ void codegenTM::generateDeclaration(TreeNode* node)
     
     switch(tree->kind) {
         case VarK:
+            // TODO: VARIABLES!
             break;
             
         case FunK:
@@ -145,7 +146,9 @@ void codegenTM::generateDeclaration(TreeNode* node)
                 IOroutines(tree->isIO);
             else
             {
-                // TODO: function code
+                // TODO: any more function code?
+                generateDeclaration(tree->child[0]); // Paramaters
+                generateStatement(tree->child[1]); // Compound
             }
             
             standardRet();
@@ -189,6 +192,7 @@ void codegenTM::generateStatement( TreeNode * node )
             break;
             
         case CompoundK:
+            // TODO: function body!
             break;
             
         case ReturnK:
@@ -218,7 +222,6 @@ void codegenTM::generateExpression( TreeNode * node )
     int loc;
     TreeNode * p1, * p2;
     
-    
     switch(tree->kind) { 
         case AssignK:
             break;
@@ -235,6 +238,7 @@ void codegenTM::generateExpression( TreeNode * node )
             
             switch(tree->token->bval) {
                 case MULTIPLY:
+                    // TODO: unary *
                     break;
                     
                 case NOT:
