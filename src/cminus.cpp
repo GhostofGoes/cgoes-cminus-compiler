@@ -82,10 +82,10 @@ int main ( int argc, char * argv[] )
     
     initTokenMaps();
     
-    /*if(argc > 1)
+    if(argc > 1)
     {
         yyin = fopen(argv[1], "r");
-    }*/
+    }
 
     // Command line options
     while ((option = getopt(argc, argv, "dpPtseo:")) != EOF)
@@ -131,10 +131,10 @@ int main ( int argc, char * argv[] )
     }
 
     // Slightly hacky way to get input filename, without using a option
-    if ( argc > 1 && optind < argc )
+    /*if ( argc > 1 && optind < argc )
     {
         yyin = fopen(argv[optind], "r");
-    }
+    }*/
 
     // Main parsing loop. Goes until end of input 
     /*do
