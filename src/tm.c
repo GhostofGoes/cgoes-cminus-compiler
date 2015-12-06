@@ -42,7 +42,7 @@
 /*                                                            */
 /**************************************************************/
 
-char *versionNumber =(char *)"TM version 3.3";
+char *versionNumber = (char *)"TM version 3.3";
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -710,10 +710,10 @@ int readInstructions(char *fileName)
 
             { int opcnt;
 
-                for (opcnt = 0; opcnt<int(opRALim); opcnt++) {
+                for (opcnt = 0; opcnt < (int)opRALim; opcnt++) {
                     if (strncmp(opCodeTab[opcnt], word, 4) == 0) break;
                 }
-                if (opcnt>=int(opRALim)) {
+                if (opcnt >= (int)opRALim) {
                     sprintf(errorString, (char *)"Illegal opcode: %s", word);
                     return error(errorString, lineNo, loc);
                 }
