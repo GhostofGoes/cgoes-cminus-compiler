@@ -58,7 +58,7 @@ private:
     
     
     /* REGISTERS  */
-    const int sp = 0; // Global pointer 
+    const int gp = 0; // Global pointer 
     const int fp = 1; // Frame pointer
     const int ret = 2; // Value being returned
     const int val = 3; // Return pointer, calculation result, etc...
@@ -69,6 +69,7 @@ private:
     
 
     /* HELPER FUNCTIONS */
+    void saveRet();
     std::string timestamp();
 };
 

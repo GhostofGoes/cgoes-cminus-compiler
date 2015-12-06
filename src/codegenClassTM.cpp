@@ -159,6 +159,28 @@ void codegenTM::generateDeclaration(TreeNode* node)
     }
 }
 
+void codegenTM::initSetup()
+{
+    // TODO: keep track of init start
+    emitComment("INIT");
+    
+    initGlobals();
+    
+    emitRM("LDA", 1, 0, gp, "Set frame to end of globals");
+    emitRM("ST", 1, 0, fp, "Store old fp");
+    saveRet();
+    
+    emitComment("END INIT");
+}
+
+void codegenTM::initGlobals()
+{
+    emitComment("INIT GLOBALS/STATICS");
+    
+    
+    emitComment("END INIT GLOBALS/STATICS");
+}
+
 void codegenTM::generateStatement( TreeNode * node )
 {
     TreeNode * tree;
@@ -286,24 +308,6 @@ void codegenTM::treeTraversal( TreeNode * node )
         }
         tree = tree->sibling;
     }
-}
-
-void codegenTM::initSetup()
-{
-    // TODO: keep track of init start
-    emitComment("INIT");
-    
-    initGlobals();
-    
-    emitComment("END INIT");
-}
-
-void codegenTM::initGlobals()
-{
-    emitComment("INIT GLOBALS/STATICS");
-    
-    
-    emitComment("END INIT GLOBALS/STATICS");
 }
 
 // Prints a comment line with comment s in the code file
@@ -455,7 +459,10 @@ void codegenTM::emitRMAbs( const char *op, int r, int a, string c )
 } /* emitRMAbs */
 
 
-
+void codegenTM::saveRet()
+{
+    emitRM("LDA", 3, 1, pc, "Save return address");
+}
 
 string codegenTM::timestamp()
 {
