@@ -26,14 +26,14 @@ private:
     void generateExpression( TreeNode * node );
     void treeTraversal( TreeNode * tree );
     void initSetup();
+    void initGlobals();
     
     SymbolTable * symtable;
-    int gOffset;
     TreeNode * aTree;
-    int tOffset;
-    std::ofstream outfile;
-    std::string outfilename;
+    
     //string infilename;
+    std::string outfilename;
+    std::ofstream outfile;
     bool emitToFile;
     
     /* TM location number for current instruction emission */
@@ -44,6 +44,10 @@ private:
     
     //int emitCounter; // count number of instructions emitted thus far, for 
     
+    int gOffset;
+    int fOffset;
+    int tOffset;
+    
     void emitComment( std::string s );
     void emitRO( const char *op, int r, int s, int t, std::string c);
     void emitRM( const char * op, int r, int d, int s, std::string c);
@@ -53,11 +57,16 @@ private:
     void emitRMAbs( const char *op, int r, int a, std::string c);
     
     
-    /* EMIT CONSTANTS - DO NOT MODIFY! */
-    const int PC = 7;
-    const int GO = 0; // Global offset
-    const int LO = 1; // Local offset
-    const int RET = 0; // Return register
+    /* REGISTERS  */
+    const int SP = 0; // Global pointer 
+    const int FP = 1; // Frame pointer
+    const int RET = 2; // Value being returned
+    const int TMP = 3; // Return pointer, calculation result, etc...
+    const int AC1 = 4; // Accumulator 1
+    const int AC2 = 5; // Accumulator 2
+    const int AC3 = 6; // Accumulator 3
+    const int PC = 7; // Program counter
+    
 
     /* HELPER FUNCTIONS */
     std::string timestamp();

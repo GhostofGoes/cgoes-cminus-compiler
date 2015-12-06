@@ -33,6 +33,7 @@ codegenTM::codegenTM ( TreeNode * t, SymbolTable * s, int g, string of)
         emitToFile = false;
     
     gOffset = g;
+    fOffset = 0;
     tOffset = 0;
 
     emitLoc = 0;
@@ -41,30 +42,34 @@ codegenTM::codegenTM ( TreeNode * t, SymbolTable * s, int g, string of)
 
 codegenTM::~codegenTM ( ) 
 { 
-    if(emitToFile)
+    if(emitToFile && outfile.is_open())
     {
         outfile.flush();
         outfile.close();
+    }
+    else
+    {
+        cout.flush();
     }
 }
 
 void codegenTM::generateCode()
 {
     /* Header comments*/
-    
     if(emitToFile)
     {
         outfile.open(outfilename, ofstream::out);
         emitComment( outfilename );
-    }
-    
+    }  
     emitComment( "Cgoes Cminus Compiler (CCC)" );
     emitComment( "Author: Christopher Goes");
     //emitComment( "File compiled: " + infilename );
     //emitComment( "Generated at: " + timestamp() ); some std::badalloc error bahhumbug.jpg
     
+    
     /* Instruction generation */
     treeTraversal(aTree);
+    initSetup();
 }
 
 void codegenTM::generateDeclaration(TreeNode* node)
@@ -92,9 +97,9 @@ void codegenTM::generateDeclaration(TreeNode* node)
         case FunK:
             emitComment("FUNCTION " + treestr);
             
-            emitRM("ST", 3, -1, 1, "Store return address");
+            emitRM("ST", RET, -1, FP, "Store return address");
             
-            emitRM("LDA", 7, 0, 3, "Return");
+            emitRM("LDA", PC, 0, RET, "Return");
             
             emitComment("END FUNCTION " + treestr);
             break;
@@ -240,9 +245,21 @@ void codegenTM::treeTraversal( TreeNode * node )
 void codegenTM::initSetup()
 {
     // TODO: keep track of init start
+    emitComment("INIT");
     emitRMAbs( "LDA", PC, highEmitLoc, "Jump to init");
+    
+    initGlobals();
+    
+    emitComment("END INIT");
 }
 
+void codegenTM::initGlobals()
+{
+    emitComment("INIT GLOBALS/STATICS");
+    
+    
+    emitComment("END INIT GLOBALS/STATICS");
+}
 
 // Prints a comment line with comment s in the code file
 void codegenTM::emitComment( string s )

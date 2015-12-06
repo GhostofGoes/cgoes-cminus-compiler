@@ -1155,7 +1155,7 @@ void treeParse ( TreeNode * par, TreeNode * node, SymbolTable * symtable, bool i
 
 void generateCode( std::string output_file )
 {
-    codegenTM cg(annotatedTree, symtab, 0, output_file );
+    codegenTM cg(annotatedTree, symtab, global_offset, output_file );
     cg.generateCode();
 }
 
