@@ -58,14 +58,14 @@ private:
     
     
     /* REGISTERS  */
-    const int SP = 0; // Global pointer 
-    const int FP = 1; // Frame pointer
-    const int RET = 2; // Value being returned
-    const int TMP = 3; // Return pointer, calculation result, etc...
-    const int AC1 = 4; // Accumulator 1
-    const int AC2 = 5; // Accumulator 2
-    const int AC3 = 6; // Accumulator 3
-    const int PC = 7; // Program counter
+    const int sp = 0; // Global pointer 
+    const int fp = 1; // Frame pointer
+    const int ret = 2; // Value being returned
+    const int val = 3; // Return pointer, calculation result, etc...
+    const int ac1 = 4; // Accumulator 1
+    const int ac2 = 5; // Accumulator 2
+    const int ac3 = 6; // Accumulator 3
+    const int pc = 7; // Program counter
     
 
     /* HELPER FUNCTIONS */

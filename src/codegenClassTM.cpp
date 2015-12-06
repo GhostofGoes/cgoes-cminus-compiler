@@ -68,7 +68,7 @@ void codegenTM::generateCode()
     
     
     /* Instruction generation */
-    emitRMAbs( "LDA", PC, highEmitLoc, "Jump to init");
+    emitRMAbs( "LDA", pc, highEmitLoc, "Jump to init");
     treeTraversal(aTree);
     initSetup();
 }
@@ -98,7 +98,7 @@ void codegenTM::generateDeclaration(TreeNode* node)
         case FunK:
             emitComment("FUNCTION " + treestr);
             
-            emitRM("ST", RET, -1, FP, "Store return address");
+            emitRM("ST", val, -1, fp, "Store return address");
             
             switch(tree->isIO) {
                 case Nopeput:
@@ -109,7 +109,9 @@ void codegenTM::generateDeclaration(TreeNode* node)
                     break;
                     
                 case OutputI:
+                    emitRM("LD", 3, -2, fp, "Load param");
                     emitRO("OUT", 3, 3, 3, "Output integer");
+                    emitRM("LDC", 2, 0, ac1, "Set return to 0"); // ac3 is zero at this point, so we can do this
                     break;
                     
                 case InputB:
@@ -117,7 +119,9 @@ void codegenTM::generateDeclaration(TreeNode* node)
                     break;
                     
                 case OutputB:
+                    emitRM("LD", 3, -2, fp, "Load param");
                     emitRO("OUTB", 3, 3, 3, "Output boolean");
+                    emitRM("LDC", 2, 0, ac1, "Set return to 0");
                     break;
                     
                 case InputC:
@@ -125,7 +129,9 @@ void codegenTM::generateDeclaration(TreeNode* node)
                     break;
                     
                 case OutputC:
+                    emitRM("LD", 3, -2, fp, "Load param");
                     emitRO("OUTC", 3, 3, 3, "Output character");
+                    emitRM("LDC", 2, 0, ac1, "Set return to 0");
                     break;
                     
                 case OutNL:
@@ -133,10 +139,13 @@ void codegenTM::generateDeclaration(TreeNode* node)
                     break;
                     
                 default:
+                    cerr << "Hit default in generateDeclaration switch(isIO)!" << endl;
                     break;
             }
       
-            emitRM("LDA", PC, 0, RET, "Return");
+            emitRM("LD", val, -1, fp, "Load return address");
+            emitRM("LD", fp, 0, fp, "Adjust frame pointer");
+            emitRM("LDA", pc, 0, val, "Return");
             
             emitComment("END FUNCTION " + treestr);
             break;
@@ -428,14 +437,14 @@ void codegenTM::emitRMAbs( const char *op, int r, int a, string c )
     {
     outfile << setw(3) << emitLoc 
             << ":  " << setw(5) << op 
-            << "  " << r << "," << a - (emitLoc + 1) << "(" << PC << ")"
+            << "  " << r << "," << a - (emitLoc + 1) << "(" << pc << ")"
             << " \t" << c << endl; /* append comment */
     }
     else
     {
     cout << setw(3) << emitLoc 
             << ":  " << setw(5) << op 
-            << "  " << r << "," << a - (emitLoc + 1) << "(" << PC << ")"
+            << "  " << r << "," << a - (emitLoc + 1) << "(" << pc << ")"
             << " \t" << c << endl; /* append comment */        
     }
     emitLoc++;
