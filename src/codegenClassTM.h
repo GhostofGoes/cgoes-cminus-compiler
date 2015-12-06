@@ -58,6 +58,7 @@ private:
     /* Emit locations */
     int emitLoc; // Location for current instruction emission  
     int highEmitLoc; // Highest location emitted thus far. Used with: emitSkip, emitBackup, emitRestore
+    int mainLoc;
     
     /* Offsets */
     int gOffset;

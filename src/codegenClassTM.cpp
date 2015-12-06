@@ -38,6 +38,7 @@ codegenTM::codegenTM ( TreeNode * t, SymbolTable * s, int g, string of)
 
     emitLoc = 0;
     highEmitLoc = 0;
+    mainLoc = 0;
 }
 
 codegenTM::~codegenTM ( ) 
@@ -99,7 +100,7 @@ void codegenTM::initSetup()
     emitRM("LDA", 1, gOffset, gp, "Set frame to end of globals");
     emitRM("ST", 1, 0, fp, "Store old frame pointer");
     saveRet();
-    // TODO: jump to main!
+    emitRM("LDC", 7, mainLoc, 7, "Jump to main"); // cheap jump to main
     emitRO("HALT", 0, 0, 0, "Fin."); 
     emitComment("END INIT");
 }
@@ -107,8 +108,6 @@ void codegenTM::initSetup()
 void codegenTM::initGlobals()
 {
     emitComment("INIT GLOBALS/STATICS");
-    
-    
     emitComment("END INIT GLOBALS/STATICS");
 }
 
@@ -140,6 +139,9 @@ void codegenTM::generateDeclaration(TreeNode* node)
             
         case FunK:
             emitComment("FUNCTION " + treestr);
+            // We're not doing a lot of functions, so this is fine
+            if(treestr == "main") 
+                mainLoc = emitSkip(0);
             emitRM("ST", val, -1, fp, "Store return address");
             
             if(tree->isIO != Nopeput)
@@ -271,6 +273,7 @@ void codegenTM::generateExpression( TreeNode * node )
             break;
             
         case CallK:
+            // TODO: function calls
             break; 
             
         default:            
