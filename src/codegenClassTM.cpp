@@ -139,56 +139,16 @@ void codegenTM::generateDeclaration(TreeNode* node)
             
         case FunK:
             emitComment("FUNCTION " + treestr);
-            
             emitRM("ST", val, -1, fp, "Store return address");
             
-            switch(tree->isIO) {
-                case Nopeput:
-                    break;
-                    
-                case InputI:
-                    emitRO("IN", 2, 2, 2, "Input integer");
-                    break;
-                    
-                case OutputI:
-                    emitRM("LD", 3, -2, fp, "Load param");
-                    emitRO("OUT", 3, 3, 3, "Output integer");
-                    emitRM("LDC", 2, 0, ac1, "Set return to 0"); // ac3 is zero at this point, so we can do this
-                    break;
-                    
-                case InputB:
-                    emitRO("INB", 2, 2, 2, "Input boolean");
-                    break;
-                    
-                case OutputB:
-                    emitRM("LD", 3, -2, fp, "Load param");
-                    emitRO("OUTB", 3, 3, 3, "Output boolean");
-                    emitRM("LDC", 2, 0, ac1, "Set return to 0");
-                    break;
-                    
-                case InputC:
-                    emitRO("INC", 2, 2, 2, "Input character");
-                    break;
-                    
-                case OutputC:
-                    emitRM("LD", 3, -2, fp, "Load param");
-                    emitRO("OUTC", 3, 3, 3, "Output character");
-                    emitRM("LDC", 2, 0, ac1, "Set return to 0");
-                    break;
-                    
-                case OutNL:
-                    emitRO("OUTNL", 3, 3, 3, "Output newline");
-                    break;
-                    
-                default:
-                    cerr << "Hit default in generateDeclaration switch(isIO)!" << endl;
-                    break;
+            if(tree->isIO != Nopeput)
+                IOroutines(tree->isIO);
+            else
+            {
+                // TODO: function code
             }
-      
-            emitRM("LD", val, -1, fp, "Load return address");
-            emitRM("LD", fp, 0, fp, "Adjust frame pointer");
-            emitRM("LDA", pc, 0, val, "Return");
             
+            standardRet();
             emitComment("END FUNCTION " + treestr);
             break;
             
@@ -336,6 +296,61 @@ void codegenTM::treeTraversal( TreeNode * node )
 void codegenTM::saveRet()
 {
     emitRM("LDA", 3, 1, pc, "Save return address");
+}
+
+void codegenTM::standardRet()
+{
+    emitComment("Failsafe return");
+    emitRM("LDC", 2, 0, 0, "Zero out return value");
+    emitRM("LD", 3, -1, fp, "Load return address");
+    emitRM("LD", 1, 0, fp, "Adjust frame pointer");
+    emitRM("LDA", 3, 0, val, "Return!");
+}
+
+void codegenTM::IOroutines(IO io)
+{
+    switch (io) {
+        case Nopeput:
+            break;
+
+        case InputI:
+            emitRO("IN", 2, 2, 2, "Input integer");
+            break;
+
+        case OutputI:
+            emitRM("LD", 3, -2, fp, "Load param");
+            emitRO("OUT", 3, 3, 3, "Output integer");
+            emitRM("LDC", 2, 0, ac1, "Set return to 0"); // ac3 is zero at this point, so we can do this
+            break;
+
+        case InputB:
+            emitRO("INB", 2, 2, 2, "Input boolean");
+            break;
+
+        case OutputB:
+            emitRM("LD", 3, -2, fp, "Load param");
+            emitRO("OUTB", 3, 3, 3, "Output boolean");
+            emitRM("LDC", 2, 0, ac1, "Set return to 0");
+            break;
+
+        case InputC:
+            emitRO("INC", 2, 2, 2, "Input character");
+            break;
+
+        case OutputC:
+            emitRM("LD", 3, -2, fp, "Load param");
+            emitRO("OUTC", 3, 3, 3, "Output character");
+            emitRM("LDC", 2, 0, ac1, "Set return to 0");
+            break;
+
+        case OutNL:
+            emitRO("OUTNL", 3, 3, 3, "Output newline");
+            break;
+
+        default:
+            cerr << "Hit default in IOroutines switch(isIO)!" << endl;
+            break;
+    }    
 }
 
 string codegenTM::timestamp()

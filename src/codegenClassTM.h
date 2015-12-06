@@ -33,8 +33,12 @@ private:
     /* General generation */
     void treeTraversal( TreeNode * tree );
     
-    /* Helper functions  */
+    /* Typing saving functions  */
     void saveRet(); // LDA, 3, 1(pc)
+    void standardRet();
+    void IOroutines( IO io );
+    
+    /* Helper functions */
     std::string timestamp();
     
     /* Parsed food for generation */
