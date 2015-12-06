@@ -76,6 +76,7 @@ int main ( int argc, char * argv[] )
     bool print_annotated_tree = false;
     bool error_checking = true;
     bool code_generation = true;
+    int parseStatus = 0;
     
     std::string outfileTM = "fred.tm";
     
@@ -113,7 +114,7 @@ int main ( int argc, char * argv[] )
               if(optarg == "-")
               {
                 //outfileTM = stdout;
-                outfileTM = "";
+                outfileTM = "stdout";
               }
               else
               {
@@ -132,12 +133,15 @@ int main ( int argc, char * argv[] )
         yyin = fopen(argv[optind], "r");
     }
 
-    // Main parsing loop. Goes until end of input
-    do
+    // Main parsing loop. Goes until end of input 
+    /*do
     {
         yyparse();
-    } while (!feof(yyin));
+    } while (!feof(yyin));*/
 
+    parseStatus = yyparse();
+    printf("ParseStatus: %d\n", parseStatus);
+    
     if ( print_syntax_tree )
         printAbstractTree(syntaxTree);
     
@@ -1151,13 +1155,10 @@ void treeParse ( TreeNode * par, TreeNode * node, SymbolTable * symtable, bool i
 
 void generateCode( std::string output_file )
 {
-    class codegenTM * cg = new codegenTM(annotatedTree, symtab, 0, output_file );
+    codegenTM cg(annotatedTree, symtab, 0, output_file );
     std::cout << "test" << std::endl;
     //cg->generateCode();
-    delete cg;
 }
-
-
 
 
 // Creates the tree of IO functions

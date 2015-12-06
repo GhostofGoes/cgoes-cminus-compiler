@@ -21,13 +21,15 @@ using namespace std;
 
 codegenTM::codegenTM ( TreeNode * t, SymbolTable * s, int g, string of) 
 { 
+    cout << "test" << endl;
     symtable = s;
     aTree = t;
+    
     
     outfilename = of;
     //infilename = input_filename;
     
-    if(outfilename != "")
+    if(outfilename != "stdout")
         emitToFile = true;
     else
         emitToFile = false;
