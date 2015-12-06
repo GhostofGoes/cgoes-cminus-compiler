@@ -87,6 +87,7 @@ int main ( int argc, char * argv[] )
     }
 
     // Command line options
+    // TODO: -h/--help flag listing options
     while ((option = getopt(argc, argv, "dpPtseo:")) != EOF)
     {
         switch (option) {
