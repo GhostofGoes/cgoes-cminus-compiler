@@ -140,7 +140,7 @@ int main ( int argc, char * argv[] )
     } while (!feof(yyin));*/
 
     parseStatus = yyparse(); // cleaned up some legacy crap from assign2
-    printf("ParseStatus: %d\n", parseStatus);
+    //printf("ParseStatus: %d\n", parseStatus);
     
     if ( print_syntax_tree )
         printAbstractTree(syntaxTree);
