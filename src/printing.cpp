@@ -134,7 +134,6 @@ void printTreeNode(void * node) {
     std::cout << " |isArray: " << data->isArray;
     std::cout << " |isIndex: " << data->isIndex;
     std::cout << " |isStatic: " << data->isStatic;
-    //std::cout << " |isScoped: " << data->isScoped;
     std::cout << std::endl;
     
     std::cout << " |nodekind: " << nodekindToStr(data->nodekind);
@@ -180,7 +179,6 @@ void printTokenData(void * tok) {
 
 // Recursively prints the abstract syntax tree
 // TODO: null characters in char and string consts, store/print properly (check treeParse for solution, make function)
-
 void printAbstractTree ( TreeNode * og, int indent_count )
 {
 

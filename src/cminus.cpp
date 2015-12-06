@@ -47,18 +47,22 @@
 TreeNode * syntaxTree = NULL;
 TreeNode * annotatedTree = NULL;
 
-// SymbolTable
+// The symbol table
 SymbolTable * symtab = NULL;
 
 // Globally keep track of warnings and errors
 int warnings = 0;
 int errors = 0;
+
+// Debugging/Testing flags
 bool testing = false;
 bool semantic_debugging = false;
 
+// Used for semantic analysis and other such things because lazy
 bool return_found = false;
 TreeNode * func = NULL;
 
+// memorySizing globals
 int global_offset = 0;
 int param_count = 0;
 
@@ -67,6 +71,7 @@ int param_count = 0;
 // TODO: free tokens matched by error terminal in bison
 int main ( int argc, char * argv[] )
 {
+    // getopt flags
     int option;
     opterr = 0;
 
@@ -78,8 +83,9 @@ int main ( int argc, char * argv[] )
     
     std::string outfileTM = "fred.tm";
     
-    initTokenMaps();
+    initTokenMaps(); // yyerrorhelper initialization...yeah its wierd
     
+    // Get the input file
     if(argc > 1) // TODO: make so you can put filename anywhere in option list
     {
         yyin = fopen(argv[1], "r");
@@ -90,38 +96,37 @@ int main ( int argc, char * argv[] )
     while ((option = getopt(argc, argv, "dpPsto:")) != EOF)
     {
         switch (option) {
-            case 'd':
-              yydebug = 1;
-              break;
-            case 'p':
-              print_syntax_tree = true;
-              break;
-            case 'P':
-              print_annotated_tree = true;
-              break;
-            case 's':
-              semantic_debugging = true;
-              break;
-            case 't':
-                testing = true;
-                break;
-            case 'o':
-              code_generation = true;
-              if(optarg == "-")
-              {
+        case 'd':
+            yydebug = 1;
+            break;
+        case 'p':
+            print_syntax_tree = true;
+            break;
+        case 'P':
+            print_annotated_tree = true;
+            break;
+        case 's':
+            semantic_debugging = true;
+            break;
+        case 't':
+            testing = true;
+            break;
+        case 'o':
+            code_generation = true;
+            if ( optarg == "-" )
+            {
                 outfileTM = "stdout";
-              }
-              else
-              {
-                if(optarg != NULL)
+            } else
+            {
+                if ( optarg != NULL )
                     outfileTM.assign(optarg);
                 else
                     std::cerr << "NULL optarg!" << std::endl;
-              }
-              break;
-            default:
-              break;
-          }
+            }
+            break;
+        default:
+            break;
+        }
     }
 
     // Slightly hacky way to get input filename, without using a option
@@ -130,20 +135,14 @@ int main ( int argc, char * argv[] )
         yyin = fopen(argv[optind], "r");
     }*/
 
-    // Main parsing loop. Goes until end of input 
-    /*do
-    {
-        yyparse();
-    } while (!feof(yyin));*/
-
     // Bison builds the syntax tree for us
-    parseStatus = yyparse(); // cleaned up some legacy crap from assign2
-    //printf("ParseStatus: %d\n", parseStatus);
+    parseStatus = yyparse();
+    if(testing)
+        std::cout << "yyparse() status: " << parseStatus << std::endl;
     
     if ( print_syntax_tree )
         printAbstractTree(syntaxTree);
     
-    //annotated_tree = true;
     if ( errors == 0 )
     {
         TreeNode * io = buildIOLibrary();

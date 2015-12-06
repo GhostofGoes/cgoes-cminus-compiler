@@ -5,6 +5,8 @@
 #include "types.h"
 #include "cminus.tab.h"
 
+// TODO: return characters as C++ strings?
+// TODO: class-ify this?
 // Token creation methods
 int iToker(int bval, char * tok_text, int line_number, int value);
 int cToker(int bval, char * tok_text, int line_number, char value);

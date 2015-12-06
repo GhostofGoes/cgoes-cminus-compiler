@@ -5,17 +5,17 @@
 
 /*** TokenData ***/
 typedef struct {
-	int lineno;
-	int bval;
-	char cvalue;
-	int ivalue;
-	char * svalue;
-	char * input;
+	int lineno;     // Token's line number
+	int bval;       // Bison's special identifier for the Token (NOT a boolean!)
+	char cvalue;    // Character value, if any
+	int ivalue;     // Integer value, if any
+	char * svalue;  // String value, if any
+	char * input;   // Raw input from flex
 } TokenData;
 
 
 /*** Enums for treeNode ****/
-// Much of the TreeNode stuff is drawn from the book.
+// Some of the TreeNode stuff is drawn from the book.
 // Source: "Compilers and Construction: Principles and Practice", by Kenneth C. Louden
 
 typedef enum { StmtK, ExpK, DeclK, DefaultK } NodeKind;
@@ -34,36 +34,40 @@ typedef enum {local, global, o_param, o_undef} Offset;
 
 typedef enum {InputI, OutputI, InputB, OutputB, InputC, OutputC, OutNL, Nopeput} IO;
 
+
 /*** TREENODE ***/
 typedef struct treeNode
 {
-	TokenData * token;
-	int lineno;                            	// line number relevant to this node
-	char * svalue;
-	
-	// connectivity in the tree
-	int numChildren; 			// Number of children for a given node
-	struct treeNode *child[MAXCHILDREN];   	// children of the node
-	struct treeNode *sibling;              	// siblings for the node
+    /* Node metadata */
+    int lineno;             // line number relevant to this node
+    char * svalue;          // "name" of the node
 
-	NodeKind nodekind;                     	// General kind
-	Kind kind;				// Precise kind (eg Return, Call, etc)
-	Type nodetype;				// Type of the node
+    /* Node data */
+    TokenData * token;      // Token attached to node, if applicable
+    int arraySize;          // Number of elements in array, if applicable
+    
+    /* Tree connectivity */
+    int numChildren;                        // Number of children for a given node (TODO: needed?)
+    struct treeNode *child[MAXCHILDREN];    // children of the node
+    struct treeNode *sibling;               // siblings for the node
 
-	bool isStatic;                         	// is statically allocated? TODO: needed?
-	bool isArray;                          	// Array?
-	bool isIndex;				// Array index?
-        bool isConstant;
-        bool isFuncCompound;
-        
-        int arraySize;
+    /* Node classification */
+    NodeKind nodekind;  // General kind
+    Kind kind;          // Precise kind (eg Return, Call, etc)
+    Type nodetype;      // Type of the node
 
-        Offset offsetReg; // offset register: global, local
-        IO isIO; // Will be set if input/output routine, otherwise Nopeput
-        int size; // size in memory
-        int location; // location in memory?
-        
-        
+    /* Flags */
+    bool isStatic;          // Statically allocated?
+    bool isArray;           // Array?
+    bool isIndex;           // Array index?
+    bool isConstant;        // Constant?
+    bool isFuncCompound;    // Super-magical function compound?
+    
+    /* Memory info */
+    Offset offsetReg;   // offset register: global, local
+    IO isIO;            // Will be set if input/output routine, otherwise Nopeput
+    int size;           // size in memory
+    int location;       // location in memory?    
 } TreeNode;
 
 #endif

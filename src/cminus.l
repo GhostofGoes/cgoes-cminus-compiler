@@ -8,15 +8,15 @@
 #include "toker.h"
 #include "yyerrorHelper.h"
 
-    
 // String/Character parsing buffers
-char * stringbuffer;	// Holds initial position for stringconst parsing
-char * sbuf_ptr;		// keeps track of stringconst parsing
-char * literalbuffer;	// Input string buffer for constant processing (strings/chars)
-char ctemp = 0;				// Character constant temporary
+char * stringbuffer;    // Holds initial position for stringconst parsing
+char * sbuf_ptr;        // keeps track of stringconst parsing
+char * literalbuffer;   // Input string buffer for constant processing (strings/chars)
+char ctemp = 0;         // Character constant temporary
 int clength = 0;
 int start_line = 0;
 
+// Warning functions
 void warnInputChar( const char msg, const int line );
 void warnCharLength( const char * msg, const int num_chars, const int line );
 
@@ -39,7 +39,7 @@ stringbody	([^"])|(\\[^n])
 	/* Eat single line comments */
 "//".*\n 	{ }
 
-	/* TODO: return characters as strings? */
+        /* Single character tokens */
 ";"		{ return cToker(SEMICOLON,  yytext, yylineno, yytext[0]);}
 "("		{ return cToker(LPAREN,     yytext, yylineno, yytext[0]);   }
 ")"		{ return cToker(RPAREN,     yytext, yylineno, yytext[0]);   }
@@ -62,6 +62,7 @@ stringbody	([^"])|(\\[^n])
 ","		{ return cToker(COMMA,      yytext, yylineno, yytext[0]);    }
 ":"		{ return cToker(COLON,      yytext, yylineno, yytext[0]);    }
 
+        /* Multi-character tokens */
 "+="		{ return sToker(ADDASS,     yytext, yylineno, yytext); }
 "-="		{ return sToker(SUBASS,     yytext, yylineno, yytext); }
 "*="		{ return sToker(MULASS,     yytext, yylineno, yytext); }
@@ -98,12 +99,10 @@ stringbody	([^"])|(\\[^n])
             sbuf_ptr = stringbuffer;
             literalbuffer = (char *)calloc(110, sizeof(char)); 
             start_line = yylineno;
-            //strcat(literalbuffer, yytext);
             BEGIN(scond); 
 	}
 <scond>{
 	\"  {
-		//strcat(literalbuffer, yytext);
 		*sbuf_ptr = '\0';
                 yytext = strdup(stringbuffer);
                 sToker(STRINGCONST, literalbuffer, start_line, stringbuffer);
@@ -142,7 +141,6 @@ stringbody	([^"])|(\\[^n])
 }
 	
 	/* Character Constants  */
-
 \'		{ 
                     // buffer size was causing problems. oh, wish i could use a C++ string...
                     literalbuffer = (char *)calloc(100, sizeof(char)); 
@@ -221,7 +219,6 @@ void warnInputChar( const char msg, const int line )
     printf("WARNING(%d): Invalid input character: \'%c\'.  Character ignored.\n", line, msg);
     warnings++;
     fflush(stdout);
-    
 }
 
 void warnCharLength( const char * msg, const int num_chars, const int line )

@@ -2,18 +2,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-    // TODO: code requires needed still, or get rid of these?
-#include "types.h"
-#include "cminus.h"
-#include "toker.h"
-#include "yyerrorHelper.h"
-//#include "symbolTable.h"
-
 #define YYERROR_VERBOSE
-
 %}
 
-%code requires {
+// If you remove this, bison will FREAK OUT. Also not supported in Bison 2.5 fun fact.
+%code requires { 
     #define MAXCHILDREN 3
     #include "yyerrorHelper.h"
     #include "types.h"
@@ -21,14 +14,20 @@
     #include "toker.h"
 }
 
-// %define api.value.type { Treenode *tree } 
-// API basically makes it a full type, which is great if i'm using a unified nodetype...
-// but alas not, since this is Bison and not Bison++
+/* 
+ * %define api.value.type { Treenode *tree } 
+ * API basically makes it a full type, which is great if i'm using a unified nodetype...
+ * but alas not, since this is Bison and not Bison++
+*/
+
+// Define types: tok for tokens, tree for nodes in the tree
 %union 
 {
     TokenData * tok;
     TreeNode * tree;
 }
+
+// TODO: free tokens!
 
 %token <tok> ID NUMCONST STRINGCONST CHARCONST  BOOLCONST
 %token <tok> ADDASS SUBASS MULASS DIVASS INC DEC LESSEQ GRTEQ EQ NOTEQ STATIC INT BOOL CHAR IF ELSE WHILE FOREACH IN RETURN BREAK
@@ -204,7 +203,6 @@ scoped-type-specifier:
 	{ 
             $$ = $2;
             $$->isStatic = true; 
-            //$$->isScoped = true;
             freeToken($1);
         }
 	| type-specifier
@@ -477,7 +475,6 @@ expression-stmt:
 	expression SEMICOLON 
         { 
         	$$ = $1;
-         	/* does expression occur at semicolon for line counting? */ 
          	freeToken($2);
                 yyerrok;
         }
@@ -520,7 +517,6 @@ break-stmt:
             yyerrok;
             $$ = makeNode( StmtK, BreakK, Void, $1->lineno, $1 );   
             freeToken($2);
-            
         }
 	;
 	
@@ -544,32 +540,6 @@ expression:
         }        
         | mutable assignop error { $$ = NULL; }
         | error assignop error { $$ = NULL; }
-        /*
-	| mutable ADDASS expression
-        { 
-            $$ = makeNode( ExpK, AssignK, Integer, $2->lineno, $2 );     
-            addChild( $$, $1);
-            addChild( $$, $3);
-        }
-	| mutable SUBASS expression
-        { 
-            $$ = makeNode( ExpK, AssignK, Integer, $2->lineno, $2 );     
-            addChild( $$, $1);
-            addChild( $$, $3);
-        }
-	| mutable MULASS expression
-        { 
-            $$ = makeNode( ExpK, AssignK, Integer, $2->lineno, $2 );     
-            addChild( $$, $1);
-            addChild( $$, $3);
-        }
-	| mutable DIVASS expression
-        { 
-            $$ = makeNode( ExpK, AssignK, Integer, $2->lineno, $2 );     
-            addChild( $$, $1);
-            addChild( $$, $3);
-        }
-        */
 	| mutable INC
         { 
             yyerrok;
@@ -597,7 +567,6 @@ assignop:
     | MULASS
     | DIVASS
     ;
-
 
 simple-expression:
 	simple-expression OR and-expression 
@@ -901,17 +870,15 @@ arg-list:
 constant:
 	NUMCONST
 	{ 
-    yyerrok;        
-    $$ = makeNode( ExpK, ConstK, Integer, $1->lineno, $1 );
+            yyerrok;        
+            $$ = makeNode( ExpK, ConstK, Integer, $1->lineno, $1 );
             $$->isConstant = true;
-            
         }
 	| CHARCONST 
 	{ 
             yyerrok;
             $$ = makeNode( ExpK, ConstK, Character, $1->lineno, $1 );
             $$->isConstant = true;
-            
         }
 	| STRINGCONST
 	{ 
@@ -919,7 +886,6 @@ constant:
             $$ = makeNode( ExpK, ConstK, Character, $1->lineno, $1 );
             $$->isArray = true;
             $$->isConstant = true;
-            
         }
 	| BOOLCONST
 	{ 
@@ -928,6 +894,5 @@ constant:
             $$->isConstant = true;         
         }
 	;
-	
 
 %%

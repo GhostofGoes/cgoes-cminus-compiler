@@ -5,16 +5,20 @@
  * Created on December 4, 2015, 12:40 PM
  */
 
-#include "codegenClassTM.h"
-#include "cminus.h"
-#include "types.h"
-//#include "emit.h"
+/* C++ Libraries */
 #include <iostream>
 #include <cstdlib>
 #include <string>
 #include <fstream>
 #include <iomanip>
+
+/* C Libraries */
 #include <time.h>
+
+/* Local headers */
+#include "codegenClassTM.h"
+#include "cminus.h"
+#include "types.h"
 
 using namespace std;
 
@@ -60,7 +64,6 @@ codegenTM::~codegenTM ( )
 void codegenTM::generateCode()
 {
     int start = 0;
-    //int currLoc = -99;
     
     /* Header comments*/
     if(emitToFile)
@@ -139,8 +142,7 @@ void codegenTM::generateDeclaration(TreeNode* node)
             
         case FunK:
             emitComment("FUNCTION " + treestr);
-            // We're not doing a lot of functions, so this is fine
-            if(treestr == "main") 
+            if(treestr == "main") // Only a few functions to check, so this is fine
                 mainLoc = emitSkip(0);
             emitRM("ST", val, -1, fp, "Store return address");
             
@@ -429,10 +431,6 @@ void codegenTM::emitComment( string s )
  */
 void codegenTM::emitRO( const char *op, int r, int s, int t, string c )
 { 
-    //printf("%3d:  %5s  %d,%d,%d ",emitLoc++,op,r,s,t);
-    //printf("\t%s",c) ;
-    //printf("\n") ;
-    
     if(emitToFile)
     {
     outfile << setw(3) << emitLoc++ 
@@ -463,10 +461,6 @@ void codegenTM::emitRO( const char *op, int r, int s, int t, string c )
  */
 void codegenTM::emitRM( const char * op, int r, int d, int s, string c )
 { 
-    //printf("%3d:  %5s  %d,%d(%d) ",emitLoc++,op,r,d,s);
-    //printf("\t%s",c) ;
-    //printf("\n") ;
-    
     if(emitToFile)
     {
     outfile << setw(3) << emitLoc++ 
@@ -532,11 +526,6 @@ void codegenTM::emitRestore()
  */
 void codegenTM::emitRMAbs( const char *op, int r, int a, string c )
 { 
-    //printf("%3d:  %5s  %d,%d(%d) ", emitLoc,op,r,a-(emitLoc+1),pc);
-    //++emitLoc ;
-    //printf("\t%s",c) ;
-    //printf("\n") ;
-    
     if(emitToFile)
     {
     outfile << setw(3) << emitLoc 
