@@ -97,10 +97,10 @@ void codegenTM::initSetup()
     
     //initGlobals(); not doing this quite yet...
     
-    emitRM("LDA", 1, gOffset, gp, "Set frame to end of globals");
-    emitRM("ST", 1, 0, fp, "Store old frame pointer");
-    saveRet();
-    emitRM("LDC", 7, mainLoc, 7, "Jump to main"); // cheap jump to main
+    emitRM("LDA", fp, gOffset, gp, "Set frame to end of globals");
+    emitRM("ST", fp, 0, fp, "Store old frame pointer");
+    saveRetA();
+    emitRM("LDC", pc, mainLoc, pc, "Jump to main"); // cheap jump to main
     emitRO("HALT", 0, 0, 0, "Fin."); 
     emitComment("END INIT");
 }
@@ -161,6 +161,7 @@ void codegenTM::generateDeclaration(TreeNode* node)
             break;
             
         case ParamK:
+            // TODO: PARAMATERS!
             break;
             
         default:
@@ -202,9 +203,16 @@ void codegenTM::generateStatement( TreeNode * node )
             emitComment("END COMPOUND");
             break;
             
-        case ReturnK:
-            emitComment("Return");
-            // TODO: function returns!
+        case ReturnK: // TODO: function returns!
+            emitComment("\tReturn definition");
+            
+            // Check for return value
+            if(tree->child[0] != NULL) {
+                generateExpression(tree->child[0]);
+                emitRM("LDA", ret, 0, val, "Save expression result into ret");
+            }
+            
+            // Return!
             funRet();
             break;
             
@@ -231,6 +239,7 @@ void codegenTM::generateExpression( TreeNode * node )
     
     int loc;
     TreeNode * p1, * p2;
+    string treestr = svalResolve(tree);
     
     switch(tree->kind) { 
         case AssignK:
@@ -266,14 +275,23 @@ void codegenTM::generateExpression( TreeNode * node )
             }
             break;
             
-        case IdK:
+        case IdK: // TODO: variable substitution, params
             break;
             
         case ConstK:
             break;
             
-        case CallK:
-            // TODO: function calls
+        case CallK: // TODO: function calls
+            emitComment("\tCALL " + treestr);
+            // Store old frame pointer
+            // Load paramaters
+                // load variable
+                // store parameter for use by callee
+            // load address of new frame into fp
+            saveRetA(); // save return address
+            // call the function
+            emitRM("LDA", val, 0, ret, "Save function result in val");
+            emitComment("\tEND CALL " + treestr);
             break; 
             
         default:            
@@ -309,14 +327,14 @@ void codegenTM::treeTraversal( TreeNode * node )
 
 /* Helper functions */
 
-void codegenTM::saveRet() // save return addr
+void codegenTM::saveRetA() // save return addr
 {
     emitRM("LDA", 3, 1, pc, "Save return address");
 }
 
 void codegenTM::standardRet() // comment, zero out return, funRet
 {
-    emitComment("Failsafe return");
+    emitComment("\tFailsafe return");
     emitRM("LDC", 2, 0, 0, "Zero out return value");
     funRet();
 
