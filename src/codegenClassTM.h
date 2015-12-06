@@ -16,38 +16,50 @@
 
 class codegenTM {
 public:
-    void generateCode();
+    void generateCode(); // This actually generates code. wow.
     codegenTM( TreeNode * t, SymbolTable * s, int g, std::string of );
     ~codegenTM();
     
 private:
-    void generateDeclaration( TreeNode * node );
-    void generateStatement( TreeNode * node );    
-    void generateExpression( TreeNode * node );
-    void treeTraversal( TreeNode * tree );
+    /* Init */
     void initSetup();
     void initGlobals();
     
+    /* Generate by nodekind */
+    void generateDeclaration( TreeNode * node );
+    void generateStatement( TreeNode * node );    
+    void generateExpression( TreeNode * node );
+    
+    /* General generation */
+    void treeTraversal( TreeNode * tree );
+    
+    /* Helper functions  */
+    void saveRet(); // LDA, 3, 1(pc)
+    std::string timestamp();
+    
+    /* Parsed food for generation */
     SymbolTable * symtable;
     TreeNode * aTree;
     
+    /* IO stuff */
     //string infilename;
     std::string outfilename;
     std::ofstream outfile;
     bool emitToFile;
     
-    /* TM location number for current instruction emission */
-    int emitLoc;
     
-    /* Highest TM location emitted so far. Used with: emitSkip, emitBackup, emitRestore */
-    int highEmitLoc;
+    /*** Emit stuff ***/
     
-    //int emitCounter; // count number of instructions emitted thus far, for 
+    /* Emit locations */
+    int emitLoc; // Location for current instruction emission  
+    int highEmitLoc; // Highest location emitted thus far. Used with: emitSkip, emitBackup, emitRestore
     
+    /* Offsets */
     int gOffset;
     int fOffset;
     int tOffset;
     
+    /* Emit methods */
     void emitComment( std::string s );
     void emitRO( const char *op, int r, int s, int t, std::string c);
     void emitRM( const char * op, int r, int d, int s, std::string c);
@@ -67,10 +79,6 @@ private:
     const int ac3 = 6; // Accumulator 3
     const int pc = 7; // Program counter
     
-
-    /* HELPER FUNCTIONS */
-    void saveRet();
-    std::string timestamp();
 };
 
 #endif	/* CODEGENCLASSTM_H */

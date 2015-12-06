@@ -18,7 +18,7 @@
 
 using namespace std;
 
-
+/* Constructors/Destructors */
 codegenTM::codegenTM ( TreeNode * t, SymbolTable * s, int g, string of) 
 { 
     symtable = s;
@@ -53,6 +53,9 @@ codegenTM::~codegenTM ( )
     }
 }
 
+
+/* Primary public functions */
+
 void codegenTM::generateCode()
 {
     /* Header comments*/
@@ -68,10 +71,41 @@ void codegenTM::generateCode()
     
     
     /* Instruction generation */
-    emitRMAbs( "LDA", pc, highEmitLoc, "Jump to init");
+    emitSkip(1); // so we can have our jump to init
     treeTraversal(aTree);
+    emitRMAbs( "LDA", pc, highEmitLoc, "Jump to init");
     initSetup();
 }
+
+
+/* Initialization */
+
+void codegenTM::initSetup()
+{
+    // TODO: keep track of init start
+    emitComment("INIT");
+    emitRM("LD", 0, 0, 0, "Set global pointer");
+    
+    initGlobals();
+    
+    emitRM("LDA", 1, gOffset, gp, "Set frame to end of globals");
+    emitRM("ST", 1, 0, fp, "Store old frame pointer");
+    saveRet();
+    // TODO: jump to main!
+    emitRO("HALT", 0, 0, 0, "Fin."); 
+    emitComment("END INIT");
+}
+
+void codegenTM::initGlobals()
+{
+    emitComment("INIT GLOBALS/STATICS");
+    
+    
+    emitComment("END INIT GLOBALS/STATICS");
+}
+
+
+/* Generate nodekinds */
 
 void codegenTM::generateDeclaration(TreeNode* node)
 {
@@ -157,28 +191,6 @@ void codegenTM::generateDeclaration(TreeNode* node)
             cerr << "Hit default in generateDeclaration switch(kind)!" << endl;
             break;
     }
-}
-
-void codegenTM::initSetup()
-{
-    // TODO: keep track of init start
-    emitComment("INIT");
-    
-    initGlobals();
-    
-    emitRM("LDA", 1, 0, gp, "Set frame to end of globals");
-    emitRM("ST", 1, 0, fp, "Store old fp");
-    saveRet();
-    
-    emitComment("END INIT");
-}
-
-void codegenTM::initGlobals()
-{
-    emitComment("INIT GLOBALS/STATICS");
-    
-    
-    emitComment("END INIT GLOBALS/STATICS");
 }
 
 void codegenTM::generateStatement( TreeNode * node )
@@ -309,6 +321,31 @@ void codegenTM::treeTraversal( TreeNode * node )
         tree = tree->sibling;
     }
 }
+
+
+/* Helper functions */
+
+void codegenTM::saveRet()
+{
+    emitRM("LDA", 3, 1, pc, "Save return address");
+}
+
+string codegenTM::timestamp()
+{
+    // Getting current local time because ADHD
+    // Source: http://www.cplusplus.com/reference/ctime/localtime/
+    time_t rawtime;
+    struct tm * timeinfo;
+    time (&rawtime);
+    timeinfo = localtime (&rawtime);
+    string ts = asctime(timeinfo);
+    
+    return ts;
+}
+
+
+
+/*** Emit stuff ***/
 
 // Prints a comment line with comment s in the code file
 void codegenTM::emitComment( string s )
@@ -457,24 +494,5 @@ void codegenTM::emitRMAbs( const char *op, int r, int a, string c )
         highEmitLoc = emitLoc ;
     
 } /* emitRMAbs */
-
-
-void codegenTM::saveRet()
-{
-    emitRM("LDA", 3, 1, pc, "Save return address");
-}
-
-string codegenTM::timestamp()
-{
-    // Getting current local time because ADHD
-    // Source: http://www.cplusplus.com/reference/ctime/localtime/
-    time_t rawtime;
-    struct tm * timeinfo;
-    time (&rawtime);
-    timeinfo = localtime (&rawtime);
-    string ts = asctime(timeinfo);
-    
-    return ts;
-}
 
 
