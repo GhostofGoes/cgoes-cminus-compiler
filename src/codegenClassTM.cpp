@@ -21,10 +21,8 @@ using namespace std;
 
 codegenTM::codegenTM ( TreeNode * t, SymbolTable * s, int g, string of) 
 { 
-    cout << "test" << endl;
     symtable = s;
     aTree = t;
-    
     
     outfilename = of;
     //infilename = input_filename;
@@ -60,11 +58,10 @@ void codegenTM::generateCode()
         emitComment( outfilename );
     }
     
-    
     emitComment( "Cgoes Cminus Compiler (CCC)" );
     emitComment( "Author: Christopher Goes");
     //emitComment( "File compiled: " + infilename );
-    //emitComment( "Generated at: " + timestamp() );
+    //emitComment( "Generated at: " + timestamp() ); some std::badalloc error bahhumbug.jpg
     
     /* Instruction generation */
     //treeTraversal(aTree);

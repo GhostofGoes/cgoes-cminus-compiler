@@ -139,7 +139,7 @@ int main ( int argc, char * argv[] )
         yyparse();
     } while (!feof(yyin));*/
 
-    parseStatus = yyparse();
+    parseStatus = yyparse(); // cleaned up some legacy crap from assign2
     printf("ParseStatus: %d\n", parseStatus);
     
     if ( print_syntax_tree )
@@ -1156,8 +1156,7 @@ void treeParse ( TreeNode * par, TreeNode * node, SymbolTable * symtable, bool i
 void generateCode( std::string output_file )
 {
     codegenTM cg(annotatedTree, symtab, 0, output_file );
-    std::cout << "test" << std::endl;
-    //cg->generateCode();
+    cg.generateCode();
 }
 
 
