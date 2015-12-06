@@ -3,10 +3,14 @@
 /* The TM ("Tiny Machine") virtual machine                    */
 /* Book: Compiler Construction: Principles and Practice       */
 /*                                                            */
+/* v3.4b   Modified Robert Heckendorn Nov 30, 2015            */
+/*          fixed bounds of RND and put in error for RND of 0 */
+/* v3.4    Modified Robert Heckendorn Nov 12, 2015            */
+/*          LIT and LDL instrucitions added                   */
 /* v3.3    Modified Robert Heckendorn Oct 14, 2015            */
 /*          put in test and separate jump instructions        */
 /*          redid CMP instruction to be more useful and       */
-/*          added CPI instruction                             */
+/*          added CPA instruction                             */
 /* v3.1    Modified Robert Heckendorn Sep 3, 2015             */
 /*          changed all the jump instructions, changed        */
 /*          direction of MOV, SET instructions, added RND     */
@@ -42,7 +46,7 @@
 /*                                                            */
 /**************************************************************/
 
-char *versionNumber = (char *)"TM version 3.3";
+char *versionNumber =(char *)"TM version 3.4b";
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -57,10 +61,13 @@ char *versionNumber = (char *)"TM version 3.3";
 #ifndef FALSE
 #define FALSE 0
 #endif
+#define UP +1
+#define DOWN -1
 #define TRACE 1
 #define NOTRACE 0
-#define NOTUSED -1
 #define USED 1
+#define UNUSED -1
+#define READONLY -2
 
 /******* const *******/
 #define   IADDR_SIZE  10000	/* increase for large programs */
@@ -77,7 +84,8 @@ char *versionNumber = (char *)"TM version 3.3";
 typedef enum
 {
     opclRR,			/* reg operands r, s, t */
-    opclRA			/* reg r, int d+s */
+    opclRA,			/* reg r, int d+s */
+    opclLIT                      /* literal command */
 } OPCLASS;
 
 typedef enum
@@ -113,11 +121,12 @@ typedef enum
     opMOV,                      // RR     dMem[reg[r] + (0..reg[t]-1)] = dMem[reg[s] + (0..reg[t]-1)] 
     opSET,                      // RR     dMem[reg[r] + (0..reg[t]-1)] = reg[s] 
     opCMP,                      // RR     
-    opCPI,                      // RR     
+    opCPA,                      // RR     
     opRRLim,			// limit of RR opcodes 
 
     // RA instructions 
     opLD,			// RM     reg(r) = mem(d+reg(s)) 
+    opLDL,                      // RM     reg(r) = mem(d)
     opLDI,                      // RM     reg(r) = mem(d+reg(s)); reg[s]++ 
     opST,			// RM     mem(d+reg(s)) = reg(r) 
     opSTI,                      // RM     mem(d+reg(s)) = reg(r); reg[s]++ 
@@ -126,7 +135,10 @@ typedef enum
     opJZR,			// RA     if reg(r)==0 then reg(7) = d+reg(s) 
     opJNZ,			// RA     if reg(r)!=0 then reg(7) = d+reg(s) 
 
-    opRALim			// Limit of RA opcodes 
+    opRALim,                    // limit of RA opcodes
+    opLIT,                      // the special litteral op code
+
+    opEND			// Limit of RA opcodes 
 } OPCODE;
 
 typedef enum
@@ -135,6 +147,7 @@ typedef enum
     srHALT,
     srIMEM_ERR,
     srDMEM_ERR,
+    srDMEMACCESS_ERR,
     srZERODIVIDE
 } STEPRESULT;
 
@@ -143,6 +156,7 @@ char *stepResultTab[] = {
     (char *)"Halted",
     (char *)"ERROR: Instruction Memory Fault",
     (char *)"ERROR: Data Memory Fault",
+    (char *)"ERROR: Accesss Readonly Data Memory",
     (char *)"ERROR: Division by 0"
 };
 
@@ -171,12 +185,12 @@ char pgmName[WORDSIZE];
 int instrCount = 0;
 int dmemStart = 0;
 int dmemCount = 0;
-int dmemDown = TRUE;
+int dmemDown = UP;
 
 INSTRUCTION iMem[IADDR_SIZE];
 int iMemTag[IADDR_SIZE];
 int dMem[DADDR_SIZE];
-int dMemTag[DADDR_SIZE];
+int dMemTag[DADDR_SIZE];   // if >= 0 then last address modified, == -1 unused, == -2 read/only
 int reg[NO_REGS];
 
 
@@ -212,9 +226,10 @@ void initOpCodeTab()
     opCodeTab[(int)opMOV] = (char *)"MOV";
     opCodeTab[(int)opSET] = (char *)"SET";
     opCodeTab[(int)opCMP] = (char *)"CMP";
-    opCodeTab[(int)opCPI] = (char *)"CPI";
+    opCodeTab[(int)opCPA] = (char *)"CPA";
     opCodeTab[(int)opRRLim] = (char *)"RRLim";
     opCodeTab[(int)opLD] = (char *)"LD";
+    opCodeTab[(int)opLDL] = (char *)"LDL";
     opCodeTab[(int)opLDI] = (char *)"LDI";
     opCodeTab[(int)opST] = (char *)"ST";
     opCodeTab[(int)opSTI] = (char *)"STI";
@@ -223,6 +238,8 @@ void initOpCodeTab()
     opCodeTab[(int)opJZR] = (char *)"JZR";
     opCodeTab[(int)opJNZ] = (char *)"JNZ";
     opCodeTab[(int)opRALim] = (char *)"RALim";
+    opCodeTab[(int)opLIT] = (char *)"LIT";
+    opCodeTab[(int)opEND] = (char *)"END OF OPCODES";
 }
 
 char *niceStringIn(char *s)
@@ -331,15 +348,15 @@ int lineLen;
 int inCol;
 int num;
 char word[WORDSIZE];
+int wordset;  // bool that says if word was set last (truly horrible, needs total rewrite)
 char ch;
 
 /********************************************/
 int opClass(int c)
 {
-    if (c <= (int)opRRLim)
-	return opclRR;
-    else
-	return opclRA;
+    if (c <= (int)opRRLim) return opclRR;
+    else if (c <= (int)opRALim) return opclRA;
+    else return opclLIT;
 }
 
 
@@ -355,11 +372,12 @@ void writeInstruction(int loc, int trace)
 	case opclRR:
 	    printf("%3d, %1d ", iMem[loc].iarg2, iMem[loc].iarg3);
 	    if (trace) {
-                printf("  | before:");
-		printf("  r[%1d]: %-4d", iMem[loc].iarg1, reg[iMem[loc].iarg1]);
-		printf("  r[%1d]: %-4d", iMem[loc].iarg2, reg[iMem[loc].iarg2]);
-		printf("  r[%1d]: %-4d", iMem[loc].iarg3, reg[iMem[loc].iarg3]);
-                printf("  | ");
+                printf(" | before:");
+                {
+                    int i;
+                    for (i=0; i<7; i++) printf(" r[%1d]:%-3d", i, reg[i]);
+                }
+                printf(" | ");
 	    }
 	    break;
 	case opclRA:
@@ -367,27 +385,25 @@ void writeInstruction(int loc, int trace)
 	    if (trace) {
                 int tmp;
 
-                printf("  | before:");
-		printf("  r[%1d]: %-4d",
-                       iMem[loc].iarg1,
-                       reg[iMem[loc].iarg1]);
-		printf("  r[%1d]: %-4d",
-                       iMem[loc].iarg3,
-                       reg[iMem[loc].iarg3]);
+                printf(" | before:");
+                {
+                    int i;
+                    for (i=0; i<7; i++) printf(" r[%1d]:%-3d", i, reg[i]);
+                }
 /*   zzz   */
                 tmp = iMem[loc].iarg2 + reg[iMem[loc].iarg3];
                 if ((tmp >= 0) && (tmp<DADDR_SIZE)) {
 
-                    printf("  m[%d]: %-4d",
+                    printf(" m[%d]:%-3d",
                            iMem[loc].iarg2 + reg[iMem[loc].iarg3],
                            dMem[iMem[loc].iarg2 + reg[iMem[loc].iarg3]]);
-                    printf("  | ");
+                    printf(" | ");
                 }
             }
 	    break;
 	}
-        if (breakpoint == loc || savedbreakpoint == loc) printf(" %7s", "<-break");
-        if (reg[7] == loc && !trace) printf(" %4s", "<-pc");
+        if (breakpoint == loc || savedbreakpoint == loc) printf(" %s", "<-[break]");
+        if (reg[7] == loc && !trace) printf(" %s", "<-[pc]");
 	printf(" %s\n", iMem[loc].comment);
     }
     fflush(stdout);
@@ -447,16 +463,11 @@ int uptoComment(void)
 }
 
 
-/********************************************/
-/*  returns the numerical equivalent of a character in num.
-/* returns success or failure in function value
- */
-int getChar(void)
+//  returns the numerical equivalent of a character in num.
+//  returns success or failure in function value
+//
+void getCleanChar(void)
 {
-    int ok = FALSE;
-
-    num = 0;
-    if (ch == '\'') {
         getCh();
         if (ch == '\\') {
             getCh();
@@ -475,7 +486,34 @@ int getChar(void)
         else {
             num = ch;
         }
+}
 
+
+// return a string in word[]
+int getString(void)
+{
+    int i;
+    int ok = FALSE;
+    if (ch == '"') {
+        i = 0;
+        do {
+            getCleanChar();
+            word[i++] = ch;
+        } while (ch != '"');
+        word[i-1] = '\0';
+        ok = TRUE;
+    }
+
+    return ok;
+}
+
+int getChar(void)
+{
+    int ok = FALSE;
+
+    num = 0;
+    if (ch == '\'') {
+        getCleanChar();
         getCh();
         if (ch == '\'') {
             ok = TRUE;
@@ -483,14 +521,12 @@ int getChar(void)
         }
     }
 
-    printf("CHR: %d\n", num);
     return ok;
 }
 
-/********************************************/
-/*  returns the number in num.
-/* returns success or failure in function value
- */
+//  returns the number in num.
+// returns success or failure in function value
+//
 int getNum(void)
 {
     int sign;
@@ -618,14 +654,14 @@ void clearMachine()
     dloc = 0;
     for (regNo = 0; regNo<NO_REGS; regNo++) reg[regNo] = 0;
     dMem[0] = DADDR_SIZE - 1;
-    dMemTag[0] = NOTUSED;
+    dMemTag[0] = UNUSED;
     for (loc = 1; loc<DADDR_SIZE; loc++) {
 	dMem[loc] = 0;
-	dMemTag[loc] = NOTUSED;
+	dMemTag[loc] = UNUSED;
     }
     dmemStart = dMem[0];
     dmemCount = -10;
-    dmemDown = TRUE;
+    dmemDown = DOWN;
     instrCount = 0;
 }
 
@@ -645,7 +681,7 @@ void fullClearMachine()
 	iMem[loc].iarg2 = 0;
 	iMem[loc].iarg3 = 0;
 	iMem[loc].comment = (char *)"* initially empty";
-	iMemTag[loc] = NOTUSED;
+	iMemTag[loc] = UNUSED;
     }
 }
 
@@ -655,7 +691,7 @@ int readInstructions(char *fileName)
     FILE *pgm;
     OPCODE op;
     int arg1, arg2, arg3;
-    int loc, regNo, lineNo;
+    int loc, lineNo;
     char errorString[128];
 
     /* load program */
@@ -710,10 +746,10 @@ int readInstructions(char *fileName)
 
             { int opcnt;
 
-                for (opcnt = 0; opcnt < (int)opRALim; opcnt++) {
+                for (opcnt = 0; opcnt<(int)opEND; opcnt++) {
                     if (strncmp(opCodeTab[opcnt], word, 4) == 0) break;
                 }
-                if (opcnt >= (int)opRALim) {
+                if (opcnt>=(int)opEND) {
                     sprintf(errorString, (char *)"Illegal opcode: %s", word);
                     return error(errorString, lineNo, loc);
                 }
@@ -774,14 +810,39 @@ int readInstructions(char *fileName)
                         return error((char *)"Bad second register", lineNo, loc);
                     arg3 = num;
                     break;
+                case opclLIT:
+                    nonBlank();
+                    (wordset = getString()) || getNum() || getChar();
+                    break;
+                }
+                
+            }
+            if (op==opLIT) {
+                if (wordset) {
+                    int len, k;
+
+                    len = strlen(word);
+                    for (k=0; k<len; k++) {
+                        if (loc-k < 0) return error((char *)"Literal wrapping to high data memory", lineNo, loc);
+                        dMem[loc-k] = word[k];
+                        dMemTag[loc-k] = READONLY;
+                    }
+                    dMem[loc+1] = len;
+                    dMemTag[loc+1] = READONLY;
+                }
+                else {
+                    dMem[loc] = num;
+                    dMemTag[loc] = READONLY;
                 }
             }
-	    iMem[loc].iop = op;
-	    iMem[loc].iarg1 = arg1;
-	    iMem[loc].iarg2 = arg2;
-	    iMem[loc].iarg3 = arg3;
-	    iMem[loc].comment = getRemaining();
-	    iMemTag[loc] = USED;     /* correctly counts assignments to same loc  */
+            else {
+                iMem[loc].iop = op;
+                iMem[loc].iarg1 = arg1;
+                iMem[loc].iarg2 = arg2;
+                iMem[loc].iarg3 = arg3;
+                iMem[loc].comment = getRemaining();
+                iMemTag[loc] = USED;     /* correctly counts assignments to same loc  */
+            }
 	}
 
         /* get next line */
@@ -792,10 +853,24 @@ int readInstructions(char *fileName)
 
 
 
+
 /********************************************/
+
+STEPRESULT setDMem(int m, int value, int pc) {
+    if (dMemTag[m]==READONLY) return srDMEMACCESS_ERR;
+    if (m<0 ||  m>=DADDR_SIZE) return srDMEM_ERR;
+
+    dMem[m] = value;
+    dMemTag[m] = pc;
+    return srOKAY;
+}
+
+
+
 STEPRESULT stepTM(void)
 {
     INSTRUCTION currentinstruction;
+    STEPRESULT tmpResult;
     int r, s, t, d, m;
     int ok;
 
@@ -994,7 +1069,10 @@ STEPRESULT stepTM(void)
 	break;
 
     case opRND:
-        reg[r] = random()%abs(reg[s]+1);
+	if (reg[s] != 0)
+            reg[r] = random()%abs(reg[s]);
+	else
+	    return srZERODIVIDE;
 	break;
 
     case opMOV: {
@@ -1004,10 +1082,10 @@ STEPRESULT stepTM(void)
         raddr = reg[r];
         saddr = reg[s];
         for (i=0; i<reg[t]; i++) {
-            dMem[raddr] = dMem[saddr];
-            dMemTag[saddr] = pc;
-            raddr++;
-            saddr++;
+            printf("MOV: dMem[%d] <-  dMem[%d]\n", raddr, saddr);
+            if ((tmpResult = setDMem(raddr, dMem[saddr], pc))!=0) return tmpResult;
+            raddr--;
+            saddr--;
         }
     }
         break;
@@ -1019,39 +1097,45 @@ STEPRESULT stepTM(void)
         raddr = reg[r];
         svalue = reg[s];
         for (i=0; i<reg[t]; i++) {
-            dMem[raddr] = svalue;
-            dMemTag[raddr] = pc;
-            raddr++;
+            if ((tmpResult = setDMem(raddr, svalue, pc))!=0) return tmpResult;
+            raddr--;
         }
     }
         break;
 
+    
+    // find the first place that is different put the differing mem
+    // values in r5 and r6
     case opCMP: {
         int raddr, saddr;
+	int i;
 
         raddr = reg[r];
         saddr = reg[s];
-        for (int i=0; i<reg[t]; i++) {
+        for (i=0; i<reg[t]; i++) {
             reg[5] = dMem[raddr];
             reg[6] = dMem[saddr];
             if (dMem[raddr] != dMem[saddr]) break;
-            raddr++;
-            saddr++;
+            raddr--;
+            saddr--;
         }
     }
-        break;
+    break;
 
-    case opCPI: {
+    // find the first place that is different put the addresses of 
+    // the differing mem values in r5 and r6
+    case opCPA: {
         int raddr, saddr;
+	int i;
 
         raddr = reg[r];
         saddr = reg[s];
-        for (int i=0; i<reg[t]; i++) {
+        for (i=0; i<reg[t]; i++) {
             reg[5] = raddr;
             reg[6] = saddr;
             if (dMem[raddr] != dMem[saddr]) break;
-            raddr++;
-            saddr++;
+            raddr--;
+            saddr--;
         }
     }
         break;
@@ -1060,17 +1144,18 @@ STEPRESULT stepTM(void)
     case opLD:
 	reg[r] = dMem[m];
 	break;
+    case opLDL:
+	reg[r] = dMem[d];
+	break;
     case opLDI:
 	reg[r] = dMem[m];
         reg[s]++;
 	break;
     case opST:
-	dMem[m] = reg[r];
-	dMemTag[m] = pc;
+        if ((tmpResult = setDMem(m, reg[r], pc))!=0) return tmpResult;
 	break;
     case opSTI:
-	dMem[m] = reg[r];
-	dMemTag[m] = pc;
+        if ((tmpResult = setDMem(m, reg[r], pc))!=0) return tmpResult;
         reg[s]++;
 	break;
     case opLDA:
@@ -1150,7 +1235,7 @@ int doCommand(void)
     int i;
     int printcnt;
     int stepResult;
-    int regNo, loc;
+    int loc;
     int stepcnt;
 
     stepcnt = 0;
@@ -1260,7 +1345,11 @@ int doCommand(void)
 
 	    cnt = 0;
 	    for (i = 0; i<IADDR_SIZE; i++) if (dMemTag[i]>=0) cnt++;
-	    printf("EXEC STAT: Data memory used: %d\n", cnt);
+	    printf("EXEC STAT: Data memory touched: %d\n", cnt);
+
+	    cnt = 0;
+	    for (i = 0; i<IADDR_SIZE; i++) if (dMemTag[i]==READONLY) cnt++;
+	    printf("EXEC STAT: Read only memory: %d\n", cnt);
     }
     break;
 
@@ -1317,31 +1406,31 @@ int doCommand(void)
 
     case 'd':
         /***********************************/
-    { int down;
+    {       int i;
 
             if (getNum()) {
                 dmemStart = num;
                 if (getNum()) {
-                    dmemDown = TRUE;
-                    if (num<0) dmemDown = FALSE;
+                    dmemDown = UP;
+                    if (num<0) dmemDown = DOWN;
                     dmemCount = abs(num);
                 }
             }
             dloc = dmemStart;
             printcnt = dmemCount;
-            down = dmemDown;
             printf("%5s: %5s", "addr", "value");
             printf("    %s\n", "instr that last assigned this loc");
-            while ((dloc >= 0) && (dloc<DADDR_SIZE) && (printcnt>0)) {
+            for (i=0; i<printcnt; i++, dloc+=dmemDown) {
                 char *c;
+
+                dloc = (DADDR_SIZE + dloc) % DADDR_SIZE;
                 c = niceChar(dMem[dloc]);
                 if (c) printf("%5d: %5d '%s'", dloc, dMem[dloc], c);
                 else printf("%5d: %5d %3s", dloc, dMem[dloc], "");
+
                 if (dMemTag[dloc]>=0) printf("    %d\n", dMemTag[dloc]);
-                else printf("    %s\n", "unused");
-                if (down) dloc--;
-                else dloc++;
-                printcnt--;
+                else if (dMemTag[dloc]==UNUSED) printf("    %s\n", "unused");
+                else printf("    %s\n", "readOnly");
             }
     }
     break;
@@ -1390,8 +1479,7 @@ int doCommand(void)
 	    stepcnt = 0;
 	    while ((stepResult == srOKAY) && ((abortLimit==0) || (stepcnt<abortLimit))) {
 		iloc = reg[PC_REG];
-		if (traceflag)
-		    writeInstruction(iloc, TRACE);
+		if (traceflag) writeInstruction(iloc, TRACE);
 		stepResult = stepTM();
 		stepcnt++;
 	    }
