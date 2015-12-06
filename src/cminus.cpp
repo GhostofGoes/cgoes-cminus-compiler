@@ -88,7 +88,7 @@ int main ( int argc, char * argv[] )
     }*/
 
     // Command line options
-    while ((option = getopt(argc, argv, "dpPtseo")) != EOF)
+    while ((option = getopt(argc, argv, "dpPtseo:")) != EOF)
     {
         switch (option) {
             case 'd':
@@ -119,7 +119,10 @@ int main ( int argc, char * argv[] )
               else
               {
                 //outfileTM = fopen(argv[optind], "w");
-                outfileTM = optarg;
+                  if(optarg != NULL)
+                    outfileTM.assign(optarg);
+                  else
+                      std::cerr << "NULL optarg!" << std::endl;
               }
               break;
             default:
@@ -139,6 +142,7 @@ int main ( int argc, char * argv[] )
         yyparse();
     } while (!feof(yyin));*/
 
+    // Bison builds the syntax tree for us
     parseStatus = yyparse(); // cleaned up some legacy crap from assign2
     //printf("ParseStatus: %d\n", parseStatus);
     
@@ -170,15 +174,12 @@ int main ( int argc, char * argv[] )
     printf("Number of errors: %d\n", errors);
 
     
-    /* Cleanup memory */
-    fclose(yyin);
+    /* Cleanup */
     
-    /*if(outfileTM != stdout && outfileTM != NULL)
-        fclose(outfileTM);*/
+    fclose(yyin);
     
     if(symtab != NULL)
         delete symtab;
-    
     /*
     if(syntaxTree != NULL)
         //freeTree(syntaxTree);
