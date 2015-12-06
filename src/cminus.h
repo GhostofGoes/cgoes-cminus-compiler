@@ -38,6 +38,6 @@ void generateCode( std::string output_file );
 
 TreeNode * buildIOLibrary();
 void checkArgTypes( TreeNode * call, TreeNode * func );
-void memorySizing( TreeNode * tree, SymbolTable * symtable );
+int memorySizing( TreeNode * tree, SymbolTable * symtable, int parOff );
 
 #endif

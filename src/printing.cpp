@@ -349,6 +349,7 @@ void printAbstractTree ( TreeNode * og, int indent_count )
 }
 
 // Prints the Annotated Syntax Tree 
+// TODO: put into a class, seperate codegen and other steps. template functions?
 // TODO: combine print tree functions, pass an enum 'flag' to turn on different printing features
 void printAnnotatedTree ( TreeNode * og, int indent_count )
 {

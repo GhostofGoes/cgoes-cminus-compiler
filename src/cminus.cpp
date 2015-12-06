@@ -63,6 +63,9 @@ int global_offset = 0; // TODO: keep?
 int local_offset = 0;
 int param_count = 0;
 
+std::vector<int> cVec;
+
+
 // TODO: put different error types into their own methods in a "errors.cpp" file.
 // TODO: free tokens matched by error terminal in bison
 int main ( int argc, char * argv[] )
@@ -82,7 +85,7 @@ int main ( int argc, char * argv[] )
     
     initTokenMaps();
     
-    if(argc > 1)
+    if(argc > 1) // TODO: make so you can put filename anywhere in option list
     {
         yyin = fopen(argv[1], "r");
     }
@@ -242,7 +245,7 @@ SymbolTable * semanticAnalysis ( TreeNode * og )
         errors++;
     }
     
-    memorySizing(annotatedTree, symtable);
+    memorySizing(annotatedTree, symtable, 0);
     
     if( semantic_debugging )
     {
@@ -253,7 +256,7 @@ SymbolTable * semanticAnalysis ( TreeNode * og )
 }
 
 // Like a ninja...silent insertion into symbol table and annotating of types. Few errors.
-
+// TODO: rewrite into class?
 void typeResolution ( TreeNode * par, TreeNode * node, SymbolTable * symtable )
 {
     TreeNode * tree;
@@ -1275,18 +1278,23 @@ void checkArgTypes( TreeNode * call, TreeNode * func)
 
 
 // TODO: update symboltable values?
-void memorySizing( TreeNode * node, SymbolTable * symtable )
+// TODO: rewrite into a class similiar to codegen
+// TODO: SERIOUSLY, CLASS==BETTER
+int memorySizing( TreeNode * node, SymbolTable * symtable, int parOff )
 {
     TreeNode * tree;
     tree = node;
-
-
+    
+    int tOff = 0;
+    int childVal = 0;
+    int line = 0;
+    
+    std::string tree_svalue;
+            
     while (tree != NULL)
     {
-        TreeNode * temp; // Temporary TreeNode
-        int sibling_count = 0; // Keeps track of siblings
-        int line = tree->lineno; // Node's line number
-        std::string tree_svalue = svalResolve(tree);
+        line = tree->lineno; // Node's line number
+        tree_svalue = svalResolve(tree);
 
         switch (tree->nodekind)
           {
@@ -1295,48 +1303,61 @@ void memorySizing( TreeNode * node, SymbolTable * symtable )
                 {
                   case VarK:
                     if(tree->isArray  )
-                    {
                         tree->size = tree->arraySize + 1; // +1 for pointer
-                    }
                     else
-                    {
                         tree->size = 1;
-                    }
                     
-                    if(symtable->depth() > 1)
+                    if(symtable->depth() > 1 && !tree->isStatic)
                     {
                         tree->offsetReg = local;
-                        tree->location = local_offset;
-                        local_offset -= tree->size;
+                        //tree->location = local_offset;
+                        tree->location = parOff + tOff;
+                        //local_offset -= tree->size;
+                        tOff -= tree->size;
                     }
                     else
                     {
-                        tree->offsetReg = global;
+                        if(tree->isStatic)
+                            tree->offsetReg = local;
+                        else
+                            tree->offsetReg = global;
                         tree->location = global_offset;
                         global_offset -= tree->size;
                     }
-                    
-                    // -1 for size of the array, put data loc pointer at the start of the actual array
                     if(tree->isArray)
-                        tree->location--; 
+                        tree->location--; // skip array size
                     break;
 
                   case ParamK:
-                    tree->size = 1; // since its just a param, regardless of array?
-                    param_count++;
-                    tree->location = local_offset;
+                    tree->size = 1; // since its just a param pointer
+                    //tree->location = local_offset;
+                    tree->location = parOff + tOff;
+                    tOff -= tree->size;
+                    //local_offset -= tree->size;
                     tree->offsetReg = o_param;
-                    local_offset -= tree->size;
+                    param_count++;
                     break;
 
                   case FunK:
-                    local_offset = 0;
-                    tree->location = 0;
-                    tree->offsetReg = global;
                     symtable->enter("Function " + tree_svalue);
-                    tree->size = 2; // remember, just printing minus for now...
+                    tOff = 0;
+                    //local_offset = 0;
+                    tree->offsetReg = global;
                     param_count = 0;
-                    local_offset -= tree->size;
+                    tree->location = 0; // TODO: check this assumption
+                    tree->size = 2;
+                    //local_offset -= tree->size;
+                    tOff -= tree->size;
+                    
+                    // Parameters
+                    tOff += memorySizing(tree->child[0], symtable, tOff );
+                    
+                    // Compound
+                    memorySizing(tree->child[1], symtable, tOff );
+                    
+                    tree->size += param_count;
+                    symtable->leave();
+                    tOff = 0;
                     break;
                 }
               break;
@@ -1345,49 +1366,63 @@ void memorySizing( TreeNode * node, SymbolTable * symtable )
               switch (tree->kind)
                 {
                   case CompoundK:
+                    //tree->location = local_offset;
+                    tree->location = tOff;
                     if(tree->isFuncCompound == false)
                     {    
                         symtable->enter("Compound" + line);
+                        childVal = memorySizing(tree->child[0], symtable, tOff + parOff);
+                        memorySizing(tree->child[1], symtable, childVal + tOff + parOff);
+                        symtable->leave();
                     }
+                    else
+                    {
+                        childVal = memorySizing(tree->child[0], symtable, tOff + parOff);
+                        memorySizing(tree->child[1], symtable, childVal + tOff + parOff);
+                    }
+                    tree->size = parOff + childVal; // tOff?
                     break;
                 }
               break;
           }
 
-        if ( tree->numChildren > 0 )
+        /*if ( tree->numChildren > 0 )
         {
             for (int i = 0; i < tree->numChildren; i++)
             {
                 if ( tree->child[i] != NULL )
                 {
-                    memorySizing(tree->child[i], symtable);
+                    memorySizing(tree->child[i], symtable, tOff);
                 }
             }
-        }
+        }*/
 
-        if ( (tree->kind == CompoundK && tree->isFuncCompound == false) )
+        /*if ( (tree->kind == CompoundK && tree->isFuncCompound == false) )
         {
             if ( semantic_debugging )
             {
                 symtable->print(printTreeNode);
             }
             //tree->location = local_offset;
-            symtable->leave();
+            
         }
         
         if(tree->kind == CompoundK)
         {
-            tree->size = local_offset;
-        }
+            //tree->size = local_offset;
+            tree->size = childVal; // parOff + tOffset
+            local_offset = tOff;
+        }*/
         
-        if(tree->kind == FunK)
+        /*if(tree->kind == FunK)
         {
             tree->size += param_count;
             local_offset = 0;
+            //tOff = 0;
             symtable->leave();
-        }
+        }*/
 
         tree = tree->sibling; // Jump to the next sibling
-        sibling_count++;
     } // end while    
+    return tOff;
 }
