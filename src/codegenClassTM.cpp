@@ -64,7 +64,7 @@ void codegenTM::generateCode()
     emitComment( "Cgoes Cminus Compiler (CCC)" );
     emitComment( "Author: Christopher Goes");
     //emitComment( "File compiled: " + infilename );
-    //emitComment( "Generated at: " + timestamp() ); some std::badalloc error bahhumbug.jpg
+    emitComment( "Generated at: " + timestamp() );
     
     
     /* Instruction generation */
@@ -420,7 +420,9 @@ string codegenTM::timestamp()
     struct tm * timeinfo;
     time (&rawtime);
     timeinfo = localtime (&rawtime);
-    string timestamp = asctime(timeinfo);    
+    string ts = asctime(timeinfo);
+    
+    return ts;
 }
 
 
