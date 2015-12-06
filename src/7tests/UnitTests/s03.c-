@@ -1,0 +1,9 @@
+// static array sizes initialize correctly?
+main()
+{
+        int cat[10];
+        static int dog[10];
+
+        output(*cat);
+        output(*dog);
+}

@@ -1,0 +1,23 @@
+bool g, h[10];
+
+int dog(int a, b[])
+{
+      a = 444;
+      b[9] = 555;
+
+      return *b;
+}
+
+main()
+{
+      int x, y[10];
+
+      g = true;
+      h[9] = false;
+
+      x = 111;
+      y[9] = 222;
+
+      output(333 + dog(x, y));
+}
+

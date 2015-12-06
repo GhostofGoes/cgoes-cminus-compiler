@@ -1,0 +1,35 @@
+int ident(int x) return x;
+
+main()
+{
+    bool x;
+
+    output(ident(111));
+    output(ident(111)*222);
+    output(222*ident(111));
+    outnl();
+    output((ident(111)*222)+333);
+    output((ident(111)+222)*333);
+    outnl();
+    output(-(ident(111)+222));
+    output(- -(ident(111)+222));
+    outnl();
+    output((- -(ident(111)+222))*333);
+    output((- -(ident(111)+222))*333/444);
+    output((- -(ident(111)+222))*333/444%42);
+    outnl();
+    outputb((- -(ident(111)+222))*333/444%42+555 <= 666);
+    outputb((- -(ident(111)+222))*333/444%42+555 >= 666);
+    outnl();
+    outputb(!(- -(ident(111)+222))*333/444%42+555 <= 666);
+    outputb(!!(- -(ident(111)+222))*333/444%42+555 <= 666);
+    outnl();
+    outputb(!!(- -(ident(111)+222))*333/444%42+555 <= 666 & 777<888);
+    outputb(!!(- -(ident(111)+222))*333/444%42+555 <= 666 & 777<888 | 999!=1000);
+    outnl();
+    outputb(x = !!(- -(ident(111)+222))*333/444%42+555 <= 666 & 777<888 | 999!=1000);
+    outnl();
+}
+
+
+

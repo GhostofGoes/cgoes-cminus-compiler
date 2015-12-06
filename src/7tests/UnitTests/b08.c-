@@ -1,0 +1,7 @@
+main()
+{
+     outputb(! true);
+     outnl();
+     outputb(! false);
+     outnl();
+}

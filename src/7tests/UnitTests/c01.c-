@@ -1,0 +1,10 @@
+main()
+{
+    int x;
+    int y;
+
+    x = 73;
+    y = 211;
+    output(x+y);
+    outnl();
+}

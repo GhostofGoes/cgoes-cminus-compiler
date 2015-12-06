@@ -1,0 +1,14 @@
+int x;
+
+main()
+{
+     int y;
+
+     x = 341;
+     y = 273;
+     output(x);
+     outnl();
+     output(y);
+     outnl();
+}
+

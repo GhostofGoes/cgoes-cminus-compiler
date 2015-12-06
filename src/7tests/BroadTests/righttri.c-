@@ -1,0 +1,38 @@
+// Print Pythagorean triangles with a hypotenuse less than 50
+//
+main()
+{
+    int a;
+    int b;
+    int aa;
+    int bb;
+    int c;
+    int cc;
+
+    a = 1;
+    aa = 1;
+    c = 0;
+    while (c<50) {
+	c = cc = 1;
+	b = 1;
+	bb = 1;
+	while (b <= a) {
+	    if (((aa + bb)/2)%2==0) {
+		while (cc < aa + bb) {
+		    c = c + 1; 
+		    cc = cc + 2*c - 1;
+		}
+		if (aa + bb == cc) {
+		    output(a);
+		    output(b);
+		    output(c);
+		    outnl();
+		}
+	    }
+	    b = b + 1;
+	    bb = bb + 2*b - 1;
+	}
+	a = a + 1;
+	aa = aa + 2*a - 1;
+    }
+}

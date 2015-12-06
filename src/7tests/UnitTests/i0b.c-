@@ -1,0 +1,6 @@
+main(){
+    {
+        int rr[20];
+        output(*rr);
+    }
+}

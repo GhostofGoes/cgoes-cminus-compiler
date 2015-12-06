@@ -1,0 +1,43 @@
+#!/bin/sh
+# file.c-  file to compile
+# file.in  file of commands to tm to run code
+# file.expected file of expected output
+
+# file.out file of output from compiler and then from running code
+# file.tm  file of tm code
+
+tmp=ztmp$$.txt
+
+for file in `ls *.c-`
+do
+        echo "===================================="
+        echo "FILE: $file"
+	file=`basename $file '.c-'`
+        rm -f $file.tm $file.out
+        ../c-  $file.c- > $file.out
+        echo "------------------------------------" >> $file.out
+        if [ -f $file.tm ]
+        then
+            if [ -f $file.in ]
+            then 
+                ../tm $file.tm < $file.in | egrep -v 'Enter|Limit|Source|command|PC|cmd|version' >> $file.out
+            else 
+                ../tm $file.tm < runExamples.in | egrep -v 'Enter|Limit|Source|command|PC|cmd|version' >> $file.out
+            fi
+        fi
+	ls -l $file.*
+        if [ -f $file.expected ] 
+        then
+            egrep -v 'Enter|Limit|Source|command|PC|cmd|version' < $file.expected > $tmp
+            if cmp $file.out $tmp
+            then
+                echo "$file (Output OK)"
+            else
+                echo "$file (Output DIFF)"
+   	        sdiff -w120 $file.out $tmp
+            fi
+        else
+            echo "$file (Output NoExpectedFile) File $file.expected does not exist!"
+        fi
+done
+rm -f $tmp

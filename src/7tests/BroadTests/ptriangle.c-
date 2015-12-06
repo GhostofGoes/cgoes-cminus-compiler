@@ -1,0 +1,33 @@
+// compute pascal's triangle in a very inefficient way.
+// input size of triangle.  0 will stop program.
+
+int comb(int a, b)
+{
+    if (a == b)
+	return 1;
+    if (b == 0)
+	return 1;
+    if (b == 1)
+	return a;
+
+    return comb(a - 1, b - 1) + comb(a - 1, b);
+}
+
+main()
+{
+    int a, b, n;
+
+    while(true) {
+        if ((n = input())==0) break;
+        a = 0;
+        while (a<=n) {
+            b = 0;
+            while (b<=a) {
+                output(comb(a, b));
+                b++;
+            }
+            outnl();
+            a++;
+        }
+    }
+}

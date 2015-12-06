@@ -1,0 +1,16 @@
+WARNING(1): Expecting to return type int but function 'bender' has no return statement.
+WARNING(20): Expecting to return type char but function 'zapp' has no return statement.
+WARNING(29): Expecting to return type bool but function 'hermes' has no return statement.
+WARNING(33): Expecting to return type int but function 'main' has no return statement.
+Number of warnings: 4
+Number of errors: 0
+------------------------------------
+
+Memory Configuration: Data Addresses: 0-9999  Instruction Addresses: 0-9999
+Loading file: tinyReturn.tm
+L
+0 114 
+zT 
+T F 
+Status: Halted
+Bye.

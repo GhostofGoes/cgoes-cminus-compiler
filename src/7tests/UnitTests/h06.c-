@@ -1,0 +1,21 @@
+  cat(int x[], y)
+{
+    if (y>=0) {
+        x[y] = y;
+        cat(x, y-1);
+    }
+    return;
+}
+
+main()
+{
+    int x[18], y;
+
+    y = 12;
+    cat(x, y);
+    while (y>=0) {
+       output(y);
+       outnl();
+       y = y-1;
+    }    
+}

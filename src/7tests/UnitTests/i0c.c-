@@ -1,0 +1,7 @@
+main()
+{
+    {
+        bool ss:!true;
+        outputb(ss);
+    }
+}

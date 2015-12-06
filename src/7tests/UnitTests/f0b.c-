@@ -1,0 +1,15 @@
+int z;
+
+cat()
+{
+    output(z);
+    z = 99;
+}
+
+main()
+{
+    z = 1001;
+    cat();
+    output(z);
+    outnl();
+}

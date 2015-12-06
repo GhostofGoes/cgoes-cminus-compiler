@@ -1,0 +1,48 @@
+int sqrt(int x)
+{
+    int guess; 
+    int newguess;
+
+    if (x==1) return 1;
+    guess = x/2;
+    newguess = (x/guess + guess)/2;
+    while (guess-newguess>1) {
+	guess = newguess;
+	newguess = (x/guess + guess)/2;
+    }
+    if (newguess*newguess>x) newguess=newguess-1;
+
+    return newguess;
+}
+
+// a factor program
+main()
+{
+    int n; 
+    int i;
+
+    while ((n=input())>1) {
+        int limit;
+	limit = sqrt(n);
+
+// remove the factors of 2
+	while (n%2==0) {
+	    output(2);
+	    n = n/2;
+	}
+
+// remove the rest
+	i=3;
+	while (i<=limit) {
+	    while (n%i==0) {
+		output(i);
+		n = n/i;
+		limit = sqrt(n);
+	    }
+	    i=i+2;
+	}
+
+	if (n>1) output(n);
+        outnl();
+    }
+}

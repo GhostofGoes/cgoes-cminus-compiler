@@ -1,0 +1,5 @@
+ERROR(105): Expecting type int in parameter 1 of call to 'output' defined on line -1 but got void.
+ERROR(106): Expecting type int in parameter 1 of call to 'output' defined on line -1 but got void.
+Number of warnings: 0
+Number of errors: 2
+------------------------------------

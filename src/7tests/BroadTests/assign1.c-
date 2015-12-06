@@ -1,0 +1,42 @@
+int gx, gy;
+bool ga, gb;
+
+main()
+{
+    int x, y;
+    bool a, b;
+     
+    x = 111;
+    output(x);
+    y = 222;
+    output(y);
+    a = true;
+    outputb(a);
+    b = false;
+    outputb(b);
+    outnl();
+
+    gx = 333;
+    output(gx);
+    gy = 444;
+    output(gy);
+    ga = false;
+    outputb(ga);
+    gb = true;
+    outputb(gb);
+    outnl();
+     
+    x = y;
+    output(x);
+    a = b;
+    outputb(a);
+    outnl();
+
+    gx = gy;
+    output(gx);
+    ga = gb;
+    outputb(ga);
+    outnl();
+
+    return;
+}

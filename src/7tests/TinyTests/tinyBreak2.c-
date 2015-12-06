@@ -1,0 +1,17 @@
+main()
+{
+    int i;
+
+    i = 0;
+    while (true) {
+        while (true) {
+           i++;
+           output(i);
+           if (i>4) break;
+           outnl();
+        }
+        if (i>8) break;
+    }
+    output(i);
+    outnl();
+}

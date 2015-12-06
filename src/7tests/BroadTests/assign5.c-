@@ -1,0 +1,27 @@
+main()
+{
+    int x, y, z;
+    x = 333;
+    y = 444;
+    z = 666;
+
+    x = y = z;
+    output(x); output(y); output(z); outnl();
+    x += y = z;
+    output(x); output(y); output(z); outnl();
+    x = y += z;
+    output(x); output(y); output(z); outnl();
+    x += y += z;
+    output(x); output(y); output(z); outnl();
+
+    x = y = z;
+    output(x); output(y); output(z); outnl();
+    x -= y = z;
+    output(x); output(y); output(z); outnl();
+    x = y -= z;
+    output(x); output(y); output(z); outnl();
+    x -= y -= z;
+    output(x); output(y); output(z); outnl();
+
+    return;
+}

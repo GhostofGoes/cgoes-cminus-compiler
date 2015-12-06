@@ -1,0 +1,6 @@
+int cat(int x) return x+x;
+
+main()
+{
+    output(cat(88));
+}

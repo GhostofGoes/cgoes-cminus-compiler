@@ -1,0 +1,30 @@
+main()
+{
+    output(10 % 1);
+    output(10 % 2);    
+    output(10 % 3);
+    output(10 % 4);
+    output(10 % 5);
+    outnl();
+    output(10 % 10);
+    output(10 % 11);
+    outnl();
+
+    output(0 % 1);
+    outnl();
+
+    output(-10 % 1);
+    output(-10 % 2);    
+    output(-10 % 3);
+    output(-10 % 4);
+    output(-10 % 5);
+    outnl();
+    output(-10 % 10);
+    output(-10 % 11);
+    outnl();
+
+    output(331 % 31);
+    output(331 % -31);
+    output(-331 % 31);
+    output(-331 % -31);
+}

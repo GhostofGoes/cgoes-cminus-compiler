@@ -1,0 +1,15 @@
+int x[3];
+int y[4];
+
+main()
+{
+    int z, zz;
+
+    z = 1;
+    zz = 2;
+
+    x[zz] = 73;
+    y[z] = 211;
+    output(x[zz]+y[z]);
+    outnl();
+}

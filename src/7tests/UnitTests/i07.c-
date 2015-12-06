@@ -1,0 +1,7 @@
+main()
+{
+    bool ba:true, bb: true & ! false, bc: 5>4;
+    outputb(bc);
+    {
+    }
+}

@@ -1,0 +1,22 @@
+main()
+{
+    bool a, b;
+
+    outputb(a = true);
+    outputb(b = false);
+    outnl();
+
+    outputb(a & b);
+    outputb(a | b);
+    outputb(! a);
+    outnl();
+
+    outputb(111>222);
+    outputb(111<222);
+    outputb(111==222);
+    outputb(111>=222);
+    outputb(111<=222);
+    outputb(111!=222);    
+    outnl();
+}
+

@@ -1,0 +1,101 @@
+// an optimization task based on Walsh analysis
+int pow(int n, p)
+{
+    int sqr;
+    int ans;
+
+    ans = 1;
+    sqr = n;
+    while (true) {
+	if (p%2==1) ans=ans*sqr;
+	p = p/2;
+	if (p==0) return ans;
+	sqr = sqr*sqr;
+    }
+}
+
+int getFunc(int f[])
+{
+    int numbits;
+    int i;
+    int size;
+
+    if ((numbits = input())==0) return 0;
+    size = pow(2, numbits);
+    i = 0;
+    while (i<size) {
+	f[i] = input();
+	i = i+1;
+    }
+
+    return numbits;
+}
+
+  printFunc(int f[], size)
+{
+    int i;
+
+    i=0;
+    while (i<size) {
+	output(f[i]);
+	i=i+1;
+    }
+    outnl();
+}
+	
+
+  fwt(int w[], start, size)
+{
+    int a, b, tmp;
+
+    size = size/2;
+    if (size>1) {
+	fwt(w, start, size);
+	fwt(w, start+size, size);
+    }
+
+    a = start;
+    b = start+size; 
+    while (a<start+size) {
+	tmp = w[a];
+	w[a] = w[a] + w[b];
+	w[b] = tmp - w[b];
+	a=a+1; 
+	b=b+1; 
+    }
+}
+
+  div(int f[], size)
+{
+    int i;
+
+    i=0;
+    while(i<size) {
+        f[i] = f[i]/size;
+        i++;
+    }
+}
+
+int main()
+{
+    int f[256];
+    int j;
+
+    int size;
+    int numbits;
+    int half;
+
+    while (true) {
+	if ((numbits = getFunc(f))==0) return 0;
+	size = pow(2, numbits);
+	half = size/2;
+
+        fwt(f, 0, size);
+	printFunc(f, size);
+
+        fwt(f, 0, size);
+        div(f, size);
+	printFunc(f, size);
+    }
+    return 0;
+}

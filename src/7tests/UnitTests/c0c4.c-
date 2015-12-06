@@ -1,0 +1,16 @@
+main()
+{
+    static char x;
+    static char y;
+    static char z;
+
+    x = 'A';
+    y = 'B';
+    outputc(x);
+    outputc(y);
+    outputc(z = x = y);
+    outputc(x);
+    outputc(y);
+    outputc(z);
+    outnl();
+}

@@ -1,0 +1,36 @@
+Number of warnings: 0
+Number of errors: 0
+------------------------------------
+
+Memory Configuration: Data Addresses: 0-9999  Instruction Addresses: 0-9999
+Loading file: tictactoe.tm
+
+0 1 2 
+3 4 5 
+6 7 8 
+entered: 0
+
+T F 2 
+3 4 5 
+6 7 8 
+
+entered: 4
+
+T F 2 
+3 T 5 
+6 7 F 
+
+entered: 6
+
+T F F 
+3 T 5 
+T 7 F 
+
+entered: 3
+
+T F F 
+T T 5 
+T 7 F 
+
+Status: Halted
+Bye.

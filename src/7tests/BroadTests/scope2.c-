@@ -1,0 +1,53 @@
+int g;
+int ant(int x)
+{
+    int a;
+    int b;
+    b=111;
+    x=222;
+    g=333;
+    {
+	int c;
+        int b;
+	a=444;
+	b=555;
+	c=666;
+	g=777;
+	x=888;
+        output(a);
+        output(b);
+        output(c);
+        output(g);
+        output(x);
+        outnl();
+    }
+    output(a);
+    output(b);
+    output(g);
+    output(x);
+    outnl();
+    a=11;
+    b=12;
+    x=14;
+    {
+	x=15;
+    }
+    output(a);
+    output(b);
+    output(g);
+    output(x);
+    outnl();
+
+    return a+b+g+x;
+}
+
+main()
+{
+    int a;
+    a=16;
+    g=1;
+    output(ant(2));
+    output(g);
+    output(a);
+    outnl();
+}

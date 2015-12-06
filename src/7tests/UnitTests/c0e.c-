@@ -1,0 +1,16 @@
+
+main()
+{
+    int x;
+
+    x = 1023;
+    output(x++);
+    outnl();
+    output(x);
+    outnl();
+
+    output(x--);
+    outnl();
+    output(x);
+    outnl();
+}

@@ -1,0 +1,58 @@
+int n;
+
+put(int p[])
+{
+    int j;
+    int sum;
+
+    sum = p[1];
+    j = 2;
+    while (j<=n) {
+	   sum = sum*10 + p[j];
+	   j = j+1;
+    }
+    output(sum);
+    outnl();
+}
+
+
+main()
+{
+    int p[20];
+    int i;
+    int j;
+
+    n = input();  // size of permutations
+
+    j = 0;
+    while (j<=n) {
+	 p[j] = j;
+	 j = j+1;
+    }
+
+    i = 1; 
+    while (i>0) {
+	int r;
+	int s;
+	int tmp;
+
+	put(p);
+
+	// leftmost wrong order
+	i=n-1; 
+	while (p[i]>p[i+1]) i=i-1;
+
+	j=n;
+	while (p[i]>p[j]) j=j-1;
+
+	tmp = p[i]; p[i] = p[j]; p[j] = tmp;
+
+	r = n;
+	s = i+1;
+	while (r>s) {
+	    tmp = p[r]; p[r] = p[s]; p[s] = tmp;
+	    r = r-1;
+	    s = s+1;
+	}
+    }
+}    

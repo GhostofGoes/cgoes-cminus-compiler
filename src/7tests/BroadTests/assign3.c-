@@ -1,0 +1,48 @@
+int gx[7], gy[6];
+
+main()
+{
+    int x[8], y[7];
+     
+    x[5] += 111;
+    output(x[5]);
+    y[4] += 222;
+    output(y[4]);
+    outnl();
+
+    gx[5] += 333;
+    output(gx[5]);
+    gy[4] += 444;
+    output(gy[4]);
+    outnl();
+     
+    x[5] += y[4];
+    output(x[5]);
+    outnl();
+
+    gx[5] += gy[4];
+    output(gx[5]);
+    outnl();
+
+    x[5] -= 111;
+    output(x[5]);
+    y[4] -= 222;
+    output(y[4]);
+    outnl();
+
+    gx[5] -= 333;
+    output(gx[5]);
+    gy[4] -= 444;
+    output(gy[4]);
+    outnl();
+     
+    x[5] -= y[4];
+    output(x[5]);
+    outnl();
+
+    gx[5] -= gy[4];
+    output(gx[5]);
+    outnl();
+
+    return;
+}

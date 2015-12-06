@@ -1,0 +1,39 @@
+// testing static variables
+
+// toad() is in global, int toad is in local
+toad() { int toad; }  
+
+int goad:666;
+// load() is in global, int load is in local but statically allocated
+load() 
+{ 
+    static int load; 
+    {
+        static int goad:777; 
+        output(goad);
+    }
+    output(goad);
+    outnl();
+}
+
+bool runningSum;
+
+int sum(bool init; int x) {
+    static int runningSum;
+
+    if (init) runningSum = 0;
+    else runningSum += x;
+
+    return runningSum;
+}
+
+main()
+{
+    load();
+    sum(true, 666);
+    sum(false, 777);
+    output(sum(false, 0));
+    sum(false, 888);
+    output(sum(false, 0));
+    outnl();
+}

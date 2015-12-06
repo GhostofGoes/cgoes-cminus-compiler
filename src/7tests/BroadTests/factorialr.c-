@@ -1,0 +1,17 @@
+// recursive factorial function
+int factorial(int n)
+{
+        if (n<2) return 1;
+        else return n*factorial(n-1);
+}
+
+main()
+{
+        int n;
+        n = input();
+        n = factorial(n);
+        output(n);
+        outnl();
+}
+
+        

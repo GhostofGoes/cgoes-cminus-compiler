@@ -1,0 +1,51 @@
+int ga:111;
+bool gb:true;
+char gc[13];
+
+main(){
+    int i:666;
+    char y:'a';
+    bool ba:true, bb: true & ! false, bc: 5>4;
+    int x[10];
+    int k:4*5+3*2, l:-46;
+
+    static int sia:666;
+    static int sib[15];
+
+    output(ga);
+    outnl();
+    outputb(gb);
+    outnl();
+    output(*gc);
+    outnl();
+    output(i);
+    outnl();
+    outputc(y);
+    outnl();
+    outputb(ba);
+    outnl();
+    outputb(bb);
+    outnl();
+    outputb(bc);
+    outnl();
+    output(*x);
+    outnl();
+    output(k);
+    outnl();
+    output(l);
+    outnl();
+    output(sia);
+    outnl();
+    output(*sib);
+    outnl();
+
+    {
+        int y[20];
+        bool t:! true;
+
+        output(*y);
+        outnl();
+        outputb(t);
+        outnl();
+    }
+}

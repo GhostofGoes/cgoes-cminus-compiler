@@ -1,0 +1,37 @@
+// test out the unary operators to be sure they work
+// even in function calls.
+//
+main()
+{
+	int x;
+	int y;
+        bool a[7], b[5];
+
+	x=88;
+	y=x-9;
+	y=-x;
+	output(-x);
+	output(y);
+        outnl();
+
+	output(-(-3)*(-5));
+	output(- -3);
+        outnl();
+
+	{ bool x;
+	  bool y;
+
+	  x=true;
+	  y= ! x;
+	  outputb( ! x);
+	  outputb(y);
+	  outputb( ! ( ! x) & ( ! y));
+	  outputb( ! ( ! x) | ( ! y));
+	  outputb( ! ( ! y) | ( ! x));
+	  outputb( !  ! x);
+          outnl();
+	  }
+
+          output(*a);
+          output(*b);
+}

@@ -1,0 +1,44 @@
+int g[12];
+
+// 777 11 ? 12
+// 777 11 888 12
+// 666 13
+// 888 12 888 12
+// 666 13
+// 132
+
+  ford(int x[])
+{
+    int i, y[13];
+    y[0] = 666;
+    g[0] = 888;
+    output(x[0]);
+    output(*x);
+    output(g[0]);
+    output(g[-1]);
+    outnl();
+    output(y[0]);
+    output(*y);
+    outnl();
+}
+
+bool h[23];
+
+main()
+{
+    int m[11];
+
+    m[0] = 777;
+    output(m[0]);
+    output(*m);
+    output(g[0]);
+    output(*g);
+    outnl();
+
+    ford(m);
+    ford(g);
+
+    output(*m**g);
+    outnl();
+}
+

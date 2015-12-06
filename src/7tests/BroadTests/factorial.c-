@@ -1,0 +1,23 @@
+// factorial function
+int factorial(int n)
+{
+        int i, f;
+        f = i = 1;
+        while (i<=n) {
+        output(i);
+              f = f*i;
+              i++;
+        }
+        return f;
+}
+
+main()
+{
+        int n;
+        n = input();
+        n = factorial(n);
+        output(n);
+        outnl();
+}
+
+        

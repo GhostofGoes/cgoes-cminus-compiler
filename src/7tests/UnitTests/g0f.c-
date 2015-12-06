@@ -1,0 +1,6 @@
+int cat(int x) if (x>0) return x+x; else x*x;
+
+main()
+{
+    output(cat(88)+cat(-17));
+}

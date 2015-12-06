@@ -1,0 +1,157 @@
+// Mind Master in C-
+// Author: Frank Mitchell
+// Date: 4 May 2006
+
+// Instructions:
+
+// Mind Master will first ask you for an integer. Go ahead & type in whatever
+// you want here. It's just a seed for a PRNG. Then the game will start. Mind
+// Master will secretly pick four numbers from 0 to 9, but it won't tell you
+// what those numbers are. The name of the game is to guess the numbers Mind
+// Master picked & the order it picked them in. Here's how the game's played.
+
+// On each turn, Mind Master will output the number of the turn you're on. Then
+// Mind Master will ask you for four numbers. These numbers should be between 0
+// & 9 & they corresond to your guesses. Mind Master will then output two
+// numbers. The first number is the number of correct guesses you had that were
+// ! in the correct spot. The second number is the number of correct guesses you
+// had that were in the correct spot. Then you get another turn. But be careful ! 
+// You only get 20 turns, so use them wisely. With a bit of luck & logic, you
+// should be able to figure out the numbers Mind Master picked & the order it
+// picked them in.
+
+// If you win, you'll see a row of T's. If you loose, you'll see a row of F's.
+// Either way, Mind Master will show you the correct answer at the end. To quit
+// the game prematurely (i.e. give up) just enter a negative number when Mind
+// Master asks you for a guess.
+
+// Good luck ! 
+
+int turns, n, r[128], known[4], guess[4];
+
+// The algorithm for this random number generator was taken from the book
+// "The Algorithm Design Manual" by Steven S. Skiena. It is avaliable online
+// from http://www2.toki.or.id/book/AlgDesignManual/BOOK/BOOK/BOOK.HTM
+// Specifically, the discussion on random numbers occurs at
+// http://www2.toki.or.id/book/AlgDesignManual/BOOK/BOOK4/NODE142.HTM
+
+int rand()
+{
+    if (n < 0) n = -n;
+    if (n > 128) n = n % 128;
+    n++;
+    r[n] = (1366 * r[n - 1] + 150889) % 714025;
+    return r[n];
+}
+
+bool search(int a[], k)
+{
+    int i;
+
+    // Do a simple linnear search for k in a.	
+    i = 0;
+    while(i < 4) {
+        if (a[i] == k) return true;
+        i++;
+    }
+	
+    return false;
+}
+
+bool check()
+{
+    int i, c1, c2;
+	
+    // How many correct numbers & guesses does the player have?
+    i = c1 = c2 = 0;
+    while (i < 4) {
+        if (known[i] == guess[i]) c2++;
+        else if (search(known, guess[i])) c1++;
+        i++;
+    }
+	
+    output(c1);
+    output(c2);
+    outnl();
+	
+    if (c2 == 4)
+        return true;
+    else
+        return false;
+}
+
+bool turn()
+{
+    int i;
+	
+    // How many turns has the player had?
+    turns++;
+    output(turns);
+    outnl();
+	
+    if (turns <= 20) {
+        // Get the a guess from the player.
+        i = 0;
+        while (i < 4) {
+            guess[i] = input();
+            if (guess[i] < 0)
+                return false;
+            if (guess[i] > 10) guess[i] = guess[i] % 10;
+            i++;
+        }
+		
+        // Check the player's guess.
+        if(check()) {
+            i = 0;
+            while (i < 10) {
+                outputb(true);
+                i++;
+            }
+            outnl();
+            return false;
+        } else {
+            return true;
+        }
+    }
+	
+    // Wrong answer. You loose.
+    i = 0;
+    while (i < 10) {
+        outputb(false);
+        i++;
+    }
+    outnl();
+    return false;
+}
+
+main()
+{
+    int i;
+	
+    // Get a seed for the random number generator.
+    n = 0;
+    r[0] = input();
+    outnl();
+	
+    // Setup the values for the player to guess.
+    i = 0;
+    while (i < 4) {
+        known[i] = rand() % 10;
+        i++;
+    }
+	
+    // Would you like to play a game?
+    turns = 0;
+    while(turn());
+	
+    // Show the player what the correct answer was.
+    outnl();
+    i = 0;
+    while(i < 4) {
+        output(known[i]);
+        outnl();
+        i++;
+    }
+    outnl();
+}
+

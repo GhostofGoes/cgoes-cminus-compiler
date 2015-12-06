@@ -1,0 +1,16 @@
+Number of warnings: 0
+Number of errors: 0
+------------------------------------
+
+Memory Configuration: Data Addresses: 0-9999  Instruction Addresses: 0-9999
+Loading file: tinyCall.tm
+666 T c
+777 F d
+555 T z
+555 T z
+888 F g
+888 T z
+999 T s
+999 T z
+Status: Halted
+Bye.

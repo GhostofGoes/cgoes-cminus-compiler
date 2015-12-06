@@ -1,0 +1,19 @@
+  ford(int x[], y[])
+{
+	int z[22];
+
+        *x;
+	z[11] = x[3];
+	x[3] = 777;
+}
+
+main()
+{
+	int y[33];
+
+	y[3] = 666;
+	ford(y, y);
+	output(y[3]);
+        outnl();
+}
+

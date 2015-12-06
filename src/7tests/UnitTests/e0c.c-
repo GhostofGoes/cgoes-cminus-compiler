@@ -1,0 +1,16 @@
+main()
+{
+    int x;
+    int y;
+
+    x = 0;
+    while (x<6) {
+        y = 0;
+        while (y<6) {
+              output(y);
+              y = y+1;
+        }
+        output(x);
+        x = x+1;
+    }
+}

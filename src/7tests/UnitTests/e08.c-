@@ -1,0 +1,12 @@
+main()
+{
+    int x;
+
+    x = 0;
+    while (x<10) {
+        output(x);
+        if (x!=5) x = x+1;
+        else break;
+    }
+    output(666);
+}

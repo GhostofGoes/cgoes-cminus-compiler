@@ -1,0 +1,114 @@
+int gl[10];
+int glx;
+
+showIntArray(int x[], size)
+{
+    int i;
+    i = 0;
+    while (i<size) {
+        output(x[i]);
+        i = i + 1;
+    }
+    outnl();
+}
+
+dog(int a, b[])
+{
+    a = a;
+    b[7] = b[9];
+    output( a );
+    outnl();
+    output( b[7] );
+    outnl();
+}
+
+int getnxtindex( int x )
+{
+    return x+1;
+}
+
+main()
+{
+    int x;
+    int c[10];
+    int d[10];
+    int y[10];
+    int z[10];
+    int w[10];
+
+    c[0] = 3;
+    d[3] = 5;
+    d[4] = 9;
+    y[5] = 100;
+    w[9] = 50;
+    dog( y[5], w ); // 100, 50
+    
+    w[9] = 12;    
+    dog( y[d[3]], w ); // 100, 12
+    
+    c[8] = 4;
+    c[9] = 25;
+    y[9] = 66;
+    dog( y[d[c[8]]], c ); // 66, 25
+    
+    x = 777;
+    y[7] = 123;
+    y[9] = y[7];
+    dog(x, y);  //  777, 123 
+
+    x = x;
+	
+    c[9] = x;
+    glx = 888;
+    y[7] = glx;
+    d[6] = 2;
+    c[2] = 4;
+    d[4] = 7;
+    d[2] = y[d[c[d[6]]]];
+    dog( y[d[c[8]]], c ); // 888, 777
+	
+    d[2] = c[3];
+    y[7] = y[9];
+    gl[2]= 3;
+    x = gl[2];
+    y[7] = gl[9];
+    gl[7] = y[9];
+    y[0] = 5;
+    d[5] = 3;
+    c[8] = d[y[0]]; // 3
+    output(c[8]); outnl();
+    d[3] = 4;
+    y[4] =987;
+    c[9] -= 3;
+
+    dog( y[d[c[8]]], c); // 987,774 
+	
+    x += c[9];
+    x -= c[9];
+    y[8] = 8;
+    y[9] = y[getnxtindex(7)]+1;
+	
+    dog( y[4], y ); // 987, 9
+
+    c[5] = 0;
+    w[0]= 3;
+    z[3] = 9;
+    y[9] = 1;
+    
+    d[y[z[w[c[5]]]]] = 77;
+    c[9] = d[1];
+
+    dog( 66, c );  // 66, 77
+
+    {
+        int p, q;
+
+        p = 0;
+        while (p<10) {
+            q = p;
+            c[9-q] = (p+=1);
+        }
+    
+    }	
+    showIntArray(c, 10);
+}

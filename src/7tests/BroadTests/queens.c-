@@ -1,0 +1,67 @@
+// A program to solve the 8-queens problem
+//
+// a test program using lots of gobals & some passing
+// of arrays.
+
+int row[12];
+int col[12];
+int diagone[25];
+int diagtwo[25];
+int n;
+int count;
+
+printboard(int col[])
+{
+    int i;
+
+    i = 0;
+    while (i<n) {
+	output(col[i]);
+	i++;
+    }
+    outnl();
+    count++;
+}
+
+try(int c)
+{
+    int r;
+
+    if (c == n)
+	printboard(col);
+    else {
+	r = 0;
+	while (r<n) {
+	    if ((row[r] == 0) & (diagone[r + c] == 0) & (diagtwo[r + (n-1) - c] == 0)) {
+		row[r]= 1;
+		col[c]= r;
+		diagone[r + c]= 1;
+		diagtwo[r + (n-1) - c]= 1;
+		try(c + 1);
+		row[r]= 0;
+		diagone[r + c]= 0;
+		diagtwo[r + (n-1) - c]= 0;
+	    }
+	    r++;
+	}
+    }
+}
+
+int solve(int num)
+{
+	n = num;
+	count = 0;
+	try(0);
+
+	return count;
+}
+
+main()
+{
+	int num;
+
+	while ((num=input())>0) {
+		output(solve(num));
+                outnl();
+	}
+}

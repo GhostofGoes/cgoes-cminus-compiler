@@ -1,0 +1,36 @@
+int cat(int x[], i) return x[i];
+
+int dog(int x[], i) return cat(x, i);
+
+int fox(int x[], i) return dog(x, i);
+
+int g[10];
+main() 
+{
+    int i;
+    int h[10];
+    static int s[10];
+
+    i=1;
+    while (i<10) h[i] = g[i] = s[i] = i++;
+
+    output(g[6]);
+    output(h[6]);
+    output(s[6]);
+    outnl();
+
+    output(cat(g, 6));
+    output(cat(h, 6));
+    output(cat(s, 6));
+    outnl();
+
+    output(dog(g, 6));
+    output(dog(h, 6));
+    output(dog(s, 6));
+    outnl();
+
+    output(fox(g, 6));
+    output(fox(h, 6));
+    output(fox(s, 6));
+    outnl();
+}

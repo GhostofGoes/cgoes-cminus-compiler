@@ -1,0 +1,131 @@
+// Author: Jeremy Scott
+// Spring 2006, CS 445
+// Code to generate a ASCII Mandelbrot & Julia fractals using the tiny machine
+
+// DEFAULT_TOP    -1.25
+// DEFAULT_LEFT   -2.0
+// DEFAULT_HEIGHT  2.5
+// DEFAULT_WIDTH   2.8
+// Multiply all of these by 256 to get fixed-point values...
+
+// Since the tiny machine doesn't support floating point, we have to do everything in fixed-point
+// i.e. 
+// 1 == 1 * 256 == 0x100
+// So for fixed-point multiplication, 1 * 1 == (1 * 256) * (1 * 256) == (1 * 65536)
+// Therefore, after any multipy, we have to divide by 256 to restore the decimal point to the right spot
+//
+// To better see the sets you might try doing this UNIX command:
+//
+// tm fractal  |  tr '0123456789FT' ' .,;-+oOGM@//'
+//
+
+int TOP;
+int LEFT;
+int HEIGHT;
+int WIDTH;
+int XStep;
+int YStep;
+int XMax, YMax;
+int iter;
+
+// max length = 4 * 256 == 10024
+  Mandelbrot(int JuliaVals[])
+{
+    while (TOP < YMax)
+    {
+        LEFT = -512;
+        while (LEFT < XMax)
+        {
+            int Len;
+            int Bi, A, NextA, NextBi;
+            A = LEFT;
+            Bi = TOP;
+            NextA = (A * A) / 256;
+            NextBi = (Bi * Bi) / 256;
+            Len = NextA + NextBi;
+            iter = 0;
+            while (Len <= 1024  &  iter < 11)
+            {
+                Bi = 2 * (A * Bi) / 256 + TOP;
+                A = NextA - NextBi + LEFT;
+                NextA = (A * A) / 256;
+                NextBi = (Bi * Bi) / 256;
+                Len = NextA + NextBi;
+                iter++;
+            }
+            if (iter < 10)
+                output(iter);
+            else
+                outputb(iter == 11);
+            if (iter == 11)
+            {
+                JuliaVals[0] = LEFT;
+                JuliaVals[1] = TOP;
+            }
+            LEFT += XStep;
+        }
+        outnl();
+        TOP += YStep;
+    }
+}
+
+  Julia(int CA; int CBi)
+{
+    while (TOP < YMax)
+    {
+        LEFT = -512;
+        while (LEFT < XMax)
+        {
+            int Len;
+            int Bi, A, NextA, NextBi;
+            A = LEFT;
+            Bi = TOP;
+            NextA = (A * A) / 256;
+            NextBi = (Bi * Bi) / 256;
+            Len = NextA + NextBi;
+            iter = 0;
+            while (Len <= 1024  &  iter < 11)
+            {
+                Bi = 2 * (A * Bi) / 256 + CBi;
+                A = NextA - NextBi + CA;
+                NextA = (A * A) / 256;
+                NextBi = (Bi * Bi) / 256;
+                Len = NextA + NextBi;
+                iter++;
+            }
+            if (iter < 10)
+                output(iter);
+            else
+                outputb(iter == 11);
+            LEFT += XStep;
+        }
+        outnl();
+        TOP += YStep;
+    }
+}
+
+main()
+{
+    int JuliaVals[2];
+    TOP = -320;
+    LEFT = -512;
+    HEIGHT = 640;
+    WIDTH = 716;
+    XStep = WIDTH / 40;
+    YStep = HEIGHT / 36;
+    XMax = LEFT + WIDTH;
+    YMax = TOP + HEIGHT;
+    Mandelbrot(JuliaVals);
+
+    outnl();
+	
+    TOP = -320;
+    LEFT = -512;
+    HEIGHT = 640;
+    WIDTH = 716;
+    XStep = WIDTH / 40;
+    YStep = HEIGHT / 36;
+    XMax = LEFT + WIDTH;
+    YMax = TOP + HEIGHT;
+    Julia(JuliaVals[0], JuliaVals[1]);
+}

@@ -1,0 +1,111 @@
+// evaluate all possible hands of poker
+//
+int numSuits, numPips, numCards;
+
+int suit(int c) { return c%numSuits; }
+int pips(int c) { return c/numSuits; }
+
+bool p(int a, b) { return (pips(a)==pips(b)); }
+bool ppp(int a, b, c) { return (p(a, b)  &  p(b, c)); }
+bool pppp(int a, b, c, d) { return (p(a, b)  &  p(b, c)  &  p(c, d)); }
+
+int handtype(int a, b, c, d, e) 
+{
+    bool isflush;
+
+    isflush = (suit(a)==suit(b))  & 
+	(suit(a)==suit(c))  & 
+	(suit(a)==suit(d))  & 
+	(suit(a)==suit(e));	
+
+    // royal flush
+    if (isflush  &  (pips(a)==0)  &  (pips(b)==numPips-4)  &  (pips(e)==numPips-1))
+	return 0;
+
+    // straight flush (all the same suit & adjacent pips)
+    else if (isflush  &  (pips(a)==pips(e)-4))
+	return 1;
+
+    // four of a kind (all the same pip)
+    else if (pppp(a, b, c, d)  |  pppp(b, c, d, e))
+	return 2;
+
+    // full house (3 of a kind + 2 of a kind) 
+    else if ((ppp(a, b, c)  &  p(d, e))  |  (p(a, b)  &  ppp(c, d, e)))
+	return 3;
+
+    // flush (all the same suit)
+    else if (isflush) 
+	return 4;
+
+    // straight (all adjacent pips)
+    else if (((pips(a)==pips(b)-1)  &  (pips(b)==pips(c)-1)  &  (pips(c)==pips(d)-1)  &  (pips(d)==pips(e)-1))  | 
+	     ((pips(a)==0)  &  (pips(b)==numPips-4)  &  (pips(c)==numPips-3)  &  (pips(d)==numPips-2)  &  (pips(e)==numPips-1))) // ace high
+	return 5;
+
+    // three of a kind (3 of same pips)
+    else if (ppp(a, b, c)  |  ppp(b, c, d)  |  ppp(c, d, e)) 
+	return 6;
+
+    // two pair (2 sets of 2 of same pips)
+    else if ((p(a, b)  &  p(c, d))  |  (p(a, b)  &  p(d, e))  |  (p(b, c)  &  p(d, e)))
+	return 7;
+
+    // one pair
+    else if (p(a, b)  |  p(b, c)  |  p(c, d)  |  p(d, e))
+	return 8;
+    else
+	return 9;
+}
+
+int main()
+{
+    int hands[10];
+    int a, b, c, d, e, h, possible, i;
+
+    i=0;
+    while (i<10) {
+	hands[i] = 0;
+	i=i+1;
+    }
+
+    numSuits = 4;
+    numPips = 5;
+    numCards = numPips * numSuits - 1;
+
+    possible=0;
+    a=0;
+    while (a<=numCards) {
+	output(a); outnl();
+	b=a+1;
+	while (b<=numCards) {
+	    c=b+1;
+	    while (c<=numCards) {
+		d=c+1;
+		while (d<=numCards) {
+		    e=d+1;
+		    while (e<=numCards) {
+			possible=possible+1;
+			h = handtype(a, b, c, d, e);
+			hands[h]=hands[h]+1;
+			e++; 
+		    }
+		    d++;
+		}
+		c++;
+	    }
+	    b++;
+	}
+	a++;
+    }
+    h=0;
+    while (h<10) {
+	// printf("%d %d\n", h, hands[h]);
+	output(h);
+	output(hands[h]);
+        outnl();
+	h=h+1;
+    }
+
+    return 0;
+}

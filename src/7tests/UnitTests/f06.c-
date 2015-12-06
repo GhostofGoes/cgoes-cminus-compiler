@@ -1,0 +1,17 @@
+bool cat()
+{
+    return true;
+}
+
+main()
+{
+    bool x;
+
+    x = cat() & false;
+    outputb(x);
+    x = cat() | false;
+    outputb(x);
+    x = !cat();
+    outputb(x);
+    outnl();
+}

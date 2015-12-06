@@ -1,0 +1,10 @@
+bool x;
+bool y;
+
+main()
+{
+    x = true;
+    y = false;
+    outputb(x & y);
+    outnl();
+}

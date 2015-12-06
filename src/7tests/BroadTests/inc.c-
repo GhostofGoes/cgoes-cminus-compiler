@@ -1,0 +1,39 @@
+int g;
+
+cat(int y[]) 
+{
+    int z[1];
+    int w;
+
+    output(y[0]++);
+    output(y[0]);
+        
+    w = 777;
+    z[0] = 888;
+    output(w++);
+    output(w);
+    output(z[0]++);
+    output(z[0]);
+
+    g = 1023;
+    g++;
+    output(g);
+    output(g++);
+}
+
+int main()
+{
+    int x[1];
+    static int s;
+
+    x[0] = 666;
+    cat(x);
+    output(x[0]);
+
+    s = 1023;
+    s++;
+    output(s);
+    output(s++);
+
+    return 0;
+}   

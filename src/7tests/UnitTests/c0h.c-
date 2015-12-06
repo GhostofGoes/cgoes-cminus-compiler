@@ -1,0 +1,21 @@
+  dog(int x[])
+{
+    output(x[3]++);
+    outnl();
+    output(x[3]);
+    outnl();
+
+    output(x[3]--);
+    outnl();
+    output(x[3]);
+    outnl();
+}
+
+main()
+{
+    int x[7];
+
+    x[3] = 1023;
+    dog(x);
+    output(x[3]);
+}

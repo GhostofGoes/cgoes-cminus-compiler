@@ -1,0 +1,17 @@
+int null()
+{
+}
+
+int cat()
+{
+    return null();
+}
+
+main()
+{
+    int x;
+    899;
+    x = cat();
+    output(x);
+}
+

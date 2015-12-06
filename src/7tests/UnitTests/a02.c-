@@ -1,0 +1,6 @@
+main()
+{
+     output(982);
+     outnl();
+}
+

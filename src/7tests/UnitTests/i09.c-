@@ -1,0 +1,6 @@
+main(){
+    int kk:4*5+3*2, ll:-46;
+    output(kk);
+    {
+    }
+}

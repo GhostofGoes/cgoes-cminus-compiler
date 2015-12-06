@@ -1,0 +1,35 @@
+main()
+{
+    int x[300];
+    int z;
+
+    z = 5;
+    x[z] = 73;
+    output(x[z]);
+    outnl();
+
+    z = 5;
+    x[z] = 17;
+    z = 17;
+    x[z] = 5;
+    output(x[z]);
+    outnl();
+    output(x[x[z]]);
+    outnl();
+    output(x[x[x[z]]]);
+    outnl();
+    output(x[x[x[x[z]]]]);
+    outnl();
+    output(x[x[x[x[x[z]]]]]);
+    outnl();
+    output(x[x[x[x[x[x[z]]]]]]);
+    outnl();
+    output(x[x[x[x[x[x[x[z]]]]]]]);
+    outnl();
+    output(x[x[x[x[x[x[x[x[z]]]]]]]]);
+    outnl();
+    output(x[x[x[x[x[x[x[x[x[z]]]]]]]]]);
+    outnl();
+    output(x[x[x[x[x[x[x[x[x[x[z]]]]]]]]]]);
+    outnl();
+}

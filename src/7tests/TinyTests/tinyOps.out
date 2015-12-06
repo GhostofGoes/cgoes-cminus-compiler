@@ -1,0 +1,31 @@
+Number of warnings: 0
+Number of errors: 0
+------------------------------------
+
+Memory Configuration: Data Addresses: 0-9999  Instruction Addresses: 0-9999
+Loading file: tinyOps.tm
+F T T 
+F T F 
+T F F 
+T F T 
+F F T 
+F T T F 
+T F F F 
+T T T F 
+F T T T 
+55 52 
+-45 -25 
+-50 50 -50 0 -1 
+2310 100 100 
+25 0 2 10 
+1 1 1 3 3 2 
+43 43 12 
+46 44 0 12 
+88 44 1 20 
+45 1 
+-6 2 70 
+F T T 
+T T T T T T T T T T T T T 
+T T 
+Status: Halted
+Bye.

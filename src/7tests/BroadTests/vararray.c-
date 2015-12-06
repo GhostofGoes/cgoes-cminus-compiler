@@ -1,0 +1,38 @@
+int g[12];
+
+cat(int q[]) output(q[10]);
+    
+
+int dog(int x[]) {
+     int y[9];
+     static int z[10];
+
+     output(*x);
+     outnl();
+     output(x[10]);
+     cat(x);
+     outnl();
+     x[5] = y[5];
+     z[6] = g[6];
+
+     return z[4];
+}
+
+main()
+{
+     int m[11];
+     static int z[13];
+
+     m[10] = 111;
+     dog(m);
+     output(m[10]);
+
+     g[10] = 222;
+     dog(g);
+     output(g[10]);
+
+     z[10] = 333;
+     dog(z);
+     output(z[10]);
+
+}

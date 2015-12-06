@@ -1,0 +1,25 @@
+// a truly awful recursive factorial function
+int factorial(int n, k[])
+{
+        if (n<2) {
+             k[n] = 1;
+        }   
+        else {
+             k[n] = n * factorial(n-1, k);
+        }
+
+        return  k[n];
+}
+
+main()
+{
+        int n;
+        int k[20];
+
+        n = 10;
+        n = factorial(n, k);
+        output(n);
+        outnl();
+}
+
+        

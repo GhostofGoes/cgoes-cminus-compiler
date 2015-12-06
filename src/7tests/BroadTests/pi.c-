@@ -1,0 +1,55 @@
+main()
+{
+    int N, LEN;
+    int i, j, k, q, x, nines, predigit;
+    int a[340];
+
+    N = 100;
+    LEN = (N*10)/3;
+
+    j = 0;
+    while (j<LEN) {
+        a[j]=2;
+        j++;
+    }
+
+    nines=0; predigit=0;
+    j = 0;
+    while (j<N) {
+        q=0;
+        i = LEN;
+        while (i>0) {
+           x = 10*a[i-1] + q * i;
+           a[i-1] = x % (2*i-1);
+           q = x / (2*i-1);
+           i -= 1;
+        }
+
+        a[0] = q % 10; q = q / 10;
+
+        if (q==9) { 
+            nines++; 
+        }
+        else { 
+            if (q==10) { 
+                output(predigit+1); outnl();
+                predigit=0;
+                while (nines>0) {
+                    output(0); outnl();
+                    nines--;
+                }
+            }
+            else { 
+                output(predigit); outnl();
+                predigit = q;
+                while (nines>0) {
+                    output(9); outnl();
+                    nines--;
+                }
+            }
+        }
+        j++;
+    }
+    output(predigit);
+    outnl();
+}

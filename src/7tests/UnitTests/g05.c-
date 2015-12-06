@@ -1,0 +1,12 @@
+int cat(int z, x)
+{
+    return z * x - x;
+}
+
+main()
+{
+    int z[10];
+
+    z[3] = 445;
+    output(cat(z[3], 911));
+}

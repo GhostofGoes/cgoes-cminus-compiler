@@ -1,0 +1,42 @@
+// study how the stack like coding of expressios works.
+//
+main()
+{
+	int frodo;
+	int bilbo;
+	int sam;
+	int merry;
+	int pippin;
+        bool arwen;
+
+	bilbo = 1;
+        frodo = 10;
+        sam = 100;
+        merry = 1000;
+        pippin = 10000;
+
+	bilbo = bilbo;
+        output(bilbo);
+        outnl();
+
+	bilbo = bilbo + 1;
+        output(bilbo);
+        outnl();
+
+	bilbo = frodo + bilbo * (sam + merry*pippin);
+        output(bilbo);
+        outnl();
+
+	bilbo = (merry*pippin + sam) * bilbo + frodo;
+        output(bilbo);
+        outnl();
+
+        bilbo = (bilbo + (bilbo - (bilbo + (bilbo - (bilbo + (bilbo))))));
+        output(bilbo);
+        outnl();
+
+        arwen = true;
+        arwen =  false  |  arwen  &   ! -merry*-sam + pippin>=bilbo + frodo*-frodo;
+        outputb(arwen);
+        outnl();
+}

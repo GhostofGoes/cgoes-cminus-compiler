@@ -1,0 +1,95 @@
+int g;
+int h[10];
+dog(int p, q[])
+{
+        int a, b[10];
+        int x;
+
+        a = 777;
+        output(a);
+        a += 666;
+        output(a);
+        a -= 666;
+        output(a);
+        outnl();
+
+        g = 777;
+        output(g);
+        g += 666;
+        output(g);
+        g -= 666;
+        output(g);
+        outnl();
+
+        p = 777;
+        output(p);
+        p += 666;
+        output(p);
+        p -= 666;
+        output(p);
+        outnl();
+
+        b[1] = 777;
+        output(b[1]);
+        b[1] += 666;
+        output(b[1]);
+        b[1] -= 666;
+        output(b[1]);
+        outnl();
+
+        h[1] = 777;
+        output(h[1]);
+        h[1] += 666;
+        output(h[1]);
+        h[1] -= 666;
+        output(h[1]);
+        outnl();
+
+        q[1] = 777;
+        output(q[1]);
+        q[1] += 666;
+        output(q[1]);
+        q[1] -= 666;
+        output(q[1]);
+        outnl();
+
+        b[1] = 3;
+        q[b[1]+1] = 777;
+        output(q[b[1]+1]);
+        q[b[1]+1] += 666;
+        output(q[b[1]+1]);
+        q[b[1]+1] -= 666;
+        output(q[b[1]+1]);
+        outnl();
+
+        x = a = 777;
+        output(x);
+        x = a += 666;
+        output(x);
+        x = a -= 666;
+        output(x);
+        outnl();
+
+        b[1] = b[2] = 777;
+        output(b[1]);
+        b[1] = b[2] += 666;
+        output(b[1]);
+        b[1] = b[2] -= 666;
+        output(b[1]);
+        outnl();
+
+        a += a*x;
+        output(a);
+        outnl();
+}
+
+main()
+{
+        int pp, qq[20];
+        pp = 888;
+        qq[1] = 999;
+        dog(pp, qq);
+        output(pp);
+        output(qq[1]);
+        outnl();
+}

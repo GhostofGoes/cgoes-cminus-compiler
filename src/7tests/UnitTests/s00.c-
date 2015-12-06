@@ -1,0 +1,23 @@
+int aaa;
+bool bbb;
+int ccc[10];
+bool ddd[10];
+
+main();
+
+int dogs(int eee; bool fff; int ggg[]; bool hhh[])
+{
+    int aaa;
+    bool bbb;
+    int ccc[10];
+    bool ddd[10];
+
+    static int saaa;
+    static bool sbbb;
+    static int sccc[10];
+    static bool sddd[10];
+
+    
+
+    return aaa;
+}

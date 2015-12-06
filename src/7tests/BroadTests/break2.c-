@@ -1,0 +1,22 @@
+int main()
+{
+     int i;
+
+     i=0; 
+     while(i<10) {
+          int j;
+
+          j=0;
+          while(j<=5) {
+             output(i);
+             output(j);
+             outnl();
+             if (i>4) break;
+             j++;
+          }
+          if (j>3) break;
+          i++;
+     }
+
+     return 0;
+}

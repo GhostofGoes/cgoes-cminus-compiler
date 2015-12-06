@@ -1,0 +1,6 @@
+bool gb:true;
+main(){
+    outputb(gb);
+    {
+    }
+}

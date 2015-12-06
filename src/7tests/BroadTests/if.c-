@@ -1,0 +1,13 @@
+main()
+{
+    int i, j;
+
+    i=j=23;
+    if (i>j) i=666;
+    if (j==i) i=666;
+    else j=777;
+
+    output(i);
+    output(j);
+    outnl();
+}

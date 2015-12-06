@@ -1,0 +1,25 @@
+int s;
+
+dog(int d) {
+    static int s;
+
+    if (d==0) output(s);
+    else s = d;
+}
+
+cat(int c) {
+    static int s;
+
+    if (c==0) output(s);
+    else s = c;
+}
+
+main()
+{
+    s=333;
+    dog(111);
+    cat(222);
+    dog(0);
+    cat(0);
+    output(s);
+}

@@ -1,0 +1,18 @@
+main()
+{
+    int x;
+    int y;
+
+    x = 0;
+    while (x<6) {
+        y = 0;
+        while (y<6) {
+              output(y);
+              if (y==4) break;
+              y = y+1;
+        }
+        output(x);
+        if (x==4) break;
+        x = x+1;
+    }
+}

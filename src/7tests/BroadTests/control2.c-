@@ -1,0 +1,22 @@
+//
+main()
+{
+    int x;
+    int y;
+
+    x = 10;
+    y = 7;
+    while(x>0) if (x==y) y=666; else x=x-1;
+    output(y);
+    outnl();
+
+    x = 1;
+    y = 1;
+    while(x<5) if (y<5) while(y<5) {
+        output(x); output(y); outnl(); 
+        y++; }
+    else { y=1; x++; }
+    output(x);
+
+    return;
+}

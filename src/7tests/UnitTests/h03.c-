@@ -1,0 +1,16 @@
+  cat(int x[])
+{
+    output(x[3]); outnl();
+    if (x[3]>0) {
+        x[3] = x[3] - 1;
+        cat(x);
+    }
+    return;
+}
+
+main()
+{
+    int x[18];
+    x[3] = 12;
+    cat(x);
+}

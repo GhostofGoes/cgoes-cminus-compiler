@@ -1,0 +1,14 @@
+main()
+{
+    outputb(false & false);
+    outputb(false & true);
+    outputb(true & false);
+    outputb(true & true);
+    outnl();
+
+    outputb(false | false);
+    outputb(false | true);
+    outputb(true | false);
+    outputb(true | true);
+    outnl();
+}

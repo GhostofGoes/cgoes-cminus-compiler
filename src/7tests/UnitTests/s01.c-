@@ -1,0 +1,18 @@
+int save(int z)
+{
+        static int x, y;
+        x = y;
+        y = z;
+
+        return x;
+}
+
+int main()
+{
+        output(save(1));
+        output(save(2));
+        output(save(3));
+
+        return 0;
+}
+

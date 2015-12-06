@@ -1,0 +1,11 @@
+int z;
+
+int cat(int z, x)
+{
+    return z * x - x;
+}
+
+main()
+{
+    output(cat(33, 911));
+}

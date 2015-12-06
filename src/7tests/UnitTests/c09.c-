@@ -1,0 +1,13 @@
+int x;
+int y;
+
+main()
+{
+    x = 753;
+    y = 444;
+    x += y;
+    output(x);
+    y -= x;
+    output(y);
+    outnl();
+}

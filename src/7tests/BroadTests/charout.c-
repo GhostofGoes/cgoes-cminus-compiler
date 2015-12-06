@@ -1,0 +1,17 @@
+main() {
+    char c;
+    int i, k;
+    int max:30;
+
+    k = 1;
+    while (k<max) {
+        i = 0;
+        while (i<max) {
+            if (i%k==0) outputc('X');
+            else outputc(' ');
+            i++;
+        }
+        outputc('\n');
+        k++;
+    }
+}

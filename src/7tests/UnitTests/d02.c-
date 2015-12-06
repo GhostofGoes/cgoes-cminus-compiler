@@ -1,0 +1,16 @@
+main()
+{
+   int x, y, z;
+   x = 755;
+   y = 88;
+   z = 3;
+
+   output(755+88*3);
+   output(755*88+3);
+   output(755-88-3);
+   output(755/88/3);
+   output(755*88+3*3);
+   output(755%88%3);
+   output(-755+88*3);
+   outnl();
+}

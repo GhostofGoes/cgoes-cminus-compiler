@@ -1,0 +1,37 @@
+
+int g:111+22*33;
+int h[8];
+
+int dog(int x) {
+     int y:222;
+     static int z:333;
+
+     output(x);
+     outnl();
+     output(z);
+     outnl();
+
+     x = y;
+     z = g;
+
+     output(x);
+     outnl();
+     output(z);
+     outnl();
+     return z;
+}
+
+main()
+{
+     int m:444;
+     static int z:555;
+
+     output(*h);
+     output(g);
+     output(m);
+     output(z);
+     outnl();
+     dog(m);
+     output(z);
+     outnl();
+}

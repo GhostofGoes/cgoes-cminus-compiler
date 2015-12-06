@@ -1,0 +1,43 @@
+// C-F10
+//
+int g;
+int h[11];
+
+  cat()
+{
+    int a, b[22];
+    static   int as, bs[23];
+    {
+        bool c, d[33];
+        static bool cs, ds[34];
+        output(*h);
+        output(*b);
+        output(*bs);
+        output(*d);
+        output(*ds);
+    }
+
+    {
+        bool c, d[44];
+        static bool cs, ds[45];
+        output(*h);
+        output(*b);
+        output(*bs);
+        output(*d);
+        output(*ds);
+    }
+}
+
+int i;
+int j[55];
+
+  dog()
+{
+    output(*j);
+}
+
+main()
+{
+    cat();
+    dog();
+}

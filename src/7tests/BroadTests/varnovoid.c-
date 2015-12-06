@@ -1,0 +1,47 @@
+int g, ga[10];
+
+cat(int x, xa[])
+{
+    output(x);
+    output(xa[3]);
+    outnl();
+}
+
+dog(int x, xa[])
+{
+    output(x);
+    output(xa[3]);
+    outnl();
+
+    x = 668;
+    xa[1+2] = 669;
+    output(x);
+    output(xa[3]);
+    outnl();
+
+    g = 670;
+    ga[2+1] = 671;
+    output(g);
+    output(ga[3]);
+    outnl();
+
+    cat(x, xa);
+    cat(g, ga);
+}
+     
+main()
+{
+    int y, ya[10];
+
+    y = 666;
+    ya[1+2] = 667;
+    output(y);
+    output(ya[3]);
+    outnl();
+
+    dog(y, ya);
+
+    output(y);
+    output(ya[3]);
+    outnl();
+}

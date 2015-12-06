@@ -1,0 +1,13 @@
+main()
+{
+    outputb('X'<'Y');
+    outputb('X'>'Y');
+    outputb('X'=='Y');
+    outputb('X'!='Y');
+    outputb('X'>='Y');
+    outputb('X'<='Y');
+    outputb('Y'=='Y');
+    outputb('Y'!='Y');
+    outputb('Y'>='Y');
+    outputb('Y'<='Y');
+}

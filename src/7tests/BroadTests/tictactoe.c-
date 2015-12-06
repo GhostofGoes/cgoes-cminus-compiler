@@ -1,0 +1,359 @@
+//  tictactoe.c-
+//
+//  by Sarah Park
+//  Release 0.1 -- May 3, 2005, 10:00 pm.
+//  Release 0.2 -- May 3, 2005, 10:15 pm.
+//
+//  To play, enter the number you wish to move.
+//  A 'T' on the board represents a place you've gone.
+//  A 'F' on the board represents where the computer has gone.
+//  A number on the board represents the available moves.
+//
+//  Release 0.1 Notes
+//
+//  -- Enjoy ! 
+//
+//  Release 0.2 Notes
+//  
+//  -- Fixed flaw wherein computer gets to go again after
+//     win. 
+//  -- Display board before exit.
+//  -- Added more newlines between board displays.
+//
+
+int board[9];
+bool gamenotdone;
+
+move()
+{
+    int i;
+    i = 0;
+
+    while (i<9) {
+	if (board[i] == -1) {
+	    break;
+	}
+	i++;
+    }
+
+    if (i<9) {
+	board[i] = 2;
+	gamenotdone = true;
+    }
+    else {
+	gamenotdone = false;
+    }
+
+}
+
+bool win()
+{
+    if ((((board[0] == 2)  &  (board[1] == 2))
+	  |  ((board[6] == 2)  &  (board[4] == 2))
+	  |  ((board[8] == 2)  &  (board[5] == 2))
+	)
+	 &  (board[2] == -1)) {
+	board[2] = 2;
+	gamenotdone = false;
+    }
+    else {
+	if ((((board[0] == 2)  &  (board[2] == 2))
+	      |  ((board[4] == 2)  &  (board[7] == 2)))
+	     &  (board[1] == -1)) {
+	    board[1] = 2;
+	    gamenotdone = false;
+	}
+	else {
+	    if ((((board[2] == 2)  &  (board[1] == 2))
+		  |  ((board[6] == 2)  &  (board[3] == 2))
+		  |  ((board[4] == 2)  &  (board[8] == 2)))
+		 &  (board[0] == -1)) {
+		board[0] = 2;
+		gamenotdone = false;
+	    }
+	    else {
+		if ((((board[3] == 2)  &  (board[4] == 2))
+		      |  ((board[2] == 2)  &  (board[8] == 2)))
+		     &  (board[5] == -1)) {
+		    board[5] = 2;
+		    gamenotdone = false;
+		}
+		else {
+		    if ((((board[3] == 2)  &  (board[5] == 2))
+			  |  ((board[0] == 2)  &  (board[8] == 2))
+			  |  ((board[2] == 2)  &  (board[6] == 2))
+			  |  ((board[1] == 2)  &  (board[7] == 2)))
+			 &  (board[4] == -1)) {
+			board[4] = 2;
+			gamenotdone = false;
+		    }
+		    else {
+			if ((((board[4] == 2)  &  (board[5] == 2))
+			      |  ((board[0] == 2)  &  (board[6] == 2)))
+			     &  (board[3] == -1)) {
+			    board[3] = 2;
+			    gamenotdone = false;
+			}
+			else {
+			    if ((((board[6] == 2)  &  (board[7] == 2))
+				  |  ((board[0] == 2)  &  (board[4] == 2))
+				  |  ((board[2] == 2)  &  (board[5] == 2)))
+				 &  (board[8] == -1)) {
+				board[8] = 2;
+				gamenotdone = false;
+			    }
+			    else {
+				if ((((board[6] == 2)  &  (board[8] == 2))
+				      |  ((board[4] == 2)  &  (board[1] == 2)))
+				     &  (board[7] == -1)) {
+				    board[7] = 2;
+				    gamenotdone = false;
+				}
+				else {
+				    if ((((board[7] == 2)  &  (board[8] == 2))
+					  |  ((board[4] == 2)
+					      &  (board[2] == 2))
+					  |  ((board[0] == 2)
+					      &  (board[3] == 2)))
+					 &  (board[6] == -1)) {
+					board[6] = 2;
+					gamenotdone = false;
+				    }
+				}
+			    }
+			}
+		    }
+		}
+	    }
+	}
+    }
+
+    if (gamenotdone != false) {
+	return false;
+    }
+
+    return true;
+}
+
+bool blockplayer()
+{
+    bool blocked;
+    blocked = false;
+
+    if ((((board[0] == 1)  &  (board[1] == 1))
+	  |  ((board[6] == 1)  &  (board[4] == 1))
+	  |  ((board[8] == 1)  &  (board[5] == 1)))
+	 &  (board[2] == -1)) {
+	board[2] = 2;
+	blocked = true;
+    }
+    else {
+	if ((((board[0] == 1)  &  (board[2] == 1))
+	      |  ((board[4] == 1)  &  (board[7] == 1)))
+	     &  (board[1] == -1)) {
+	    board[1] = 2;
+	    blocked = true;
+	}
+	else {
+	    if ((((board[2] == 1)  &  (board[1] == 1))
+		  |  ((board[6] == 1)  &  (board[3] == 1))
+		  |  ((board[4] == 1)  &  (board[8] == 1)))
+		 &  (board[0] == -1)) {
+		board[0] = 2;
+		blocked = true;
+	    }
+	    else {
+		if ((((board[3] == 1)  &  (board[4] == 1))
+		      |  ((board[2] == 1)  &  (board[8] == 1)))
+		     &  (board[5] == -1)) {
+		    board[5] = 2;
+		    blocked = true;
+		}
+		else {
+		    if ((((board[3] == 1)  &  (board[5] == 1))
+			  |  ((board[0] == 1)  &  (board[8] == 1))
+			  |  ((board[2] == 1)  &  (board[6] == 1))
+			  |  ((board[1] == 1)  &  (board[7] == 1)))
+			 &  (board[4] == -1)) {
+			board[4] = 2;
+			blocked = true;
+		    }
+		    else {
+			if ((((board[4] == 1)  &  (board[5] == 1))
+			      |  ((board[0] == 1)  &  (board[6] == 1)))
+			     &  (board[3] == -1)) {
+			    board[3] = 2;
+			    blocked = true;
+			}
+			else {
+			    if ((((board[6] == 1)  &  (board[7] == 1))
+				  |  ((board[0] == 1)  &  (board[4] == 1))
+				  |  ((board[2] == 1)  &  (board[5] == 1)))
+				 &  (board[8] == -1)) {
+				board[8] = 2;
+				blocked = true;
+			    }
+			    else {
+				if ((((board[6] == 1)  &  (board[8] == 1))
+				      |  ((board[4] == 1)  &  (board[1] == 1)))
+				     &  (board[7] == -1)) {
+				    board[7] = 2;
+				    blocked = true;
+				}
+				else {
+				    if ((((board[7] == 1)  &  (board[8] == 1))
+					  |  ((board[4] == 1)
+					      &  (board[2] == 1))
+					  |  ((board[0] == 1)
+					      &  (board[3] == 1)))
+					 &  (board[6] == -1)) {
+					board[6] = 2;
+					blocked = true;
+				    }
+				}
+			    }
+			}
+		    }
+		}
+	    }
+	}
+    }
+
+    return blocked;
+}
+
+placey()
+{
+
+    if ( ! win()) {
+	if ( ! blockplayer()) {
+	    move();
+	}
+    }
+
+}
+
+bool xingrid(int x)
+{
+    bool retval;
+    retval = false;
+
+    if (x >= 0  &  x <= 8) {
+	if (board[x] != 1  &  board[x] != 2) {
+	    board[x] = 1;
+	    retval = true;
+	}
+    }
+
+    return retval;
+}
+
+printboard()
+{
+    int i;
+    i = 0;
+
+    while (i<9) {
+	if (board[i] == 1) {
+	    outputb(true);
+	}
+	else if (board[i] == 2) {
+	    outputb(false);
+	}
+	else {
+	    output(i);
+	}
+	if (i == 2  |  i == 5  |  i == 8) {
+	    outnl();
+	}
+	i++;
+    }
+
+}
+
+bool finished()
+{
+    int i;
+
+    i = 0;
+
+    if ((board[0] != -1)  &  (((board[0] == board[1])
+			       &  (board[0] == board[2]))
+			      |  ((board[0] == board[4])
+				  &  (board[0] == board[8]))
+			      |  ((board[0] == board[3])
+				  &  (board[0] == board[6])))) {
+	return (true);
+    }
+
+    if ((board[1] != -1)
+	 &  ((board[1] == board[4])  &  (board[1] == board[7]))) {
+	return (true);
+    }
+
+    if ((board[2] != -1)  &  (((board[2] == board[4])
+			       &  (board[2] == board[6]))
+			      |  ((board[2] == board[5])
+				  &  (board[2] == board[8])))) {
+	return (true);
+    }
+
+    if ((board[3] != -1)
+	 &  ((board[3] == board[4])  &  (board[3] == board[5]))) {
+	return (true);
+    }
+
+    if ((board[6] != -1)
+	 &  ((board[6] == board[7])  &  (board[6] == board[8]))) {
+	return (true);
+    }
+
+    while (board[i] != -1  &  i<9) {
+	i++;
+    }
+
+    if (i == 9) {
+	return (true);
+    }
+    else {
+	return (false);
+    }
+}
+
+playgame()
+{
+    int x;
+    x = 9;
+
+    outnl();
+    printboard();
+
+    while ( ! finished()  &  gamenotdone == true) {
+	x = input();
+
+	if (xingrid(x)  &   ! finished()) {
+	    placey();
+	    outnl();
+	    printboard();
+	    outnl();
+	}
+    }
+}
+
+main()
+{
+    int i;
+    i = 0;
+
+    while (i<9) {
+	board[i] = -1;
+	i++;
+    }
+
+    gamenotdone = true;
+    playgame();
+
+    outnl();
+    printboard();
+    outnl();
+}

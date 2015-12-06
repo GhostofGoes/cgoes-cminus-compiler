@@ -1,0 +1,118 @@
+showInt(int x)
+{
+    output(x);
+    outnl();
+}
+
+showIntArray(int x[], size)
+{
+    int i;
+    i = 0;
+    while (i<size) {
+        output(x[i]);
+        i = i + 1;
+    }
+    outnl();
+}
+
+showBool(bool x)
+{
+    outputb(x);
+    outnl();
+}
+
+bool truth()
+{
+    return true;
+}
+
+int magic()
+{
+    return 666;
+}
+
+int sqr(int x)
+{
+    return x*x;
+}
+
+int add(int x, y)
+{
+    return x+y;
+}
+
+int mul(int x, y)
+{
+    return x*y;
+}
+
+int g;
+
+  caller(int x, y[])
+{
+    int z;
+    int a;
+
+    a = 666;
+    g = 777;
+
+    z = sqr(x);
+    output(z);
+    outnl();
+
+    z = sqr(y[7]);
+    output(z);
+    outnl();
+
+    z = sqr(a);
+    output(z);
+    outnl();
+
+    z = sqr(g);
+    output(z);
+    outnl();
+}
+
+  swap(int x[], z1, z2)
+{
+    int tmp;
+    tmp = x[z1];
+    x[z1] = x[z2];
+    x[z2] = tmp;
+}
+
+main()
+{
+    int p, q, r[10], s[10];
+
+    p = 0;
+    while (p<10) {
+          r[p] = p;
+          p++;
+    }
+
+    p = 111;
+    q = 222;
+    r[7] = 333;
+    s[7] = 444;
+
+    showInt(p);
+    
+    showIntArray(r, 10);
+
+    showBool(truth());
+
+    output(showInt(p));         // use default return value
+    output(showBool(truth()));  // use default return value
+
+    caller(p, r);
+
+    output(add(add(p, q), mul(p, q)));
+    outnl();
+    r[9] = 555;
+    swap(r, 7, 9);
+    output(r[9]);
+    outnl();
+    output(2*add(add(3*4, 5*6)*7, add(9*10, 11*12)*13));
+    outnl();
+}

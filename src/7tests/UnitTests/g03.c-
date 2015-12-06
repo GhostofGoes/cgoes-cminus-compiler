@@ -1,0 +1,14 @@
+int z;
+
+int cat(int z)
+{
+    return z;
+}
+
+main()
+{
+    int z;
+
+    z = 637;
+    output(cat(z));
+}

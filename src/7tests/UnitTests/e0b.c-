@@ -1,0 +1,21 @@
+main()
+{
+    int x;
+
+    x = 0;
+    if (true) 
+        output(666);
+    else while (x<10) {
+        output(x);
+        x = x+1;
+    }
+
+    x = 0;
+    if (false) 
+        output(666);
+    else while (x<10) {
+        output(x);
+        x = x+1;
+    }
+
+}

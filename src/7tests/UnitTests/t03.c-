@@ -1,0 +1,17 @@
+// recursive fibonacci function (two way recursion)
+int fib(int n)
+{
+        if (n<3) return 1;
+        else return fib(n-1) + fib(n-2);
+}
+
+main()
+{
+        int n;
+
+        n = fib(12);
+        output(n);
+        outnl();
+}
+
+        

@@ -1,0 +1,9 @@
+  cat(int z)
+{
+    output(z);
+}
+
+main()
+{
+    cat(637);
+}

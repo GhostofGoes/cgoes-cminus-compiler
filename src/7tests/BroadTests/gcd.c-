@@ -1,0 +1,22 @@
+// A program to perform Euclid's algorithm
+//  to find the greatest common denominator
+// C-06
+int gcd(int u, v)
+{ 
+    if (v == 0) 
+        return u;
+    else 
+        return gcd(v, u-u/v*v);
+}
+
+main()
+{  
+    int x, y, z;
+
+    x = input(); 
+    y = input();
+    z = gcd(x, y);
+    output(z);
+    outnl();
+}
+

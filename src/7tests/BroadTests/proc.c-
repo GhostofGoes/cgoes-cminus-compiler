@@ -1,0 +1,28 @@
+int square(int x) return x*x;
+int max(int x, y) if (x>y) return x; else return y;
+int toInt(bool b) if (b) return 1; else return 0;
+bool toBool(int x) if (x==0) return false; else return true;
+
+main()
+{
+        bool a, b;
+        int x, y;
+
+        output(square(31));
+        outnl();
+        output(max(131, 42));
+        outnl();
+        
+        a = toBool(42);
+        x = toInt(true);
+        output(x);
+        outputb(a);
+
+        if ( ! 666+1>13) output(0); else output(666);
+        if ( ! -666+1>-13) output(0); else output(666);
+        if ( !  ! -666+1>-13) output(0); else output(666);
+        if ( ! false  &  true) output(7);
+        if ( ! 4>6  &  6>4) output(7);
+        outnl();
+}
+

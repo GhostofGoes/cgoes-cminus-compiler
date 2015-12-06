@@ -1,0 +1,8 @@
+main()
+{
+     int x;
+
+     x = 273;
+     output(x);
+}
+

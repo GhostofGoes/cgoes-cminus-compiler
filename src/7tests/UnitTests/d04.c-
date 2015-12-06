@@ -1,0 +1,25 @@
+main()
+{
+   bool x, y, z;
+   x = true;
+   y = false;
+   z = true;
+
+   outputb(x | y & z);
+   outputb(x & y | z);
+   outputb(x & y | z & z);
+   outputb(! x | y & z);
+   outputb(! x & y | z);
+   outnl();
+
+   x = true;
+   y = true;
+   z = false;
+
+   outputb(x | y & z);
+   outputb(x & y | z);
+   outputb(x & y | z & z);
+   outputb(! x | y & z);
+   outputb(! x & y | z);
+   outnl();
+}

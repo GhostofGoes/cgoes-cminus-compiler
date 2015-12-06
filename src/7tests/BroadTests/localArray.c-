@@ -1,0 +1,13 @@
+main()
+{
+    int x[3];
+    bool b[4];
+
+    x[2] = 666;   
+    b[3] = true;
+
+    output(x[2]);
+    outputb(b[3]);
+
+    return;
+}

@@ -1,0 +1,38 @@
+// a program to test I/O.  It takes an integer & a boolean
+// & prints out the results.
+//
+main()
+{
+	int x;
+	bool b;
+
+	output(777);
+	outputb(false);
+        outnl();
+
+	x=666;
+	output(x);
+        outnl();
+
+	output(-x);
+	output((-1)*x);
+        outnl();
+
+	output(111+222+333);
+	output(3*6*(6*6+1));
+        outnl();
+
+	x = input();
+	output(x);
+        outnl();
+
+	b = inputb();
+	outputb(b);
+        outnl();
+
+	output(input()*input());
+        outnl();
+
+	outputb(inputb() & inputb());
+        outnl();
+}

@@ -1,0 +1,5 @@
+main()
+{
+     outputb(true & true);
+     outnl();
+}

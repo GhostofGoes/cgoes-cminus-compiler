@@ -1,0 +1,24 @@
+main()
+{
+    bool x;
+
+    if (true) output(13);
+    output(23);
+
+    x = false;
+    if (x) output(44);
+    if (! x) output(55);
+
+    if (3>1) output(987);
+    if (3<1) output(211);
+
+    if (true) output(13); else output(51);
+    if (false) output(23); else output(451);
+
+    x = false;
+    if (x) output(44); else output(514);
+    if (! x) output(55); else output(1514);
+
+    if (3>1) output(987); else output(114);
+    if (3<1) output(211); else output(1614);
+}

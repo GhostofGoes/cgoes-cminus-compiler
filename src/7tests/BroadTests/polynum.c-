@@ -1,0 +1,39 @@
+int main( )
+{
+    int i;
+    int m;
+    int t;
+    int x;
+    int tm;
+    int num;
+    int min;
+    int a;
+    int b;
+
+    i = 1;
+    min = 1;
+    while (i<2000) {
+	m=2;
+	tm=(m*(m+1))/2;
+	x=(i-(m+1));
+	t = x/tm;
+	num = 0;
+	while (t>0) {
+	    if (t*tm == x) num=num+1;
+	    m=m+1;
+	    a=m+1;              // useless | possible precomputed value
+	    b=(m*(m+1));        // useless | possible precomputed value
+	    tm=(m*(m+1))/(1+1); // constant folding opportunity
+	    x=(i-(m+1))+0;
+	    t = x/tm*1;
+	}
+	if (num>=min) {
+  	    output(num);
+  	    output(i);
+  	    output(11111111);
+	    min = num+1;
+	}
+	i=i+1;
+    }
+    return 0;
+}

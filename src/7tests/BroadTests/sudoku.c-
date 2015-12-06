@@ -1,0 +1,234 @@
+// sudoku.c-
+//
+// Author: Curt Stein
+// Date: Fall 2007
+//
+// Description: A Sudoku solver that uses basic logic & a backtracking
+// algorithm to find a solution to a Sudoku puzzle given as input.
+//
+// Instructions:
+//
+// Input a Sudoku puzzle by specifying the number in each square going from
+// left to right, row by row.  For blank squares, enter 0.  If a solution is
+// found, it will be displayed as a 9x9 matrix of digits.  If no solution is
+// possible, the letter F will be displayed.
+//
+// It is recommended that you set the abort limit for the TM machine to at
+// least 1,000,000,000 instructions.  For most puzzles, a solution will be
+// found quickly, but for some puzzles, this program could run for a long time.
+
+int board[81];		// Holds the current state of the Sudoku board
+bool locked[81];	// Keeps track of which squares can! be changed
+
+// Clear the global board arrays
+  initBoard()
+{
+    int i;
+    i = 0;
+    while (i < 81) {
+        board[i] = 0;
+        locked[i] = false;
+        i++;
+    }
+}
+
+// Sets the value of a square on the board
+  setValue(int row, col, value)
+{
+    board[(row*9) + col] = value;
+}
+
+// Gets the value of a square on the board
+int getValue(int row, col)
+{
+    return board[(row*9) + col];
+}
+
+// Sets the locked flag for a square on the board
+  setLocked(int row, col; bool value)
+{
+    locked[(row*9) + col] = value;
+}
+
+// Gets the locked flag for a square on the board
+bool getLocked(int row, col)
+{
+    return locked[(row*9) + col];
+}
+
+// Checks that assigning a value will ! break the rules
+bool isOkAt(int row, col, value)
+{
+    int i, j, boxRowStart, boxColStart;
+
+    // Check row & column
+    i = 0;
+    while (i < 9) {
+        if (getValue(i, col) == value) return false;
+        if (getValue(row, i) == value) return false;
+        i++;
+    }
+
+    // Check 3x3 Square
+    boxRowStart = (row/3)*3;
+    boxColStart = (col/3)*3;
+    i = 0;
+    while (i < 3) {
+        j = 0;
+        while (j < 3) {
+            if (getValue(boxRowStart+i, boxColStart+j) == value) return false;
+            j++;
+        }
+        i++;
+    }
+
+    return true;
+}
+
+// Recursive function performs a depth first search
+bool search(int i, j)
+{
+    if (getLocked(i, j))
+    {
+        if (i == 8 & j == 8)	return true;		     	// Success ! 
+        else if (j == 8) return search(i+1, 0);
+        else return search(i, j+1);
+    }
+    else
+    {
+        int n;
+        bool foundOne;
+        n = 1;
+        while (n <= 9) {
+            if (isOkAt(i, j, n)) {
+                setValue(i, j, n);
+                if (i == 8 & j == 8)	return true;		// Success ! 
+                else if (j == 8) foundOne = search(i+1, 0);
+                else foundOne = search(i, j+1);
+                if (foundOne) return true;	// done
+                else setValue(i, j, 0);
+            }
+            n++;
+        }
+    }
+    return false;
+}
+
+// Finds all squares with only one possible value & assigns them
+  searchTrivial()
+{
+    int i, j, test, value;
+    bool changed, foundOne;
+
+    changed = true;
+    while (changed) {			// Loop until the board stops changing 
+        changed = false;
+        i = 0;
+        while (i < 9) {
+            j = 0;
+            while (j < 9) {
+                if (getLocked(i, j) == false) {
+                    test = 1;
+                    foundOne = false;
+                    while (test <= 9) {
+                        if (isOkAt(i, j, test)) {
+                            if (foundOne) {
+                                foundOne = false;	// Found two possibilities
+                                break;				// Move on
+                            }
+                            else {
+                                foundOne = true;
+                                value = test;
+                            }
+                        }
+                        test++;
+                    }
+                    if (foundOne) {
+                        setValue(i, j, value);		// Only one possibility
+                        setLocked(i, j, true);		// Lock it in
+                        changed = true;
+                    }
+                }
+                j++;
+            }
+            i++;
+        }
+    }
+}
+
+// Tries to solve the Sudoku puzzle, returns true if successful
+bool solve()
+{
+    int i, j, n;
+    i = 0;
+
+    // Check for reasonable input
+    while (i < 9) {
+        j = 0;
+        while (j < 9) {
+            n = getValue(i, j);
+            setValue(i, j, 0);
+            if ((getLocked(i,j) == true) & (isOkAt(i, j, n) == false))
+                return false;		// No solution with this input
+            setValue(i, j, n);
+            j++;
+        }
+        i++;
+    }
+
+    searchTrivial();		// Narrow it down
+    return search(0,0);		// Look for a solution
+}
+
+// Displays the board as a 9x9 matrix of integers
+  showBoard()
+{
+    int i, j;
+    outnl();
+    i = 0;
+    while (i < 9) {
+        j = 0;
+        while (j < 9) {
+            output(getValue(i, j));
+            j++;
+        }
+        outnl();
+        i++;
+    }
+    outnl();
+}
+
+// Gets input as 81 integers, anything ! between 1 & 9 is considered blank
+  getInput()
+{
+    int i, j, inputVal;
+    i = 0;
+    while (i < 9) {
+        j = 0;
+        while (j < 9) {
+            inputVal = input();
+            if (inputVal > 0 & inputVal < 10)		// Ignore blanks/bad input
+            {
+                setValue(i, j, inputVal);
+                setLocked(i, j, true);
+            }
+            j++;
+        }
+        outnl();  // separates rows of input for the user
+        i++;
+    }
+}
+
+int main()
+{
+    initBoard();
+    getInput();
+    if (solve()) {
+        showBoard();
+    }
+    else {
+        outputb(false);
+        outnl();
+    }
+    return 0;
+}

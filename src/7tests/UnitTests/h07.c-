@@ -1,0 +1,13 @@
+int fib(int x)
+{
+    output(x);
+    outnl();
+    if (x<2) return 1;
+    return fib(x-1) + fib(x-2);
+}
+
+main()
+{
+      output(fib(6));
+      outnl();
+}

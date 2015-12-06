@@ -1,0 +1,36 @@
+main()
+{
+   int a, b, c;
+   a = 213;
+   b = 11;
+   c = 4133;
+
+   outputb(a>b | b<=c & c>=a);
+   outputb(a>b & b<=c | c>=a);
+   outputb(a>b & b<=c | c>=a & c>=a);
+   outputb(! a>b | b<=c & c>=a);
+   outputb(! a>b & b<=c | c>=a);
+   outnl();
+
+   b = 213;
+   c = 11;
+   a = 4133;
+
+   outputb(a>b | b<=c & c>=a);
+   outputb(a>b & b<=c | c>=a);
+   outputb(a>b & b<=c | c>=a & c>=a);
+   outputb(! a>b | b<=c & c>=a);
+   outputb(! a>b & b<=c | c>=a);
+   outnl();
+
+   b = 11;
+   c = 213;
+   a = 4133;
+
+   outputb(a>b | b<=c & c>=a);
+   outputb(a>b & b<=c | c>=a);
+   outputb(a>b & b<=c | c>=a & c>=a);
+   outputb(! a>b | b<=c & c>=a);
+   outputb(! a>b & b<=c | c>=a);
+   outnl();
+}

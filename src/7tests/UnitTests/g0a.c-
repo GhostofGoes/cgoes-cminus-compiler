@@ -1,0 +1,12 @@
+int cat(int x)
+{
+    return x;
+}
+
+main()
+{
+    int z[10];
+
+    z[3] = 445;
+    output(z[cat(3)]);
+}

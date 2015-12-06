@@ -1,0 +1,21 @@
+int g;
+int wolf(int garion)
+{
+	int w;
+	return garion+g;
+}
+
+int polgara(int silk)
+{
+	int p;
+	return silk+1;
+}
+
+main()
+{
+	int x;
+	g = 33;
+	x = 666;
+	x = wolf(polgara(x));
+	output(x);
+}

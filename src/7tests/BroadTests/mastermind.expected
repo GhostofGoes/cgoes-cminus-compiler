@@ -1,0 +1,138 @@
+Number of warnings: 0
+Number of errors: 0
+------------------------------------
+
+Memory Configuration: Data Addresses: 0-9999  Instruction Addresses: 0-9999
+Loading file: mastermind.tm
+entered: 333331
+
+1 
+entered: 1 
+entered: 2 
+entered: 3 
+entered: 4 
+1 1 
+2 
+entered: 2 
+entered: 3 
+entered: 4 
+entered: 5 
+2 0 
+3 
+entered: 3 
+entered: 4 
+entered: 5 
+entered: 6
+1 0 
+4 
+entered: 7 
+entered: 8 
+entered: 9 
+entered: 0
+2 0 
+5 
+entered: 1 
+entered: 2 
+entered: 3 
+entered: 4 
+1 1 
+6 
+entered: 2 
+entered: 3 
+entered: 4 
+entered: 5 
+2 0 
+7 
+entered: 3 
+entered: 4 
+entered: 5 
+entered: 6
+1 0 
+8 
+entered: 7 
+entered: 8 
+entered: 9 
+entered: 0
+2 0 
+9 
+entered: 1 
+entered: 2 
+entered: 3 
+entered: 4 
+1 1 
+10 
+entered: 2 
+entered: 3 
+entered: 4 
+entered: 5 
+2 0 
+11 
+entered: 3 
+entered: 4 
+entered: 5 
+entered: 6
+1 0 
+12 
+entered: 7 
+entered: 8 
+entered: 9 
+entered: 0
+2 0 
+13 
+entered: 1 
+entered: 2 
+entered: 3 
+entered: 4 
+1 1 
+14 
+entered: 2 
+entered: 3 
+entered: 4 
+entered: 5 
+2 0 
+15 
+entered: 3 
+entered: 4 
+entered: 5 
+entered: 6
+1 0 
+16 
+entered: 7 
+entered: 8 
+entered: 9 
+entered: 0
+2 0 
+17 
+entered: 1 
+entered: 2 
+entered: 3 
+entered: 4 
+1 1 
+18 
+entered: 2 
+entered: 3 
+entered: 4 
+entered: 5 
+2 0 
+19 
+entered: 3 
+entered: 4 
+entered: 5 
+entered: 6
+1 0 
+20 
+entered: 7 
+entered: 8 
+entered: 9 
+entered: 0
+2 0 
+21 
+F F F F F F F F F F 
+
+0 
+9 
+3 
+2 
+
+Status: Halted
+Bye.

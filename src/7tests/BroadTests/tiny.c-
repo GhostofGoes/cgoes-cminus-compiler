@@ -1,0 +1,13 @@
+int wolf(int garion)
+{
+	return 42;
+}
+
+main()
+{
+	int x;
+	x = 666;
+	x = wolf(x);
+        output(x);
+        outnl();
+}

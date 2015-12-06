@@ -1,0 +1,49 @@
+int bender()
+{
+}
+
+int fry()
+{
+    return 114;
+}
+
+leela()
+{
+    outputc('L');
+}
+
+char zoidberg()
+{
+    return 'z';
+}
+
+char zapp()
+{
+}
+
+bool amy()
+{
+     return true;
+}
+
+bool hermes()
+{
+}
+
+int main()
+{
+   leela();
+   outnl();
+
+   output(bender());
+   output(fry());
+   outnl();
+
+   outputc(zoidberg());
+   outputb(zapp()=='\0');
+   outnl();
+
+   outputb(amy());
+   outputb(hermes());
+   outnl();
+}

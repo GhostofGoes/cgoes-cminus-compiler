@@ -1,0 +1,5 @@
+main()
+{
+     output(50+13);
+     outnl();
+}
