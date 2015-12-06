@@ -1,9 +1,6 @@
 %{
 #include <stdio.h>
 #include <stdlib.h>
-//#include <getopt.h>
-//#include <string.h>
-//#include <stdarg.h>
 
     // TODO: code requires needed still, or get rid of these?
 #include "types.h"

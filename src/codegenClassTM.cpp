@@ -14,17 +14,25 @@
 #include <string>
 #include <fstream>
 #include <iomanip>
+#include <time.h>
 
 using namespace std;
 
 
-codegenTM::codegenTM ( TreeNode * annotatedTree, SymbolTable * symtable, int global_offset, string filename ) 
+codegenTM::codegenTM ( TreeNode * t, SymbolTable * s, int g, string of) 
 { 
-    symtab = symtable;
-    tree = annotatedTree;
-    outfile.open(filename, ofstream::out);
+    symtable = s;
+    aTree = t;
     
-    gOffset = global_offset;
+    outfilename = of;
+    //infilename = input_filename;
+    
+    if(outfilename != "")
+        emitToFile = true;
+    else
+        emitToFile = false;
+    
+    gOffset = g;
     tOffset = 0;
 
     emitLoc = 0;
@@ -33,17 +41,45 @@ codegenTM::codegenTM ( TreeNode * annotatedTree, SymbolTable * symtable, int glo
 
 codegenTM::~codegenTM ( ) 
 { 
-    outfile.flush();
-    outfile.close();
+    if(emitToFile)
+    {
+        outfile.flush();
+        outfile.close();
+    }
 }
 
 void codegenTM::generateCode()
 {
+    /* Header comments*/
     
+    if(emitToFile)
+    {
+        outfile.open(outfilename, ofstream::out);
+        emitComment( outfilename );
+    }
+    
+    
+    emitComment( "Cgoes Cminus Compiler (CCC)" );
+    emitComment( "Author: Christopher Goes");
+    //emitComment( "File compiled: " + infilename );
+    //emitComment( "Generated at: " + timestamp() );
+    
+    /* Instruction generation */
+    //treeTraversal(aTree);
 }
 
 void codegenTM::generateDeclaration(TreeNode* node)
 {
+    TreeNode * tree;
+    
+    if(node != NULL)
+        tree = node;
+    else
+    {
+        cerr << "NULL node in generateDeclaration!" << endl;
+        return;
+    }
+    
     TreeNode * p1, * p2, * p3;
     int savedLoc1,savedLoc2,currentLoc;
     int loc;
@@ -56,18 +92,32 @@ void codegenTM::generateDeclaration(TreeNode* node)
             
         case FunK:
             emitComment("FUNCTION " + treestr);
+            
+            
+            emitComment("END FUNCTION " + treestr);
             break;
             
         case ParamK:
             break;
             
         default:
+            cerr << "Hit default in generateDeclaration switch(kind)!" << endl;
             break;
     }
 }
 
 void codegenTM::generateStatement( TreeNode * node )
 {
+    TreeNode * tree;
+    
+    if(node != NULL)
+        tree = node;
+    else
+    {
+        cerr << "NULL node in generateStatement!" << endl;
+        return;
+    }
+    
     TreeNode * p1, * p2, * p3;
     int savedLoc1,savedLoc2,currentLoc;
     int loc;
@@ -93,12 +143,23 @@ void codegenTM::generateStatement( TreeNode * node )
             break;
             
         default:
+            cerr << "Hit default in generateStatement switch(kind)!" << endl;            
             break;
     }
 }
 
 void codegenTM::generateExpression( TreeNode * node )
 {
+    TreeNode * tree;
+    
+    if(node != NULL)
+        tree = node;
+    else
+    {
+        cerr << "NULL node in generateExpression!" << endl;
+        return;
+    }    
+    
     int loc;
     TreeNode * p1, * p2;
     
@@ -144,7 +205,8 @@ void codegenTM::generateExpression( TreeNode * node )
         case CallK:
             break; 
             
-        default:
+        default:            
+            cerr << "Hit default in generateExpression switch(kind)!" << endl;
             break;
     }
 }
@@ -166,6 +228,7 @@ void codegenTM::treeTraversal( TreeNode * node )
                 generateExpression(tree);
                 break;
             default:
+                cerr << "Hit default in treeTraversal switch(nodekind)!" << endl;
                 break;
         }
         tree = tree->sibling;
@@ -175,7 +238,10 @@ void codegenTM::treeTraversal( TreeNode * node )
 // Prints a comment line with comment s in the code file
 void codegenTM::emitComment( string s )
 {
-    outfile << "* " << s << endl;
+    if(emitToFile)
+        outfile << "* " << s << endl;
+    else
+        cout << "* " << s << endl;
 }
 
 /* Procedure emitRO emits a register-only
@@ -186,16 +252,26 @@ void codegenTM::emitComment( string s )
  * t = 2nd source register
  * c = a comment to be printed
  */
-void codegenTM::emitRO( const char *op, int r, int s, int t, const char *c )
+void codegenTM::emitRO( const char *op, int r, int s, int t, string *c )
 { 
     //printf("%3d:  %5s  %d,%d,%d ",emitLoc++,op,r,s,t);
     //printf("\t%s",c) ;
     //printf("\n") ;
     
+    if(emitToFile)
+    {
     outfile << setw(3) << emitLoc++ 
             << ":  " << setw(5) << op 
             << "  " << r << "," << s << "," << t
             << " \t" << c << endl; /* append comment */
+    }
+    else
+    {
+    cout << setw(3) << emitLoc++ 
+            << ":  " << setw(5) << op 
+            << "  " << r << "," << s << "," << t
+            << " \t" << c << endl; /* append comment */        
+    }
 
     if (highEmitLoc < emitLoc) 
         highEmitLoc = emitLoc ;
@@ -210,16 +286,26 @@ void codegenTM::emitRO( const char *op, int r, int s, int t, const char *c )
  * s = the base register
  * c = a comment to be printed
  */
-void codegenTM::emitRM( const char * op, int r, int d, int s, const char *c )
+void codegenTM::emitRM( const char * op, int r, int d, int s, string *c )
 { 
     //printf("%3d:  %5s  %d,%d(%d) ",emitLoc++,op,r,d,s);
     //printf("\t%s",c) ;
     //printf("\n") ;
     
+    if(emitToFile)
+    {
     outfile << setw(3) << emitLoc++ 
             << ":  " << setw(5) << op 
             << "  " << r << "," << d << "(" << s << ")"
             << " \t" << c << endl; /* append comment */
+    }
+    else
+    {
+    cout << setw(3) << emitLoc++ 
+            << ":  " << setw(5) << op 
+            << "  " << r << "," << d << "(" << s << ")"
+            << " \t" << c << endl; /* append comment */        
+    }
     
     if (highEmitLoc < emitLoc)  
         highEmitLoc = emitLoc ;
@@ -269,21 +355,41 @@ void codegenTM::emitRestore()
  * a = the absolute location in memory
  * c = a comment to be printed
  */
-void codegenTM::emitRM_Abs( const char *op, int r, int a, const char * c )
+void codegenTM::emitRM_Abs( const char *op, int r, int a, string * c )
 { 
     //printf("%3d:  %5s  %d,%d(%d) ", emitLoc,op,r,a-(emitLoc+1),pc);
     //++emitLoc ;
     //printf("\t%s",c) ;
     //printf("\n") ;
     
+    if(emitToFile)
+    {
     outfile << setw(3) << emitLoc 
             << ":  " << setw(5) << op 
             << "  " << r << "," << a - (emitLoc + 1) << "(" << pc << ")"
             << " \t" << c << endl; /* append comment */
-    
+    }
+    else
+    {
+    cout << setw(3) << emitLoc 
+            << ":  " << setw(5) << op 
+            << "  " << r << "," << a - (emitLoc + 1) << "(" << pc << ")"
+            << " \t" << c << endl; /* append comment */        
+    }
     emitLoc++;
     
     if (highEmitLoc < emitLoc) 
         highEmitLoc = emitLoc ;
     
 } /* emitRM_Abs */
+
+string codegenTM::timestamp()
+{
+    // Getting current local time because ADHD
+    // Source: http://www.cplusplus.com/reference/ctime/localtime/
+    time_t rawtime;
+    struct tm * timeinfo;
+    time (&rawtime);
+    timeinfo = localtime (&rawtime);
+    string timestamp = asctime(timeinfo);    
+}

@@ -67,8 +67,6 @@ int param_count = 0;
 // TODO: free tokens matched by error terminal in bison
 int main ( int argc, char * argv[] )
 {
-
-    // FILE * output = stdout;
     int option;
     opterr = 0;
 
@@ -79,13 +77,17 @@ int main ( int argc, char * argv[] )
     bool error_checking = true;
     bool code_generation = true;
     
-    string outfileTM = "fred.tm";
+    std::string outfileTM = "fred.tm";
     
     initTokenMaps();
     
+    /*if(argc > 1)
+    {
+        yyin = fopen(argv[1], "r");
+    }*/
 
     // Command line options
-    while ((option = getopt(argc, argv, "dpPts")) != EOF)
+    while ((option = getopt(argc, argv, "dpPtseo")) != EOF)
     {
         switch (option) {
             case 'd':
@@ -108,12 +110,16 @@ int main ( int argc, char * argv[] )
               break;
             case 'o':
               code_generation = true;
-              if(argv[optind] == "-")
+              if(optarg == "-")
+              {
                 //outfileTM = stdout;
-                  outfileTM = "";
+                outfileTM = "";
+              }
               else
+              {
                 //outfileTM = fopen(argv[optind], "w");
-                outfileTM = argv[optind];
+                outfileTM = optarg;
+              }
               break;
             default:
               break;
@@ -125,11 +131,6 @@ int main ( int argc, char * argv[] )
     {
         yyin = fopen(argv[optind], "r");
     }
-    
-    /*if(outfileTM == NULL)
-    {
-        outfileTM = fopen("fred.tm", "w");
-    }*/
 
     // Main parsing loop. Goes until end of input
     do
@@ -138,9 +139,7 @@ int main ( int argc, char * argv[] )
     } while (!feof(yyin));
 
     if ( print_syntax_tree )
-    {
         printAbstractTree(syntaxTree);
-    }
     
     //annotated_tree = true;
     if ( error_checking && (errors == 0) )
@@ -150,20 +149,14 @@ int main ( int argc, char * argv[] )
         annotatedTree = io;
         symtab = semanticAnalysis(annotatedTree);
 
-        
         if ( print_annotated_tree )
-        {
             printAnnotatedTree(annotatedTree);
-        }
-        
     }
-
-    
+ 
     if ( code_generation && (errors == 0) )
     {
-        generateCode(annotatedTree, symtab, outfileTM);
+        generateCode(outfileTM);
     }
-
 
     
     if(print_annotated_tree)
@@ -1156,9 +1149,12 @@ void treeParse ( TreeNode * par, TreeNode * node, SymbolTable * symtable, bool i
     } // end while
 }
 
-void generateCode( TreeNode * tree, SymbolTable * symtable, std::string output_file )
+void generateCode( std::string output_file )
 {
-    class codegenTM * cg = new codegenTM(tree, symtable, 0, output_file );
+    class codegenTM * cg = new codegenTM(annotatedTree, symtab, 0, output_file );
+    std::cout << "test" << std::endl;
+    //cg->generateCode();
+    delete cg;
 }
 
 

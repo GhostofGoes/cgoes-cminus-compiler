@@ -14,12 +14,10 @@
 #include <string>
 #include <fstream>
 
-using namespace std;
-
 class codegenTM {
 public:
     void generateCode();
-    codegenTM( TreeNode * annotatedTree, SymbolTable * symtable, int global_offset, string filename );
+    codegenTM( TreeNode * t, SymbolTable * s, int g, std::string of );
     ~codegenTM();
     
 private:
@@ -28,28 +26,28 @@ private:
     void generateExpression( TreeNode * node );
     void treeTraversal( TreeNode * tree );
     
-    SymbolTable * symtab;
+    SymbolTable * symtable;
     int gOffset;
-    TreeNode * tree;
+    TreeNode * aTree;
     int tOffset;
-    //FILE * outfile;
-    ofstream outfile;
+    std::ofstream outfile;
+    std::string outfilename;
+    //string infilename;
+    bool emitToFile;
     
     /* TM location number for current instruction emission */
     int emitLoc;
     
-    /* Highest TM location emitted so far
-    For use in conjunction with emitSkip,
-    emitBackup, and emitRestore */
+    /* Highest TM location emitted so far. Used with: emitSkip, emitBackup, emitRestore */
     int highEmitLoc;
     
-    void emitComment( string s );
-    void emitRO( const char *op, int r, int s, int t, const char *c);
-    void emitRM( const char * op, int r, int d, int s, const char *c);
+    void emitComment( std::string s );
+    void emitRO( const char *op, int r, int s, int t, std::string *c);
+    void emitRM( const char * op, int r, int d, int s, std::string *c);
     int emitSkip( int howMany);
     void emitBackup( int loc);
     void emitRestore();
-    void emitRM_Abs( const char *op, int r, int a, const char * c);
+    void emitRM_Abs( const char *op, int r, int a, std::string * c);
     
     
     /* EMIT CONSTANTS - DO NOT MODIFY! */
@@ -59,6 +57,8 @@ private:
     const int ac = 0;
     const int ac1 = 1;
 
+    /* HELPER FUNCTIONS */
+    std::string timestamp();
 };
 
 #endif	/* CODEGENCLASSTM_H */
