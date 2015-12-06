@@ -100,17 +100,42 @@ void codegenTM::generateDeclaration(TreeNode* node)
             
             emitRM("ST", RET, -1, FP, "Store return address");
             
-            if(treestr == "input")
-            {
-                
+            switch(tree->isIO) {
+                case Nopeput:
+                    break;
+                    
+                case InputI:
+                    emitRO("IN", 2, 2, 2, "Input integer");
+                    break;
+                    
+                case OutputI:
+                    emitRO("OUT", 3, 3, 3, "Output integer");
+                    break;
+                    
+                case InputB:
+                    emitRO("INB", 2, 2, 2, "Input boolean");
+                    break;
+                    
+                case OutputB:
+                    emitRO("OUTB", 3, 3, 3, "Output boolean");
+                    break;
+                    
+                case InputC:
+                    emitRO("INC", 2, 2, 2, "Input character");
+                    break;
+                    
+                case OutputC:
+                    emitRO("OUTC", 3, 3, 3, "Output character");
+                    break;
+                    
+                case OutNL:
+                    emitRO("OUTNL", 3, 3, 3, "Output newline");
+                    break;
+                    
+                default:
+                    break;
             }
-            else if(treestr == "output")
-            {
-                
-            }
-            
-            
-            
+      
             emitRM("LDA", PC, 0, RET, "Return");
             
             emitComment("END FUNCTION " + treestr);
