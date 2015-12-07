@@ -1230,7 +1230,6 @@ void checkArgTypes( TreeNode * call, TreeNode * func)
     }
     TreeNode * temp_call = call->child[0];
     TreeNode * temp_func = func->child[0];
-    //TreeNode * tmp = NULL;
     int sibling_count = 1;
     
     while( temp_call != NULL && temp_func != NULL)
