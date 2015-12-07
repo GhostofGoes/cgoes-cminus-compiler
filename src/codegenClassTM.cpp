@@ -263,7 +263,7 @@ void codegenTM::generateExpression( TreeNode * node )
         return;
     }    
     
-    int loc;
+    int temp = 0;
     TreeNode * p1, * p2;
     TreeNode * tmp = NULL;
     string treestr = svalResolve(tree);
@@ -284,8 +284,12 @@ void codegenTM::generateExpression( TreeNode * node )
     case UnaryK:
 
         switch (tree->token->bval) {
-        case MULTIPLY:
-            // TODO: unary *
+        case MULTIPLY: // TODO: unary *
+        	// array size can be used when, just on IDs?
+        	// what is unary star doing precisely
+        	// temp = getArraySizeLoc(tree->child[0]);
+        	// temp = getArraySize(tree->child[0]);
+            emitRM("LDA", val, temp, fp, "Load size of array");
             break;
 
         case NOT:
