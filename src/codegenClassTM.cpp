@@ -34,7 +34,10 @@ codegenTM::codegenTM ( TreeNode * t, SymbolTable * s, int g, string of)
     //infilename = input_filename;
     
     if(outfilename != "stdout")
+    {
+        outfilename += ".tm";
         emitToFile = true;
+    }
     else
         emitToFile = false;
     

@@ -97,7 +97,6 @@ int main ( int argc, char * argv[] )
         outfileTM.assign( (std::istreambuf_iterator<char>(ifs) ),
                         (std::istreambuf_iterator<char>()    ) );
         std::cerr << outfileTM << std::endl;
-        
         yyin = fopen(argv[1], "r");
     }
 
