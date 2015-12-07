@@ -9,7 +9,7 @@ then
 elif [ $2 -eq 1 ]
 then
 	./c- $1 -P >  testoutput.txt
-	./tm fred.tm < commands.txt
+	./tm $FILENAME.tm < commands.txt
 else
 	./c- $1 -P > testoutput.txt
 fi

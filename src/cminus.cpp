@@ -22,6 +22,7 @@
 
 // C++ Libraries
 #include <iostream>
+#include <fstream>
 #include <string>
 #include <cstdlib>
 #include <vector>
@@ -81,13 +82,22 @@ int main ( int argc, char * argv[] )
     bool code_generation = true;
     int parseStatus = 0;
     
-    std::string outfileTM = "fred.tm";
+    std::string outfileTM;
     
-    initTokenMaps(); // yyerrorhelper initialization...yeah its wierd
+    initTokenMaps(); // yyerrorhelper initialization...
     
     // Get the input file
-    if(argc > 1) // TODO: make so you can put filename anywhere in option list
+    if(argc > 1)
     {
+        outfileTM += "basename ";
+        outfileTM += argv[1];
+        outfileTM += " > temp_cminus.txt";
+        std::system(outfileTM.c_str());
+        std::ifstream ifs("temp_cminus.txt");
+        outfileTM.assign( (std::istreambuf_iterator<char>(ifs) ),
+                        (std::istreambuf_iterator<char>()    ) );
+        std::cerr << outfileTM << std::endl;
+        
         yyin = fopen(argv[1], "r");
     }
 
@@ -120,7 +130,7 @@ int main ( int argc, char * argv[] )
             {
                 if ( optarg != NULL )
                     outfileTM.assign(optarg);
-                else
+                else // If its null, output error and let default
                     std::cerr << "NULL optarg!" << std::endl;
             }
             break;
