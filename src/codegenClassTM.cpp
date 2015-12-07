@@ -204,14 +204,18 @@ void codegenTM::generateStatement( TreeNode * node )
         case CompoundK: // TODO: function body!
             emitComment("COMPOUND");
             
-            if(tree->numChildren == 1) // TODO: fix this deep logic issue...
-            {
-                generateExpression(tree->child[1]);
+            
+            // TODO: fix this deep logic issue... 'numChildren'
+            if(tree->numChildren == 1) // Just expressions
+            { 
+                emitComment(" EXPRESSION");
+                loopSiblings(ExpK, tree->child[0]);
             }
-            else if( tree->numChildren == 2)
+            else if( tree->numChildren == 2) // Declarations then expressions
             {
-                generateDeclaration(tree->child[0]);
-                generateExpression(tree->child[1]);
+                loopSiblings(DeclK, tree->child[0]);
+                emitComment(" EXPRESSION");
+                loopSiblings(ExpK, tree->child[1]);
             }
             else
             {
@@ -260,76 +264,124 @@ void codegenTM::generateExpression( TreeNode * node )
     TreeNode * p1, * p2;
     TreeNode * tmp = NULL;
     string treestr = svalResolve(tree);
-    
-    switch(tree->kind) { 
-        case AssignK:
-            // TODO: variable assignment
+
+    switch (tree->kind) {
+    case AssignK: // TODO: variable assignment
+
+        break;
+
+    case OpK:
+
+        switch (tree->token->bval) {
+        default:
             break;
-            
-        case OpK:
-            
-            switch(tree->token->bval) {
-                default:
-                    break;
-            }
-            break;   
-            
-        case UnaryK:
-            
-            switch(tree->token->bval) {
-                case MULTIPLY:
-                    // TODO: unary *
-                    break;
-                    
-                case NOT:
-                    break;
-                    
-                case QUESTION:
-                    break;
-                    
-                case MINUS:
-                    break;
-                    
-                default:
-                    break;
-            }
+        }
+        break;
+
+    case UnaryK:
+
+        switch (tree->token->bval) {
+        case MULTIPLY:
+            // TODO: unary *
             break;
-            
-        case IdK: // TODO: variable substitution, params
-            tmp = (TreeNode *)symtable->lookup(treestr);
-            if( tmp == NULL )
-            {
-                cerr << "NULL symbolTable lookup on " << treestr << endl;
-                break;
-            }
-            
-            
+
+        case NOT:
             break;
-            
-        case ConstK:
-            if(tree->nodetype == Integer)
-                emitRM("LDC", val, tree->token->ivalue, 0, "Load constant into val");
-            else
-                cerr << "Non-Integer constant" << endl;
+
+        case QUESTION:
             break;
-            
-        case CallK: // TODO: function calls
-            emitComment("\tCALL to " + treestr);
-            // Store old frame pointer
-            loadParams(tree->child[0]);
-            
-            // load address of new frame into fp
-            saveRetA(); // save return address
-            // call the function
-            emitRM("LDA", val, 0, ret, "Save function result");
-            emitComment("\tEND CALL to " + treestr);
-            break; 
-            
-        default:            
-            cerr << "Hit default in generateExpression switch(kind)!" << endl;
+
+        case MINUS:
             break;
+
+        default:
+            break;
+        }
+        break;
+
+    case IdK: // TODO: variable substitution, params
+        tmp = (TreeNode *) symtable->lookup(treestr);
+        if ( tmp == NULL )
+        {
+            cerr << "NULL symbolTable lookup on " << treestr << endl;
+            break;
+        }
+        if ( tmp->isArray )
+        {
+            // We're assuming all array resolutions are indexed
+            if ( tree->child[0] != NULL ) // Get array index
+                generateExpression(tree->child[0]);  
+            emitRM("LD", ac1, tmp->location, fp, "Load address of array " + svalResolve(tmp));
+            emitRM("SUB", val, ac1, val, "Calculate offset using index");
+        }
+        else
+        { // wow, simpler than i thought!
+            emitRM("LD", val, tmp->location, fp, "Load variable " + treestr);
+        }
+
+        break;
+
+    case ConstK:
+        if ( tree->nodetype == Integer )
+            emitRM("LDC", val, tree->token->ivalue, 0, "Load constant into val");
+        else
+            cerr << "Non-Integer constant" << endl;
+        break;
+
+    case CallK:
+        emitComment("\tCALL to " + treestr);
+        // Store old frame pointer (negative conversion hack for now))
+        emitRM("ST", fp, -1 * (tree->size), fp, "Store current frame pointer");
+        // Load parameters into memory
+        tOffset = -1 * (tree->size); 
+        loadParams(tree->child[0]);
+        emitComment("\t\tJumping to " + treestr);
+        // load address of new frame into fp
+        emitRM("LDA", fp, -1 * (tree->size), fp, "Load address of new frame");
+        // save return address
+        saveRetA(); 
+        // call the function (TODO))
+        emitRM("LDA", pc, -999, pc, "Call " + treestr);
+        // Save function return value
+        emitRM("LDA", val, 0, ret, "Save function result");
+        emitComment("\tEND CALL to " + treestr);
+        break;
+
+    default:
+        cerr << "Hit default in generateExpression switch(kind)!" << endl;
+        break;
     }
 }
+
+// TODO: This should be a prototype for most of my code lmao...how do in c++ tho?
+void codegenTM::loopSiblings( NodeKind nk, TreeNode * node )
+{
+    TreeNode * tree;
+    tree = node;
+    
+    int siblingCount = 1;
+    
+    while(tree != NULL)
+    {
+        switch(nk) {
+        case DeclK:
+            generateDeclaration(tree);
+            break;
+        case StmtK:
+            generateStatement(tree);
+            break;
+        case ExpK:
+            generateExpression(tree);
+            break;
+        default:
+            cerr << "Hit default in loopSiblings switch(nk)!" << endl;
+            break;
+        }
+        tree = tree->sibling;
+        siblingCount++;
+    }
+}
+
 
 void codegenTM::treeTraversal( TreeNode * node )
 {
@@ -358,16 +410,16 @@ void codegenTM::treeTraversal( TreeNode * node )
 void codegenTM::loadParams( TreeNode * node )
 {
     TreeNode * tree = node;
-    int siblingCount = 0;
+    int siblingCount = 1;
     
     while(tree != NULL)
     {
          // load variable
          // store parameter for use by callee
-        emitComment("\t\tLoad param " + siblingCount);
+        emitComment("\t\tLoad param " + to_string(siblingCount) );
         if(tree->child[0] != NULL)
             generateExpression(tree->child[0]);
-        emitRM("ST", val, -999, pc, "Store paramater"); // TODO: proper memory referencing
+        emitRM("ST", val, tree->location + tOffset, pc, "Store paramater " + to_string(siblingCount) );
         tree = tree->sibling;
         siblingCount++;
     }

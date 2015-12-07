@@ -29,6 +29,7 @@ private:
     void generateDeclaration( TreeNode * node );
     void generateStatement( TreeNode * node );    
     void generateExpression( TreeNode * node );
+    void loopSiblings( NodeKind nk, TreeNode * node );
     
     /* General generation */
     void treeTraversal( TreeNode * tree );
