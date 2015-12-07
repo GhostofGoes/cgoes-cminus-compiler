@@ -32,6 +32,7 @@ private:
     
     /* General generation */
     void treeTraversal( TreeNode * tree );
+    void loadParams( TreeNode * node );
     
     /* Typing saving functions  */
     void saveRetA();     // save return addr

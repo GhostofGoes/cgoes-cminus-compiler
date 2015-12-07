@@ -307,22 +307,22 @@ void codegenTM::generateExpression( TreeNode * node )
             break;
             
         case ConstK:
-            emitRM("LDC", val, tree->token->ivalue, 0, "Load constant into val");
+            if(tree->nodetype == Integer)
+                emitRM("LDC", val, tree->token->ivalue, 0, "Load constant into val");
+            else
+                cerr << "Non-Integer constant" << endl;
             break;
             
         case CallK: // TODO: function calls
-            emitComment("\tCALL " + treestr);
+            emitComment("\tCALL to " + treestr);
             // Store old frame pointer
-            if(tree->child[0] != NULL)
-                generateExpression(tree->child[0]);
-            // Load paramaters
-                // load variable
-                // store parameter for use by callee
+            loadParams(tree->child[0]);
+            
             // load address of new frame into fp
             saveRetA(); // save return address
             // call the function
-            emitRM("LDA", val, 0, ret, "Save function result in val");
-            emitComment("\tEND CALL " + treestr);
+            emitRM("LDA", val, 0, ret, "Save function result");
+            emitComment("\tEND CALL to " + treestr);
             break; 
             
         default:            
@@ -355,27 +355,43 @@ void codegenTM::treeTraversal( TreeNode * node )
     }
 }
 
+void codegenTM::loadParams( TreeNode * node )
+{
+    TreeNode * tree = node;
+    int siblingCount = 0;
+    
+    while(tree != NULL)
+    {
+         // load variable
+         // store parameter for use by callee
+        emitComment("\t\tLoad param " + siblingCount);
+        if(tree->child[0] != NULL)
+            generateExpression(tree->child[0]);
+        emitRM("ST", val, -999, pc, "Store paramater"); // TODO: proper memory referencing
+        tree = tree->sibling;
+        siblingCount++;
+    }
+}
 
 /* Helper functions */
 
 void codegenTM::saveRetA() // save return addr
 {
-    emitRM("LDA", 3, 1, pc, "Save return address");
+    emitRM("LDA", val, 1, pc, "Save return address");
 }
 
 void codegenTM::standardRet() // comment, zero out return, funRet
 {
     emitComment("\tFailsafe return");
-    emitRM("LDC", 2, 0, 0, "Zero out return value");
+    emitRM("LDC", ret, 0, 0, "Zero out return value");
     funRet();
-
 }
 
 void codegenTM::funRet() // Load ret addr, adjust FP, return
 {
-    emitRM("LD", 3, -1, fp, "Load return address");
-    emitRM("LD", 1, 0, fp, "Adjust frame pointer");
-    emitRM("LDA", 7, 0, val, "Return!");
+    emitRM("LD", val, -1, fp, "Load return address");
+    emitRM("LD", fp, 0, fp, "Adjust frame pointer");
+    emitRM("LDA", pc, 0, val, "Return!");
 }
 
 void codegenTM::IOroutines(IO io)
@@ -385,37 +401,37 @@ void codegenTM::IOroutines(IO io)
             break;
 
         case InputI:
-            emitRO("IN", 2, 2, 2, "Input integer");
+            emitRO("IN", ret, 2, 2, "Input integer");
             break;
 
         case OutputI:
-            emitRM("LD", 3, -2, fp, "Load param");
-            emitRO("OUT", 3, 3, 3, "Output integer");
-            emitRM("LDC", 2, 0, ac1, "Set return to 0"); // ac3 is zero at this point, so we can do this
+            emitRM("LD", val, -2, fp, "Load param");
+            emitRO("OUT", val, 3, 3, "Output integer");
+            emitRM("LDC", ret, 0, ac1, "Set return to 0"); // ac3 is zero at this point, so we can do this
             break;
 
         case InputB:
-            emitRO("INB", 2, 2, 2, "Input boolean");
+            emitRO("INB", ret, 2, 2, "Input boolean");
             break;
 
         case OutputB:
-            emitRM("LD", 3, -2, fp, "Load param");
-            emitRO("OUTB", 3, 3, 3, "Output boolean");
-            emitRM("LDC", 2, 0, ac1, "Set return to 0");
+            emitRM("LD", val, -2, fp, "Load param");
+            emitRO("OUTB", val, 3, 3, "Output boolean");
+            emitRM("LDC", ret, 0, ac1, "Set return to 0");
             break;
 
         case InputC:
-            emitRO("INC", 2, 2, 2, "Input character");
+            emitRO("INC", ret, 2, 2, "Input character");
             break;
 
         case OutputC:
-            emitRM("LD", 3, -2, fp, "Load param");
-            emitRO("OUTC", 3, 3, 3, "Output character");
-            emitRM("LDC", 2, 0, ac1, "Set return to 0");
+            emitRM("LD", val, -2, fp, "Load param");
+            emitRO("OUTC", val, 3, 3, "Output character");
+            emitRM("LDC", ret, 0, ac1, "Set return to 0");
             break;
 
         case OutNL:
-            emitRO("OUTNL", 3, 3, 3, "Output newline");
+            emitRO("OUTNL", val, 3, 3, "Output newline");
             break;
 
         default:
