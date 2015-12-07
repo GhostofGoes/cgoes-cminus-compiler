@@ -17,8 +17,10 @@
 
 /* Local headers */
 #include "codegenClassTM.h"
+#include "cminus.tab.h"
 #include "cminus.h"
 #include "types.h"
+#include "symbolTable.h"
 
 using namespace std;
 
@@ -199,9 +201,24 @@ void codegenTM::generateStatement( TreeNode * node )
         case ForeachK:
             break;
             
-        case CompoundK:
+        case CompoundK: // TODO: function body!
             emitComment("COMPOUND");
-            // TODO: function body!
+            
+            if(tree->numChildren == 1) // TODO: fix this deep logic issue...
+            {
+                generateExpression(tree->child[1]);
+            }
+            else if( tree->numChildren == 2)
+            {
+                generateDeclaration(tree->child[0]);
+                generateExpression(tree->child[1]);
+            }
+            else
+            {
+                cerr << "Improper number of compound children!" <<
+                    " In: generateStatement - CompoundK" << endl;
+            }
+            
             emitComment("END COMPOUND");
             break;
             
@@ -241,6 +258,7 @@ void codegenTM::generateExpression( TreeNode * node )
     
     int loc;
     TreeNode * p1, * p2;
+    TreeNode * tmp = NULL;
     string treestr = svalResolve(tree);
     
     switch(tree->kind) { 
@@ -278,14 +296,25 @@ void codegenTM::generateExpression( TreeNode * node )
             break;
             
         case IdK: // TODO: variable substitution, params
+            tmp = (TreeNode *)symtable->lookup(treestr);
+            if( tmp == NULL )
+            {
+                cerr << "NULL symbolTable lookup on " << treestr << endl;
+                break;
+            }
+            
+            
             break;
             
         case ConstK:
+            emitRM("LDC", val, tree->token->ivalue, 0, "Load constant into val");
             break;
             
         case CallK: // TODO: function calls
             emitComment("\tCALL " + treestr);
             // Store old frame pointer
+            if(tree->child[0] != NULL)
+                generateExpression(tree->child[0]);
             // Load paramaters
                 // load variable
                 // store parameter for use by callee

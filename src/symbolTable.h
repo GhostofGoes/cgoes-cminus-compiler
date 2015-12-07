@@ -1,5 +1,6 @@
 #ifndef _SYMBOLTABLE_H_
 #define _SYMBOLTABLE_H_
+
 #include <map>
 #include <vector>
 #include <string>
@@ -26,7 +27,6 @@
 // Class: Scope
 //
 
-// feel free to replace std::string  with std::string
 class Scope {
 private:
     static bool debugFlg;                      // turn on tedious debugging
@@ -43,7 +43,7 @@ public:
                                                // returns false if already defined
     void *lookup(std::string sym);             // returns the ptr associated with sym
                                                // returns NULL if symbol not found
-    std::string scopeName() {return name; };   // accessor for name
+    std::string scopeName() { return name; };   // accessor for name
 };
 
 
