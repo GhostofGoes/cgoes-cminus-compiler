@@ -83,15 +83,16 @@ int main ( int argc, char * argv[] )
     int parseStatus = 0;
     
     std::string outfileTM;
+    std::string infile;
     
     initTokenMaps(); // yyerrorhelper initialization...
     
     // Get the input file
     if(argc > 1)
     {
-        outfileTM = basename(argv[1]);
-        size_t lastindex = outfileTM.find_last_of("."); 
-        outfileTM = outfileTM.substr(0, lastindex);
+        infile = basename(argv[1]);
+        size_t lastindex = infile.find_last_of("."); 
+        outfileTM = infile.substr(0, lastindex);
         outfileTM += ".tm";
         
         yyin = fopen(argv[1], "r");
@@ -162,7 +163,7 @@ int main ( int argc, char * argv[] )
  
     if ( code_generation && (errors == 0) )
     {
-        generateCode(outfileTM);
+        generateCode(outfileTM, infile);
     }
 
     
@@ -1153,9 +1154,9 @@ void treeParse ( TreeNode * par, TreeNode * node, SymbolTable * symtable, bool i
     } // end while
 }
 
-void generateCode( std::string output_file )
+void generateCode( std::string output_file, std::string infile )
 {
-    codegenTM cg(annotatedTree, symtab, global_offset, output_file );
+    codegenTM cg(annotatedTree, symtab, global_offset, output_file, infile );
     cg.generateCode();
 }
 

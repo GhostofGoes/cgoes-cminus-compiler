@@ -26,13 +26,13 @@ using namespace std;
 // TODO: fix this deep logic issue... 'numChildren'
 
 /* Constructors/Destructors */
-codegenTM::codegenTM ( TreeNode * t, SymbolTable * s, int g, string of) 
+codegenTM::codegenTM ( TreeNode * t, SymbolTable * s, int g, string of, string inf) 
 { 
     symtable = s;
     aTree = t;
     
     outfilename = of;
-    //infilename = input_filename;
+    infilename = inf;
     
     if(outfilename != "stdout")
         emitToFile = true;
@@ -76,7 +76,7 @@ void codegenTM::generateCode()
     }  
     emitComment( "Cgoes Cminus Compiler (CCC)" );
     emitComment( "Author: Christopher Goes");
-    //emitComment( "File compiled: " + infilename );
+    emitComment( "File compiled: " + infilename );
     emitComment( "Generated at: " + timestamp() );
     
     

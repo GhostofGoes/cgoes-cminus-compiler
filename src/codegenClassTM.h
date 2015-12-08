@@ -17,7 +17,7 @@
 class codegenTM {
 public:
     void generateCode(); // This actually generates code. wow.
-    codegenTM( TreeNode * t, SymbolTable * s, int g, std::string of );
+    codegenTM( TreeNode * t, SymbolTable * s, int g, std::string of, std::string inf );
     ~codegenTM(); // destructor: closes file, few misc cleanup tasks
     
 private:
@@ -61,7 +61,7 @@ private:
     TreeNode * aTree;
     
     /* IO stuff */
-    //string infilename;
+    std::string infilename;
     std::string outfilename;
     std::ofstream outfile;
     bool emitToFile;

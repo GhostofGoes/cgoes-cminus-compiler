@@ -34,7 +34,7 @@ extern int global_offset;
 SymbolTable * semanticAnalysis(TreeNode * tree );
 void typeResolution( TreeNode * parent, TreeNode * node, SymbolTable * symtable );
 void treeParse( TreeNode * parent, TreeNode * node, SymbolTable * symtable, bool in_loop );
-void generateCode( std::string output_file );
+void generateCode( std::string output_file, std::string infile );
 
 TreeNode * buildIOLibrary();
 void checkArgTypes( TreeNode * call, TreeNode * func );
