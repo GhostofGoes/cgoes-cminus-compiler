@@ -228,7 +228,6 @@ void codegenTM::generateStatement( TreeNode * node )
             
             if(tree->numChildren == 1) // Just expressions
             { 
-                emitComment(" EXPRESSION");
                 loopSiblings(ExpK, tree->child[0]);
             }
             else if( tree->numChildren == 2) // Declarations then expressions
@@ -243,10 +242,10 @@ void codegenTM::generateStatement( TreeNode * node )
             break;
             
         case ReturnK: // TODO: function returns!
-            emitComment("\tReturn definition");
+            emitComment("\tRETURN definition");
             if(tree->child[0] != NULL) { // Check for return value
                 generateExpression(tree->child[0]);
-                emitRM("LDA", ret, 0, val, "Save expression result into ret");
+                emitRM("LDA", ret, 0, val, "Save result into ret");
             }
             funRet(); // Return!
             break;
@@ -370,7 +369,7 @@ void codegenTM::generateExpression( TreeNode * node )
         if(tmp == NULL)
             break;
         // Store old frame pointer (negative conversion hack for now))
-        emitRM("ST", fp, -1 * (tmp->size), fp, "Store current frame pointer");
+        emitRM("ST", fp, -1 * (tree->size), fp, "Store current frame pointer");
         // Load parameters into memory
         tOffset = -1 * (tmp->size); 
         loadParams(lhs);
@@ -379,8 +378,8 @@ void codegenTM::generateExpression( TreeNode * node )
         emitRM("LDA", fp, -1 * (tmp->size), fp, "Load address of new frame");
         // save return address
         emitRM("LDA", val, 1, pc, "Save return address");
-        // call the function (TODO))
-        emitRM("LDA", pc, -1 * tmp->loc, pc, "Call " + treestr);
+        // (lazily) call the function 
+        emitRM("LDC", pc, -1 * tmp->loc, 0, "Call " + treestr); // TODO: backpatch
         // Save function return value
         emitRM("LDA", val, 0, ret, "Save function result");
         emitComment("\tEND CALL to " + treestr);
