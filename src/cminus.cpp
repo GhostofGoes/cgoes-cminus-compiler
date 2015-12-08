@@ -22,16 +22,19 @@
 
 // C++ Libraries
 #include <iostream>
-#include <fstream>
+//#include <fstream>
 #include <string>
 #include <cstdlib>
 #include <vector>
 #include <map>
+//#include <sstream>
+//#include <algorithm>
 
 // C libraries
 #include <stdio.h>
 #include <string.h>
 #include <getopt.h>
+#include <libgen.h>
 
 // Local headers
 #include "cminus.h"
@@ -89,13 +92,19 @@ int main ( int argc, char * argv[] )
     // Get the input file
     if(argc > 1)
     {
-        outfileTM += "basename ";
+        /*outfileTM += "basename ";
         outfileTM += argv[1];
         outfileTM += " > temp_cminus.txt";
         std::system(outfileTM.c_str());
         std::ifstream ifs("temp_cminus.txt");
-        outfileTM.assign( (std::istreambuf_iterator<char>(ifs) ),
-                        (std::istreambuf_iterator<char>()    ) );
+        std::stringstream buffer;
+        buffer << ifs.rdbuf();
+        outfileTM = buffer.str();
+        outfileTM.erase(std::remove(outfileTM.begin(), outfileTM.end(), '\n'), outfileTM.end());*/
+        outfileTM = basename(argv[1]);
+        size_t lastindex = outfileTM.find_last_of("."); 
+        outfileTM = outfileTM.substr(0, lastindex);
+        
         std::cerr << outfileTM << std::endl;
         yyin = fopen(argv[1], "r");
     }
