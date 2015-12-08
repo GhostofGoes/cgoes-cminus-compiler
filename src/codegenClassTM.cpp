@@ -311,7 +311,7 @@ void codegenTM::generateExpression( TreeNode * node )
         emitRM("ST", fp, fOffset, fp, "Store current frame pointer");
         // Load parameters into memory
         //tOffset = -1 * (tmp->size); 
-        loadParams(tree->child[0], tmp->size + fOffset);
+        loadParams(tree->child[0], -1 + fOffset);
         emitComment("\t\tJumping to " + treestr);
         // load address of new frame into fp
         emitRM("LDA", fp, fOffset, fp, "Load address of new frame");
