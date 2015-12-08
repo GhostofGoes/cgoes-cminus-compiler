@@ -2,14 +2,19 @@
 base=$(basename $1)
 FILENAME=${base%%.*}
 
-if [ $2 -eq 2 ]
+
+if [ $2 -eq 3 ]
 then
-	./c- $1 -P -o $FILENAME.tm > testoutput.txt
-	./tm $FILENAME.tm < commands.txt
+    ./c- $1 -P -o testing.tm > testoutput.txt
+    ./tm testing.tm < commands.txt
+elif [ $2 -eq 2 ]
+then
+    ./c- $1 -P -o $FILENAME.tm > testoutput.txt
+    ./tm $FILENAME.tm < commands.txt
 elif [ $2 -eq 1 ]
 then
-	./c- $1 -P >  testoutput.txt
-	./tm $FILENAME.tm < commands.txt
+    ./c- $1 -P >  testoutput.txt
+    ./tm $FILENAME.tm < commands.txt
 else
-	./c- $1 -P > testoutput.txt
+    ./c- $1 -P > testoutput.txt
 fi

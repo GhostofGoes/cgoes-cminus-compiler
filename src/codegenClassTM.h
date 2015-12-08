@@ -34,6 +34,7 @@ private:
     /* General generation */
     void treeTraversal( TreeNode * tree );
     void loadParams( TreeNode * node );
+    TreeNode * lookup( std::string nodeName );
     
     /* Typing saving functions  */
     void saveRetA();     // save return addr

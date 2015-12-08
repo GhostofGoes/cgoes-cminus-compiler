@@ -92,8 +92,8 @@ int main ( int argc, char * argv[] )
         outfileTM = basename(argv[1]);
         size_t lastindex = outfileTM.find_last_of("."); 
         outfileTM = outfileTM.substr(0, lastindex);
+        outfileTM += ".tm";
         
-        std::cerr << outfileTM << std::endl;
         yyin = fopen(argv[1], "r");
     }
 

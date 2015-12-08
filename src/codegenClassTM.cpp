@@ -34,10 +34,7 @@ codegenTM::codegenTM ( TreeNode * t, SymbolTable * s, int g, string of)
     //infilename = input_filename;
     
     if(outfilename != "stdout")
-    {
-        outfilename += ".tm";
         emitToFile = true;
-    }
     else
         emitToFile = false;
     
@@ -284,12 +281,9 @@ void codegenTM::generateExpression( TreeNode * node )
     case UnaryK:
 
         switch (tree->token->bval) {
-        case MULTIPLY: // TODO: unary *
-        	// array size can be used when, just on IDs?
-        	// what is unary star doing precisely
-        	// temp = getArraySizeLoc(tree->child[0]);
-        	// temp = getArraySize(tree->child[0]);
-            emitRM("LDA", val, temp, fp, "Load size of array");
+        case MULTIPLY:
+            tmp = lookup(svalResolve(tree->child[0]));
+            emitRM("LDA", val, tmp->location + 1, fp, "Load size of array");
             break;
 
         case NOT:
@@ -307,19 +301,16 @@ void codegenTM::generateExpression( TreeNode * node )
         break;
 
     case IdK: // TODO: variable substitution, params
-        tmp = (TreeNode *) symtable->lookup(treestr);
+        tmp = lookup(treestr);
         if ( tmp == NULL )
-        {
-            cerr << "NULL symbolTable lookup on " << treestr << endl;
             break;
-        }
-        if ( tmp->isArray )
+        else if ( tmp->isArray )
         {
             // We're assuming all array resolutions are indexed
             if ( tree->child[0] != NULL ) // Get array index
                 generateExpression(tree->child[0]);  
             emitRM("LD", ac1, tmp->location, fp, "Load address of array " + svalResolve(tmp));
-            emitRM("SUB", val, ac1, val, "Calculate offset using index");
+            emitRO("SUB", val, ac1, val, "Calculate offset using index");
         }
         else
         { // wow, simpler than i thought!
@@ -433,6 +424,17 @@ void codegenTM::loadParams( TreeNode * node )
 }
 
 /* Helper functions */
+
+TreeNode* codegenTM::lookup(std::string treestr)
+{
+    TreeNode * tmp = (TreeNode *) symtable->lookup(treestr);
+    if ( tmp == NULL )
+    {
+        cerr << "NULL symbolTable lookup on " << treestr << endl;
+    }    
+    return tmp;
+}
+
 
 void codegenTM::saveRetA() // save return addr
 {
