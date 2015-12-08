@@ -34,7 +34,8 @@ private:
     /* General generation */
     void treeTraversal( TreeNode * tree ); // loopsiblings without nk selection
     void loadParams( TreeNode * node ); // loads params before function call
-    TreeNode * lookup( std::string nodeName ); // symboltable lookup
+    TreeNode * lookupLocal( std::string nodeName ); // symboltable lookup
+    TreeNode * lookupGlobal( std::string nodeName ); // global symtab lookup
     
     /* ID resolution functions */
     // TODO: HANDLE STATICS FOR ASSIGNMENT 7

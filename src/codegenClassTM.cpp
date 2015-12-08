@@ -281,15 +281,14 @@ void codegenTM::generateExpression( TreeNode * node )
     case AssignK:
         switch (tree->token->bval) {
         case ASSIGN:
-            // TODO: remove GLOBAL and STATIC guards~!
-            if ( lhs != NULL && lhs->isArray && !lhs->isStatic && lhs->offsetReg != global )
+            if ( lhs != NULL && lhs->isArray )
             {
                 generateExpression(lhs->child[0]); // calculate the index
                 emitRM("ST", val, fOffset, fp, "Save index of array " + lstr);
                 generateExpression(rhs); // // Get rvalue to assign, put in val (*assumption*)
                 emitRM("LD", ac1, fOffset, fp, "Retrieve index of array " + lstr);
                 storeArrayVar(lhs, val, ac1); // Assign rvalue to lvalue
-            } else if ( lhs != NULL && !lhs->isStatic && lhs->offsetReg != global )
+            } else if ( lhs != NULL )
             {
                 generateExpression(rhs); // // Get rvalue to assign, put in val (*assumption*)
                 storeVar(lhs, val); // Assign rvalue to lvalue
@@ -337,8 +336,8 @@ void codegenTM::generateExpression( TreeNode * node )
         break;
 
     case IdK:
-        tmp = lookup(treestr);
-        if(tmp == NULL || lhs->isStatic || lhs->offsetReg == global) // TODO: remove global/static
+        tmp = idResolve(tree);
+        if(tmp == NULL)
         {
             break;
         }
@@ -363,7 +362,7 @@ void codegenTM::generateExpression( TreeNode * node )
     case CallK:
         emitComment(" EXPRESSION");
         emitComment("\tBEGIN CALL TO " + treestr);
-        tmp = lookup(treestr);
+        tmp = idResolve(tree);
         if(tmp == NULL)
             break;
         // Store old frame pointer (negative conversion hack for now))
@@ -476,7 +475,7 @@ void codegenTM::storeVar(TreeNode* var, int reg)
     }
     else
     {
-        //emitRM("ST", reg, tmp->location, gp, "Store 'global' variable " + tmpstr);  
+        emitRM("ST", reg, tmp->location, gp, "Store 'global' variable " + tmpstr);  
     }
 }
 
@@ -495,9 +494,9 @@ void codegenTM::storeArrayVar(TreeNode* arr, int reg, int index)
     }
     else
     { // TODO: LOOKUP GLOBAL!!!
-        //loadArrayAddr(tmp, ac3);
-        //emitRO("SUB", ac3, ac3, index, "Calculate offset using index");
-        //emitRM("ST", reg, val, gp, "Store reg(" + to_string(reg) + ") into global array " + svalResolve(tmp));
+        loadArrayAddr(tmp, ac3);
+        emitRO("SUB", ac3, ac3, index, "Calculate offset using index");
+        emitRM("ST", reg, val, gp, "Store reg(" + to_string(reg) + ") into global array " + svalResolve(tmp));
     }
 }
 
@@ -516,7 +515,7 @@ void codegenTM::loadVar(TreeNode* var, int reg )
     }
     else
     {
-        //emitRM("LD", reg, tmp->location, gp, "Load 'global' variable " + svalResolve(tmp));
+        emitRM("LD", reg, tmp->location, gp, "Load 'global' variable " + svalResolve(tmp));
     }
 }
 
@@ -535,9 +534,9 @@ void codegenTM::loadArrayVar(TreeNode* arr, int reg, int index)
     }
     else
     {
-        //loadArrayAddr(tmp, ac3);
-        //emitRO("SUB", ac3, ac3, index, "Calculate offset using index"); // assumes index is positive        
-        //emitRM("LD", reg, ac3, gp, "Load global array variable " + svalResolve(tmp));
+        loadArrayAddr(tmp, ac3);
+        emitRO("SUB", ac3, ac3, index, "Calculate offset using index"); // assumes index is positive        
+        emitRM("LD", reg, ac3, gp, "Load global array variable " + svalResolve(tmp));
     }
     
 }
@@ -556,7 +555,7 @@ void codegenTM::loadArrayAddr( TreeNode* arr, int reg )
     }
     else
     {
-        //emitRM("LDA", reg, tmp->location, gp, "Load 'global' array address of " + svalResolve(tmp)); 
+        emitRM("LDA", reg, tmp->location, gp, "Load 'global' array address of " + svalResolve(tmp)); 
     }
 }
 
@@ -573,11 +572,13 @@ TreeNode* codegenTM::idResolve(TreeNode* node)
     }
     else if ( node->kind == IdK )
     {
-        tmp = lookup(svalResolve(node));
+        
+        tmp = lookupLocal(svalResolve(node));
         if ( tmp == NULL )
         {
+            tmp = lookupGlobal(svalResolve(node));
             //cerr << "NULL lookup in idResolve!" << endl;
-            return NULL;
+            return tmp;
         }
         else
             return tmp;
@@ -587,19 +588,26 @@ TreeNode* codegenTM::idResolve(TreeNode* node)
 }
 
 
-TreeNode* codegenTM::lookup(std::string treestr)
+TreeNode* codegenTM::lookupLocal(std::string treestr)
 {
     TreeNode * tmp = (TreeNode *) symtable->lookup(treestr);
     if ( tmp == NULL )
     {
-        //tmp = (TreeNode *) symtable->lookupGlobal(treestr);
-        if ( tmp == NULL )
-        {
-            cerr << "NULL symbolTable lookup on " << treestr << endl;
-        }
+        //cerr << "NULL symbolTable lookup on " << treestr << endl;
     }    
     return tmp;
 }
+
+TreeNode* codegenTM::lookupGlobal(std::string treestr)
+{
+    TreeNode * tmp = (TreeNode *) symtable->lookupGlobal(treestr);
+    if ( tmp == NULL )
+    {
+        //cerr << "NULL GLOBAL symbolTable lookup on " << treestr << endl;
+    }    
+    return tmp;
+}
+
 
 void codegenTM::standardRet() // comment, zero out return, funRet
 {
