@@ -38,12 +38,15 @@ private:
     
     /* ID resolution functions */
     void storeVar( TreeNode * var, int reg ); // ST reg->var
+    void storeArrayVar( TreeNode * arr, int reg, int index ); // USES: ac3
     // LD val<-var
     // If array, calcuate index, LD reg<-array[index]
     void loadVar( TreeNode * var, int reg );
+    void loadArrayVar( TreeNode * arr, int reg, int index ); // USES: ac3
     void loadArrayAddr( TreeNode * arr, int reg ); // LDA reg<-arr
     
     /* Typing saving functions  */
+    TreeNode * idResolve(TreeNode * node);
     void saveRetA();     // save return addr
     void standardRet(); // zero out return first
     void funRet();      // Load ret addr, adjust FP, return 
