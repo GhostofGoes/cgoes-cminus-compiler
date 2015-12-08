@@ -142,7 +142,7 @@ void codegenTM::generateDeclaration(TreeNode* node)
         case VarK: // TODO: VARIABLES!
             if(tree->isArray)
             {
-                if(tree->offsetReg == local)
+                if(tree->offsetReg == local && !tree->isStatic)
                 {
                     emitRM("LDC", val, tree->arraySize, 0, "Load size of array " + treestr);
                     emitRM("ST", val, tree->location + 1, fp, "Store size of local array " + treestr);
@@ -303,7 +303,7 @@ void codegenTM::generateExpression( TreeNode * node )
         break;
 
     case OpK:
-        emitComment(" EXPRESSION");
+        //emitComment(" EXPRESSION");
         switch (tree->token->bval) {
         default:
             break;
@@ -332,9 +332,11 @@ void codegenTM::generateExpression( TreeNode * node )
 
     case IdK:
         tmp = lookup(treestr);
-        if(tmp == NULL || !lhs->isStatic || lhs->offsetReg != global) // TODO: remove global/static
+        if(tmp == NULL || lhs->isStatic || lhs->offsetReg == global) // TODO: remove global/static
+        {
             break;
-        if(tmp->isArray )
+        }
+        else if(tmp->isArray )
         {
            generateExpression(lhs); // calculate the index
            loadArrayVar(tmp, val, val);
@@ -460,7 +462,9 @@ void codegenTM::storeVar(TreeNode* var, int reg)
     std::string tmpstr = svalResolve(tmp);
 
     if ( tmp->offsetReg == local && !tmp->isStatic )
+    {
         emitRM("ST", reg, tmp->location, fp, "Store local variable " + tmpstr);
+    }
     else
     {
         //emitRM("ST", reg, tmp->location, gp, "Store 'global' variable " + tmpstr);  
@@ -474,12 +478,16 @@ void codegenTM::storeArrayVar(TreeNode* arr, int reg, int index)
     if(tmp == NULL)
         return;
 
-    loadArrayAddr(tmp, ac3);
-    emitRO("SUB", ac3, ac3, index, "Calculate offset using index");
     if ( tmp->offsetReg == local && !tmp->isStatic )
+    {
+        loadArrayAddr(tmp, ac3);
+        emitRO("SUB", ac3, ac3, index, "Calculate offset using index");
         emitRM("ST", reg, val, fp, "Store reg(" + to_string(reg) + ") into local array " + svalResolve(tmp));
+    }
     else
     { // TODO: LOOKUP GLOBAL!!!
+        //loadArrayAddr(tmp, ac3);
+        //emitRO("SUB", ac3, ac3, index, "Calculate offset using index");
         //emitRM("ST", reg, val, gp, "Store reg(" + to_string(reg) + ") into global array " + svalResolve(tmp));
     }
 }
@@ -494,7 +502,9 @@ void codegenTM::loadVar(TreeNode* var, int reg )
         return;
     
     if ( tmp->offsetReg == local && !tmp->isStatic )
+    {
         emitRM("LD", reg, tmp->location, fp, "Load local variable " + svalResolve(tmp));
+    }
     else
     {
         //emitRM("LD", reg, tmp->location, gp, "Load 'global' variable " + svalResolve(tmp));
@@ -507,16 +517,18 @@ void codegenTM::loadArrayVar(TreeNode* arr, int reg, int index)
     TreeNode * tmp = idResolve(arr);
     if(tmp == NULL)
         return;
-    
-    //if ( var->child[0] != NULL ) // Get array index
-    //    generateExpression(var->child[0]);
-    loadArrayAddr(tmp, ac3);
-    emitRO("SUB", ac3, ac3, index, "Calculate offset using index"); // assumes index is positive
+
     if ( tmp->offsetReg == local && !tmp->isStatic )
+    {
+        loadArrayAddr(tmp, ac3);
+        emitRO("SUB", ac3, ac3, index, "Calculate offset using index"); // assumes index is positive
         emitRM("LD", reg, ac3, fp, "Load local array variable " + svalResolve(tmp));
+    }
     else
     {
-        //emitRM("LD", reg, ac3, gp, "Load global array variable " + svalResolve(tmp));    
+        //loadArrayAddr(tmp, ac3);
+        //emitRO("SUB", ac3, ac3, index, "Calculate offset using index"); // assumes index is positive        
+        //emitRM("LD", reg, ac3, gp, "Load global array variable " + svalResolve(tmp));
     }
     
 }
@@ -530,7 +542,9 @@ void codegenTM::loadArrayAddr( TreeNode* arr, int reg )
         return;
 
     if ( tmp->offsetReg == local && !tmp->isStatic )
+    {
         emitRM("LDA", reg, tmp->location, fp, "Load local array address of  " + svalResolve(tmp));
+    }
     else
     {
         //emitRM("LDA", reg, tmp->location, gp, "Load 'global' array address of " + svalResolve(tmp)); 
