@@ -26,14 +26,14 @@ private:
     void initGlobals();
     
     /* Generate by nodekind */
-    void generateDeclaration( TreeNode * node );
-    void generateStatement( TreeNode * node );    
-    void generateExpression( TreeNode * node );
+    void generateDeclaration( TreeNode * node );    // generic decleration 
+    void generateStatement( TreeNode * node );      // generic statement
+    void generateExpression( TreeNode * node );     // generic expression
     void loopSiblings( NodeKind nk, TreeNode * node );
     
     /* General generation */
     void treeTraversal( TreeNode * tree ); // loopsiblings without nk selection
-    void loadParams( TreeNode * node ); // loads params before function call
+    void loadParams( TreeNode * node, int off ); // loads params before function call
     TreeNode * lookupLocal( std::string nodeName ); // symboltable lookup
     TreeNode * lookupGlobal( std::string nodeName ); // global symtab lookup
     
