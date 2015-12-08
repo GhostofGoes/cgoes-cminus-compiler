@@ -161,6 +161,8 @@ void codegenTM::generateDeclaration(TreeNode* node)
             if(treestr == "main") // Only a few functions to check, so this is fine
                 mainLoc = emitSkip(0);
             // TODO: this is where i can nab the function location
+            tree->loc = emitSkip(0);
+            cerr << "func " << treestr << " loc: " << tree->loc << endl;
             emitRM("ST", val, -1, fp, "Store return address");
             
             if(tree->isIO != Nopeput)
@@ -363,19 +365,22 @@ void codegenTM::generateExpression( TreeNode * node )
 
     case CallK:
         emitComment(" EXPRESSION");
-        emitComment("\tBEGIN CALL to " + treestr);
+        emitComment("\tBEGIN CALL TO " + treestr);
+        tmp = lookup(treestr);
+        if(tmp == NULL)
+            break;
         // Store old frame pointer (negative conversion hack for now))
-        emitRM("ST", fp, -1 * (tree->size), fp, "Store current frame pointer");
+        emitRM("ST", fp, -1 * (tmp->size), fp, "Store current frame pointer");
         // Load parameters into memory
-        tOffset = -1 * (tree->size); 
+        tOffset = -1 * (tmp->size); 
         loadParams(lhs);
         emitComment("\t\tJumping to " + treestr);
         // load address of new frame into fp
-        emitRM("LDA", fp, -1 * (tree->size), fp, "Load address of new frame");
+        emitRM("LDA", fp, -1 * (tmp->size), fp, "Load address of new frame");
         // save return address
         emitRM("LDA", val, 1, pc, "Save return address");
         // call the function (TODO))
-        emitRM("LDA", pc, -999, pc, "Call " + treestr);
+        emitRM("LDA", pc, -1 * tmp->loc, pc, "Call " + treestr);
         // Save function return value
         emitRM("LDA", val, 0, ret, "Save function result");
         emitComment("\tEND CALL to " + treestr);

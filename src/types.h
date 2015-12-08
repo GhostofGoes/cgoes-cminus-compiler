@@ -67,7 +67,8 @@ typedef struct treeNode
     Offset offsetReg;   // offset register: global, local
     IO isIO;            // Will be set if input/output routine, otherwise Nopeput
     int size;           // size in memory
-    int location;       // location in memory?   
+    int location;       // location in memory?
+    int loc;
     
 } TreeNode;
 
