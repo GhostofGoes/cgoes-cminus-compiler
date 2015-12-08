@@ -157,6 +157,7 @@ void codegenTM::generateDeclaration(TreeNode* node)
             
         case FunK:
             emitComment("FUNCTION " + treestr);
+            cerr << "dep: " << symtable->depth() << endl;
             symtable->enter("Function " + treestr);
             if(treestr == "main") // Only a few functions to check, so this is fine
                 mainLoc = emitSkip(0);
@@ -221,6 +222,7 @@ void codegenTM::generateStatement( TreeNode * node )
             
         case CompoundK: // TODO: function body!
             emitComment("BEGIN COMPOUND");
+            cerr << "dep: " << symtable->depth() << endl;
             if(tree->isFuncCompound == false)
                 symtable->enter("Compound" + tree->lineno); // forgot this bloody hell
             fOffset = tree->size;
@@ -593,7 +595,7 @@ TreeNode* codegenTM::lookupLocal(std::string treestr)
     TreeNode * tmp = (TreeNode *) symtable->lookup(treestr);
     if ( tmp == NULL )
     {
-        //cerr << "NULL symbolTable lookup on " << treestr << endl;
+        cerr << "NULL symbolTable lookup on " << treestr << endl;
     }    
     return tmp;
 }
@@ -603,7 +605,7 @@ TreeNode* codegenTM::lookupGlobal(std::string treestr)
     TreeNode * tmp = (TreeNode *) symtable->lookupGlobal(treestr);
     if ( tmp == NULL )
     {
-        //cerr << "NULL GLOBAL symbolTable lookup on " << treestr << endl;
+        cerr << "NULL GLOBAL symbolTable lookup on " << treestr << endl;
     }    
     return tmp;
 }
