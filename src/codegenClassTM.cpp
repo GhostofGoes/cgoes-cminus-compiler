@@ -162,7 +162,6 @@ void codegenTM::generateDeclaration(TreeNode* node)
                 mainLoc = emitSkip(0);
             // TODO: this is where i can nab the function location
             tree->loc = emitSkip(0);
-            cerr << "func " << treestr << " loc: " << tree->loc << endl;
             emitRM("ST", val, -1, fp, "Store return address");
             
             if(tree->isIO != Nopeput)
@@ -228,13 +227,12 @@ void codegenTM::generateStatement( TreeNode * node )
             
             if(tree->numChildren == 1) // Just expressions
             { 
-                loopSiblings(ExpK, tree->child[0]);
+                treeTraversal(tree->child[0]);
             }
             else if( tree->numChildren == 2) // Declarations then expressions
             {
                 loopSiblings(DeclK, tree->child[0]);
-                //emitComment(" EXPRESSION");
-                loopSiblings(ExpK, tree->child[1]);
+                treeTraversal(tree->child[1]);
             }
             if(tree->isFuncCompound == false)
                 symtable->leave();
@@ -242,7 +240,7 @@ void codegenTM::generateStatement( TreeNode * node )
             break;
             
         case ReturnK: // TODO: function returns!
-            emitComment("\tRETURN definition");
+            emitComment("\tRETURN");
             if(tree->child[0] != NULL) { // Check for return value
                 generateExpression(tree->child[0]);
                 emitRM("LDA", ret, 0, val, "Save result into ret");
