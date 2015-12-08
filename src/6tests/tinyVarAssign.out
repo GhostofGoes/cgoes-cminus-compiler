@@ -1,0 +1,17 @@
+TM version 3.4 (enter h for help)...
+
+Memory Configuration: Data Addresses: 0-9999  Instruction Addresses: 0-9999
+Abort Limit: 50000
+Loading file: tinyVarAssign.tm
+Enter command: command: g
+999 111 
+222 444 222 
+333 555 10 
+999 111 10 
+444 666 10 
+999 111 
+Status: Halted
+Last executed cmd:  343: HALT  0,  0, 0  | before: r[0]:9999 r[1]:9975 r[2]:0   r[3]:343 r[4]:9971 r[5]:9978 r[6]:0   |  
+PC was 343, PC is now 344
+command: x
+Bye.

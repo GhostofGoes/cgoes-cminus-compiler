@@ -1,0 +1,47 @@
+int gx, gy[10];
+fred(int px, py[])
+{
+    int x, y[10];
+    static int sx, sy[10];
+    
+    gx = 111;
+    gx = gx;
+    output(gx);
+    gy[9] = 222;
+    gy[9] = gy[9];
+    output(gy[9]);
+    outnl();
+
+    x = 333;
+    x = x;
+    output(x);
+    y[9] = 444;
+    y[9] = y[9];
+    output(y[9]);
+    outnl();
+
+    px = 555;
+    px = px;
+    output(px);
+    py[9] = 666;
+    py[9] = py[9];
+    output(py[9]);
+    outnl();
+
+    sx = 777;
+    sx = sx;
+    output(sx);
+    sy[9] = 888;
+    sy[9] = sy[9];
+    output(sy[9]);
+    outnl();
+}
+
+main() {
+    int lx, ly[10];
+
+    fred(gx, gy);
+    fred(lx, ly);
+}
+
+    

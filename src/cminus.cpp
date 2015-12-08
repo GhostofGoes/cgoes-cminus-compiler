@@ -22,13 +22,10 @@
 
 // C++ Libraries
 #include <iostream>
-//#include <fstream>
 #include <string>
 #include <cstdlib>
 #include <vector>
 #include <map>
-//#include <sstream>
-//#include <algorithm>
 
 // C libraries
 #include <stdio.h>
@@ -92,15 +89,6 @@ int main ( int argc, char * argv[] )
     // Get the input file
     if(argc > 1)
     {
-        /*outfileTM += "basename ";
-        outfileTM += argv[1];
-        outfileTM += " > temp_cminus.txt";
-        std::system(outfileTM.c_str());
-        std::ifstream ifs("temp_cminus.txt");
-        std::stringstream buffer;
-        buffer << ifs.rdbuf();
-        outfileTM = buffer.str();
-        outfileTM.erase(std::remove(outfileTM.begin(), outfileTM.end(), '\n'), outfileTM.end());*/
         outfileTM = basename(argv[1]);
         size_t lastindex = outfileTM.find_last_of("."); 
         outfileTM = outfileTM.substr(0, lastindex);

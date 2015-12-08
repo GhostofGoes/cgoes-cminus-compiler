@@ -1,0 +1,13 @@
+TM version 3.4 (enter h for help)...
+
+Memory Configuration: Data Addresses: 0-9999  Instruction Addresses: 0-9999
+Abort Limit: 50000
+Loading file: tinyAssignInt.tm
+Enter command: command: g
+111 222 333 444 
+555 666 777 888 
+Status: Halted
+Last executed cmd:  188: HALT  0,  0, 0  | before: r[0]:9999 r[1]:9975 r[2]:0   r[3]:188 r[4]:9985 r[5]:9976 r[6]:0   |  
+PC was 188, PC is now 189
+command: x
+Bye.

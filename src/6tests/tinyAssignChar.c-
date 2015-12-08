@@ -1,0 +1,33 @@
+char gx, gy[10];
+
+esperanza(char px, py[])
+{
+    char x, y[10];
+    static char sx, sy[10];
+    
+    gx = 'a';
+    outputc(gx);
+    gy[9] = 'b';
+    outputc(gy[9]);
+    x = 'c';
+    outputc(x);
+    y[9] = 'd';
+    outputc(y[9]);
+    outnl();
+    px = 'e';
+    outputc(px);
+    py[9] = 'f';
+    outputc(py[9]);
+    sx = 'f';
+    outputc(sx);
+    sy[9] = 'h';
+    outputc(sy[9]);
+    outnl();
+}
+
+   
+main()
+{
+    char zx, zy[10];
+    esperanza(zx, zy);
+}

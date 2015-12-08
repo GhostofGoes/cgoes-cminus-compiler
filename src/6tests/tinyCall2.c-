@@ -1,0 +1,30 @@
+three(int z[]) {
+    output(z[7]);
+    z[7] = 666;
+    outnl();
+}
+
+
+two(int y[]) {
+    output(y[7]);
+    three(y);
+    output(y[7]);
+}
+
+
+one(int x[]) {
+    output(x[7]);
+    two(x);
+    output(x[7]);
+}
+
+
+main()
+{
+    int w[10];
+
+    w[7] = 42;
+    one(w);
+    output(w[7]);
+    outnl();
+}

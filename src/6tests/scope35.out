@@ -1,0 +1,37 @@
+TM version 3.4 (enter h for help)...
+
+Memory Configuration: Data Addresses: 0-9999  Instruction Addresses: 0-9999
+Abort Limit: 50000
+Loading file: scope35.tm
+Enter command: command: g
+111 11 110 112 
+222 11 220 222 
+
+111 11 110 112 
+222 11 220 222 
+333 11 330 334 
+
+111 11 110 112 
+222 11 220 222 
+444 11 440 445 
+
+B111 11 110 112 
+B222 11 220 222 
+B444 11 440 445 
+
+111 11 110 112 
+222 11 220 222 
+555 11 550 556 
+
+B111 11 110 112 
+B222 11 220 222 
+B555 11 550 556 
+
+111 110 
+B111 11 110 112 
+
+Status: Halted
+Last executed cmd:  465: HALT  0,  0, 0  | before: r[0]:9999 r[1]:9973 r[2]:0   r[3]:465 r[4]:9997 r[5]:9974 r[6]:0   |  
+PC was 465, PC is now 466
+command: x
+Bye.

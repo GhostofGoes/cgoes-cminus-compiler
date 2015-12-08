@@ -1,0 +1,114 @@
+// C-F15
+// C-F09
+int x;
+int y;
+int z;
+
+agamemnon()
+{
+    int a;
+    int b;
+    int x;
+
+    a=666;
+    b=666;
+    x=666;
+    z=666;
+
+    output(a);
+    output(b);
+    output(x);
+    output(y);
+    output(z);
+    outnl();
+    a=1;
+    b=2;
+    x=3;
+    y=4;
+    z=5;
+}
+
+  main()
+{
+    int a;
+    int b;
+    int z;
+
+    a=6;
+    b=7;
+    x=8;
+    y=9;
+    z=10;
+
+    output(a);
+    output(b);
+    output(x);
+    output(y);
+    output(z);
+    outnl();
+    {
+	int a;
+	int b;
+	int z;
+
+	a=666;
+	b=666;
+	z=666;
+
+	output(a);
+	output(b);
+	output(x);
+	output(y);
+	output(z);
+        outnl();
+
+	a=11;
+	b=12;
+	x=13;
+	y=14;
+	z=15;
+	output(a);
+	output(b);
+	output(x);
+	output(y);
+	output(z);
+        outnl();
+	{
+	    output(a);
+	    output(b);
+	    output(x);
+	    output(y);
+	    output(z);
+            outnl();
+
+	    a=16;
+	    b=17;
+	    x=18;
+	    y=19;
+	    z=20;
+	    output(a);
+	    output(b);
+	    output(x);
+	    output(y);
+	    output(z);
+            outnl();
+
+	}
+	output(a);
+	output(b);
+	output(x);
+	output(y);
+	output(z);
+        outnl();
+
+	agamemnon();
+	
+	output(a);
+	output(b);
+	output(x);
+	output(y);
+	output(z);
+        outnl();
+    }
+}
+

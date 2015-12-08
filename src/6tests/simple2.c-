@@ -1,0 +1,9 @@
+main() 
+{
+   int x;
+
+   x = 666;
+   output(x);
+   outnl();
+}
+

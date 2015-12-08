@@ -1,0 +1,10 @@
+fred() 
+{
+   int x;
+
+   x = 666;
+   output(x);
+   outnl();
+}
+
+main() fred();
