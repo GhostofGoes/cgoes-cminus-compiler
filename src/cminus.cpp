@@ -228,8 +228,6 @@ SymbolTable * semanticAnalysis ( TreeNode * og )
     // *** Semantic Analysis *** //
     treeParse(NULL, tree, symtable, false);
     
-    
-
     if ( semantic_debugging )
     {
         std::cout << "Post-treeParse" << std::endl;
@@ -630,7 +628,7 @@ void treeParse ( TreeNode * par, TreeNode * node, SymbolTable * symtable, bool i
                     break;
 
                   case CompoundK:
-                    if(parent->kind != FunK)
+                    if(tree->isFuncCompound == false)
                         symtable->enter("Compound" + line);
                     break;
 
@@ -1121,14 +1119,13 @@ void treeParse ( TreeNode * par, TreeNode * node, SymbolTable * symtable, bool i
             }
         }
         
-        if ( (tree->kind == CompoundK && parent->kind != FunK) || tree->kind == FunK )
+        if ( (tree->kind == CompoundK && (tree->isFuncCompound == false)) || tree->kind == FunK )
         {
             if ( semantic_debugging )
             {
                 std::cout << "Leaving symtable..." << std::endl;
                 symtable->print(printTreeNode);
             }
-
             symtable->leave();
         }
         else if(tree->kind == WhileK || tree->kind == ForeachK)
@@ -1281,6 +1278,7 @@ int memorySizing( TreeNode * node, SymbolTable * symtable, int parOff )
     TreeNode * tree;
     tree = node;
     
+    TreeNode * tmp = NULL;
     int tOff = 0;
     int childVal = 0;
     int line = 0;
@@ -1292,12 +1290,14 @@ int memorySizing( TreeNode * node, SymbolTable * symtable, int parOff )
         line = tree->lineno; // Node's line number
         tree_svalue = svalResolve(tree);
 
+        
         switch (tree->nodekind)
           {
             case DeclK:
               switch (tree->kind)
                 {
                   case VarK:
+                      symtable->insert(tree_svalue, tree);
                     if(tree->isArray  )
                         tree->size = tree->arraySize + 1; // +1 for pointer
                     else
@@ -1323,6 +1323,7 @@ int memorySizing( TreeNode * node, SymbolTable * symtable, int parOff )
                     break;
 
                   case ParamK:
+                      symtable->insert(tree_svalue, tree);
                     tree->size = 1; // since its just a param pointer
                     tree->location = parOff + tOff;
                     tOff -= tree->size;
@@ -1331,6 +1332,7 @@ int memorySizing( TreeNode * node, SymbolTable * symtable, int parOff )
                     break;
 
                   case FunK:
+                      symtable->insert(tree_svalue, tree);
                     symtable->enter("Function " + tree_svalue);
                     tOff = 0;
                     tree->offsetReg = global;
@@ -1373,6 +1375,13 @@ int memorySizing( TreeNode * node, SymbolTable * symtable, int parOff )
                     break;
                 }
               break;
+        case ExpK:
+            if(tree->kind == IdK)
+            {
+                tmp = (TreeNode *)symtable->lookup(tree_svalue);
+                copyAnnotations(tmp, tree); // tmp -> tree
+            }
+            break;
           } // end nodekind switch
 
         tree = tree->sibling; // Jump to the next sibling

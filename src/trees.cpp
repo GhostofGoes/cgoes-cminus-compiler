@@ -17,7 +17,7 @@
 #include "cminus.tab.h"
 #include "types.h"
 #include "toker.h"
-#include "symbolTable.h"
+//#include "symbolTable.h"
 #include "printing.h"
 #include "trees.h"
 //#include "semantic_errors.h"
@@ -48,6 +48,32 @@ TreeNode * makeParent( NodeKind nk, Kind k, Type t, int l, const char * svalue )
 		tempNode->svalue = strdup(svalue);
 	}
 	return tempNode;
+}
+
+void copyAnnotations( TreeNode * from, TreeNode * to ) // from -> to
+{
+    //to->token = NULL;
+    //to->lineno = 0;
+    //to->svalue = NULL;
+    //to->nodetype = Undef;
+    //to->nodekind = DefaultK;
+    //to->kind = k_undef;
+    //to->child[0] = NULL;
+    //to->child[1] = NULL;
+    //to->child[2] = NULL;
+    //to->numChildren = 0;
+    //to->sibling = NULL;
+    to->isStatic = from->isStatic;
+    to->isArray = from->isArray;
+    //to->isIndex = from->isIndex;
+    //to->isConstant = from->isConstant;
+    //to->isFuncCompound = from->isFuncCompound;
+    to->arraySize = from->arraySize;
+    to->size = from->size;
+    to->location = from->location;
+    to->offsetReg = from->offsetReg;
+    to->isIO = from->isIO;
+    //to->loc = 0;    
 }
 
 // Adds a child to an existing syntax tree node

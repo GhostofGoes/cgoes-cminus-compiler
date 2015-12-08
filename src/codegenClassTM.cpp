@@ -230,7 +230,7 @@ void codegenTM::generateExpression( TreeNode * node )
         cerr << "NULL node in generateExpression!" << endl;
         return;
     }        
-    TreeNode * tmp = NULL;
+    TreeNode * tmp = tree;
     TreeNode * lhs = tree->child[0];
     std::string lstr = svalResolve(lhs);
     TreeNode * rhs = tree->child[1];
@@ -241,7 +241,7 @@ void codegenTM::generateExpression( TreeNode * node )
     case AssignK:
         switch (tree->token->bval) {
         case ASSIGN:
-            tmp = idResolve(lhs);
+            //tmp = idResolve(lhs);
             if ( tmp != NULL && tmp->isArray )
             {
                 generateExpression(lhs->child[0]); // calculate the index
@@ -264,8 +264,8 @@ void codegenTM::generateExpression( TreeNode * node )
         emitComment(" UNARY EXPRESSION");
         switch (tree->token->bval) {
         case MULTIPLY:
-            tmp = idResolve(lhs);
-            if( !tmp->isStatic && tmp->offsetReg != global ) // TODO: remove global/static
+            //tmp = idResolve(lhs);
+            if( tmp != NULL && !tmp->isStatic && tmp->offsetReg != global ) // TODO: remove global/static
             {
                 loadArrayAddr(tmp, ac2);
                 emitRM("LD", val, 1, ac2, "Load size of array " + lstr); // +1 to get size                
@@ -277,10 +277,9 @@ void codegenTM::generateExpression( TreeNode * node )
         break;
 
     case IdK:
-        tmp = idResolve(tree);
-        if(tmp == NULL)
-            break;
-        else if(tmp->isArray )
+        //tmp = idResolve(tree);
+
+        if(tmp->isArray )
         {
            generateExpression(lhs); // calculate the index
            loadArrayVar(tmp, val, val);
@@ -389,7 +388,7 @@ void codegenTM::loadParams( TreeNode * node, int off )
     
     while(tree != NULL)
     {
-        tmp = lookupGlobal(svalResolve(tree));
+        //tmp = lookupGlobal(svalResolve(tree));
         emitComment("\t\tLoad param " + to_string(siblingCount) );
         generateExpression(tree); // TODO: resolve ID after recursing on chldren? or even resolve?
         emitRM("ST", val, off - siblingCount, fp, "Store paramater " + to_string(siblingCount) );
@@ -402,7 +401,8 @@ void codegenTM::loadParams( TreeNode * node, int off )
 // ST reg->var
 void codegenTM::storeVar(TreeNode* var, int reg)
 {
-    TreeNode * tmp = idResolve(var);
+    //TreeNode * tmp = idResolve(var);
+    TreeNode * tmp = var;
     if ( tmp == NULL )
         return;
 
@@ -506,6 +506,8 @@ void codegenTM::loadArrayAddr( TreeNode* arr, int reg )
 
 TreeNode* codegenTM::idResolve(TreeNode* node)
 {
+    return node;
+    
     TreeNode * tmp = NULL;
     if(node == NULL)
     {

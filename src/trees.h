@@ -17,7 +17,7 @@
 #include "cminus.tab.h"
 #include "types.h"
 #include "toker.h"
-#include "symbolTable.h"
+//#include "symbolTable.h"
 #include "printing.h"
 
 
@@ -26,7 +26,7 @@
 // Creates a new node for the syntax tree
 TreeNode * makeNode( NodeKind nk, Kind k, Type t, int line, TokenData * token );
 TreeNode * makeParent( NodeKind nk, Kind k, Type t, int line, const char * svalue );
-
+void copyAnnotations ( TreeNode * from, TreeNode * to ); // from -> to
 // Adds a child to an existing syntax tree node
 void addChild( TreeNode * parent, TreeNode * child );
 
