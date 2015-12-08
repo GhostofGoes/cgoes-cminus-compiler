@@ -187,7 +187,6 @@ var-decl-id:
     { 
         yyerrok;
         $$ = makeNode( DeclK, VarK, Void, $1->lineno, $1 );
-        // TODO: handle NUMCONST!
         $$->isArray = true;
         $$->arraySize = $3->ivalue;
         freeToken($2);

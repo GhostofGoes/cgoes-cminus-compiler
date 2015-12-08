@@ -94,10 +94,20 @@ TreeNode * linkSiblings( TreeNode * sib1, TreeNode * sib2 ) {
 // Applies Type t to all the siblings of TreeNode init
 void applyTypeToSiblings( TreeNode * init, Type t ) {
 	TreeNode * temp = init;
-
+    
+    // EPIC STATIC HACK HAHAHAHHA (not really epic, its just late))
+    bool st = false;
+    if(temp != NULL)
+    {
+        if(temp->isStatic)
+            st = true;
+    }
+    
 	while( temp != NULL) {
 		temp->nodetype = t;
+        temp->isStatic = st;
 		temp = temp->sibling;
+        
 	}
 }
 
