@@ -37,6 +37,7 @@ private:
     TreeNode * lookup( std::string nodeName ); // symboltable lookup
     
     /* ID resolution functions */
+    // TODO: HANDLE STATICS FOR ASSIGNMENT 7
     void storeVar( TreeNode * var, int reg ); // ST reg->var
     void storeArrayVar( TreeNode * arr, int reg, int index ); // USES: ac3
     // LD val<-var

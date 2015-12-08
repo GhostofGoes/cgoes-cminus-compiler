@@ -23,6 +23,7 @@
 #include "symbolTable.h"
 
 using namespace std;
+// TODO: fix this deep logic issue... 'numChildren'
 
 /* Constructors/Destructors */
 codegenTM::codegenTM ( TreeNode * t, SymbolTable * s, int g, string of) 
@@ -163,20 +164,20 @@ void codegenTM::generateDeclaration(TreeNode* node)
             else
             {
                 // TODO: any more function code?
-                generateDeclaration(tree->child[0]); // Paramaters
-                generateStatement(tree->child[1]); // Compound
-                standardRet();
+                //generateDeclaration(tree->child[0]); 
+                loopSiblings(DeclK, tree->child[0]); // Paramaters
+                generateStatement(tree->child[1]); // *magical* Compound
+                standardRet(); // "our last resort..."
             }
             
             emitComment("END FUNCTION " + treestr);
             break;
             
-        case ParamK:
-            // TODO: PARAMATERS!
+        case ParamK: // TODO: PARAMATERS??
             break;
             
         default:
-            cerr << "Hit default in generateDeclaration switch(kind)!" << endl;
+            cerr << "Hit default in generateDeclaration switch(kind)! treestr: " << treestr << endl;
             break;
     }
 }
@@ -197,6 +198,7 @@ void codegenTM::generateStatement( TreeNode * node )
     int savedLoc1,savedLoc2,currentLoc;
     int loc;
     
+    string treestr = svalResolve(tree);
     
     switch(tree->kind) {
         case IfK:
@@ -210,7 +212,8 @@ void codegenTM::generateStatement( TreeNode * node )
             
         case CompoundK: // TODO: function body!
             emitComment("BEGIN COMPOUND");
-            // TODO: fix this deep logic issue... 'numChildren'
+            fOffset = tree->size * -1;
+            
             if(tree->numChildren == 1) // Just expressions
             { 
                 emitComment(" EXPRESSION");
@@ -219,13 +222,8 @@ void codegenTM::generateStatement( TreeNode * node )
             else if( tree->numChildren == 2) // Declarations then expressions
             {
                 loopSiblings(DeclK, tree->child[0]);
-                emitComment(" EXPRESSION");
+                //emitComment(" EXPRESSION");
                 loopSiblings(ExpK, tree->child[1]);
-            }
-            else
-            {
-                cerr << "Improper number of compound children!" <<
-                    " In: generateStatement - CompoundK" << endl;
             }
             emitComment("END COMPOUND");
             break;
@@ -243,7 +241,7 @@ void codegenTM::generateStatement( TreeNode * node )
             break;
             
         default:
-            cerr << "Hit default in generateStatement switch(kind)!" << endl;            
+            cerr << "Hit default in generateStatement switch(kind)! treestr: " << treestr << endl;            
             break;
     }
 }
@@ -262,21 +260,44 @@ void codegenTM::generateExpression( TreeNode * node )
     int temp = 0;
     TreeNode * p1, * p2;
     TreeNode * tmp = NULL;
-    TreeNode * lhs = tree->child[0];
-    std::string lstr = svalResolve(tree->child[0]);
-    TreeNode * rhs = tree->child[1];
-    std::string rstr = svalResolve(tree->child[1]);
+    TreeNode * lhs = idResolve(tree->child[0]);
+    std::string lstr = svalResolve(lhs);
+    TreeNode * rhs = idResolve(tree->child[1]);
+    std::string rstr = svalResolve(rhs);
     string treestr = svalResolve(tree);
-
+    
     switch (tree->kind) {
     case AssignK:
-        generateExpression(rhs); // // Get rvalue to assign, put in val (*assumption*)
-        // TODO: SAVE VAL SO IT DOESN'T GET OVERWRITTEN WHEN LHS IS AN INDEXED ARRAY
-        storeVar(lhs, val); // Assign rvalue to lvalue
+        switch (tree->token->bval) {
+        case ASSIGN:
+            if ( lhs != NULL && lhs->isArray ) // nightmares from semantic analysis...(NULLLL))
+            {
+                generateExpression(lhs->child[0]); // calculate the index
+                emitRM("ST", val, fOffset, fp, "Save index of array " + lstr);
+                generateExpression(rhs); // // Get rvalue to assign, put in val (*assumption*)
+                emitRM("LD", ac1, fOffset, fp, "Retrieve index of array " + lstr);
+                storeArrayVar(lhs, val, ac1); // Assign rvalue to lvalue
+            } else if ( lhs != NULL )
+            {
+                generateExpression(rhs); // // Get rvalue to assign, put in val (*assumption*)
+                storeVar(lhs, val); // Assign rvalue to lvalue
+            }
+            break;
+               
+        case ADDASS:
+        case SUBASS:
+        case MULASS:
+        case DIVASS:
+        case INC:
+        case DEC:
+            break;
+        default:
+            break;   
+        }
         break;
 
     case OpK:
-
+        emitComment(" EXPRESSION");
         switch (tree->token->bval) {
         default:
             break;
@@ -284,6 +305,7 @@ void codegenTM::generateExpression( TreeNode * node )
         break;
 
     case UnaryK:
+        emitComment(" UNARY EXPRESSION");
         switch (tree->token->bval) {
         case MULTIPLY:
             loadArrayAddr(lhs, ac2);
@@ -291,31 +313,38 @@ void codegenTM::generateExpression( TreeNode * node )
             break;
 
         case NOT:
-            break;
-
         case QUESTION:
-            break;
-
         case MINUS:
             break;
-
         default:
             break;
         }
         break;
 
-    case IdK: // TODO: variable substitution, params
-        cerr << "Hit IdK: " << treestr << endl;
+    case IdK:
+        tmp = lookup(treestr);
+        if(tmp == NULL)
+            break;
+        if(tmp->isArray)
+        {
+           generateExpression(lhs); // calculate the index
+           loadArrayVar(tmp, val, val);
+        }
+        else
+        {
+            loadVar(tmp, val);
+        }        
         break;
 
     case ConstK:
         if ( tree->nodetype == Integer )
-            emitRM("LDC", val, tree->token->ivalue, 0, "Load constant into val");
+            emitRM("LDC", val, tree->token->ivalue, 0, "Load integer constant");
         else
             cerr << "Non-Integer constant" << endl;
         break;
 
     case CallK:
+        emitComment(" EXPRESSION");
         emitComment("\tBEGIN CALL to " + treestr);
         // Store old frame pointer (negative conversion hack for now))
         emitRM("ST", fp, -1 * (tree->size), fp, "Store current frame pointer");
@@ -335,7 +364,7 @@ void codegenTM::generateExpression( TreeNode * node )
         break;
 
     default:
-        cerr << "Hit default in generateExpression switch(kind)!" << endl;
+        cerr << "Hit default in generateExpression switch(kind)! treestr: " << treestr << endl;
         break;
     }
 }
@@ -497,7 +526,7 @@ TreeNode* codegenTM::idResolve(TreeNode* node)
     TreeNode * tmp = NULL;
     if(node == NULL)
     {
-        cerr << "NULL treenode passed to idResolve!" << endl;
+        //cerr << "NULL treenode passed to idResolve!" << endl;
         return node;        
     }
     else if ( node->kind == IdK )
@@ -505,7 +534,7 @@ TreeNode* codegenTM::idResolve(TreeNode* node)
         tmp = lookup(svalResolve(node));
         if ( tmp == NULL )
         {
-            cerr << "NULL lookup in idResolve!" << endl;
+            //cerr << "NULL lookup in idResolve!" << endl;
             return NULL;
         }
         else
