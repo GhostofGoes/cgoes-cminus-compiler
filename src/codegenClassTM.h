@@ -18,7 +18,7 @@ class codegenTM {
 public:
     void generateCode(); // This actually generates code. wow.
     codegenTM( TreeNode * t, SymbolTable * s, int g, std::string of );
-    ~codegenTM();
+    ~codegenTM(); // destructor: closes file, few misc cleanup tasks
     
 private:
     /* Init */
@@ -32,18 +32,25 @@ private:
     void loopSiblings( NodeKind nk, TreeNode * node );
     
     /* General generation */
-    void treeTraversal( TreeNode * tree );
-    void loadParams( TreeNode * node );
-    TreeNode * lookup( std::string nodeName );
+    void treeTraversal( TreeNode * tree ); // loopsiblings without nk selection
+    void loadParams( TreeNode * node ); // loads params before function call
+    TreeNode * lookup( std::string nodeName ); // symboltable lookup
+    
+    /* ID resolution functions */
+    void storeVar( TreeNode * var, int reg ); // ST reg->var
+    // LD val<-var
+    // If array, calcuate index, LD reg<-array[index]
+    void loadVar( TreeNode * var, int reg );
+    void loadArrayAddr( TreeNode * arr, int reg ); // LDA reg<-arr
     
     /* Typing saving functions  */
     void saveRetA();     // save return addr
     void standardRet(); // zero out return first
     void funRet();      // Load ret addr, adjust FP, return 
-    void IOroutines( IO io );
+    void IOroutines( IO io ); // generates IO routines based on io
     
     /* Helper functions */
-    std::string timestamp();
+    std::string timestamp(); // returns a timestamp for current local time
     
     /* Parsed food for generation */
     SymbolTable * symtable;

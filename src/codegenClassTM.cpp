@@ -138,8 +138,15 @@ void codegenTM::generateDeclaration(TreeNode* node)
     string treestr = svalResolve(tree);
     
     switch(tree->kind) {
-        case VarK:
-            // TODO: VARIABLES!
+        case VarK: // TODO: VARIABLES!
+            if(tree->isArray)
+            {
+                emitRM("LDC", val, tree->arraySize, 0, "Load size of array " + treestr);
+                if(tree->offsetReg == local)
+                    emitRM("ST", val, tree->location + 1, fp, "Store size of local array " + treestr);
+                else
+                    emitRM("ST", val, tree->location + 1, gp, "Store size of global array " + treestr);
+            }
             break;
             
         case FunK:
@@ -202,9 +209,7 @@ void codegenTM::generateStatement( TreeNode * node )
             break;
             
         case CompoundK: // TODO: function body!
-            emitComment("COMPOUND");
-            
-            
+            emitComment("BEGIN COMPOUND");
             // TODO: fix this deep logic issue... 'numChildren'
             if(tree->numChildren == 1) // Just expressions
             { 
@@ -222,21 +227,16 @@ void codegenTM::generateStatement( TreeNode * node )
                 cerr << "Improper number of compound children!" <<
                     " In: generateStatement - CompoundK" << endl;
             }
-            
             emitComment("END COMPOUND");
             break;
             
         case ReturnK: // TODO: function returns!
             emitComment("\tReturn definition");
-            
-            // Check for return value
-            if(tree->child[0] != NULL) {
+            if(tree->child[0] != NULL) { // Check for return value
                 generateExpression(tree->child[0]);
                 emitRM("LDA", ret, 0, val, "Save expression result into ret");
             }
-            
-            // Return!
-            funRet();
+            funRet(); // Return!
             break;
             
         case BreakK:
@@ -251,7 +251,6 @@ void codegenTM::generateStatement( TreeNode * node )
 void codegenTM::generateExpression( TreeNode * node )
 {
     TreeNode * tree;
-    
     if(node != NULL)
         tree = node;
     else
@@ -263,11 +262,17 @@ void codegenTM::generateExpression( TreeNode * node )
     int temp = 0;
     TreeNode * p1, * p2;
     TreeNode * tmp = NULL;
+    TreeNode * lhs = tree->child[0];
+    std::string lstr = svalResolve(tree->child[0]);
+    TreeNode * rhs = tree->child[1];
+    std::string rstr = svalResolve(tree->child[1]);
     string treestr = svalResolve(tree);
 
     switch (tree->kind) {
-    case AssignK: // TODO: variable assignment
-
+    case AssignK:
+        generateExpression(rhs); // // Get rvalue to assign, put in val (*assumption*)
+        // TODO: SAVE VAL SO IT DOESN'T GET OVERWRITTEN WHEN LHS IS AN INDEXED ARRAY
+        storeVar(lhs, val); // Assign rvalue to lvalue
         break;
 
     case OpK:
@@ -279,11 +284,10 @@ void codegenTM::generateExpression( TreeNode * node )
         break;
 
     case UnaryK:
-
         switch (tree->token->bval) {
         case MULTIPLY:
-            tmp = lookup(svalResolve(tree->child[0]));
-            emitRM("LDA", val, tmp->location + 1, fp, "Load size of array");
+            loadArrayAddr(lhs, ac2);
+            emitRM("LD", val, 1, ac2, "Load size of array " + lstr); // +1 to get size
             break;
 
         case NOT:
@@ -301,22 +305,7 @@ void codegenTM::generateExpression( TreeNode * node )
         break;
 
     case IdK: // TODO: variable substitution, params
-        tmp = lookup(treestr);
-        if ( tmp == NULL )
-            break;
-        else if ( tmp->isArray )
-        {
-            // We're assuming all array resolutions are indexed
-            if ( tree->child[0] != NULL ) // Get array index
-                generateExpression(tree->child[0]);  
-            emitRM("LD", ac1, tmp->location, fp, "Load address of array " + svalResolve(tmp));
-            emitRO("SUB", val, ac1, val, "Calculate offset using index");
-        }
-        else
-        { // wow, simpler than i thought!
-            emitRM("LD", val, tmp->location, fp, "Load variable " + treestr);
-        }
-
+        cerr << "Hit IdK: " << treestr << endl;
         break;
 
     case ConstK:
@@ -327,7 +316,7 @@ void codegenTM::generateExpression( TreeNode * node )
         break;
 
     case CallK:
-        emitComment("\tCALL to " + treestr);
+        emitComment("\tBEGIN CALL to " + treestr);
         // Store old frame pointer (negative conversion hack for now))
         emitRM("ST", fp, -1 * (tree->size), fp, "Store current frame pointer");
         // Load parameters into memory
@@ -423,6 +412,123 @@ void codegenTM::loadParams( TreeNode * node )
     }
 }
 
+
+// ST reg->var
+void codegenTM::storeVar(TreeNode* var, int reg)
+{
+    TreeNode * tmp;
+    if(var == NULL)
+    {
+        cerr << "NULL treenode passed to storeVar!" << endl;
+        return;        
+    }
+    else if ( var->kind == IdK )
+    {
+        tmp = lookup(svalResolve(var));
+        if ( tmp == NULL )
+        {
+            cerr << "NULL lookup in storeVar!" << endl;
+            return;
+        }
+    }
+    else
+        tmp = var;
+    
+    std::string tmpstr = svalResolve(tmp);
+    
+    if ( tmp->isArray )
+    {
+        // We're assuming all array resolutions are indexed for now
+        if ( var->child[0] != NULL ) // Get array index
+            generateExpression(var->child[0]);
+        loadArrayAddr(tmp, ac1);
+        emitRO("SUB", ac3, ac1, val, "Calculate offset using index");
+        if ( tmp->offsetReg == local )
+            emitRM("ST", reg, val, fp, "Store reg(" + to_string(reg) + ") into local array " + tmpstr );
+        else
+            emitRM("ST", reg, val, gp, "Store reg(" + to_string(reg) + ") into global array " + tmpstr );
+    } else
+    {
+        if ( tmp->offsetReg == local )
+            emitRM("ST", reg, tmp->location, fp, "Store local variable " + tmpstr);
+        else
+            emitRM("ST", reg, tmp->location, gp, "Store 'global' variable " + tmpstr);
+    }    
+}
+
+
+// LD val<-var
+// If array, calcuate index, LD val<-array[index]
+void codegenTM::loadVar(TreeNode* var, int reg )
+{
+    TreeNode * tmp;
+    if(var == NULL)
+    {
+        cerr << "NULL treenode passed to loadVar!" << endl;
+        return;        
+    }
+    else if ( var->kind == IdK )
+    {
+        tmp = lookup(svalResolve(var));
+        if ( tmp == NULL )
+        {
+            cerr << "NULL lookup in loadVar!" << endl;
+            return;
+        }
+    }
+    else
+        tmp = var;
+    
+    std::string tmpstr = svalResolve(tmp);
+    if ( tmp->isArray )
+    {
+        // We're assuming all array resolutions are indexed
+        if ( var->child[0] != NULL ) // Get array index
+            generateExpression(var->child[0]);
+        loadArrayAddr(tmp, ac1);
+        emitRO("SUB", val, ac1, val, "Calculate offset using index ");
+        if ( tmp->offsetReg == local )
+            emitRM("LD", reg, val, fp, "Load local array variable " + tmpstr);
+        else
+            emitRM("LD", reg, val, gp, "Load global array variable " + tmpstr);
+    } 
+    else
+    {
+        if ( tmp->offsetReg == local )
+            emitRM("LD", reg, tmp->location, fp, "Load local variable " + tmpstr);
+        else
+            emitRM("LD", reg, tmp->location, gp, "Load 'global' variable " + tmpstr);
+    }     
+}
+
+// LDA ac1<-arr
+void codegenTM::loadArrayAddr( TreeNode* arr, int reg )
+{
+    TreeNode * tmp;
+    if(arr == NULL)
+    {
+        cerr << "NULL treenode passed to loadArrayAddr!" << endl;
+        return;        
+    }
+    else if ( arr->kind == IdK )
+    {
+        tmp = lookup(svalResolve(arr));
+        if ( tmp == NULL )
+        {
+            cerr << "NULL lookup in loadArrayAddr!" << endl;
+            return;
+        }
+    }
+    else
+        tmp = arr;
+
+    if ( tmp->offsetReg == local )
+        emitRM("LDA", reg, tmp->location, fp, "Load local array address of  " + svalResolve(tmp));
+    else
+        emitRM("LDA", reg, tmp->location, gp, "Load 'global' array address of " + svalResolve(tmp));   
+}
+
+
 /* Helper functions */
 
 TreeNode* codegenTM::lookup(std::string treestr)
@@ -434,7 +540,6 @@ TreeNode* codegenTM::lookup(std::string treestr)
     }    
     return tmp;
 }
-
 
 void codegenTM::saveRetA() // save return addr
 {
