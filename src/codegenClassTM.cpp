@@ -142,11 +142,14 @@ void codegenTM::generateDeclaration(TreeNode* node)
         case VarK: // TODO: VARIABLES!
             if(tree->isArray)
             {
-                emitRM("LDC", val, tree->arraySize, 0, "Load size of array " + treestr);
                 if(tree->offsetReg == local)
+                {
+                    emitRM("LDC", val, tree->arraySize, 0, "Load size of array " + treestr);
                     emitRM("ST", val, tree->location + 1, fp, "Store size of local array " + treestr);
+                }
                 else
                 {
+                    //emitRM("LDC", val, tree->arraySize, 0, "Load size of array " + treestr);
                     //emitRM("ST", val, tree->location + 1, gp, "Store size of global array " + treestr);
                 }
             }
@@ -272,14 +275,15 @@ void codegenTM::generateExpression( TreeNode * node )
     case AssignK:
         switch (tree->token->bval) {
         case ASSIGN:
-            if ( lhs != NULL && lhs->isArray ) // nightmares from semantic analysis...(NULLLL))
+            // TODO: remove GLOBAL and STATIC guards~!
+            if ( lhs != NULL && lhs->isArray && !lhs->isStatic && lhs->offsetReg != global )
             {
                 generateExpression(lhs->child[0]); // calculate the index
                 emitRM("ST", val, fOffset, fp, "Save index of array " + lstr);
                 generateExpression(rhs); // // Get rvalue to assign, put in val (*assumption*)
                 emitRM("LD", ac1, fOffset, fp, "Retrieve index of array " + lstr);
                 storeArrayVar(lhs, val, ac1); // Assign rvalue to lvalue
-            } else if ( lhs != NULL )
+            } else if ( lhs != NULL && !lhs->isStatic && lhs->offsetReg != global )
             {
                 generateExpression(rhs); // // Get rvalue to assign, put in val (*assumption*)
                 storeVar(lhs, val); // Assign rvalue to lvalue
@@ -310,8 +314,11 @@ void codegenTM::generateExpression( TreeNode * node )
         emitComment(" UNARY EXPRESSION");
         switch (tree->token->bval) {
         case MULTIPLY:
-            loadArrayAddr(lhs, ac2);
-            emitRM("LD", val, 1, ac2, "Load size of array " + lstr); // +1 to get size
+            if( !lhs->isStatic && lhs->offsetReg != global ) // TODO: remove global/static
+            {
+                loadArrayAddr(lhs, ac2);
+                emitRM("LD", val, 1, ac2, "Load size of array " + lstr); // +1 to get size                
+            }
             break;
 
         case NOT:
@@ -325,9 +332,9 @@ void codegenTM::generateExpression( TreeNode * node )
 
     case IdK:
         tmp = lookup(treestr);
-        if(tmp == NULL)
+        if(tmp == NULL || !lhs->isStatic || lhs->offsetReg != global) // TODO: remove global/static
             break;
-        if(tmp->isArray)
+        if(tmp->isArray )
         {
            generateExpression(lhs); // calculate the index
            loadArrayVar(tmp, val, val);
