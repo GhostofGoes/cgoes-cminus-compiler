@@ -141,8 +141,8 @@ void codegenTM::generateDeclaration(TreeNode* node)
                 }
                 else
                 {
-                    //emitRM("LDC", val, tree->arraySize, 0, "Load size of array " + treestr);
-                    //emitRM("ST", val, tree->location + 1, gp, "Store size of global array " + treestr);
+                    emitRM("LDC", val, tree->arraySize, 0, "Load size of array " + treestr);
+                    emitRM("ST", val, tree->location + 1, gp, "Store size of global array " + treestr);
                 }
             }
             break;
@@ -306,16 +306,14 @@ void codegenTM::generateExpression( TreeNode * node )
             cerr << "Couldn't find function in global table" << endl;
             break;
         }
+        
         // Store old frame pointer (negative conversion hack for now))
         emitRM("ST", fp, fOffset, fp, "Store current frame pointer");
-        // Load parameters into memory
-        //tOffset = -1 * (tmp->size); 
-        loadParams(tree->child[0], -1 + fOffset);
+        loadParams(tree->child[0], -1 + fOffset); // Load parameters into memory
         emitComment("\t\tJumping to " + treestr);
-        // load address of new frame into fp
         emitRM("LDA", fp, fOffset, fp, "Load address of new frame");
         emitRM("LDA", val, 1, pc, "Save return address");
-        emitRM("LDC", pc, -1 * tmp->loc, 0, "Call " + treestr); // TODO: backpatch
+        emitRM("LDC", pc, tmp->loc, pc, "Call " + treestr); // TODO: backpatch
         emitRM("LDA", val, 0, ret, "Save function result");
         emitComment("\tEND CALL to " + treestr);
         break;
