@@ -48,7 +48,6 @@ private:
     
     /* Typing saving functions  */
     TreeNode * idResolve(TreeNode * node);
-    void saveRetA();     // save return addr
     void standardRet(); // zero out return first
     void funRet();      // Load ret addr, adjust FP, return 
     void IOroutines( IO io ); // generates IO routines based on io

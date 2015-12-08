@@ -105,7 +105,7 @@ void codegenTM::initSetup()
     
     emitRM("LDA", fp, gOffset, gp, "Set frame to end of globals");
     emitRM("ST", fp, 0, fp, "Store old frame pointer");
-    saveRetA();
+    emitRM("LDA", val, 1, pc, "Save return address");
     emitRM("LDC", pc, mainLoc, pc, "Jump to main"); // cheap jump to main
     emitRO("HALT", 0, 0, 0, "Fin."); 
     emitComment("END INIT");
@@ -157,8 +157,10 @@ void codegenTM::generateDeclaration(TreeNode* node)
             
         case FunK:
             emitComment("FUNCTION " + treestr);
+            symtable->enter("Function " + treestr);
             if(treestr == "main") // Only a few functions to check, so this is fine
                 mainLoc = emitSkip(0);
+            // TODO: this is where i can nab the function location
             emitRM("ST", val, -1, fp, "Store return address");
             
             if(tree->isIO != Nopeput)
@@ -175,6 +177,7 @@ void codegenTM::generateDeclaration(TreeNode* node)
                 standardRet(); // "our last resort..."
             }
             
+            symtable->leave();
             emitComment("END FUNCTION " + treestr);
             break;
             
@@ -217,6 +220,8 @@ void codegenTM::generateStatement( TreeNode * node )
             
         case CompoundK: // TODO: function body!
             emitComment("BEGIN COMPOUND");
+            if(tree->isFuncCompound == false)
+                symtable->enter("Compound" + tree->lineno); // forgot this bloody hell
             fOffset = tree->size * -1;
             
             if(tree->numChildren == 1) // Just expressions
@@ -230,6 +235,8 @@ void codegenTM::generateStatement( TreeNode * node )
                 //emitComment(" EXPRESSION");
                 loopSiblings(ExpK, tree->child[1]);
             }
+            if(tree->isFuncCompound == false)
+                symtable->leave();
             emitComment("END COMPOUND");
             break;
             
@@ -361,12 +368,12 @@ void codegenTM::generateExpression( TreeNode * node )
         emitRM("ST", fp, -1 * (tree->size), fp, "Store current frame pointer");
         // Load parameters into memory
         tOffset = -1 * (tree->size); 
-        loadParams(tree->child[0]);
+        loadParams(lhs);
         emitComment("\t\tJumping to " + treestr);
         // load address of new frame into fp
         emitRM("LDA", fp, -1 * (tree->size), fp, "Load address of new frame");
         // save return address
-        saveRetA(); 
+        emitRM("LDA", val, 1, pc, "Save return address");
         // call the function (TODO))
         emitRM("LDA", pc, -999, pc, "Call " + treestr);
         // Save function return value
@@ -590,11 +597,6 @@ TreeNode* codegenTM::lookup(std::string treestr)
         }
     }    
     return tmp;
-}
-
-void codegenTM::saveRetA() // save return addr
-{
-    emitRM("LDA", val, 1, pc, "Save return address");
 }
 
 void codegenTM::standardRet() // comment, zero out return, funRet
