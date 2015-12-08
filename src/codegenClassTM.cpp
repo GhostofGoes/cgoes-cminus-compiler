@@ -224,7 +224,7 @@ void codegenTM::generateStatement( TreeNode * node )
             emitComment("BEGIN COMPOUND");
             if(tree->isFuncCompound == false)
                 symtable->enter("Compound" + tree->lineno); // forgot this bloody hell
-            fOffset = tree->size * -1;
+            fOffset = tree->size;
             
             if(tree->numChildren == 1) // Just expressions
             { 
@@ -369,13 +369,13 @@ void codegenTM::generateExpression( TreeNode * node )
         if(tmp == NULL)
             break;
         // Store old frame pointer (negative conversion hack for now))
-        emitRM("ST", fp, -1 * (tree->size), fp, "Store current frame pointer");
+        emitRM("ST", fp, fOffset, fp, "Store current frame pointer");
         // Load parameters into memory
-        tOffset = -1 * (tmp->size); 
-        loadParams(lhs);
+        //tOffset = -1 * (tmp->size); 
+        loadParams(tree->child[0]);
         emitComment("\t\tJumping to " + treestr);
         // load address of new frame into fp
-        emitRM("LDA", fp, -1 * (tmp->size), fp, "Load address of new frame");
+        emitRM("LDA", fp, fOffset, fp, "Load address of new frame");
         // save return address
         emitRM("LDA", val, 1, pc, "Save return address");
         // (lazily) call the function 
@@ -455,9 +455,9 @@ void codegenTM::loadParams( TreeNode * node )
          // load variable
          // store parameter for use by callee
         emitComment("\t\tLoad param " + to_string(siblingCount) );
-        if(tree->child[0] != NULL)
-            generateExpression(tree->child[0]);
-        emitRM("ST", val, tree->location + tOffset, pc, "Store paramater " + to_string(siblingCount) );
+        //if(tree->child[0] != NULL)
+        generateExpression(tree->child[0]);
+        emitRM("ST", val, tree->location + fOffset, pc, "Store paramater " + to_string(siblingCount) );
         tree = tree->sibling;
         siblingCount++;
     }
