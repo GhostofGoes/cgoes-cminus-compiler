@@ -86,7 +86,7 @@ void codegenTM::generateCode()
     treeTraversal(aTree); // Main code generation
     
     emitBackup(start); // Go back to the beginnnnning of time
-    emitRMAbs( "LDA", pc, highEmitLoc, "Jump to init");
+    emitRMAbs("LDA", pc, highEmitLoc, "Jump to init");
     emitRestore(); // Pow! We're back to the present!
     
     initSetup(); // Do our init jam
@@ -146,36 +146,42 @@ void codegenTM::generateDeclaration(TreeNode* node)
                     emitRM("ST", val, tree->location + 1, gp, "Store size of global array " + treestr);
                 }
             }
+            symtable->insert(treestr, tree);
             break;
             
         case FunK: // Function declaration
             emitComment("FUNCTION " + treestr);
-            symtable->enter("Function " + treestr);
+            symtable->insert(treestr, tree);
+            
             if(treestr == "main") // Only a few functions to check, so this is fine
                 mainLoc = emitSkip(0);
             // TODO: this is where i can nab the function location
             tree->loc = emitSkip(0);
+            
             emitRM("ST", val, -1, fp, "Store return address");
             
             if(tree->isIO != Nopeput)
             {
+                
                 IOroutines(tree->isIO);
                 funRet();
             }
-            else if (tree->numChildren == 1)
-            {
-                generateStatement(tree->child[0]); // *magical* Compound
-                standardRet(); // "our last resort..."                
-            }
             else
             {
-                loopSiblings(DeclK, tree->child[0]); // Paramaters
-                generateStatement(tree->child[1]); // *magical* Compound
-                standardRet(); // "our last resort..."
+                symtable->enter("Function " + treestr);
+                treeTraversal(tree->child[0]); // parameters, if any
+                treeTraversal(tree->child[1]); // *magical* compound
+                standardRet(); // redundant return in case one is never specified
+                symtable->leave();
             }
-            symtable->leave();
+            
+            
             emitComment("END FUNCTION " + treestr);
             break;
+    case ParamK:
+        symtable->insert(treestr, tree);
+        break;
+               
         default:
             cerr << "Hit default in generateDeclaration switch(kind)! treestr: " << treestr << endl;
             break;
@@ -197,17 +203,12 @@ void codegenTM::generateStatement( TreeNode * node )
             emitComment("BEGIN COMPOUND");
             if(tree->isFuncCompound == false)
                 symtable->enter("Compound" + tree->lineno);
+            
             fOffset = tree->size;
             
-            if(tree->numChildren == 1) // Just expressions
-            { 
-                treeTraversal(tree->child[0]);
-            }
-            else if( tree->numChildren == 2) // Declarations then expressions
-            {
-                loopSiblings(DeclK, tree->child[0]);
-                treeTraversal(tree->child[1]);
-            }
+            treeTraversal(tree->child[0]); // declarations, if any
+            treeTraversal(tree->child[1]); // Expressions/Statements
+            
             if(tree->isFuncCompound == false)
                 symtable->leave();
             emitComment("END COMPOUND");
@@ -245,26 +246,22 @@ void codegenTM::generateExpression( TreeNode * node )
     
     switch (tree->kind) {
     case AssignK:
-        switch (tree->token->bval) {
-            emitComment(" ASSIGN EXPRESSION");
-        case ASSIGN:
-            //tmp = idResolve(lhs);
-            if ( tmp->isArray )
-            {
-                generateExpression(lhs->child[0]); // calculate the index
-                emitRM("ST", val, fOffset, fp, "Save index of array " + lstr);
-                generateExpression(rhs); // // Get rvalue to assign, put in val (*assumption*)
-                emitRM("LD", ac1, fOffset, fp, "Retrieve index of array " + lstr);
-                storeArrayVar(tmp, val, ac1); // Assign rvalue to lvalue
-            } else
-            {
-                generateExpression(rhs); // // Get rvalue to assign, put in val (*assumption*)
-                storeVar(lhs, val); // Assign rvalue to lvalue
-            }
-            break;
-        default:
-            break;   
-        } // end bval switch
+        //cerr << "assign: bval: " << tree->token->bval << endl;
+        
+        if ( lhs->kind == IdK && lhs->child[0] != NULL ) //lhs->isArray )
+        {
+            cerr << "ARRAY lstr for assign: " << lstr << " rstr: " << rstr << endl;
+            generateExpression(lhs->child[0]); // calculate the index
+            emitRM("ST", val, fOffset, fp, "Save index of array " + lstr);
+            generateExpression(tree->child[1]); // // Get rvalue to assign, put in val (*assumption*)
+            emitRM("LD", ac1, fOffset, fp, "Retrieve index of array " + lstr);
+            storeArrayVar(lhs, val, ac1); // Assign rvalue to lvalue
+        } else
+        {
+            cerr << "lhsstr for assign: " << lstr << " rstr: " << rstr << endl;
+            generateExpression(rhs); // // Get rvalue to assign, put in val (*assumption*)
+            storeVar(lhs, val); // Assign rvalue to lvalue
+        }
         break;
         
     case UnaryK:
@@ -286,7 +283,7 @@ void codegenTM::generateExpression( TreeNode * node )
     case IdK:
         //tmp = idResolve(tree);
         emitComment(" IdK EXPRESSION");
-        if(tree->isArray )
+        if(lhs != NULL ) // lhs->isArray
         {
            generateExpression(lhs); // calculate the index
            loadArrayVar(tree, val, val);
@@ -409,8 +406,8 @@ void codegenTM::loadParams( TreeNode * node, int off )
 // ST reg->var
 void codegenTM::storeVar(TreeNode* var, int reg)
 {
-    //TreeNode * tmp = idResolve(var);
-    TreeNode * tmp = var;
+    TreeNode * tmp = idResolve(var);
+    //TreeNode * tmp = var;
     if ( tmp == NULL )
         return;
 
@@ -515,7 +512,6 @@ void codegenTM::loadArrayAddr( TreeNode* arr, int reg )
 TreeNode* codegenTM::idResolve(TreeNode* node)
 {
     return node;
-    
     TreeNode * tmp = NULL;
     if(node == NULL)
     {
@@ -527,15 +523,10 @@ TreeNode* codegenTM::idResolve(TreeNode* node)
         return node;
     }
     else {
-        tmp = lookupLocal(svalResolve(node));
-        if ( tmp == NULL )
-        {
-            tmp = lookupGlobal(svalResolve(node));
-            //cerr << "NULL lookup in idResolve!" << endl;
-            return tmp;
-        }
+        if(symtable->depth() > 1)
+            tmp = lookupLocal(svalResolve(node));
         else
-            return tmp;
+            tmp = lookupGlobal(svalResolve(node));
     }    
 }
 
