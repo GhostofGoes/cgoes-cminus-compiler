@@ -106,7 +106,7 @@ void codegenTM::initSetup()
     emitRM("LDA", fp, gOffset, gp, "Set frame to end of globals");
     emitRM("ST", fp, 0, fp, "Store old frame pointer");
     emitRM("LDA", val, 1, pc, "Save return address");
-    emitRM("LDC", pc, mainLoc, pc, "Jump to main"); // cheap jump to main
+    emitRM("LDC", pc, mainLoc - 1, pc, "Jump to main"); // cheap jump to main
     emitRO("HALT", 0, 0, 0, "Fin."); 
     emitComment("END INIT");
 }
@@ -161,6 +161,11 @@ void codegenTM::generateDeclaration(TreeNode* node)
                 IOroutines(tree->isIO);
                 funRet();
             }
+            else if (tree->numChildren == 1)
+            {
+                generateStatement(tree->child[0]); // *magical* Compound
+                standardRet(); // "our last resort..."                
+            }
             else
             {
                 loopSiblings(DeclK, tree->child[0]); // Paramaters
@@ -185,7 +190,7 @@ void codegenTM::generateStatement( TreeNode * node )
         return;
     }
     string treestr = svalResolve(tree);
-    
+    // TODO: SymbolTable for local redeclarations of global vars!
     switch(tree->kind) {
         case CompoundK: // TODO: function body!
             emitComment("BEGIN COMPOUND");
@@ -240,9 +245,10 @@ void codegenTM::generateExpression( TreeNode * node )
     switch (tree->kind) {
     case AssignK:
         switch (tree->token->bval) {
+            emitComment(" ASSIGN EXPRESSION");
         case ASSIGN:
             //tmp = idResolve(lhs);
-            if ( tmp != NULL && tmp->isArray )
+            if ( tmp->isArray )
             {
                 generateExpression(lhs->child[0]); // calculate the index
                 emitRM("ST", val, fOffset, fp, "Save index of array " + lstr);
@@ -278,19 +284,20 @@ void codegenTM::generateExpression( TreeNode * node )
 
     case IdK:
         //tmp = idResolve(tree);
-
-        if(tmp->isArray )
+        emitComment(" IdK EXPRESSION");
+        if(tree->isArray )
         {
            generateExpression(lhs); // calculate the index
-           loadArrayVar(tmp, val, val);
+           loadArrayVar(tree, val, val);
         }
         else
         {
-            loadVar(tmp, val);
+            loadVar(tree, val);
         }        
         break;
 
     case ConstK:
+        emitComment(" CONST EXPRESSION");
         if ( tree->nodetype == Integer )
             emitRM("LDC", val, tree->token->ivalue, 0, "Load integer constant");
         else
@@ -313,8 +320,10 @@ void codegenTM::generateExpression( TreeNode * node )
         emitComment("\t\tJumping to " + treestr);
         emitRM("LDA", fp, fOffset, fp, "Load address of new frame");
         emitRM("LDA", val, 1, pc, "Save return address");
-        emitRM("LDC", pc, tmp->loc, pc, "Call " + treestr); // TODO: backpatch
+        //emitRM("LDC", pc, tmp->loc, pc, "Call " + treestr); // TODO: backpatch
+        emitRMAbs("LDA", pc, tmp->loc,"Call " + treestr );
         emitRM("LDA", val, 0, ret, "Save function result");
+        
         emitComment("\tEND CALL to " + treestr);
         break;
 
@@ -412,7 +421,7 @@ void codegenTM::storeVar(TreeNode* var, int reg)
     {
         emitRM("ST", reg, tmp->location, gp, "Store LocalStatic variable " + svalResolve(tmp));  
     }
-    else
+    else if (tmp->offsetReg == global)
     {
         emitRM("ST", reg, tmp->location, gp, "Store Global variable " + svalResolve(tmp));
     }
@@ -455,7 +464,7 @@ void codegenTM::loadVar(TreeNode* var, int reg )
     {
         emitRM("LD", reg, tmp->location, gp, "Load LocalStatic variable " + svalResolve(tmp));
     }
-    else
+    else if( tmp->offsetReg == global )
     {
         emitRM("LD", reg, tmp->location, gp, "Load Global variable " + svalResolve(tmp));
     }

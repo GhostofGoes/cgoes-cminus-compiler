@@ -1297,7 +1297,7 @@ int memorySizing( TreeNode * node, SymbolTable * symtable, int parOff )
               switch (tree->kind)
                 {
                   case VarK:
-                      symtable->insert(tree_svalue, tree);
+                      
                     if(tree->isArray  )
                         tree->size = tree->arraySize + 1; // +1 for pointer
                     else
@@ -1320,27 +1320,28 @@ int memorySizing( TreeNode * node, SymbolTable * symtable, int parOff )
                     }
                     if(tree->isArray)
                         tree->location--; // skip array size
+                    symtable->insert(tree_svalue, tree);
                     break;
 
                   case ParamK:
-                      symtable->insert(tree_svalue, tree);
+                      
                     tree->size = 1; // since its just a param pointer
                     tree->location = parOff + tOff;
                     tOff -= tree->size;
                     tree->offsetReg = o_param;
                     param_count++;
+                    symtable->insert(tree_svalue, tree);
                     break;
 
                   case FunK:
-                      symtable->insert(tree_svalue, tree);
-                    symtable->enter("Function " + tree_svalue);
                     tOff = 0;
                     tree->offsetReg = global;
                     param_count = 0;
                     tree->location = 0; // TODO: check this assumption
                     tree->size = 2;
                     tOff -= tree->size;
-                    
+                    symtable->insert(tree_svalue, tree);
+                    symtable->enter("Function " + tree_svalue);
                     // Parameters
                     tOff += memorySizing(tree->child[0], symtable, tOff );
                     
@@ -1378,7 +1379,10 @@ int memorySizing( TreeNode * node, SymbolTable * symtable, int parOff )
         case ExpK:
             if(tree->kind == IdK)
             {
-                tmp = (TreeNode *)symtable->lookup(tree_svalue);
+                if(symtable->depth() > 1)
+                    tmp = (TreeNode *)symtable->lookup(tree_svalue);
+                else
+                    tmp = (TreeNode *)symtable->lookupGlobal(tree_svalue);
                 copyAnnotations(tmp, tree); // tmp -> tree
             }
             break;
