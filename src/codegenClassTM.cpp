@@ -269,9 +269,9 @@ void codegenTM::generateExpression( TreeNode * node )
         switch (tree->token->bval) {
         case MULTIPLY:
             //tmp = idResolve(lhs);
-            if( tmp != NULL && !tmp->isStatic && tmp->offsetReg != global ) // TODO: remove global/static
+            if( lhs != NULL && !lhs->isStatic && lhs->offsetReg != global ) // TODO: remove global/static
             {
-                loadArrayAddr(tmp, ac2);
+                loadArrayAddr(lhs, ac2);
                 emitRM("LD", val, 1, ac2, "Load size of array " + lstr); // +1 to get size                
             }
             break;
@@ -296,6 +296,7 @@ void codegenTM::generateExpression( TreeNode * node )
 
     case ConstK:
         emitComment(" CONST EXPRESSION");
+        cerr << "const str: " << treestr << endl;
         if ( tree->nodetype == Integer )
             emitRM("LDC", val, tree->token->ivalue, 0, "Load integer constant");
         else
