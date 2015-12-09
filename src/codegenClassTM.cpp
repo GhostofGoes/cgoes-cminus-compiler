@@ -106,7 +106,8 @@ void codegenTM::initSetup()
     emitRM("LDA", fp, gOffset, gp, "Set frame to end of globals");
     emitRM("ST", fp, 0, fp, "Store old frame pointer");
     emitRM("LDA", val, 1, pc, "Save return address");
-    emitRM("LDC", pc, mainLoc - 1, pc, "Jump to main"); // cheap jump to main
+    //emitRM("LDC", pc, mainLoc - 1, pc, "Jump to main"); // cheap jump to main
+    emitRMAbs("LDA", pc, mainLoc, "Jump to main");
     emitRO("HALT", 0, 0, 0, "Fin."); 
     emitComment("END INIT");
 }
