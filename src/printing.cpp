@@ -493,7 +493,7 @@ void printAnnotatedTree ( TreeNode * og, int indent_count )
               outstr.append(svalResolve(tree));
               if ( tree->isArray )
               {
-                  outstr.append(" is array of ");
+                  outstr.append(" is array of");
               }
               outstr += " ";
               outstr.append(typeToStr(tree->nodetype));

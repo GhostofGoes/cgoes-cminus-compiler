@@ -103,16 +103,14 @@ void codegenTM::generateCode()
 
 void codegenTM::initSetup()
 {
-    // TODO: keep track of init start
     emitComment("INIT");
     emitRM("LD", 0, 0, 0, "Set global pointer");
-    
-    //initGlobals(); not doing this quite yet...
-    
     emitRM("LDA", fp, gOffset, gp, "Set frame to end of globals");
     emitRM("ST", fp, 0, fp, "Store old frame pointer");
+    
+    initGlobals(); // Initialize globals and statics
+    
     emitRM("LDA", val, 1, pc, "Save return address");
-    //emitRM("LDC", pc, mainLoc - 1, pc, "Jump to main"); // cheap jump to main
     emitRMAbs("LDA", pc, mainLoc, "Jump to main");
     emitRO("HALT", 0, 0, 0, "Fin."); 
     emitComment("END INIT");
@@ -120,8 +118,11 @@ void codegenTM::initSetup()
 
 void codegenTM::initGlobals()
 {
-    emitComment("INIT GLOBALS/STATICS");
-    emitComment("END INIT GLOBALS/STATICS");
+    emitComment("INIT GLOBALS AND STATICS");
+    initGlobalArraySizes();
+    // TODO: initGlobalVars();
+    
+    emitComment("END INIT GLOBALS AND STATICS");
 }
 
 
@@ -146,15 +147,9 @@ void codegenTM::generateDeclaration(TreeNode* node)
                     emitRM("LDC", val, tree->arraySize, 0, "Load size of local array " + treestr);
                     emitRM("ST", val, tree->location + 1, fp, "Store size of local array " + treestr);
                 }
-                else if(tree->offsetReg == local && tree->isStatic)
+                else if( (tree->offsetReg == local && tree->isStatic) || tree->offsetReg == global)
                 {
-                    //emitRM("LDC", val, tree->arraySize, 0, "Load size of LocalStatic array " + treestr);
-                    //emitRM("ST", val, tree->location + 1, gp, "Store size of LocalStatic array " + treestr);                    
-                }
-                else if(tree->offsetReg == global)
-                {
-                    //emitRM("LDC", val, tree->arraySize, 0, "Load size of global array " + treestr);
-                    //emitRM("ST", val, tree->location + 1, gp, "Store size of global array " + treestr);
+                    globalInitVec.push_back(tree);                    
                 }
                 else
                 {
@@ -286,6 +281,24 @@ void codegenTM::generateExpression( TreeNode * node )
                 storeVar(lhs, val); // Assign rvalue to lvalue
             }
             break;
+        case INC:
+            break;
+            
+        case DEC:
+            break;
+            
+        case DIVASS:
+            break;
+            
+        case MULASS:
+            break;
+            
+        case SUBASS:
+            break;
+            
+        case ADDASS:
+            break;
+            
         }
         break;
         
@@ -367,58 +380,7 @@ void codegenTM::generateExpression( TreeNode * node )
     }
 }
 
-// TODO: This should be a prototype for most of my code lmao...how do in c++ tho?
-void codegenTM::loopSiblings( NodeKind nk, TreeNode * node )
-{
-    TreeNode * tree;
-    tree = node;
-    int siblingCount = 1;
-    
-    while(tree != NULL)
-    {
-        switch(nk) {
-        case DeclK:
-            generateDeclaration(tree);
-            break;
-        case StmtK:
-            generateStatement(tree);
-            break;
-        case ExpK:
-            generateExpression(tree);
-            break;
-        default:
-            cout << "Hit default in loopSiblings switch(nk)!" << endl;
-            break;
-        }
-        tree = tree->sibling;
-        siblingCount++;
-    }
-}
 
-
-void codegenTM::treeTraversal( TreeNode * node )
-{
-    TreeNode * tree = node;
-    
-    while( tree != NULL )
-    {
-        switch (tree->nodekind) {
-            case DeclK:
-                generateDeclaration(tree);
-                break;
-            case StmtK:
-                generateStatement(tree);
-                break;
-            case ExpK:
-                generateExpression(tree);
-                break;
-            default:
-                cout << "Hit default in treeTraversal switch(nodekind)!" << endl;
-                break;
-        }
-        tree = tree->sibling;
-    }
-}
 
 void codegenTM::loadParams( TreeNode * tree, int off )
 {
@@ -570,90 +532,24 @@ void codegenTM::loadArrayAddr( TreeNode* arr, int reg )
     }
 }
 
-
-/* Helper functions */
-
-TreeNode* codegenTM::idResolve(TreeNode* node)
+void codegenTM::initGlobalArraySizes()
 {
-    //return node;
-    TreeNode * tmp = NULL;
-    if(node == NULL)
+    for(TreeNode * tree: globalInitVec)
     {
-        cout << "NULL treenode passed to idResolve!" << endl;
-        return node;        
-    }
-    else if ( node->kind != IdK )  
-    {
-        return node;
-    }
-    else 
-    {
-        //tmp = (TreeNode *) symtable->lookup(svalResolve(node));
-        //tmp = (TreeNode *) symtable->lookupGlobal(treestr);
-        tmp = lookup(svalResolve(node));
-        if ( tmp == NULL )
+        if ( tree->offsetReg == local && tree->isStatic )
         {
-            cout << "NULL symbolTable lookup on " << svalResolve(node) << endl;
-        }
-        return tmp;
-    }    
-}
-
-TreeNode * codegenTM::lookup( string s )
-{
-    return (TreeNode *)symtable->lookup(s);
-}
-
-void codegenTM::buildTable()
-{
-    symtable = new SymbolTable();
-    TreeNode * temp = aTree;
-    tableRecurse(temp);
-}
-
-void codegenTM::tableRecurse(TreeNode * node)
-{
-    std::string str;
-    TreeNode * tmp;
-    
-    while(node != NULL)
-    {
-        str = svalResolve(node);
-        switch(node->kind)
+            emitRM("LDC", val, tree->arraySize, 0, "Load size of LocalStatic array " + svalResolve(tree));
+            emitRM("ST", val, tree->location + 1, gp, "Store size of LocalStatic array " + svalResolve(tree));                    
+        } 
+        else if ( tree->offsetReg == global )
         {
-        case VarK:
-        case ParamK:
-            symtable->insert(str, node);
-            break;
-            
-        case FunK:
-            symtable->insert(str, node);
-            symtable->enter("Function " + str);
-            for(int i = 0; i < 3; i++)
-                tableRecurse(node->child[i]);
-            symtable->leave();
-            break;
-            
-        case CompoundK:
-            symtable->enter("Compound" + node->lineno);
-            for(int i = 0; i < 3; i++)
-                tableRecurse(node->child[i]);            
-            symtable->leave();
-            break;
-            
-        case IdK:
-            tmp = (TreeNode *) symtable->lookup(str);
-            copyAnnotations(tmp, node); // tmp -> node            
-            break;
-            
-        default: // TODO: is this where this should be?
-            for (int i = 0; i < 3; i++)
-                tableRecurse(node->child[i]);
-            break;
-        }
-        node = node->sibling;
-    }    
+            emitRM("LDC", val, tree->arraySize, 0, "Load size of global array " + svalResolve(tree));
+            emitRM("ST", val, tree->location + 1, gp, "Store size of global array " + svalResolve(tree));
+        }        
+    }
 }
+
+/* Macros */
 
 void codegenTM::standardRet() // comment, zero out return, funRet
 {
@@ -715,6 +611,41 @@ void codegenTM::IOroutines(IO io)
     }    
 }
 
+/* Helper functions */
+
+TreeNode* codegenTM::idResolve(TreeNode* node)
+{
+    //return node;
+    TreeNode * tmp = NULL;
+    if(node == NULL)
+    {
+        cout << "NULL treenode passed to idResolve!" << endl;
+        return node;        
+    }
+    else if ( node->kind != IdK )  
+    {
+        return node;
+    }
+    else 
+    {
+        //tmp = (TreeNode *) symtable->lookup(svalResolve(node));
+        //tmp = (TreeNode *) symtable->lookupGlobal(treestr);
+        tmp = lookup(svalResolve(node));
+        if ( tmp == NULL )
+        {
+            cout << "NULL symbolTable lookup on " << svalResolve(node) << endl;
+        }
+        return tmp;
+    }    
+}
+
+TreeNode * codegenTM::lookup( string s )
+{
+    return (TreeNode *)symtable->lookup(s);
+}
+
+/* Helper procedures / Boilerplate stuff I'm not going to touch much */
+
 string codegenTM::timestamp()
 {
     // Getting current local time because ADHD
@@ -728,6 +659,110 @@ string codegenTM::timestamp()
     return ts;
 }
 
+void codegenTM::buildTable()
+{
+    symtable = new SymbolTable();
+    TreeNode * temp = aTree;
+    tableRecurse(temp);
+}
+
+void codegenTM::tableRecurse(TreeNode * node)
+{
+    std::string str;
+    TreeNode * tmp;
+    
+    while(node != NULL)
+    {
+        str = svalResolve(node);
+        switch(node->kind)
+        {
+        case VarK:
+        case ParamK:
+            symtable->insert(str, node);
+            break;
+            
+        case FunK:
+            symtable->insert(str, node);
+            symtable->enter("Function " + str);
+            for(int i = 0; i < 3; i++)
+                tableRecurse(node->child[i]);
+            symtable->leave();
+            break;
+            
+        case CompoundK:
+            symtable->enter("Compound" + node->lineno);
+            for(int i = 0; i < 3; i++)
+                tableRecurse(node->child[i]);            
+            symtable->leave();
+            break;
+            
+        case IdK:
+            tmp = (TreeNode *) symtable->lookup(str);
+            copyAnnotations(tmp, node); // tmp -> node            
+            break;
+            
+        default: // TODO: is this where this should be?
+            for (int i = 0; i < 3; i++)
+                tableRecurse(node->child[i]);
+            break;
+        }
+        node = node->sibling;
+    }    
+}
+
+
+// TODO: This should be a prototype for most of my code lmao...how do in c++ tho?
+void codegenTM::loopSiblings( NodeKind nk, TreeNode * node )
+{
+    TreeNode * tree;
+    tree = node;
+    int siblingCount = 1;
+    
+    while(tree != NULL)
+    {
+        switch(nk) {
+        case DeclK:
+            generateDeclaration(tree);
+            break;
+        case StmtK:
+            generateStatement(tree);
+            break;
+        case ExpK:
+            generateExpression(tree);
+            break;
+        default:
+            cout << "Hit default in loopSiblings switch(nk)!" << endl;
+            break;
+        }
+        tree = tree->sibling;
+        siblingCount++;
+    }
+}
+
+
+void codegenTM::treeTraversal( TreeNode * node )
+{
+    TreeNode * tree = node;
+    
+    while( tree != NULL )
+    {
+        switch (tree->nodekind) {
+            case DeclK:
+                generateDeclaration(tree);
+                break;
+            case StmtK:
+                generateStatement(tree);
+                break;
+            case ExpK:
+                generateExpression(tree);
+                break;
+            default:
+                cout << "Hit default in treeTraversal switch(nodekind)!" << endl;
+                break;
+        }
+        tree = tree->sibling;
+    }
+}
 
 
 /*** Emit stuff ***/

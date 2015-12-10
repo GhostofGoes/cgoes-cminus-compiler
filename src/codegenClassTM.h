@@ -13,6 +13,7 @@
 #include "types.h"
 #include <string>
 #include <fstream>
+#include <vector>
 
 class codegenTM {
 public:
@@ -21,42 +22,46 @@ public:
     ~codegenTM(); // destructor: closes file, few misc cleanup tasks
     
 private:
-    /* Init */
+    /* Initialization */
     void initSetup();
     void initGlobals();
+    void initGlobalArraySizes();
+    void IOroutines( IO io ); // generates IO routines based on io
+    std::vector<TreeNode *> globalInitVec;
     
     /* Generate by nodekind */
     void generateDeclaration( TreeNode * node );    // generic decleration 
     void generateStatement( TreeNode * node );      // generic statement
     void generateExpression( TreeNode * node );     // generic expression
-    void loopSiblings( NodeKind nk, TreeNode * node );
+
+    /* Emit functions */
+    void storeVar( TreeNode * var, int reg ); // ST reg->var
+    void storeArrayVar( TreeNode * arr, int reg, int index ); // USES: ac3
+    void loadVar( TreeNode * var, int reg );
+    void loadArrayVar( TreeNode * arr, int reg, int index ); // USES: ac3
+    void loadArrayAddr( TreeNode * arr, int reg ); // LDA reg<-arr
+    void loadParams( TreeNode * node, int off ); // loads params before function call
+    
+    /* Emit macros */
+    void add();
+    void subtract();
+    void multiply();
+    void divide();
+    void standardRet(); // zero out return first
+    void funRet();      // Load ret addr, adjust FP, return 
     
     /* General generation */
+    void loopSiblings( NodeKind nk, TreeNode * node );    
     void treeTraversal( TreeNode * tree ); // loopsiblings without nk selection
-    void loadParams( TreeNode * node, int off ); // loads params before function call
     
     /* SymbolTable creation + copying node values */
     void buildTable();
     void tableRecurse(TreeNode * node);
     
-    /* ID resolution functions */
-    void storeVar( TreeNode * var, int reg ); // ST reg->var
-    void storeArrayVar( TreeNode * arr, int reg, int index ); // USES: ac3
-    // LD val<-var
-    // If array, calcuate index, LD reg<-array[index]
-    void loadVar( TreeNode * var, int reg );
-    void loadArrayVar( TreeNode * arr, int reg, int index ); // USES: ac3
-    void loadArrayAddr( TreeNode * arr, int reg ); // LDA reg<-arr
-    
-    /* Typing saving functions  */
-    TreeNode * idResolve(TreeNode * node);
-    TreeNode * lookup(std::string s);
-    void standardRet(); // zero out return first
-    void funRet();      // Load ret addr, adjust FP, return 
-    void IOroutines( IO io ); // generates IO routines based on io
-    
     /* Helper functions */
     std::string timestamp(); // returns a timestamp for current local time
+    TreeNode * idResolve(TreeNode * node);
+    TreeNode * lookup(std::string s);
     
     /* Parsed food for generation */
     SymbolTable * symtable;

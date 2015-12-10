@@ -1323,9 +1323,9 @@ int memorySizing( TreeNode * node, SymbolTable * symtable, int parOff )
                 tree->size = 1; // since its just a param pointer
                 tree->location = parOff + tOff;
                 tOff -= tree->size;
-                if ( tree->isStatic )
-                    tree->offsetReg = global;
-                else
+                //if ( tree->isStatic )
+                    //tree->offsetReg = global;
+                //else
                     tree->offsetReg = local;
                 //tree->offsetReg = o_param;
                 param_count++;
