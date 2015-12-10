@@ -132,7 +132,7 @@ void codegenTM::generateDeclaration(TreeNode* node)
     TreeNode * tree = node;
     if(tree == NULL)
     {
-        cerr << "NULL node in generateDeclaration!" << endl;
+        cout << "NULL node in generateDeclaration!" << endl;
         return;
     }
     string treestr = svalResolve(tree);
@@ -189,7 +189,7 @@ void codegenTM::generateDeclaration(TreeNode* node)
         break;
                
         default:
-            cerr << "Hit default in generateDeclaration switch(kind)! treestr: " << treestr << endl;
+            cout << "Hit default in generateDeclaration switch(kind)! treestr: " << treestr << endl;
             break;
     }
 }
@@ -199,7 +199,7 @@ void codegenTM::generateStatement( TreeNode * node )
     TreeNode * tree = node;
     if(tree == NULL)
     {
-        cerr << "NULL node in generateStatement!" << endl;
+        cout << "NULL node in generateStatement!" << endl;
         return;
     }
     string treestr = svalResolve(tree);
@@ -243,7 +243,7 @@ void codegenTM::generateStatement( TreeNode * node )
         break; // heh
 
     default:
-        cerr << "Hit default in generateStatement switch(kind)! treestr: " << treestr << endl;
+        cout << "Hit default in generateStatement switch(kind)! treestr: " << treestr << endl;
         break;
     }
 }
@@ -253,7 +253,7 @@ void codegenTM::generateExpression( TreeNode * node )
     TreeNode * tree = node;
     if(tree == NULL)
     {
-        cerr << "NULL node in generateExpression!" << endl;
+        cout << "NULL node in generateExpression!" << endl;
         return;
     }        
     TreeNode * tmp = tree;
@@ -264,7 +264,7 @@ void codegenTM::generateExpression( TreeNode * node )
     string treestr = svalResolve(tree);
     
     switch (tree->kind) { // TODO: bval switch
-        //cerr << "assign: bval: " << tree->token->bval << endl;
+        //cout << "assign: bval: " << tree->token->bval << endl;
     case AssignK:
         if ( lhs->kind == IdK && lhs->child[0] != NULL ) //lhs->isArray )
         {
@@ -328,7 +328,7 @@ void codegenTM::generateExpression( TreeNode * node )
             emitRM("LDC", val, tree->token->cvalue, 0, "Load char constant");
         }
         else
-            cerr << "Constant isn't Integer, Boolean, or Character." << endl;
+            cout << "Constant isn't Integer, Boolean, or Character." << endl;
         break;
 
     case CallK:
@@ -337,7 +337,7 @@ void codegenTM::generateExpression( TreeNode * node )
         tmp = lookup(treestr);
         if(tmp == NULL)
         {
-            cerr << "Couldn't find function in table" << endl;
+            cout << "Couldn't find function in table" << endl;
             break;
         }
         
@@ -353,7 +353,7 @@ void codegenTM::generateExpression( TreeNode * node )
         break;
 
     default:
-        cerr << "Hit default in generateExpression switch(kind)! treestr: " << treestr << endl;
+        cout << "Hit default in generateExpression switch(kind)! treestr: " << treestr << endl;
         break;
     }
 }
@@ -378,7 +378,7 @@ void codegenTM::loopSiblings( NodeKind nk, TreeNode * node )
             generateExpression(tree);
             break;
         default:
-            cerr << "Hit default in loopSiblings switch(nk)!" << endl;
+            cout << "Hit default in loopSiblings switch(nk)!" << endl;
             break;
         }
         tree = tree->sibling;
@@ -404,7 +404,7 @@ void codegenTM::treeTraversal( TreeNode * node )
                 generateExpression(tree);
                 break;
             default:
-                cerr << "Hit default in treeTraversal switch(nodekind)!" << endl;
+                cout << "Hit default in treeTraversal switch(nodekind)!" << endl;
                 break;
         }
         tree = tree->sibling;
@@ -432,7 +432,7 @@ void codegenTM::storeVar(TreeNode* var, int reg)
     TreeNode * tmp = idResolve(var);
     if ( tmp == NULL )
     {
-        //cerr << "tmp is null in storeVar: " << endl;
+        //cout << "tmp is null in storeVar: " << endl;
         return;
     }
     if ( tmp->offsetReg == local && !tmp->isStatic )
@@ -449,7 +449,7 @@ void codegenTM::storeVar(TreeNode* var, int reg)
     }
     else
     {
-        cerr << "Fell off if-else chain in storeVar" << endl;
+        cout << "Fell off if-else chain in storeVar" << endl;
     }
 }
 
@@ -477,7 +477,7 @@ void codegenTM::storeArrayVar(TreeNode* arr, int reg, int index)
     }
     else
     {
-        cerr << "Fell off if-else chain in storeArrayVar" << endl;
+        cout << "Fell off if-else chain in storeArrayVar" << endl;
     }    
 }
 
@@ -504,7 +504,7 @@ void codegenTM::loadVar(TreeNode* var, int reg )
     }
     else
     {
-        cerr << "Fell off if-else chain in storeVar" << endl;
+        cout << "Fell off if-else chain in storeVar" << endl;
     }
 }
 
@@ -532,7 +532,7 @@ void codegenTM::loadArrayVar(TreeNode* arr, int reg, int index)
     }
     else
     {
-        cerr << "Fell off if-else chain in loadArrayVar" << endl;
+        cout << "Fell off if-else chain in loadArrayVar" << endl;
     }    
 }
 
@@ -557,7 +557,7 @@ void codegenTM::loadArrayAddr( TreeNode* arr, int reg )
     }
     else
     {
-        cerr << "Fell off if-else chain in loadArrayAddr" << endl;
+        cout << "Fell off if-else chain in loadArrayAddr" << endl;
     }
 }
 
@@ -570,7 +570,7 @@ TreeNode* codegenTM::idResolve(TreeNode* node)
     TreeNode * tmp = NULL;
     if(node == NULL)
     {
-        cerr << "NULL treenode passed to idResolve!" << endl;
+        cout << "NULL treenode passed to idResolve!" << endl;
         return node;        
     }
     else if ( node->kind != IdK )  
@@ -584,7 +584,7 @@ TreeNode* codegenTM::idResolve(TreeNode* node)
         tmp = lookup(svalResolve(node));
         if ( tmp == NULL )
         {
-            cerr << "NULL symbolTable lookup on " << svalResolve(node) << endl;
+            cout << "NULL symbolTable lookup on " << svalResolve(node) << endl;
         }
         return tmp;
     }    
@@ -703,7 +703,7 @@ void codegenTM::IOroutines(IO io)
             break;
 
         default:
-            cerr << "Hit default in IOroutines switch(isIO)!" << endl;
+            cout << "Hit default in IOroutines switch(isIO)!" << endl;
             break;
     }    
 }

@@ -12,8 +12,23 @@
         <group/>
         <group name="Compiler-Assignment6">
             <file>file:/home/tehlizard/cgoes-cs445/src/cminus.l</file>
-            <file>file:/home/tehlizard/cgoes-cs445/src/cminus.y</file>
+            <file>file:/home/tehlizard/cgoes-cs445/src/bison_values.txt</file>
+            <file>file:/home/tehlizard/cgoes-cs445/src/cminus.h</file>
+            <file>file:/home/tehlizard/cgoes-cs445/src/codegenClassTM.cpp</file>
+            <file>file:/home/tehlizard/cgoes-cs445/src/symbolTable.h</file>
+            <file>file:/home/tehlizard/cgoes-cs445/src/codegen.cpp</file>
+            <file>file:/home/tehlizard/cgoes-cs445/src/trees.cpp</file>
+            <file>file:/home/tehlizard/cgoes-cs445/src/types.h</file>
+            <file>file:/home/tehlizard/cgoes-cs445/src/symbolTable.cpp</file>
+            <file>file:/home/tehlizard/cgoes-cs445/src/printing.cpp</file>
             <file>file:/home/tehlizard/cgoes-cs445/src/cminus.cpp</file>
+            <file>file:/home/tehlizard/cgoes-cs445/src/cminus.y</file>
+            <file>file:/home/tehlizard/cgoes-cs445/src/trees.h</file>
+            <file>file:/home/tehlizard/cgoes-cs445/src/emit.cpp</file>
+            <file>file:/home/tehlizard/cgoes-cs445/src/codegenClassTM.h</file>
+            <file>file:/home/tehlizard/cgoes-cs445/src/testoutput.txt</file>
+            <file>file:/home/tehlizard/cgoes-cs445/src/test.sh</file>
+            <file>file:/home/tehlizard/cgoes-cs445/src/makefile</file>
         </group>
     </open-files>
 </project-private>

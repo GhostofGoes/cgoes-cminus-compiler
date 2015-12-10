@@ -17,13 +17,12 @@
 #include "cminus.tab.h"
 #include "types.h"
 #include "toker.h"
-//#include "symbolTable.h"
 #include "printing.h"
 #include "trees.h"
-//#include "semantic_errors.h"
 
 // Creates a new node for the syntax tree
 // TODO: combine with make parent?
+// TODO: c++ strings
 TreeNode * makeNode( NodeKind nk, Kind k, Type t, int line, TokenData * token ) {
 	TreeNode * tempNode = allocNode();
 	tempNode->nodekind = nk;
@@ -66,6 +65,8 @@ void copyAnnotations( TreeNode * from, TreeNode * to ) // from -> to
 }
 
 // Adds a child to an existing syntax tree node
+// TODO: add children to their specific order in the array, not as a "stack"
+// TODO: Remove numChildren
 void addChild(TreeNode * parent, TreeNode * child) {
     if (parent == NULL || child == NULL) {
         return;
@@ -110,7 +111,8 @@ TreeNode * linkSiblings( TreeNode * sib1, TreeNode * sib2 ) {
 void applyTypeToSiblings( TreeNode * init, Type t ) {
 	TreeNode * temp = init;
     
-    // EPIC STATIC HACK HAHAHAHHA (not really epic, its just late))
+    // Apply static flag to all siblings, just like type...
+    // TODO: make seperate isStatic function?
     bool st = false;
     if(temp != NULL)
     {
@@ -131,20 +133,22 @@ int countSiblings( TreeNode * start ) {
     int sib_count = 0;
     
     if( start != NULL) {
-        TreeNode * temp= start->sibling;
+        TreeNode * temp = start->sibling;
         while(temp != NULL) {
             sib_count++;
             temp = temp->sibling;
-
         }
     }
     return sib_count;
 }
 
 // Allocates and zeros a new TreeNode
+// TODO: should do as a class, put this into constructor, have destructor for things like token
 TreeNode * allocNode() {
     //TreeNode * tempNode = (TreeNode *)calloc(1, sizeof(TreeNode));
     TreeNode * tempNode = (TreeNode *)new TreeNode;
+    
+    // Initialize values
     tempNode->token = NULL;
     tempNode->lineno = 0;
     tempNode->svalue = NULL;
@@ -167,9 +171,11 @@ TreeNode * allocNode() {
     tempNode->offsetReg = o_undef;
     tempNode->isIO = Nopeput;
     tempNode->loc = 0;
-    return tempNode;
+    
+    return tempNode; // Return the allocated node...
 }
 
+// TODO: destructor version
 void freeTree( TreeNode * tree ) {
     if (tree == NULL) {
         return;
@@ -201,13 +207,13 @@ void freeTree( TreeNode * tree ) {
         }
 
         prev = prev->sibling;
-        delete(temp);
+        delete(temp); // TODO: *temp?
         temp = NULL;
-        //free(temp);
     } // end while
     tree = NULL;
 }
 
+// TODO: use new instead?
 void freeToken( TokenData * token ) {
     if (token == NULL) {
         return;

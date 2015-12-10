@@ -65,7 +65,7 @@ int global_offset = 0;
 int param_count = 0;
 
 
-// TODO: put different error types into their own methods in a "errors.cpp" file.
+
 // TODO: free tokens matched by error terminal in bison
 int main ( int argc, char * argv[] )
 {
@@ -79,12 +79,14 @@ int main ( int argc, char * argv[] )
     bool code_generation = true;
     int parseStatus = 0;
     
+    // Filenames
     std::string outfileTM;
     std::string infile;
     
-    initTokenMaps(); // yyerrorhelper initialization...
+    // yyerrorhelper initialization...
+    initTokenMaps(); 
     
-    // Get the input file
+    // Get the input source file (*.c-))
     if(argc > 1)
     {
         infile = basename(argv[1]);
@@ -95,8 +97,8 @@ int main ( int argc, char * argv[] )
         yyin = fopen(argv[1], "r");
     }
 
-    // Command line options
-    // TODO: -h/--help flag listing options
+    // Command line option parsing
+    // Nice to have: -h/--help flag listing options
     while ((option = getopt(argc, argv, "dpPsto:")) != EOF)
     {
         switch (option) {
@@ -133,12 +135,6 @@ int main ( int argc, char * argv[] )
             break;
         }
     }
-
-    // Slightly hacky way to get input filename, without using a option
-    /*if ( argc > 1 && optind < argc )
-    {
-        yyin = fopen(argv[optind], "r");
-    }*/
 
     // Bison builds the syntax tree for us
     parseStatus = yyparse();
@@ -461,6 +457,8 @@ void typeResolution ( TreeNode * par, TreeNode * node, SymbolTable * symtable )
     } // end while
 }
 
+
+// TODO: put different error types into their own methods in a "errors.cpp" file.
 void treeParse ( TreeNode * par, TreeNode * node, SymbolTable * symtable, bool in_loop )
 {
 
