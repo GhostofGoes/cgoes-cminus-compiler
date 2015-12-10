@@ -119,10 +119,48 @@ void codegenTM::initSetup()
 void codegenTM::initGlobals()
 {
     emitComment("INIT GLOBALS AND STATICS");
-    initGlobalArraySizes();
-    // TODO: initGlobalVars();
-    
+    initGlobalVars();
     emitComment("END INIT GLOBALS AND STATICS");
+}
+
+void codegenTM::initGlobalVars()
+{
+    for(TreeNode * tree: globalInitVec)
+    {
+        if(tree->isArray)
+        {
+            if ( tree->offsetReg == local && tree->isStatic )
+            {
+                emitRM("LDC", val, tree->arraySize, 0, "Load size of LocalStatic array " + svalResolve(tree));
+                emitRM("ST", val, tree->location + 1, gp, "Store size of LocalStatic array " + svalResolve(tree));                    
+            } 
+            else if ( tree->offsetReg == global )
+            {
+                emitRM("LDC", val, tree->arraySize, 0, "Load size of global array " + svalResolve(tree));
+                emitRM("ST", val, tree->location + 1, gp, "Store size of global array " + svalResolve(tree));
+            }
+            else
+            {
+                cout << "Fell off inside isArray if-else chain in initGlobalVars. svalue: " << svalResolve(tree) << endl;
+            }
+        }
+        else if( tree->child[0] != NULL )
+        {
+            generateExpression(tree->child[0]);
+            if ( (tree->offsetReg == local && tree->isStatic) || tree->offsetReg == global )
+            {
+                storeVar(tree, val);
+            } 
+            else
+            {
+                cout << "Fell off inside tree->child if-else chain in initGlobalVars. svalue: " << svalResolve(tree) << endl;
+            }             
+        }
+        else
+        {
+            cout << "Fell off primary if-else chain in initGlobalVars. svalue: " << svalResolve(tree) << endl;
+        }
+    }
 }
 
 
@@ -380,8 +418,6 @@ void codegenTM::generateExpression( TreeNode * node )
     }
 }
 
-
-
 void codegenTM::loadParams( TreeNode * tree, int off )
 {
     int siblingCount = 1;
@@ -396,9 +432,7 @@ void codegenTM::loadParams( TreeNode * tree, int off )
     }
 }
 
-
-// ST reg->var
-void codegenTM::storeVar(TreeNode* var, int reg)
+void codegenTM::storeVar(TreeNode* var, int reg) // ST reg->var
 {
     TreeNode * tmp = idResolve(var);
     if ( tmp == NULL )
@@ -532,22 +566,7 @@ void codegenTM::loadArrayAddr( TreeNode* arr, int reg )
     }
 }
 
-void codegenTM::initGlobalArraySizes()
-{
-    for(TreeNode * tree: globalInitVec)
-    {
-        if ( tree->offsetReg == local && tree->isStatic )
-        {
-            emitRM("LDC", val, tree->arraySize, 0, "Load size of LocalStatic array " + svalResolve(tree));
-            emitRM("ST", val, tree->location + 1, gp, "Store size of LocalStatic array " + svalResolve(tree));                    
-        } 
-        else if ( tree->offsetReg == global )
-        {
-            emitRM("LDC", val, tree->arraySize, 0, "Load size of global array " + svalResolve(tree));
-            emitRM("ST", val, tree->location + 1, gp, "Store size of global array " + svalResolve(tree));
-        }        
-    }
-}
+
 
 /* Macros */
 

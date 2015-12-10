@@ -25,7 +25,7 @@ private:
     /* Initialization */
     void initSetup();
     void initGlobals();
-    void initGlobalArraySizes();
+    void initGlobalVars();
     void IOroutines( IO io ); // generates IO routines based on io
     std::vector<TreeNode *> globalInitVec;
     
