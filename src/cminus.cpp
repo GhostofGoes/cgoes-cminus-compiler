@@ -1279,7 +1279,7 @@ int memorySizing( TreeNode * node, SymbolTable * symtable, int parOff )
     //TreeNode * tmp = NULL;
     int tOff = 0;
     int childVal = 0;
-    int line = 0;
+    int line = -99;
     
     std::string tree_svalue;
 
@@ -1315,7 +1315,7 @@ int memorySizing( TreeNode * node, SymbolTable * symtable, int parOff )
                 }
                 if ( tree->isArray )
                     tree->location--; // skip array size
-                symtable->insert(tree_svalue, tree);
+                //symtable->insert(tree_svalue, tree);
                 break;
 
             case ParamK:
@@ -1329,7 +1329,7 @@ int memorySizing( TreeNode * node, SymbolTable * symtable, int parOff )
                     tree->offsetReg = local;
                 //tree->offsetReg = o_param;
                 param_count++;
-                symtable->insert(tree_svalue, tree);
+                //symtable->insert(tree_svalue, tree);
                 break;
 
             case FunK:
@@ -1339,7 +1339,7 @@ int memorySizing( TreeNode * node, SymbolTable * symtable, int parOff )
                 tree->location = 0; // TODO: check this assumption
                 tree->size = 2;
                 tOff -= tree->size;
-                symtable->insert(tree_svalue, tree);
+                //symtable->insert(tree_svalue, tree);
                 symtable->enter("Function " + tree_svalue);
                 // Parameters
                 tOff += memorySizing(tree->child[0], symtable, tOff);

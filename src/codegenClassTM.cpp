@@ -269,26 +269,27 @@ void codegenTM::generateExpression( TreeNode * node )
     std::string rstr = svalResolve(rhs);
     string treestr = svalResolve(tree);
     
-    switch (tree->kind) { // TODO: bval switch
-        //cout << "assign: bval: " << tree->token->bval << endl;
-    case AssignK:
-        emitComment("EXPRESSION");
-        if ( lhs->kind == IdK && lhs->child[0] != NULL ) //lhs->isArray )
-        {
-            generateExpression(lhs->child[0]); // calculate the index
-            emitRM("ST", val, fOffset, fp, "Save index of array " + lstr);
-            generateExpression(rhs); // // Get rvalue to assign, put in val (*assumption*)
-            emitRM("LD", ac1, fOffset, fp, "Retrieve index of array " + lstr);
-            storeArrayVar(lhs, val, ac1); // Assign rvalue to lvalue
-        } else
-        {
-            generateExpression(rhs); // // Get rvalue to assign, put in val (*assumption*)
-            storeVar(lhs, val); // Assign rvalue to lvalue
+    switch (tree->kind) { 
+    case AssignK: 
+        switch(tree->token->bval) {
+        case ASSIGN:
+            if ( lhs->kind == IdK && lhs->child[0] != NULL ) //lhs->isArray )
+            {
+                generateExpression(lhs->child[0]); // calculate the index
+                emitRM("ST", val, fOffset, fp, "Save index of array " + lstr);
+                generateExpression(rhs); // // Get rvalue to assign, put in val (*assumption*)
+                emitRM("LD", ac1, fOffset, fp, "Retrieve index of array " + lstr);
+                storeArrayVar(lhs, val, ac1); // Assign rvalue to lvalue
+            } else
+            {
+                generateExpression(rhs); // // Get rvalue to assign, put in val (*assumption*)
+                storeVar(lhs, val); // Assign rvalue to lvalue
+            }
+            break;
         }
         break;
         
     case UnaryK:
-        //emitComment("EXPRESSION");
         switch (tree->token->bval) {
         case MULTIPLY:
             //tmp = idResolve(lhs);
