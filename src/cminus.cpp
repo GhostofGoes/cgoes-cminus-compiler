@@ -48,9 +48,6 @@
 TreeNode * syntaxTree = NULL;
 TreeNode * annotatedTree = NULL;
 
-// The symbol table
-//SymbolTable * symtab = NULL;
-
 // Globally keep track of warnings and errors
 int warnings = 0;
 int errors = 0;
@@ -167,8 +164,9 @@ int main ( int argc, char * argv[] )
         generateCode(outfileTM, infile);
     }
 
-    //if(print_annotated_tree)
-    printf("Offset for end of global space: %d\n", global_offset);
+    if(print_annotated_tree)
+        printf("Offset for end of global space: %d\n", global_offset);
+    
     printf("Number of warnings: %d\n", warnings);
     printf("Number of errors: %d\n", errors);
 
@@ -188,7 +186,7 @@ int main ( int argc, char * argv[] )
 }
 
 // Performs semantic analysis, generating the Annotated Syntax Tree
-SymbolTable * semanticAnalysis ( TreeNode * og )
+void semanticAnalysis ( TreeNode * og )
 {
     SymbolTable * symtable = new SymbolTable();
     SymbolTable * typetable = new SymbolTable();
@@ -212,7 +210,6 @@ SymbolTable * semanticAnalysis ( TreeNode * og )
         typetable->print(printTreeNode);
         std::cout << "Deleting typetable..." << std::endl;
     }
-    //delete typetable;
 
     if ( semantic_debugging ) 
     {
@@ -237,14 +234,20 @@ SymbolTable * semanticAnalysis ( TreeNode * og )
         errors++;
     }
     
+    // *** Memory allocation *** //
     memorySizing(annotatedTree, symtable, 0);
     
     if( semantic_debugging )
     {
         std::cout << "Deleting symtable..." << std::endl;
     }
+    delete symtable;
     
-    return symtable;
+    if ( semantic_debugging )
+    {    
+        std::cout << "Deleting typetable..." << std::endl;
+    }
+    delete typetable;
 }
 
 // Like a ninja...silent insertion into symbol table and annotating of types. Few errors.

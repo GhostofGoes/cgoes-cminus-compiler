@@ -31,7 +31,7 @@ extern TreeNode * annotatedTree;
 extern int global_offset;
 
 // Creates the Annotated Syntax Tree
-SymbolTable * semanticAnalysis(TreeNode * tree );
+void semanticAnalysis(TreeNode * tree );
 void typeResolution( TreeNode * parent, TreeNode * node, SymbolTable * symtable );
 void treeParse( TreeNode * parent, TreeNode * node, SymbolTable * symtable, bool in_loop );
 void generateCode( std::string output_file, std::string infile );
