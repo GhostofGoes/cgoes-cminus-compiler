@@ -91,7 +91,7 @@ int main ( int argc, char * argv[] )
     if(argc > 1)
     {
         infile = basename(argv[1]);
-        size_t lastindex = infile.find_last_of("."); 
+        size_t lastindex = infile.find_last_of(".");
         outfileTM = infile.substr(0, lastindex);
         outfileTM += ".tm";
         
@@ -1379,11 +1379,11 @@ int memorySizing( TreeNode * node, SymbolTable * symtable, int parOff )
         case ExpK:
             if(tree->kind == IdK)
             {
-                if(symtable->depth() > 1)
-                    tmp = (TreeNode *)symtable->lookup(tree_svalue);
-                else
-                    tmp = (TreeNode *)symtable->lookupGlobal(tree_svalue);
-                copyAnnotations(tmp, tree); // tmp -> tree
+                //if(symtable->depth() > 1)
+                //tmp = (TreeNode *)symtable->lookup(tree_svalue);
+                //else
+                    //tmp = (TreeNode *)symtable->lookupGlobal(tree_svalue);
+                //copyAnnotations(tmp, tree); // tmp -> tree
             }
             break;
           } // end nodekind switch

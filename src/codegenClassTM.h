@@ -34,8 +34,8 @@ private:
     /* General generation */
     void treeTraversal( TreeNode * tree ); // loopsiblings without nk selection
     void loadParams( TreeNode * node, int off ); // loads params before function call
-    TreeNode * lookupLocal( std::string nodeName ); // symboltable lookup
-    TreeNode * lookupGlobal( std::string nodeName ); // global symtab lookup
+    void buildTable();
+    void tableRecurse(TreeNode * node);
     
     /* ID resolution functions */
     // TODO: HANDLE STATICS FOR ASSIGNMENT 7
@@ -49,6 +49,7 @@ private:
     
     /* Typing saving functions  */
     TreeNode * idResolve(TreeNode * node);
+    TreeNode * lookup(std::string s);
     void standardRet(); // zero out return first
     void funRet();      // Load ret addr, adjust FP, return 
     void IOroutines( IO io ); // generates IO routines based on io

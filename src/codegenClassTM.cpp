@@ -28,8 +28,10 @@ using namespace std;
 /* Constructors/Destructors */
 codegenTM::codegenTM ( TreeNode * t, SymbolTable * s, int g, string of, string inf) 
 { 
-    symtable = s;
+    //symtable = s;
     aTree = t;
+    
+    buildTable();
     
     outfilename = of;
     infilename = inf;
@@ -59,6 +61,8 @@ codegenTM::~codegenTM ( )
     {
         cout.flush();
     }
+    
+    delete symtable;
 }
 
 
@@ -250,7 +254,7 @@ void codegenTM::generateExpression( TreeNode * node )
         
         if ( lhs->kind == IdK && lhs->child[0] != NULL ) //lhs->isArray )
         {
-            cerr << "ARRAY lstr for assign: " << lstr << " rstr: " << rstr << endl;
+            //cerr << "ARRAY lstr for assign: " << lstr << " rstr: " << rstr << endl;
             generateExpression(lhs->child[0]); // calculate the index
             emitRM("ST", val, fOffset, fp, "Save index of array " + lstr);
             generateExpression(tree->child[1]); // // Get rvalue to assign, put in val (*assumption*)
@@ -258,7 +262,7 @@ void codegenTM::generateExpression( TreeNode * node )
             storeArrayVar(lhs, val, ac1); // Assign rvalue to lvalue
         } else
         {
-            cerr << "lhsstr for assign: " << lstr << " rstr: " << rstr << endl;
+            //cerr << "lhsstr for assign: " << lstr << " rstr: " << rstr << endl;
             generateExpression(rhs); // // Get rvalue to assign, put in val (*assumption*)
             storeVar(lhs, val); // Assign rvalue to lvalue
         }
@@ -296,7 +300,7 @@ void codegenTM::generateExpression( TreeNode * node )
 
     case ConstK:
         emitComment(" CONST EXPRESSION");
-        cerr << "const str: " << treestr << endl;
+        //cerr << "const str: " << treestr << endl;
         if ( tree->nodetype == Integer )
             emitRM("LDC", val, tree->token->ivalue, 0, "Load integer constant");
         else
@@ -306,10 +310,10 @@ void codegenTM::generateExpression( TreeNode * node )
     case CallK:
         emitComment(" EXPRESSION");
         emitComment("\tBEGIN Call to " + treestr);
-        tmp = lookupGlobal(treestr);
+        tmp = lookup(treestr);
         if(tmp == NULL)
         {
-            cerr << "Couldn't find function in global table" << endl;
+            cerr << "Couldn't find function in table" << endl;
             break;
         }
         
@@ -407,18 +411,22 @@ void codegenTM::loadParams( TreeNode * node, int off )
 // ST reg->var
 void codegenTM::storeVar(TreeNode* var, int reg)
 {
+    //cerr << "hit storeVar: " << svalResolve(var) << endl;
     TreeNode * tmp = idResolve(var);
     //TreeNode * tmp = var;
     if ( tmp == NULL )
+    {
+        //cerr << "tmp is null in storeVar: " << endl;
         return;
-
+    }
+    //cerr << "got past null check in storeVar: "  << svalResolve(tmp) << endl;
     if ( tmp->offsetReg == local && !tmp->isStatic )
     {
         emitRM("ST", reg, tmp->location, fp, "Store Local variable " + svalResolve(tmp));
     }
     else if (tmp->offsetReg == local && tmp->isStatic )
     {
-        emitRM("ST", reg, tmp->location, gp, "Store LocalStatic variable " + svalResolve(tmp));  
+        emitRM("ST", reg, tmp->location, gp, "Store LocalStatic variable " + svalResolve(tmp));
     }
     else if (tmp->offsetReg == global)
     {
@@ -512,11 +520,11 @@ void codegenTM::loadArrayAddr( TreeNode* arr, int reg )
 
 TreeNode* codegenTM::idResolve(TreeNode* node)
 {
-    return node;
+    //return node;
     TreeNode * tmp = NULL;
     if(node == NULL)
     {
-        //cerr << "NULL treenode passed to idResolve!" << endl;
+        cerr << "NULL treenode passed to idResolve!" << endl;
         return node;        
     }
     else if ( node->kind != IdK )  
@@ -524,34 +532,71 @@ TreeNode* codegenTM::idResolve(TreeNode* node)
         return node;
     }
     else {
-        if(symtable->depth() > 1)
-            tmp = lookupLocal(svalResolve(node));
-        else
-            tmp = lookupGlobal(svalResolve(node));
+        tmp = (TreeNode *) symtable->lookup(svalResolve(node));
+        //tmp = (TreeNode *) symtable->lookupGlobal(treestr);
+        if ( tmp == NULL )
+        {
+            cerr << "NULL symbolTable lookup on " << svalResolve(node) << endl;
+        }
+        return tmp;
     }    
 }
 
-
-TreeNode* codegenTM::lookupLocal(std::string treestr)
+TreeNode * codegenTM::lookup( string s )
 {
-    TreeNode * tmp = (TreeNode *) symtable->lookup(treestr);
-    if ( tmp == NULL )
-    {
-        cerr << "NULL symbolTable lookup on " << treestr << endl;
-    }    
-    return tmp;
+    return (TreeNode *)symtable->lookup(s);
+    
 }
 
-TreeNode* codegenTM::lookupGlobal(std::string treestr)
+
+void codegenTM::buildTable()
 {
-    TreeNode * tmp = (TreeNode *) symtable->lookupGlobal(treestr);
-    if ( tmp == NULL )
-    {
-        cerr << "NULL GLOBAL symbolTable lookup on " << treestr << endl;
-    }    
-    return tmp;
+    symtable = new SymbolTable();
+    TreeNode * temp = aTree;
+    
+    tableRecurse(temp);
 }
 
+void codegenTM::tableRecurse(TreeNode * node)
+{
+    std::string str;
+    TreeNode * tmp;
+    
+    while(node != NULL)
+    {
+        str = svalResolve(node);
+        switch(node->kind)
+        {
+        case VarK:
+        case ParamK:
+            symtable->insert(str, node);
+            break;
+            
+        case FunK:
+            symtable->insert(str, node);
+            symtable->enter("Function " + str);
+            for(int i = 0; i < 3; i++)
+                tableRecurse(node->child[i]);
+            symtable->leave();
+            break;
+            
+        case CompoundK:
+            symtable->enter("Compound" + node->lineno);
+            for(int i = 0; i < 3; i++)
+                tableRecurse(node->child[i]);            
+            symtable->leave();
+            break;
+            
+        case IdK:
+            tmp = (TreeNode *) symtable->lookup(str);
+            copyAnnotations(tmp, node); // tmp -> node            
+            break;
+            
+            
+        }
+        node = node->sibling;
+    }    
+}
 
 void codegenTM::standardRet() // comment, zero out return, funRet
 {
