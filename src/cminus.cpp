@@ -49,7 +49,7 @@ TreeNode * syntaxTree = NULL;
 TreeNode * annotatedTree = NULL;
 
 // The symbol table
-SymbolTable * symtab = NULL;
+//SymbolTable * symtab = NULL;
 
 // Globally keep track of warnings and errors
 int warnings = 0;
@@ -123,7 +123,8 @@ int main ( int argc, char * argv[] )
             if ( optarg == "-" )
             {
                 outfileTM = "stdout";
-            } else
+            } 
+            else
             {
                 if ( optarg != NULL )
                     outfileTM.assign(optarg);
@@ -155,7 +156,7 @@ int main ( int argc, char * argv[] )
         TreeNode * io = buildIOLibrary();
         linkSiblings(io, syntaxTree);
         annotatedTree = io;
-        symtab = semanticAnalysis(annotatedTree);
+        semanticAnalysis(annotatedTree);
 
         if ( print_annotated_tree )
             printAnnotatedTree(annotatedTree);
@@ -166,10 +167,8 @@ int main ( int argc, char * argv[] )
         generateCode(outfileTM, infile);
     }
 
-    
-    if(print_annotated_tree)
-        printf("Offset for end of global space: %d\n", global_offset);
-    
+    //if(print_annotated_tree)
+    printf("Offset for end of global space: %d\n", global_offset);
     printf("Number of warnings: %d\n", warnings);
     printf("Number of errors: %d\n", errors);
 
@@ -178,8 +177,6 @@ int main ( int argc, char * argv[] )
     
     fclose(yyin);
     
-    if(symtab != NULL)
-        delete symtab;
     /*
     if(syntaxTree != NULL)
         //freeTree(syntaxTree);
@@ -1153,7 +1150,7 @@ void treeParse ( TreeNode * par, TreeNode * node, SymbolTable * symtable, bool i
 
 void generateCode( std::string output_file, std::string infile )
 {
-    codegenTM cg(annotatedTree, symtab, global_offset, output_file, infile );
+    codegenTM cg( annotatedTree, global_offset, output_file, infile );
     cg.generateCode();
 }
 
@@ -1278,7 +1275,7 @@ int memorySizing( TreeNode * node, SymbolTable * symtable, int parOff )
     TreeNode * tree;
     tree = node;
     
-    TreeNode * tmp = NULL;
+    //TreeNode * tmp = NULL;
     int tOff = 0;
     int childVal = 0;
     int line = 0;

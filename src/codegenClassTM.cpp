@@ -26,7 +26,7 @@ using namespace std;
 // TODO: fix this deep logic issue... 'numChildren'
 
 /* Constructors/Destructors */
-codegenTM::codegenTM ( TreeNode * t, SymbolTable * s, int g, string of, string inf) 
+codegenTM::codegenTM ( TreeNode * t, int g, string of, string inf) 
 { 
     //symtable = s;
     aTree = t;
@@ -281,7 +281,7 @@ void codegenTM::generateExpression( TreeNode * node )
         break;
         
     case UnaryK:
-        emitComment(" UNARY EXPRESSION");
+        emitComment("EXPRESSION");
         switch (tree->token->bval) {
         case MULTIPLY:
             //tmp = idResolve(lhs);
@@ -298,7 +298,7 @@ void codegenTM::generateExpression( TreeNode * node )
 
     case IdK: // TODO: reevaluate this case's logic
         //tmp = idResolve(tree);
-        emitComment(" IdK EXPRESSION");
+        emitComment("EXPRESSION");
         if(lhs != NULL ) // lhs->isArray
         {
            generateExpression(lhs); // calculate the index
@@ -311,7 +311,7 @@ void codegenTM::generateExpression( TreeNode * node )
         break;
 
     case ConstK:
-        emitComment(" CONST EXPRESSION");
+        emitComment("EXPRESSION");
         // His comment names are really strange(i'm just matching them for diff purposes)
         // 'integer', 'Boolean', 'char'
         // Assuming the tokens are not NULL, since we've error checked and its all valid C- code...
@@ -332,7 +332,7 @@ void codegenTM::generateExpression( TreeNode * node )
         break;
 
     case CallK:
-        emitComment(" EXPRESSION");
+        emitComment("EXPRESSION");
         emitComment("\tBEGIN Call to " + treestr);
         tmp = lookup(treestr);
         if(tmp == NULL)
@@ -341,17 +341,15 @@ void codegenTM::generateExpression( TreeNode * node )
             break;
         }
         
-        // Store old frame pointer (negative conversion hack for now))
         emitRM("ST", fp, fOffset, fp, "Store current frame pointer");
         loadParams(tree->child[0], -1 + fOffset); // Load parameters into memory
+        
         emitComment("\t\tJumping to " + treestr);
         emitRM("LDA", fp, fOffset, fp, "Load address of new frame");
         emitRM("LDA", val, 1, pc, "Save return address");
-        //emitRM("LDC", pc, tmp->loc, pc, "Call " + treestr); // TODO: backpatch
-        emitRMAbs("LDA", pc, tmp->loc,"Call " + treestr );
+        emitRMAbs("LDA", pc, tmp->loc, "Call " + treestr );
         emitRM("LDA", val, 0, ret, "Save function result");
-        
-        emitComment("\tEND CALL to " + treestr);
+        emitComment("\tEnd call to " + treestr);
         break;
 
     default:
@@ -365,7 +363,6 @@ void codegenTM::loopSiblings( NodeKind nk, TreeNode * node )
 {
     TreeNode * tree;
     tree = node;
-    
     int siblingCount = 1;
     
     while(tree != NULL)
@@ -414,17 +411,14 @@ void codegenTM::treeTraversal( TreeNode * node )
     }
 }
 
-void codegenTM::loadParams( TreeNode * node, int off )
+void codegenTM::loadParams( TreeNode * tree, int off )
 {
-    TreeNode * tree = node;
-    TreeNode * tmp;
     int siblingCount = 1;
     
     while(tree != NULL)
     {
-        //tmp = lookupGlobal(svalResolve(tree));
         emitComment("\t\tLoad param " + to_string(siblingCount) );
-        generateExpression(tree); // TODO: resolve ID after recursing on chldren? or even resolve?
+        generateExpression(tree);
         emitRM("ST", val, off - siblingCount, fp, "Store paramater " + to_string(siblingCount) );
         tree = tree->sibling;
         siblingCount++;
@@ -453,6 +447,10 @@ void codegenTM::storeVar(TreeNode* var, int reg)
     {
         emitRM("ST", reg, tmp->location, gp, "Store Global variable " + svalResolve(tmp));
     }
+    else
+    {
+        cerr << "Fell off if-else chain in storeVar" << endl;
+    }
 }
 
 // USES: ac3
@@ -468,11 +466,19 @@ void codegenTM::storeArrayVar(TreeNode* arr, int reg, int index)
     if ( tmp->offsetReg == local && !tmp->isStatic )
     {
         emitRM("ST", reg, 0, ac3, "Store reg(" + to_string(reg) + ") into local array " + svalResolve(tmp));
+    } 
+    else if( tmp->offsetReg == local && tmp->isStatic)
+    {
+        emitRM("ST", reg, 0, ac3, "Store reg(" + to_string(reg) + ") into LocalStatic array " + svalResolve(tmp));
     }
-    else
+    else if ( tmp->offsetReg == global )
     {
         emitRM("ST", reg, 0, ac3, "Store reg(" + to_string(reg) + ") into global array " + svalResolve(tmp));
     }
+    else
+    {
+        cerr << "Fell off if-else chain in storeArrayVar" << endl;
+    }    
 }
 
 
@@ -496,6 +502,10 @@ void codegenTM::loadVar(TreeNode* var, int reg )
     {
         emitRM("LD", reg, tmp->location, gp, "Load Global variable " + svalResolve(tmp));
     }
+    else
+    {
+        cerr << "Fell off if-else chain in storeVar" << endl;
+    }
 }
 
 // USES: ac3
@@ -512,11 +522,18 @@ void codegenTM::loadArrayVar(TreeNode* arr, int reg, int index)
     {
         emitRM("LD", reg, 0, ac3, "Load local array variable " + svalResolve(tmp));
     }
-    else
+    else if (tmp->offsetReg == local && tmp->isStatic )
     {      
+        emitRM("LD", reg, 0, ac3, "Load LocalStatic array variable " + svalResolve(tmp));
+    }
+    else if(tmp->offsetReg == global )
+    {
         emitRM("LD", reg, 0, ac3, "Load global array variable " + svalResolve(tmp));
     }
-    
+    else
+    {
+        cerr << "Fell off if-else chain in loadArrayVar" << endl;
+    }    
 }
 
 // LDA reg<-arr
@@ -530,9 +547,17 @@ void codegenTM::loadArrayAddr( TreeNode* arr, int reg )
     {
         emitRM("LDA", reg, tmp->location, fp, "Load local array address of  " + svalResolve(tmp));
     }
+    else if (tmp->offsetReg == local && tmp->isStatic)
+    {
+        emitRM("LDA", reg, tmp->location, gp, "Load LocalStatic array address of " + svalResolve(tmp)); 
+    }
+    else if( tmp->offsetReg == global)
+    {
+        emitRM("LDA", reg, tmp->location, gp, "Load global array address of " + svalResolve(tmp)); 
+    }
     else
     {
-        emitRM("LDA", reg, tmp->location, gp, "Load 'global' array address of " + svalResolve(tmp)); 
+        cerr << "Fell off if-else chain in loadArrayAddr" << endl;
     }
 }
 
@@ -552,9 +577,11 @@ TreeNode* codegenTM::idResolve(TreeNode* node)
     {
         return node;
     }
-    else {
-        tmp = (TreeNode *) symtable->lookup(svalResolve(node));
+    else 
+    {
+        //tmp = (TreeNode *) symtable->lookup(svalResolve(node));
         //tmp = (TreeNode *) symtable->lookupGlobal(treestr);
+        tmp = lookup(svalResolve(node));
         if ( tmp == NULL )
         {
             cerr << "NULL symbolTable lookup on " << svalResolve(node) << endl;
@@ -566,7 +593,6 @@ TreeNode* codegenTM::idResolve(TreeNode* node)
 TreeNode * codegenTM::lookup( string s )
 {
     return (TreeNode *)symtable->lookup(s);
-    
 }
 
 
@@ -613,7 +639,10 @@ void codegenTM::tableRecurse(TreeNode * node)
             copyAnnotations(tmp, node); // tmp -> node            
             break;
             
-            
+        default:
+            for (int i = 0; i < 3; i++)
+                tableRecurse(node->child[i]);
+            break;
         }
         node = node->sibling;
     }    
