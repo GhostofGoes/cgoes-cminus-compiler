@@ -76,12 +76,6 @@ Func input returns type int allocated as Global of size -2 and exec location 0 [
 |   |   |   Child: 0  Id: zx Type: char [line: 32]
 |   |   |   |Sibling: 1  Id: zy Type: is array of char [line: 32]
 DEBUG(SymbolTable): enter scope "Global".
-Fell off if-else chain in storeVar. svalue: px
-Fell off if-else chain in storeVar. svalue: px
-Fell off if-else chain in loadArrayAddr. svalue: py
-Fell off if-else chain in storeArrayVar. svalue: py
-Fell off if-else chain in loadArrayAddr. svalue: py
-Fell off if-else chain in loadArrayVar. svalue: py
 Offset for end of global space: -24
 Number of warnings: 0
 Number of errors: 0
