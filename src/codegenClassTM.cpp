@@ -147,14 +147,7 @@ void codegenTM::initGlobalVars()
         else if( tree->child[0] != NULL )
         {
             generateExpression(tree->child[0]);
-            if ( (tree->offsetReg == local && tree->isStatic) || tree->offsetReg == global )
-            {
-                storeVar(tree, val);
-            } 
-            else
-            {
-                cout << "Fell off inside tree->child if-else chain in initGlobalVars. svalue: " << svalResolve(tree) << endl;
-            }             
+            storeVar(tree, val);          
         }
         else
         {
@@ -175,23 +168,36 @@ void codegenTM::generateDeclaration(TreeNode* node)
         return;
     }
     string treestr = svalResolve(tree);
+    TreeNode * lhs = tree->child[0];
+    TreeNode * rhs = tree->child[1];
     
     switch(tree->kind) {
-        case VarK: // TODO: VARIABLES!
-            if(tree->isArray) // Array size loading
+        case VarK:
+            if( (tree->offsetReg == local && tree->isStatic) || tree->offsetReg == global)
             {
-                if(tree->offsetReg == local && !tree->isStatic)
+                globalInitVec.push_back(tree);
+            }
+            else
+            {
+                if(tree->isArray) // Array size loading
                 {
-                    emitRM("LDC", val, tree->arraySize, 0, "Load size of local array " + treestr);
-                    emitRM("ST", val, tree->location + 1, fp, "Store size of local array " + treestr);
-                }
-                else if( (tree->offsetReg == local && tree->isStatic) || tree->offsetReg == global)
-                {
-                    globalInitVec.push_back(tree);                    
+                    if(tree->offsetReg == local && !tree->isStatic)
+                    {
+                        emitRM("LDC", val, tree->arraySize, 0, "Load size of local array " + treestr);
+                        emitRM("ST", val, tree->location + 1, fp, "Store size of local array " + treestr);
+                    }
+                    else
+                    {
+                        cout << "Fell off array if-else chain in generateDelcaration:VarK. svalue: " << svalResolve(tree) << endl;
+                    }
                 }
                 else
                 {
-                    cout << "Fell off if-else chain in generateDelcaration:VarK. svalue: " << svalResolve(tree) << endl;
+                    if( (tree->offsetReg == local && !tree->isStatic) && lhs != NULL)
+                    {
+                        generateExpression(lhs);
+                        storeVar(tree,val);
+                    }
                 }
             }
             symtable->insert(treestr, tree);
