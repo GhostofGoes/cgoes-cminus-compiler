@@ -76,12 +76,14 @@ void codegenTM::generateCode()
     if(emitToFile)
     {
         outfile.open(outfilename, ofstream::out);
-        emitComment( outfilename );
+        
     }  
-    emitComment( "Cgoes Cminus Compiler (CCC)" );
-    emitComment( "Author: Christopher Goes");
-    emitComment( "File compiled: " + infilename );
-    emitComment( "Generated at: " + timestamp() );
+    
+    emitComment( "File name:     \t" + outfilename );
+    emitComment( "File compiled: \t" + infilename );
+    emitComment( "Compiled using:\tCgoes Cminus Compiler (CCC)" );
+    emitComment( "Author:        \tChristopher Goes");
+    emitComment( "Generated at:  \t" + timestamp() );
     
     
     /* Instruction generation */
@@ -158,7 +160,7 @@ void codegenTM::generateDeclaration(TreeNode* node)
             symtable->insert(treestr, tree);
             
             if(treestr == "main") // Only a few functions to check, so this is fine
-                mainLoc = emitSkip(0);
+                mainLoc = emitSkip(0); // TODO: needed?
             // TODO: this is where i can nab the function location
             tree->loc = emitSkip(0);
             
@@ -202,34 +204,47 @@ void codegenTM::generateStatement( TreeNode * node )
     }
     string treestr = svalResolve(tree);
     // TODO: SymbolTable for local redeclarations of global vars!
-    switch(tree->kind) {
-        case CompoundK: // TODO: function body!
-            emitComment("BEGIN COMPOUND");
-            if(tree->isFuncCompound == false)
-                symtable->enter("Compound" + tree->lineno);
-            
-            fOffset = tree->size;
-            
-            treeTraversal(tree->child[0]); // declarations, if any
-            treeTraversal(tree->child[1]); // Expressions/Statements
-            
-            if(tree->isFuncCompound == false)
-                symtable->leave();
-            emitComment("END COMPOUND");
-            break;
-            
-        case ReturnK: // TODO: function returns!
-            emitComment("\tRETURN");
-            if(tree->child[0] != NULL) { // Check for return value
-                generateExpression(tree->child[0]);
-                emitRM("LDA", ret, 0, val, "Save result into ret");
-            }
-            funRet(); // Return!
-            break;
-            
-        default:
-            cerr << "Hit default in generateStatement switch(kind)! treestr: " << treestr << endl;            
-            break;
+    switch (tree->kind) {
+    case CompoundK:
+        emitComment("COMPOUND");
+        if ( tree->isFuncCompound == false )
+            symtable->enter("Compound" + tree->lineno);
+
+        fOffset = tree->size;
+
+        treeTraversal(tree->child[0]); // declarations, if any
+        treeTraversal(tree->child[1]); // Expressions/Statements
+
+        if ( tree->isFuncCompound == false )
+            symtable->leave();
+        emitComment("END COMPOUND");
+        break;
+
+    case ReturnK:
+        emitComment("\tRETURN");
+        if ( tree->child[0] != NULL )
+        { // Check for return value
+            generateExpression(tree->child[0]);
+            emitRM("LDA", ret, 0, val, "Save result into ret");
+        }
+        funRet(); // Return!
+        break;
+
+    case WhileK: // TODO: while implementation
+        break;
+
+    case IfK: // TODO: if implementation ... else implemenation?
+        break;
+
+    case ForeachK: // NOTE: We're not doing foreach this time
+        break;
+        
+    case BreakK: // TODO: break implementation
+        break; // heh
+
+    default:
+        cerr << "Hit default in generateStatement switch(kind)! treestr: " << treestr << endl;
+        break;
     }
 }
 
@@ -248,13 +263,11 @@ void codegenTM::generateExpression( TreeNode * node )
     std::string rstr = svalResolve(rhs);
     string treestr = svalResolve(tree);
     
-    switch (tree->kind) {
-    case AssignK:
+    switch (tree->kind) { // TODO: bval switch
         //cerr << "assign: bval: " << tree->token->bval << endl;
-        
+    case AssignK:
         if ( lhs->kind == IdK && lhs->child[0] != NULL ) //lhs->isArray )
         {
-            //cerr << "ARRAY lstr for assign: " << lstr << " rstr: " << rstr << endl;
             generateExpression(lhs->child[0]); // calculate the index
             emitRM("ST", val, fOffset, fp, "Save index of array " + lstr);
             generateExpression(tree->child[1]); // // Get rvalue to assign, put in val (*assumption*)
@@ -262,7 +275,6 @@ void codegenTM::generateExpression( TreeNode * node )
             storeArrayVar(lhs, val, ac1); // Assign rvalue to lvalue
         } else
         {
-            //cerr << "lhsstr for assign: " << lstr << " rstr: " << rstr << endl;
             generateExpression(rhs); // // Get rvalue to assign, put in val (*assumption*)
             storeVar(lhs, val); // Assign rvalue to lvalue
         }
@@ -284,7 +296,7 @@ void codegenTM::generateExpression( TreeNode * node )
         } // end bval switch
         break;
 
-    case IdK:
+    case IdK: // TODO: reevaluate this case's logic
         //tmp = idResolve(tree);
         emitComment(" IdK EXPRESSION");
         if(lhs != NULL ) // lhs->isArray
@@ -300,11 +312,23 @@ void codegenTM::generateExpression( TreeNode * node )
 
     case ConstK:
         emitComment(" CONST EXPRESSION");
-        //cerr << "const str: " << treestr << endl;
+        // His comment names are really strange(i'm just matching them for diff purposes)
+        // 'integer', 'Boolean', 'char'
+        // Assuming the tokens are not NULL, since we've error checked and its all valid C- code...
         if ( tree->nodetype == Integer )
+        {
             emitRM("LDC", val, tree->token->ivalue, 0, "Load integer constant");
+        }
+        else if ( tree->nodetype == Boolean )
+        {
+            emitRM("LDC", val, tree->token->ivalue, 0, "Load Boolean constant");
+        }
+        else if( tree->nodetype == Character )
+        {
+            emitRM("LDC", val, tree->token->cvalue, 0, "Load char constant");
+        }
         else
-            cerr << "Non-Integer constant" << endl;
+            cerr << "Constant isn't Integer, Boolean, or Character." << endl;
         break;
 
     case CallK:
@@ -411,15 +435,12 @@ void codegenTM::loadParams( TreeNode * node, int off )
 // ST reg->var
 void codegenTM::storeVar(TreeNode* var, int reg)
 {
-    //cerr << "hit storeVar: " << svalResolve(var) << endl;
     TreeNode * tmp = idResolve(var);
-    //TreeNode * tmp = var;
     if ( tmp == NULL )
     {
         //cerr << "tmp is null in storeVar: " << endl;
         return;
     }
-    //cerr << "got past null check in storeVar: "  << svalResolve(tmp) << endl;
     if ( tmp->offsetReg == local && !tmp->isStatic )
     {
         emitRM("ST", reg, tmp->location, fp, "Store Local variable " + svalResolve(tmp));
