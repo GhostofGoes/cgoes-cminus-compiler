@@ -128,7 +128,8 @@ scoped-var-declaration:
         yyerrok;
         $$ = $2;
         if($1->isStatic) { $$->isStatic = true; }
-        applyTypeToSiblings($$, $1->nodetype);    
+        applyTypeToSiblings($$, $1->nodetype);
+        freeToken($3);
     }
     | type-specifier error 
         { $$ = NULL; }
@@ -306,7 +307,7 @@ param-id-list:
         freeToken($2);
     }
     | param-id-list COMMA error 
-    { $$ = NULL; }
+        { $$ = NULL; }
     ;
     
 param-id:
@@ -324,7 +325,7 @@ param-id:
         freeToken($3);
     }
     | error 
-    { $$ = NULL; }
+        { $$ = NULL; }
     ;
     
 statement:

@@ -23,7 +23,7 @@
 #include "symbolTable.h"
 
 using namespace std;
-// TODO: fix this deep logic issue... 'numChildren'
+
 
 /* Constructors/Destructors */
 codegenTM::codegenTM ( TreeNode * t, int g, string of, string inf) 
@@ -143,13 +143,22 @@ void codegenTM::generateDeclaration(TreeNode* node)
             {
                 if(tree->offsetReg == local && !tree->isStatic)
                 {
-                    emitRM("LDC", val, tree->arraySize, 0, "Load size of array " + treestr);
+                    emitRM("LDC", val, tree->arraySize, 0, "Load size of local array " + treestr);
                     emitRM("ST", val, tree->location + 1, fp, "Store size of local array " + treestr);
+                }
+                else if(tree->offsetReg == local && tree->isStatic)
+                {
+                    //emitRM("LDC", val, tree->arraySize, 0, "Load size of LocalStatic array " + treestr);
+                    //emitRM("ST", val, tree->location + 1, gp, "Store size of LocalStatic array " + treestr);                    
+                }
+                else if(tree->offsetReg == global)
+                {
+                    //emitRM("LDC", val, tree->arraySize, 0, "Load size of global array " + treestr);
+                    //emitRM("ST", val, tree->location + 1, gp, "Store size of global array " + treestr);
                 }
                 else
                 {
-                    emitRM("LDC", val, tree->arraySize, 0, "Load size of array " + treestr);
-                    emitRM("ST", val, tree->location + 1, gp, "Store size of global array " + treestr);
+                    cout << "Fell off if-else chain in generateDelcaration:VarK. svalue: " << svalResolve(tree) << endl;
                 }
             }
             symtable->insert(treestr, tree);
@@ -157,18 +166,14 @@ void codegenTM::generateDeclaration(TreeNode* node)
             
         case FunK: // Function declaration
             emitComment("FUNCTION " + treestr);
-            symtable->insert(treestr, tree);
-            
-            if(treestr == "main") // Only a few functions to check, so this is fine
+            if(treestr == "main")
                 mainLoc = emitSkip(0); // TODO: needed?
-            // TODO: this is where i can nab the function location
             tree->loc = emitSkip(0);
-            
+            symtable->insert(treestr, tree);
             emitRM("ST", val, -1, fp, "Store return address");
             
             if(tree->isIO != Nopeput)
             {
-                
                 IOroutines(tree->isIO);
                 funRet();
             }
@@ -180,10 +185,9 @@ void codegenTM::generateDeclaration(TreeNode* node)
                 standardRet(); // redundant return in case one is never specified
                 symtable->leave();
             }
-            
-            
             emitComment("END FUNCTION " + treestr);
             break;
+            
     case ParamK:
         symtable->insert(treestr, tree);
         break;
@@ -194,6 +198,7 @@ void codegenTM::generateDeclaration(TreeNode* node)
     }
 }
 
+// TODO: SymbolTable for local redeclarations of global vars!
 void codegenTM::generateStatement( TreeNode * node )
 {
     TreeNode * tree = node;
@@ -203,8 +208,9 @@ void codegenTM::generateStatement( TreeNode * node )
         return;
     }
     string treestr = svalResolve(tree);
-    // TODO: SymbolTable for local redeclarations of global vars!
+    
     switch (tree->kind) {
+        
     case CompoundK:
         emitComment("COMPOUND");
         if ( tree->isFuncCompound == false )
@@ -266,11 +272,12 @@ void codegenTM::generateExpression( TreeNode * node )
     switch (tree->kind) { // TODO: bval switch
         //cout << "assign: bval: " << tree->token->bval << endl;
     case AssignK:
+        emitComment("EXPRESSION");
         if ( lhs->kind == IdK && lhs->child[0] != NULL ) //lhs->isArray )
         {
             generateExpression(lhs->child[0]); // calculate the index
             emitRM("ST", val, fOffset, fp, "Save index of array " + lstr);
-            generateExpression(tree->child[1]); // // Get rvalue to assign, put in val (*assumption*)
+            generateExpression(rhs); // // Get rvalue to assign, put in val (*assumption*)
             emitRM("LD", ac1, fOffset, fp, "Retrieve index of array " + lstr);
             storeArrayVar(lhs, val, ac1); // Assign rvalue to lvalue
         } else
@@ -281,11 +288,12 @@ void codegenTM::generateExpression( TreeNode * node )
         break;
         
     case UnaryK:
-        emitComment("EXPRESSION");
+        //emitComment("EXPRESSION");
         switch (tree->token->bval) {
         case MULTIPLY:
             //tmp = idResolve(lhs);
-            if( lhs != NULL && !lhs->isStatic && lhs->offsetReg != global ) // TODO: remove global/static
+            // TODO: remove global/static guards
+            if( lhs != NULL && !lhs->isStatic && lhs->offsetReg != global ) 
             {
                 loadArrayAddr(lhs, ac2);
                 emitRM("LD", val, 1, ac2, "Load size of array " + lstr); // +1 to get size                
@@ -298,7 +306,7 @@ void codegenTM::generateExpression( TreeNode * node )
 
     case IdK: // TODO: reevaluate this case's logic
         //tmp = idResolve(tree);
-        emitComment("EXPRESSION");
+        //emitComment("EXPRESSION");
         if(lhs != NULL ) // lhs->isArray
         {
            generateExpression(lhs); // calculate the index
@@ -311,7 +319,7 @@ void codegenTM::generateExpression( TreeNode * node )
         break;
 
     case ConstK:
-        emitComment("EXPRESSION");
+        //emitComment("EXPRESSION");
         // His comment names are really strange(i'm just matching them for diff purposes)
         // 'integer', 'Boolean', 'char'
         // Assuming the tokens are not NULL, since we've error checked and its all valid C- code...
@@ -333,7 +341,7 @@ void codegenTM::generateExpression( TreeNode * node )
 
     case CallK:
         emitComment("EXPRESSION");
-        emitComment("\tBEGIN Call to " + treestr);
+        emitComment("\t\tBegin call to " + treestr);
         tmp = lookup(treestr);
         if(tmp == NULL)
         {
@@ -344,12 +352,12 @@ void codegenTM::generateExpression( TreeNode * node )
         emitRM("ST", fp, fOffset, fp, "Store current frame pointer");
         loadParams(tree->child[0], -1 + fOffset); // Load parameters into memory
         
-        emitComment("\t\tJumping to " + treestr);
+        emitComment("\t\tJump to " + treestr);
         emitRM("LDA", fp, fOffset, fp, "Load address of new frame");
         emitRM("LDA", val, 1, pc, "Save return address");
-        emitRMAbs("LDA", pc, tmp->loc, "Call " + treestr );
+        emitRMAbs("LDA", pc, tmp->loc, "CALL " + treestr );
         emitRM("LDA", val, 0, ret, "Save function result");
-        emitComment("\tEnd call to " + treestr);
+        emitComment("\t\tEnd call to " + treestr);
         break;
 
     default:
@@ -417,7 +425,7 @@ void codegenTM::loadParams( TreeNode * tree, int off )
     
     while(tree != NULL)
     {
-        emitComment("\t\tLoad param " + to_string(siblingCount) );
+        emitComment("\t\t\tLoad param " + to_string(siblingCount) );
         generateExpression(tree);
         emitRM("ST", val, off - siblingCount, fp, "Store paramater " + to_string(siblingCount) );
         tree = tree->sibling;
@@ -432,7 +440,7 @@ void codegenTM::storeVar(TreeNode* var, int reg)
     TreeNode * tmp = idResolve(var);
     if ( tmp == NULL )
     {
-        //cout << "tmp is null in storeVar: " << endl;
+        cout << "tmp is null in storeVar" << endl;
         return;
     }
     if ( tmp->offsetReg == local && !tmp->isStatic )
@@ -449,7 +457,7 @@ void codegenTM::storeVar(TreeNode* var, int reg)
     }
     else
     {
-        cout << "Fell off if-else chain in storeVar" << endl;
+        cout << "Fell off if-else chain in storeVar. svalue: " << svalResolve(tmp) << endl;
     }
 }
 
@@ -477,7 +485,7 @@ void codegenTM::storeArrayVar(TreeNode* arr, int reg, int index)
     }
     else
     {
-        cout << "Fell off if-else chain in storeArrayVar" << endl;
+        cout << "Fell off if-else chain in storeArrayVar. svalue: " << svalResolve(tmp) << endl;
     }    
 }
 
@@ -504,7 +512,7 @@ void codegenTM::loadVar(TreeNode* var, int reg )
     }
     else
     {
-        cout << "Fell off if-else chain in storeVar" << endl;
+        cout << "Fell off if-else chain in storeVar. svalue: " << svalResolve(tmp) << endl;
     }
 }
 
@@ -532,7 +540,7 @@ void codegenTM::loadArrayVar(TreeNode* arr, int reg, int index)
     }
     else
     {
-        cout << "Fell off if-else chain in loadArrayVar" << endl;
+        cout << "Fell off if-else chain in loadArrayVar. svalue: " << svalResolve(tmp) << endl;
     }    
 }
 
@@ -557,7 +565,7 @@ void codegenTM::loadArrayAddr( TreeNode* arr, int reg )
     }
     else
     {
-        cout << "Fell off if-else chain in loadArrayAddr" << endl;
+        cout << "Fell off if-else chain in loadArrayAddr. svalue: " << svalResolve(tmp) << endl;
     }
 }
 
@@ -595,12 +603,10 @@ TreeNode * codegenTM::lookup( string s )
     return (TreeNode *)symtable->lookup(s);
 }
 
-
 void codegenTM::buildTable()
 {
     symtable = new SymbolTable();
     TreeNode * temp = aTree;
-    
     tableRecurse(temp);
 }
 
@@ -639,7 +645,7 @@ void codegenTM::tableRecurse(TreeNode * node)
             copyAnnotations(tmp, node); // tmp -> node            
             break;
             
-        default:
+        default: // TODO: is this where this should be?
             for (int i = 0; i < 3; i++)
                 tableRecurse(node->child[i]);
             break;
@@ -651,55 +657,55 @@ void codegenTM::tableRecurse(TreeNode * node)
 void codegenTM::standardRet() // comment, zero out return, funRet
 {
     emitComment("\tFailsafe return");
-    emitRM("LDC", ret, 0, 0, "Zero out return value");
+    emitRM("LDC", ret, 0, 0, "Set return to 0");
     funRet();
 }
 
 void codegenTM::funRet() // Load ret addr, adjust FP, return
 {
     emitRM("LD", val, -1, fp, "Load return address");
-    emitRM("LD", fp, 0, fp, "Adjust frame pointer");
-    emitRM("LDA", pc, 0, val, "Return!");
+    emitRM("LD", fp, 0, fp, "Adjust fp");
+    emitRM("LDA", pc, 0, val, "Return");
 }
 
 void codegenTM::IOroutines(IO io)
 {
     switch (io) {
-        case Nopeput:
+        case Nopeput: // It's not a IO routine
             break;
 
         case InputI:
-            emitRO("IN", ret, 2, 2, "Input integer");
+            emitRO("IN", ret, 2, 2, "Grab int input");
             break;
 
         case OutputI:
-            emitRM("LD", val, -2, fp, "Load param");
+            emitRM("LD", val, -2, fp, "Load parameter");
             emitRO("OUT", val, 3, 3, "Output integer");
             emitRM("LDC", ret, 0, ac1, "Set return to 0"); // ac3 is zero at this point, so we can do this
             break;
 
         case InputB:
-            emitRO("INB", ret, 2, 2, "Input boolean");
+            emitRO("INB", ret, 2, 2, "Grab bool input");
             break;
 
         case OutputB:
-            emitRM("LD", val, -2, fp, "Load param");
-            emitRO("OUTB", val, 3, 3, "Output boolean");
+            emitRM("LD", val, -2, fp, "Load parameter");
+            emitRO("OUTB", val, 3, 3, "Output bool");
             emitRM("LDC", ret, 0, ac1, "Set return to 0");
             break;
 
         case InputC:
-            emitRO("INC", ret, 2, 2, "Input character");
+            emitRO("INC", ret, 2, 2, "Grab char input");
             break;
 
         case OutputC:
-            emitRM("LD", val, -2, fp, "Load param");
-            emitRO("OUTC", val, 3, 3, "Output character");
+            emitRM("LD", val, -2, fp, "Load parameter");
+            emitRO("OUTC", val, 3, 3, "Output char");
             emitRM("LDC", ret, 0, ac1, "Set return to 0");
             break;
 
         case OutNL:
-            emitRO("OUTNL", val, 3, 3, "Output newline");
+            emitRO("OUTNL", val, 3, 3, "Output a newline");
             break;
 
         default:

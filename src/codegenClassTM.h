@@ -34,11 +34,12 @@ private:
     /* General generation */
     void treeTraversal( TreeNode * tree ); // loopsiblings without nk selection
     void loadParams( TreeNode * node, int off ); // loads params before function call
+    
+    /* SymbolTable creation + copying node values */
     void buildTable();
     void tableRecurse(TreeNode * node);
     
     /* ID resolution functions */
-    // TODO: HANDLE STATICS FOR ASSIGNMENT 7
     void storeVar( TreeNode * var, int reg ); // ST reg->var
     void storeArrayVar( TreeNode * arr, int reg, int index ); // USES: ac3
     // LD val<-var

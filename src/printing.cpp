@@ -295,7 +295,7 @@ void printAbstractTree ( TreeNode * og, int indent_count )
               outstr.append(svalResolve(tree));
               if ( tree->isArray )
               {
-                  outstr.append(" is array");
+                  outstr.append("is array");
               }
               outstr.append(" of type ");
               outstr.append(typeToStr(tree->nodetype));
