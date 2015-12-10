@@ -52,9 +52,6 @@ Func input returns type int allocated as Global of size -2 and exec location 0 [
 |   |   |   Child: 0  Id: z Type: int [line: 21]
 |   |   |   Child: 1  Const: 999 Type: int [line: 21]
 DEBUG(SymbolTable): enter scope "Global".
-Hit default in generateExpression switch(kind)! treestr: +
-Hit default in generateExpression switch(kind)! treestr: +
-Hit default in generateExpression switch(kind)! treestr: +
 Offset for end of global space: -48
 Number of warnings: 0
 Number of errors: 0

@@ -146,7 +146,7 @@ void codegenTM::initGlobalVars()
         }
         else if( tree->child[0] != NULL )
         {
-            generateExpression(tree->child[0]);
+            generateExpression(tree->child[0], val);
             storeVar(tree, val);          
         }
         else
@@ -195,7 +195,7 @@ void codegenTM::generateDeclaration(TreeNode* node)
                 {
                     if( (tree->offsetReg == local && !tree->isStatic) && lhs != NULL)
                     {
-                        generateExpression(lhs);
+                        generateExpression(lhs, val);
                         storeVar(tree,val);
                     }
                 }
@@ -269,7 +269,7 @@ void codegenTM::generateStatement( TreeNode * node )
         emitComment("\tRETURN");
         if ( tree->child[0] != NULL )
         { // Check for return value
-            generateExpression(tree->child[0]);
+            generateExpression(tree->child[0], val);
             emitRM("LDA", ret, 0, val, "Save result into ret");
         }
         funRet(); // Return!
@@ -293,7 +293,8 @@ void codegenTM::generateStatement( TreeNode * node )
     }
 }
 
-void codegenTM::generateExpression( TreeNode * node )
+// NOTE: some expressions will obey reg, but others may use val instead!
+void codegenTM::generateExpression( TreeNode * node, int reg )
 {
     TreeNode * tree = node;
     if(tree == NULL)
@@ -314,15 +315,15 @@ void codegenTM::generateExpression( TreeNode * node )
         case ASSIGN:
             if ( lhs->kind == IdK && lhs->child[0] != NULL ) //lhs->isArray )
             {
-                generateExpression(lhs->child[0]); // calculate the index
+                generateExpression(lhs->child[0], val); // calculate the index
                 emitRM("ST", val, fOffset, fp, "Save index of array " + lstr);
-                generateExpression(rhs); // // Get rvalue to assign, put in val (*assumption*)
+                generateExpression(rhs, reg); // // Get rvalue to assign, put in val (*assumption*)
                 emitRM("LD", ac1, fOffset, fp, "Retrieve index of array " + lstr);
                 storeArrayVar(lhs, val, ac1); // Assign rvalue to lvalue
             } else
             {
-                generateExpression(rhs); // // Get rvalue to assign, put in val (*assumption*)
-                storeVar(lhs, val); // Assign rvalue to lvalue
+                generateExpression(rhs, reg); // // Get rvalue to assign, put in val (*assumption*)
+                storeVar(lhs, reg); // Assign rvalue to lvalue
             }
             break;
         case INC:
@@ -343,6 +344,71 @@ void codegenTM::generateExpression( TreeNode * node )
         case ADDASS:
             break;
             
+        default:
+            cout << "Hit default in generateExpression AssignK:bval. treestr: " << treestr << endl;
+            break;
+        }
+        break;
+        
+    case OpK:
+        switch (tree->token->bval) {
+        case MULTIPLY:
+            generateExpression(lhs, ac1);
+            generateExpression(rhs, ac2);
+            multiply(reg, ac1, ac2);
+            break;
+            
+        case DIVIDE:
+            generateExpression(lhs, ac1);
+            generateExpression(rhs, ac2);
+            divide(reg, ac1, ac2);
+            break;
+            
+        case MODULUS: // a mod n
+            generateExpression(lhs, ac1); // a -> ac1
+            generateExpression(rhs, ac2); // n -> ac2
+            mod(reg, ac1, ac2); // reg = ac1 mod ac2
+            break;
+            
+        case PLUS:
+            generateExpression(lhs, ac1);
+            generateExpression(rhs, ac2);
+            add(reg, ac1, ac2);
+            break;
+            
+        case MINUS:
+            generateExpression(lhs, ac1);
+            generateExpression(rhs, ac2);
+            subtract(reg, ac1, ac2);
+            break;
+            
+        case OR:
+            break;
+            
+        case AND:
+            break;
+            
+        case LESSEQ:
+            break;
+            
+        case GRTEQ:
+            break;
+            
+        case EQ:
+            break;
+            
+        case NOTEQ:
+            break;
+            
+        case LTHAN:
+            break;
+            
+        case GTHAN:
+            break;
+            
+        default:
+            cout << "Hit default in generateExpression OpK:bval. treestr: " << treestr << endl;
+            break;
         }
         break;
         
@@ -358,6 +424,7 @@ void codegenTM::generateExpression( TreeNode * node )
             }
             break;
         default:
+            cout << "Hit default in generateExpression UnaryK:bval. treestr: " << treestr << endl;
             break;
         } // end bval switch
         break;
@@ -367,12 +434,12 @@ void codegenTM::generateExpression( TreeNode * node )
         //emitComment("EXPRESSION");
         if(lhs != NULL ) // lhs->isArray
         {
-           generateExpression(lhs); // calculate the index
-           loadArrayVar(tree, val, val);
+           generateExpression(lhs, reg); // calculate the index
+           loadArrayVar(tree, reg, reg);
         }
         else
         {
-            loadVar(tree, val);
+            loadVar(tree, reg);
         }        
         break;
 
@@ -383,15 +450,15 @@ void codegenTM::generateExpression( TreeNode * node )
         // Assuming the tokens are not NULL, since we've error checked and its all valid C- code...
         if ( tree->nodetype == Integer )
         {
-            emitRM("LDC", val, tree->token->ivalue, 0, "Load integer constant");
+            emitRM("LDC", reg, tree->token->ivalue, 0, "Load integer constant");
         }
         else if ( tree->nodetype == Boolean )
         {
-            emitRM("LDC", val, tree->token->ivalue, 0, "Load Boolean constant");
+            emitRM("LDC",reg, tree->token->ivalue, 0, "Load Boolean constant");
         }
         else if( tree->nodetype == Character )
         {
-            emitRM("LDC", val, tree->token->cvalue, 0, "Load char constant");
+            emitRM("LDC",reg, tree->token->cvalue, 0, "Load char constant");
         }
         else
             cout << "Constant isn't Integer, Boolean, or Character." << endl;
@@ -424,6 +491,8 @@ void codegenTM::generateExpression( TreeNode * node )
     }
 }
 
+
+
 void codegenTM::loadParams( TreeNode * tree, int off )
 {
     int siblingCount = 1;
@@ -431,7 +500,7 @@ void codegenTM::loadParams( TreeNode * tree, int off )
     while(tree != NULL)
     {
         emitComment("\t\t\tLoad param " + to_string(siblingCount) );
-        generateExpression(tree);
+        generateExpression(tree, val);
         emitRM("ST", val, off - siblingCount, fp, "Store paramater " + to_string(siblingCount) );
         tree = tree->sibling;
         siblingCount++;
@@ -575,6 +644,52 @@ void codegenTM::loadArrayAddr( TreeNode* arr, int reg )
 
 
 /* Macros */
+
+void codegenTM::add( int res, int reg1, int reg2 )
+{
+    emitRO("ADD", res, reg1, reg2, "Op +" );
+}
+
+void codegenTM::subtract( int res, int reg1, int reg2 )
+{
+    emitRO("SUB", res, reg1, reg2, "Op -" );
+}
+
+void codegenTM::multiply( int res, int reg1, int reg2 )
+{
+    emitRO("MUL", res, reg1, reg2, "Op *" );
+}
+
+void codegenTM::divide( int res, int reg1, int reg2 )
+{
+    emitRO("DIV", res, reg1, reg2, "Op /" );
+}
+
+// TODO: ensure proper implementation of logical and vs. bitwise operators
+void codegenTM::logicalAnd(int res, int reg1, int reg2)
+{
+    emitRO("AND", res, reg1, reg2, "Op &" );
+}
+
+void codegenTM::logicalOr(int res, int reg1, int reg2)
+{
+    emitRO("OR", res, reg1, reg2, "Op |" );    
+}
+
+void codegenTM::logicalNot(int res, int reg1)
+{
+    emitRO("NOT", res, reg1, 0, "Op !" );
+}
+
+void codegenTM::mod(int res, int reg1, int reg2)
+{
+    // r = a - (n * trunc(a/n))
+    divide( res, reg1, reg2);   // res = trunc(a/n)
+    multiply( res, reg2, res ); // res = n * res
+    subtract( res, reg1, res);  // res = a - res
+}
+
+
 
 void codegenTM::standardRet() // comment, zero out return, funRet
 {
@@ -753,7 +868,7 @@ void codegenTM::loopSiblings( NodeKind nk, TreeNode * node )
             generateStatement(tree);
             break;
         case ExpK:
-            generateExpression(tree);
+            generateExpression(tree, val);
             break;
         default:
             cout << "Hit default in loopSiblings switch(nk)!" << endl;
@@ -779,7 +894,7 @@ void codegenTM::treeTraversal( TreeNode * node )
                 generateStatement(tree);
                 break;
             case ExpK:
-                generateExpression(tree);
+                generateExpression(tree, val);
                 break;
             default:
                 cout << "Hit default in treeTraversal switch(nodekind)!" << endl;

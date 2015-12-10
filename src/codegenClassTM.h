@@ -32,7 +32,7 @@ private:
     /* Generate by nodekind */
     void generateDeclaration( TreeNode * node );    // generic decleration 
     void generateStatement( TreeNode * node );      // generic statement
-    void generateExpression( TreeNode * node );     // generic expression
+    void generateExpression( TreeNode * node, int reg );     // generic expression
 
     /* Emit functions */
     void storeVar( TreeNode * var, int reg ); // ST reg->var
@@ -43,10 +43,17 @@ private:
     void loadParams( TreeNode * node, int off ); // loads params before function call
     
     /* Emit macros */
-    void add();
-    void subtract();
-    void multiply();
-    void divide();
+    void add( int res, int reg1, int reg2 );
+    void subtract( int res, int reg1, int reg2 );
+    void multiply( int res, int reg1, int reg2 );
+    void divide( int res, int reg1, int reg2 );
+    void logicalAnd( int res, int reg1, int reg2 ); // AND
+    void logicalOr( int res, int reg1, int reg2 );// OR
+    void logicalNot( int res, int reg1  );// NOT
+    void mod( int res, int reg1, int reg2 ); // MODULUS
+    void eq( int res, int reg1, int reg2 );
+    // LESSEQ GRTEQ EQ LTHAN GTHAN
+    
     void standardRet(); // zero out return first
     void funRet();      // Load ret addr, adjust FP, return 
     
