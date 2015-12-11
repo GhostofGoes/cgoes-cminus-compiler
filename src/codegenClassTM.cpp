@@ -151,7 +151,7 @@ void codegenTM::initGlobalVars()
         }
         else
         {
-            cout << "Fell off primary if-else chain in initGlobalVars. svalue: " << svalResolve(tree) << endl;
+           // cout << "Fell off primary if-else chain in initGlobalVars. svalue: " << svalResolve(tree) << endl;
         }
     }
 }

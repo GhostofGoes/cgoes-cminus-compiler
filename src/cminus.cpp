@@ -54,7 +54,6 @@ int errors = 0;
 
 // Debugging/Testing flags
 bool testing = false;
-bool semantic_debugging = false;
 
 // Used for semantic analysis and other such things because lazy
 bool return_found = false;
@@ -63,8 +62,6 @@ TreeNode * func = NULL;
 // memorySizing globals
 int global_offset = 0;
 int param_count = 0;
-
-
 
 // TODO: free tokens matched by error terminal in bison
 int main ( int argc, char * argv[] )
@@ -110,9 +107,6 @@ int main ( int argc, char * argv[] )
             break;
         case 'P':
             print_annotated_tree = true;
-            break;
-        case 's':
-            semantic_debugging = true;
             break;
         case 't':
             testing = true;
@@ -187,42 +181,13 @@ void semanticAnalysis ( TreeNode * og )
     SymbolTable * symtable = new SymbolTable();
     SymbolTable * typetable = new SymbolTable();
     TreeNode * tree = og;
-
-    
-    if ( semantic_debugging )
-    {
-        std::cout << "Enabling typetable debug flags..." << std::endl;
-        typetable->debug(true);
-        std::cout << "Pre-typeResolution" << std::endl;
-        typetable->print(printTreeNode);
-    }
     
     // *** Type annotation *** //
     typeResolution(NULL, tree, typetable);
 
-    if ( semantic_debugging )
-    {
-        std::cout << "Post-typeResolution" << std::endl;
-        typetable->print(printTreeNode);
-        std::cout << "Deleting typetable..." << std::endl;
-    }
-
-    if ( semantic_debugging ) 
-    {
-        std::cout << "Enabling symtable debug flags..." << std::endl;
-        symtable->debug(true);
-        std::cout << "Pre-treeParse" << std::endl;
-        symtable->print(printTreeNode);        
-    }
     
     // *** Semantic Analysis *** //
     treeParse(NULL, tree, symtable, false);
-    
-    if ( semantic_debugging )
-    {
-        std::cout << "Post-treeParse" << std::endl;
-        symtable->print(printTreeNode);
-    }
 
     if ( symtable->lookup("main") == NULL )
     {
@@ -230,19 +195,12 @@ void semanticAnalysis ( TreeNode * og )
         errors++;
     }
     
+    
     // *** Memory allocation *** //
     memorySizing(annotatedTree, symtable, 0);
     
-    if( semantic_debugging )
-    {
-        std::cout << "Deleting symtable..." << std::endl;
-    }
+    /* Cleanup */
     delete symtable;
-    
-    if ( semantic_debugging )
-    {    
-        std::cout << "Deleting typetable..." << std::endl;
-    }
     delete typetable;
 }
 
@@ -405,12 +363,7 @@ void typeResolution ( TreeNode * par, TreeNode * node, SymbolTable * symtable )
         }
 
         if ( (tree->kind == CompoundK && parent->kind != FunK) || tree->kind == FunK )
-        //if ( tree->kind == FunK )
         {
-            if ( semantic_debugging )
-            {
-                symtable->print(printTreeNode);
-            }
             symtable->leave();
         } 
         // TODO: need to verify i'm not overwriting proper types i got from bison
@@ -1119,11 +1072,6 @@ void treeParse ( TreeNode * par, TreeNode * node, SymbolTable * symtable, bool i
         
         if ( (tree->kind == CompoundK && (tree->isFuncCompound == false)) || tree->kind == FunK )
         {
-            if ( semantic_debugging )
-            {
-                std::cout << "Leaving symtable..." << std::endl;
-                symtable->print(printTreeNode);
-            }
             symtable->leave();
         }
         else if(tree->kind == WhileK || tree->kind == ForeachK)
