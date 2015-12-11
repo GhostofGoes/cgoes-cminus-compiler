@@ -383,9 +383,15 @@ void codegenTM::generateExpression( TreeNode * node, int reg )
             break;
             
         case OR:
+            generateExpression(lhs, ac1);
+            generateExpression(rhs, ac2);
+            logicalOr(reg, ac1, ac2);
             break;
             
         case AND:
+            generateExpression(lhs, ac1);
+            generateExpression(rhs, ac2);
+            logicalAnd(reg, ac1, ac2);
             break;
             
         case LESSEQ:
@@ -420,9 +426,26 @@ void codegenTM::generateExpression( TreeNode * node, int reg )
             if( lhs != NULL && !lhs->isStatic && lhs->offsetReg != global ) 
             {
                 loadArrayAddr(lhs, ac2);
-                emitRM("LD", val, 1, ac2, "Load size of array " + lstr); // +1 to get size                
+                emitRM("LD", reg, 1, ac2, "Load size of array " + lstr); // +1 to get size                
             }
             break;
+            
+        case NOT: // Logical NOT
+            generateExpression(lhs, reg);
+            logicalNot(reg, reg); // reg = !lhs
+            break;
+            
+        case QUESTION: // Random from 0 to n
+            generateExpression(lhs, reg);
+            emitRO("RND", reg, reg, 0, "Op ?");
+            break;
+            
+        case MINUS: // Op unary -
+            generateExpression(lhs, reg);
+            emitRM("LDC", ac3, 0, 0, "Load 0"); // Use ac3 so we don't step on anyone's toes
+            subtract(reg, ac3, reg); // reg = 0 - lhs
+            break;
+            
         default:
             cout << "Hit default in generateExpression UnaryK:bval. treestr: " << treestr << endl;
             break;
@@ -668,22 +691,23 @@ void codegenTM::divide( int res, int reg1, int reg2 )
 // TODO: ensure proper implementation of logical and vs. bitwise operators
 void codegenTM::logicalAnd(int res, int reg1, int reg2)
 {
-    emitRO("AND", res, reg1, reg2, "Op &" );
+    emitRO("AND", res, reg1, reg2, "Op AND" );
 }
 
 void codegenTM::logicalOr(int res, int reg1, int reg2)
 {
-    emitRO("OR", res, reg1, reg2, "Op |" );    
+    emitRO("OR", res, reg1, reg2, "Op OR" );    
 }
 
 void codegenTM::logicalNot(int res, int reg1)
 {
-    emitRO("NOT", res, reg1, 0, "Op !" );
+    emitRO("NOT", res, reg1, 0, "Op NOT" );
 }
 
 void codegenTM::mod(int res, int reg1, int reg2)
 {
     // r = a - (n * trunc(a/n))
+    emitComment("\t\tModulus");
     divide( res, reg1, reg2);   // res = trunc(a/n)
     multiply( res, reg2, res ); // res = n * res
     subtract( res, reg1, res);  // res = a - res
