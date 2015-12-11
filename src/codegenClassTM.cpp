@@ -294,6 +294,7 @@ void codegenTM::generateStatement( TreeNode * node )
 }
 
 // NOTE: some expressions will obey reg, but others may use val instead!
+// IdK will load vars by default, not store!
 void codegenTM::generateExpression( TreeNode * node, int reg )
 {
     TreeNode * tree = node;
@@ -317,31 +318,53 @@ void codegenTM::generateExpression( TreeNode * node, int reg )
             {
                 generateExpression(lhs->child[0], val); // calculate the index
                 emitRM("ST", val, fOffset, fp, "Save index of array " + lstr);
-                generateExpression(rhs, reg); // // Get rvalue to assign, put in val (*assumption*)
+                generateExpression(rhs, reg); // // Get rvalue to assign, put in reg
                 emitRM("LD", ac1, fOffset, fp, "Retrieve index of array " + lstr);
                 storeArrayVar(lhs, val, ac1); // Assign rvalue to lvalue
             } else
             {
-                generateExpression(rhs, reg); // // Get rvalue to assign, put in val (*assumption*)
+                generateExpression(rhs, reg); // // Get rvalue to assign, put in reg
                 storeVar(lhs, reg); // Assign rvalue to lvalue
             }
             break;
         case INC:
+            generateExpression(lhs, reg);
+            emitRM("LDA", reg, 1, reg, "increment value of " + lstr);
+            assign(lhs, reg);
             break;
             
         case DEC:
+            generateExpression(lhs, reg);
+            emitRM("LDA", reg, -1, reg, "decrement value of " + lstr);
+            assign(lhs, reg);
             break;
             
         case DIVASS:
+            generateExpression(lhs, reg);
+            generateExpression(rhs, ac2);
+            divide(reg, reg, ac2);
+            assign(lhs, reg);
             break;
             
         case MULASS:
+            generateExpression(lhs, reg);
+            generateExpression(rhs, ac2);
+            multiply(reg, reg, ac2);
+            assign(lhs, reg);
             break;
             
         case SUBASS:
+            generateExpression(lhs, reg);
+            generateExpression(rhs, ac2);
+            subtract(reg, reg, ac2);
+            assign(lhs, reg);
             break;
             
         case ADDASS:
+            generateExpression(lhs, reg);
+            generateExpression(rhs, ac2);
+            add(reg, reg, ac2);
+            assign(lhs, reg);
             break;
             
         default:
@@ -472,7 +495,6 @@ void codegenTM::generateExpression( TreeNode * node, int reg )
 
     case IdK: // TODO: reevaluate this case's logic
         //tmp = idResolve(tree);
-        //emitComment("EXPRESSION");
         if(lhs != NULL ) // lhs->isArray
         {
            generateExpression(lhs, reg); // calculate the index
@@ -532,7 +554,25 @@ void codegenTM::generateExpression( TreeNode * node, int reg )
     }
 }
 
-
+void codegenTM::assign(TreeNode* node, int reg) // USES: ac3
+{
+    if ( node->kind == IdK && node->child[0] != NULL ) //lhs->isArray )
+    {
+        generateExpression(node->child[0], ac3); // calculate the index
+        //emitRM("ST", ac3, fOffset, fp, "Save index of array " + lstr);
+        //generateExpression(rhs, reg); // // Get rvalue to assign, put in val (*assumption*)
+        //emitRM("LD", ac1, fOffset, fp, "Retrieve index of array " + lstr); 
+        storeArrayVar(node, reg, ac3); // Assign rvalue to lvalue
+    } 
+    else if( node->kind == IdK )
+    {
+        storeVar(node, reg); // Assign rvalue to lvalue
+    }    
+    else
+    {
+        cout << "Fell off if-else chain in assign. svalue: " << svalResolve(node) << endl;
+    }
+}
 
 void codegenTM::loadParams( TreeNode * tree, int off )
 {
