@@ -12,8 +12,6 @@
 /* Local headers */
 #include "cminus.h"
 #include "types.h"
-#include "toker.h"
-#include "symbolTable.h"
 #include "printing.h"
 
 const char * iboolToString( int ib ) {

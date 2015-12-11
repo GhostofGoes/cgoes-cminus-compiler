@@ -195,7 +195,6 @@ void semanticAnalysis ( TreeNode * og )
         errors++;
     }
     
-    
     // *** Memory allocation *** //
     memorySizing(annotatedTree, symtable, 0);
     
@@ -1103,7 +1102,6 @@ void generateCode( std::string output_file, std::string infile )
     cg.generateCode();
 }
 
-
 // Creates the tree of IO functions
 TreeNode * buildIOLibrary ( )
 {
@@ -1236,12 +1234,10 @@ int memorySizing( TreeNode * node, SymbolTable * symtable, int parOff )
         line = tree->lineno; // Node's line number
         tree_svalue = svalResolve(tree);
 
-
         switch (tree->nodekind) {
         case DeclK:
             switch (tree->kind) {
             case VarK:
-
                 if ( tree->isArray )
                     tree->size = tree->arraySize + 1; // +1 for pointer
                 else
@@ -1263,21 +1259,14 @@ int memorySizing( TreeNode * node, SymbolTable * symtable, int parOff )
                 }
                 if ( tree->isArray )
                     tree->location--; // skip array size
-                //symtable->insert(tree_svalue, tree);
                 break;
 
             case ParamK:
-
                 tree->size = 1; // since its just a param pointer
                 tree->location = parOff + tOff;
                 tOff -= tree->size;
-                //if ( tree->isStatic )
-                    //tree->offsetReg = global;
-                //else
-                    tree->offsetReg = local;
-                //tree->offsetReg = o_param;
+                tree->offsetReg = local;
                 param_count++;
-                //symtable->insert(tree_svalue, tree);
                 break;
 
             case FunK:
@@ -1287,13 +1276,10 @@ int memorySizing( TreeNode * node, SymbolTable * symtable, int parOff )
                 tree->location = 0; // TODO: check this assumption
                 tree->size = 2;
                 tOff -= tree->size;
-                //symtable->insert(tree_svalue, tree);
                 symtable->enter("Function " + tree_svalue);
-                // Parameters
-                tOff += memorySizing(tree->child[0], symtable, tOff);
-
-                // Compound
-                memorySizing(tree->child[1], symtable, tOff);
+                
+                tOff += memorySizing(tree->child[0], symtable, tOff); // Params
+                memorySizing(tree->child[1], symtable, tOff); // Compound
 
                 tree->size += param_count;
                 symtable->leave();
@@ -1322,7 +1308,6 @@ int memorySizing( TreeNode * node, SymbolTable * symtable, int parOff )
             }
             break;
         } // end nodekind switch
-
         tree = tree->sibling; // Jump to the next sibling
     } // end while    
     return tOff;

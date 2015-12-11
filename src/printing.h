@@ -11,7 +11,6 @@
 #include "types.h"
 #include "cminus.h"
 #include "cminus.tab.h"
-#include "symbolTable.h"
 
 
 /* Printing and String manipulation */

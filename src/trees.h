@@ -7,8 +7,6 @@
 #include <iostream>
 #include <string>
 #include <cstdlib>
-#include <vector>
-#include <map>
 
 /* C libraries */
 
@@ -17,7 +15,6 @@
 #include "cminus.tab.h"
 #include "types.h"
 #include "toker.h"
-//#include "symbolTable.h"
 #include "printing.h"
 
 

@@ -4,13 +4,10 @@
 #include <iostream>
 #include <string>
 #include <cstdlib>
-#include <vector>
-#include <map>
 
 /* C libraries */
 #include <stdio.h>
 #include <string.h>
-#include <getopt.h>
 
 /* Local headers */
 #include "cminus.h"
