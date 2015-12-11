@@ -41,6 +41,7 @@ private:
     void loadArrayVar( TreeNode * arr, int reg, int index ); // USES: ac3
     void loadArrayAddr( TreeNode * arr, int reg ); // LDA reg<-arr
     void loadParams( TreeNode * node, int off ); // loads params before function call
+    void loadConst( int reg, int c );
     
     /* Emit macros */
     void add( int res, int reg1, int reg2 );

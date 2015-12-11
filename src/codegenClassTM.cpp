@@ -395,21 +395,39 @@ void codegenTM::generateExpression( TreeNode * node, int reg )
             break;
             
         case LESSEQ:
+            generateExpression(lhs, ac1);
+            generateExpression(rhs, ac2);
+            emitRO("TLE", reg, ac1, ac2, "Op <=");
             break;
             
         case GRTEQ:
+            generateExpression(lhs, ac1);
+            generateExpression(rhs, ac2);
+            emitRO("TGE", reg, ac1, ac2, "Op >=");
             break;
             
         case EQ:
+            generateExpression(lhs, ac1);
+            generateExpression(rhs, ac2);
+            emitRO("TEQ", reg, ac1, ac2, "Op ==");
             break;
             
         case NOTEQ:
+            generateExpression(lhs, ac1);
+            generateExpression(rhs, ac2);
+            emitRO("TNE", reg, ac1, ac2, "Op !=");
             break;
             
         case LTHAN:
+            generateExpression(lhs, ac1);
+            generateExpression(rhs, ac2);
+            emitRO("TLE", reg, ac1, ac2, "Op <=");
             break;
             
         case GTHAN:
+            generateExpression(lhs, ac1);
+            generateExpression(rhs, ac2);
+            emitRO("TLE", reg, ac1, ac2, "Op <=");
             break;
             
         default:
@@ -664,7 +682,10 @@ void codegenTM::loadArrayAddr( TreeNode* arr, int reg )
     }
 }
 
-
+void codegenTM::loadConst( int reg, int c )
+{
+    emitRM("LDC", reg, c, 0, "Load " + to_string(c));
+}
 
 /* Macros */
 
@@ -701,7 +722,8 @@ void codegenTM::logicalOr(int res, int reg1, int reg2)
 
 void codegenTM::logicalNot(int res, int reg1)
 {
-    emitRO("NOT", res, reg1, 0, "Op NOT" );
+    loadConst(res, 1);
+    emitRO("XOR", res, res, reg1, "Op NOT");
 }
 
 void codegenTM::mod(int res, int reg1, int reg2)
