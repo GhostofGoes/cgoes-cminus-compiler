@@ -519,8 +519,9 @@ void codegenTM::generateExpression( TreeNode * node, int reg )
             break;
             // TODO: !false, !<var> !!!<var> not working
         case NOT: // Logical NOT
-            generateExpression(lhs, reg);
-            logicalNot(reg, reg); // reg = !lhs
+            generateExpression(lhs, reg); // reg = !lhs
+            loadConst(ac3, 1);
+            emitRO("XOR", reg, reg, ac3, "Op NOT");
             break;
             
         case QUESTION: // Random from 0 to n
@@ -805,12 +806,6 @@ void codegenTM::logicalAnd(int res, int reg1, int reg2)
 void codegenTM::logicalOr(int res, int reg1, int reg2)
 {
     emitRO("OR", res, reg1, reg2, "Op OR" );    
-}
-
-void codegenTM::logicalNot(int res, int reg1)
-{
-    loadConst(res, 1);
-    emitRO("XOR", res, res, reg1, "Op NOT");
 }
 
 void codegenTM::mod(int res, int reg1, int reg2)
