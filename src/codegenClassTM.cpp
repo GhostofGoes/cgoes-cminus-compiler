@@ -285,6 +285,7 @@ void codegenTM::generateStatement( TreeNode * node )
         break;
         
     case BreakK: // TODO: break implementation
+        // TODO: fix break errors with nested while loops!
         break; // heh
 
     default:

@@ -128,7 +128,7 @@ void SymbolTable::applyToAllGlobal(void (*action)(std::string , void *))
 
 void SymbolTable::enter(std::string name)                    // enter a scope
 {
-    if (debugFlg) printf("DEBUG(SymbolTable): enter scope \"%s\".\n", name.c_str());
+    //if (debugFlg) printf("DEBUG(SymbolTable): enter scope \"%s\".\n", name.c_str());
     stack.push_back(new Scope(name));
 }
 

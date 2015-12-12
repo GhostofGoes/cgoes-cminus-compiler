@@ -24,8 +24,9 @@
 #include <iostream>
 #include <string>
 #include <cstdlib>
-#include <vector>
-#include <map>
+//#include <vector>
+//#include <map>
+#include <stack>
 
 // C libraries
 #include <stdio.h>
@@ -55,9 +56,11 @@ int errors = 0;
 // Debugging/Testing flags
 bool testing = false;
 
-// Used for semantic analysis and other such things because lazy
+/* Used for semantic analysis */
 bool return_found = false;
 TreeNode * func = NULL;
+// Enter loop, push true. Leave, pop. If there is a break, checks the top of stack
+std::stack<bool> loopDepth; 
 
 // memorySizing globals
 int global_offset = 0;
@@ -187,7 +190,7 @@ void semanticAnalysis ( TreeNode * og )
 
     
     // *** Semantic Analysis *** //
-    treeParse(NULL, tree, symtable, false);
+    treeParse(NULL, tree, symtable);
 
     if ( symtable->lookup("main") == NULL )
     {
@@ -411,7 +414,7 @@ void typeResolution ( TreeNode * par, TreeNode * node, SymbolTable * symtable )
 
 
 // TODO: put different error types into their own methods in a "errors.cpp" file.
-void treeParse ( TreeNode * par, TreeNode * node, SymbolTable * symtable, bool in_loop )
+void treeParse ( TreeNode * par, TreeNode * node, SymbolTable * symtable )
 {
 
     TreeNode * tree;
@@ -423,7 +426,7 @@ void treeParse ( TreeNode * par, TreeNode * node, SymbolTable * symtable, bool i
     else
         parent = par;
 
-    bool iloop = in_loop;
+    //bool iloop = in_loop;
     
     while (tree != NULL)
     {
@@ -461,7 +464,7 @@ void treeParse ( TreeNode * par, TreeNode * node, SymbolTable * symtable, bool i
 
         if(testing)
         {
-            printf("\niloop: %d\n", iloop);
+            //printf("\niloop: %d\n", iloop);
             printf("Tree\n");
             fflush(stdout);
             printTreeNode(tree);
@@ -584,7 +587,8 @@ void treeParse ( TreeNode * par, TreeNode * node, SymbolTable * symtable, bool i
 
                     // TODO: change all if statements to use error checking methods
                   case ForeachK:
-                    iloop = true;
+                    //iloop = true;
+                      loopDepth.push(true);
                     if ( tree->numChildren > 1 && tree->child[0] != NULL && tree->child[1] != NULL )
                     {
                         if ( tree->child[0]->isArray && tree->child[0]->child[0] == NULL )
@@ -623,7 +627,8 @@ void treeParse ( TreeNode * par, TreeNode * node, SymbolTable * symtable, bool i
                     break;
 
                   case WhileK:
-                    iloop = true;
+                      loopDepth.push(true);
+                    //iloop = true;
                     if ( tree->numChildren > 0 && tree->child[0] != NULL )
                     {
                         if ( lhs != Undef &&  tree->child[0]->isArray && tree->child[0]->child[0] == NULL )
@@ -679,7 +684,8 @@ void treeParse ( TreeNode * par, TreeNode * node, SymbolTable * symtable, bool i
                       if(testing)
                           printf("Hit break\n");
                       
-                    if ( iloop == false )
+                      //if ( iloop == false )
+                    if(loopDepth.top() == false)
                     {
                         printf("ERROR(%d): Cannot have a break statement outside of loop.\n", line);
                         errors++;
@@ -1064,7 +1070,7 @@ void treeParse ( TreeNode * par, TreeNode * node, SymbolTable * symtable, bool i
             {
                 if ( tree->child[i] != NULL )
                 {
-                    treeParse(tree, tree->child[i], symtable, iloop );
+                    treeParse(tree, tree->child[i], symtable );
                 }
             }
         }
@@ -1075,7 +1081,8 @@ void treeParse ( TreeNode * par, TreeNode * node, SymbolTable * symtable, bool i
         }
         else if(tree->kind == WhileK || tree->kind == ForeachK)
         {
-            iloop = false;
+            //iloop = false;
+            loopDepth.pop();
         }
         
         if ( tree->kind == FunK && tree->lineno > -1 )
