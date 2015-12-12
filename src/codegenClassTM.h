@@ -45,7 +45,7 @@ private:
     void loadConst( int reg, int c );
     void assign( TreeNode * node, int reg );
     
-    /* Emit macros */
+    /* Logical operators */
     void add( int res, int reg1, int reg2 );
     void subtract( int res, int reg1, int reg2 );
     void multiply( int res, int reg1, int reg2 );
@@ -54,8 +54,8 @@ private:
     void logicalOr( int res, int reg1, int reg2 );// OR
     void mod( int res, int reg1, int reg2 ); // MODULUS
     void eq( int res, int reg1, int reg2 );
-    // LESSEQ GRTEQ EQ LTHAN GTHAN
     
+    /* Emit macros */
     void standardRet(); // zero out return first
     void funRet();      // Load ret addr, adjust FP, return 
     
@@ -79,8 +79,8 @@ private:
     /* IO stuff */
     std::string infilename;
     std::string outfilename;
-    std::ofstream outfile;
-    bool emitToFile;
+    std::ofstream outfile; // this is opened if emitToFile = true
+    bool emitToFile; // true = emit to outfile, false = emit to cout
     
     
     /*** Emit stuff ***/

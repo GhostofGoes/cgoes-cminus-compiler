@@ -509,19 +509,16 @@ void codegenTM::generateExpression( TreeNode * node, int reg )
     case UnaryK:
         switch (tree->token->bval) {
         case MULTIPLY:
-            //tmp = idResolve(lhs);
-            // TODO: remove global/static guards
-            if( lhs != NULL && !lhs->isStatic && lhs->offsetReg != global ) 
+            if( lhs != NULL)
             {
                 loadArrayAddr(lhs, ac2);
                 emitRM("LD", reg, 1, ac2, "Load size of array " + lstr); // +1 to get size                
             }
             break;
-            // TODO: !false, !<var> !!!<var> not working
         case NOT: // Logical NOT
-            generateExpression(lhs, reg); // reg = !lhs
-            loadConst(ac3, 1);
-            emitRO("XOR", reg, reg, ac3, "Op NOT");
+            generateExpression(lhs, reg);   // load lhs
+            loadConst(ac3, 1);              // load 1 to XOR with
+            emitRO("XOR", reg, reg, ac3, "Op NOT"); // reg = !lhs
             break;
             
         case QUESTION: // Random from 0 to n
