@@ -50,8 +50,6 @@ private:
     void subtract( int res, int reg1, int reg2 );
     void multiply( int res, int reg1, int reg2 );
     void divide( int res, int reg1, int reg2 );
-    void logicalAnd( int res, int reg1, int reg2 ); // AND
-    void logicalOr( int res, int reg1, int reg2 );// OR
     void mod( int res, int reg1, int reg2 ); // MODULUS
     void eq( int res, int reg1, int reg2 );
     

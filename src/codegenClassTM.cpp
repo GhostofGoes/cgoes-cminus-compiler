@@ -423,81 +423,81 @@ void codegenTM::generateExpression( TreeNode * node, int reg )
     case OpK:
         switch (tree->token->bval) {
         case MULTIPLY:
-            generateExpression(lhs, ac1);
+            generateExpression(lhs, reg);
             generateExpression(rhs, ac2);
-            multiply(reg, ac1, ac2);
+            multiply(reg, reg, ac2);
             break;
             
         case DIVIDE:
-            generateExpression(lhs, ac1);
+            generateExpression(lhs, reg);
             generateExpression(rhs, ac2);
-            divide(reg, ac1, ac2);
+            divide(reg, reg, ac2);
             break;
             
         case MODULUS: // a mod n
-            generateExpression(lhs, ac1); // a -> ac1
+            generateExpression(lhs, reg); // a -> ac1
             generateExpression(rhs, ac2); // n -> ac2
-            mod(reg, ac1, ac2); // reg = ac1 mod ac2
+            mod(reg, reg, ac2); // reg = ac1 mod ac2
             break;
             
         case PLUS:
-            generateExpression(lhs, ac1);
+            generateExpression(lhs, reg);
             generateExpression(rhs, ac2);
-            add(reg, ac1, ac2);
+            add(reg, reg, ac2);
             break;
             
         case MINUS:
-            generateExpression(lhs, ac1);
+            generateExpression(lhs, reg);
             generateExpression(rhs, ac2);
-            subtract(reg, ac1, ac2);
+            subtract(reg, reg, ac2);
             break;
             
         case OR:
-            generateExpression(lhs, ac1);
+            generateExpression(lhs, reg);
             generateExpression(rhs, ac2);
-            logicalOr(reg, ac1, ac2);
+            emitRO("OR", reg, reg, ac2, "Op OR" );    
             break;
             
         case AND:
-            generateExpression(lhs, ac1);
+            generateExpression(lhs, reg);
             generateExpression(rhs, ac2);
-            logicalAnd(reg, ac1, ac2);
+            emitRO("AND", reg, reg, ac2, "Op AND" );
             break;
             
         case LESSEQ:
-            generateExpression(lhs, ac1);
+            generateExpression(lhs, reg);
             generateExpression(rhs, ac2);
-            emitRO("TLE", reg, ac1, ac2, "Op <=");
+            emitRO("TLE", reg, reg, ac2, "Op <=");
             break;
             
         case GRTEQ:
-            generateExpression(lhs, ac1);
+            generateExpression(lhs, reg);
             generateExpression(rhs, ac2);
-            emitRO("TGE", reg, ac1, ac2, "Op >=");
+            emitRO("TGE", reg, reg, ac2, "Op >=");
             break;
             
         case EQ:
-            generateExpression(lhs, ac1);
+            generateExpression(lhs, reg);
             generateExpression(rhs, ac2);
-            emitRO("TEQ", reg, ac1, ac2, "Op ==");
+            emitRO("TEQ", reg, reg, ac2, "Op ==");
             break;
             
         case NOTEQ:
-            generateExpression(lhs, ac1);
+            generateExpression(lhs, reg);
             generateExpression(rhs, ac2);
-            emitRO("TNE", reg, ac1, ac2, "Op !=");
+            emitRO("TNE", reg, reg, ac2, "Op !=");
             break;
             
         case LTHAN:
-            generateExpression(lhs, ac1);
+            generateExpression(lhs, reg);
             generateExpression(rhs, ac2);
-            emitRO("TLT", reg, ac1, ac2, "Op <");
+            emitRO("TLT", reg, reg, ac2, "Op <");
             break;
             
         case GTHAN:
-            generateExpression(lhs, ac1);
+            generateExpression(lhs, reg);
             generateExpression(rhs, ac2);
-            emitRO("TGT", reg, ac1, ac2, "Op >");
+            emitRO("TGT", reg, reg, ac2, "Op >");
             break;
             
         default:
@@ -517,8 +517,8 @@ void codegenTM::generateExpression( TreeNode * node, int reg )
             break;
         case NOT: // Logical NOT
             generateExpression(lhs, reg);   // load lhs
-            loadConst(ac3, 1);              // load 1 to XOR with
-            emitRO("XOR", reg, reg, ac3, "Op NOT"); // reg = !lhs
+            loadConst(ac2, 1);              // load 1 to XOR with
+            emitRO("XOR", reg, reg, ac2, "Op NOT"); // reg = !lhs
             break;
             
         case QUESTION: // Random from 0 to n
@@ -528,8 +528,8 @@ void codegenTM::generateExpression( TreeNode * node, int reg )
             
         case MINUS: // Op unary -
             generateExpression(lhs, reg);
-            emitRM("LDC", ac3, 0, 0, "Load 0"); // Use ac3 so we don't step on anyone's toes
-            subtract(reg, ac3, reg); // reg = 0 - lhs
+            emitRM("LDC", ac2, 0, 0, "Load 0"); // Use ac3 so we don't step on anyone's toes
+            subtract(reg, ac2, reg); // reg = 0 - lhs
             break;
             
         default:
@@ -792,17 +792,6 @@ void codegenTM::multiply( int res, int reg1, int reg2 )
 void codegenTM::divide( int res, int reg1, int reg2 )
 {
     emitRO("DIV", res, reg1, reg2, "Op /" );
-}
-
-// TODO: ensure proper implementation of logical and vs. bitwise operators
-void codegenTM::logicalAnd(int res, int reg1, int reg2)
-{
-    emitRO("AND", res, reg1, reg2, "Op AND" );
-}
-
-void codegenTM::logicalOr(int res, int reg1, int reg2)
-{
-    emitRO("OR", res, reg1, reg2, "Op OR" );    
 }
 
 void codegenTM::mod(int res, int reg1, int reg2)
