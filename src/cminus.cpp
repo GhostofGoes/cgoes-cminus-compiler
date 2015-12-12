@@ -24,8 +24,6 @@
 #include <iostream>
 #include <string>
 #include <cstdlib>
-//#include <vector>
-//#include <map>
 #include <stack>
 
 // C libraries
@@ -65,6 +63,12 @@ std::stack<bool> loopDepth;
 // memorySizing globals
 int global_offset = 0;
 int param_count = 0;
+
+// TODO: '=' requires that if one operand is an array so must the other...
+// In: everything06.c-, everything06linear.c-
+// TODO: hamlet.c- invalid input character, hard.c- charconst, sample.c- stringconst
+// syntax-err.c-
+
 
 // TODO: free tokens matched by error terminal in bison
 int main ( int argc, char * argv[] )

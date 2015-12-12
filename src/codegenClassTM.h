@@ -14,6 +14,7 @@
 #include <string>
 #include <fstream>
 #include <vector>
+#include <stack>
 
 class codegenTM {
 public:
@@ -89,6 +90,8 @@ private:
     int emitLoc; // Location for current instruction emission  
     int highEmitLoc; // Highest location emitted thus far. Used with: emitSkip, emitBackup, emitRestore
     int mainLoc;
+    int tempLoc;
+    std::stack<int> loopBreak;
     
     /* Offsets */
     int gOffset;

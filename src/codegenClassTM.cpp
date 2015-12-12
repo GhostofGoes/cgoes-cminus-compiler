@@ -48,6 +48,7 @@ codegenTM::codegenTM ( TreeNode * t, int g, string of, string inf)
     emitLoc = 0;
     highEmitLoc = 0;
     mainLoc = 0;
+    tempLoc = 0;
 }
 
 codegenTM::~codegenTM ( ) 
@@ -246,6 +247,10 @@ void codegenTM::generateStatement( TreeNode * node )
         cout << "NULL node in generateStatement!" << endl;
         return;
     }
+    TreeNode * lhs = tree->child[0];
+    string lstr = svalResolve(lhs);
+    TreeNode * rhs = tree->child[1];
+    string rstr = svalResolve(rhs);
     string treestr = svalResolve(tree);
     
     switch (tree->kind) {
@@ -257,8 +262,8 @@ void codegenTM::generateStatement( TreeNode * node )
 
         fOffset = tree->size;
 
-        treeTraversal(tree->child[0]); // declarations, if any
-        treeTraversal(tree->child[1]); // Expressions/Statements
+        treeTraversal(lhs); // declarations, if any
+        treeTraversal(rhs); // Expressions/Statements
 
         if ( tree->isFuncCompound == false )
             symtable->leave();
@@ -276,16 +281,56 @@ void codegenTM::generateStatement( TreeNode * node )
         break;
 
     case WhileK: // TODO: while implementation
+        emitComment("WHILE");
+        generateExpression(lhs, val);
+        emitRM("JNZ", val, 1, pc, "Jump to while part"); // if exp != 0, continue
+        loopBreak.push(emitSkip(1)); // TODO
+        
+        emitComment("DO");
+        generateStatement(rhs);
+        
+        emitRMAbs("LDA", pc, loopBreak.top() - 2, "go to beginning of loop");
+        
+        emitBackup(loopBreak.top()); // rewind
+        emitRMAbs("LDA", pc, highEmitLoc, "Jump past loop [backpatch]");// backpatch jump
+        emitComment("ENDWHILE");
+        emitRestore(); // and we're back to post-loop place!
+        
+        loopBreak.pop();
         break;
 
-    case IfK: // TODO: if implementation ... else implemenation?
+    case IfK:
+        // can probably optimize for "if false/true"
+        emitComment("IF");
+        if(tree->numChildren == 2)
+        {
+            generateExpression(lhs, val);
+            emitComment("THEN");
+            treeTraversal(rhs);
+        }
+        else if(tree->numChildren == 3)
+        {
+            generateExpression(lhs, val);
+            emitComment("THEN");
+            treeTraversal(rhs);
+            emitComment("ELSE");
+            treeTraversal(tree->child[2]);
+        }
+        else
+        {
+            cout << "Fell off if-else in IfK. treestr: " << treestr << endl;
+        }
+        emitComment("ENDIF");
         break;
 
     case ForeachK: // NOTE: We're not doing foreach this time
         break;
         
     case BreakK: // TODO: break implementation
-        // TODO: fix break errors with nested while loops!
+        emitComment("BREAK");
+        // TODO: store end of while(loop) register to use for break
+        // would tempLoc work for nested loops?
+        emitRM("LDA", pc, loopBreak.top(), pc, "break");
         break; // heh
 
     default:
@@ -340,6 +385,7 @@ void codegenTM::generateExpression( TreeNode * node, int reg )
             assign(lhs, reg);
             break;
             
+            // TODO: commenting for *ass ops
         case DIVASS:
             generateExpression(lhs, reg);
             generateExpression(rhs, ac2);
@@ -445,13 +491,13 @@ void codegenTM::generateExpression( TreeNode * node, int reg )
         case LTHAN:
             generateExpression(lhs, ac1);
             generateExpression(rhs, ac2);
-            emitRO("TLT", reg, ac1, ac2, "Op <=");
+            emitRO("TLT", reg, ac1, ac2, "Op <");
             break;
             
         case GTHAN:
             generateExpression(lhs, ac1);
             generateExpression(rhs, ac2);
-            emitRO("TGT", reg, ac1, ac2, "Op <=");
+            emitRO("TGT", reg, ac1, ac2, "Op >");
             break;
             
         default:
@@ -471,7 +517,7 @@ void codegenTM::generateExpression( TreeNode * node, int reg )
                 emitRM("LD", reg, 1, ac2, "Load size of array " + lstr); // +1 to get size                
             }
             break;
-            
+            // TODO: !false, !<var> !!!<var> not working
         case NOT: // Logical NOT
             generateExpression(lhs, reg);
             logicalNot(reg, reg); // reg = !lhs
