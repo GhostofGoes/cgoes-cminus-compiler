@@ -385,32 +385,31 @@ void codegenTM::generateExpression( TreeNode * node, int reg )
             assign(lhs, reg);
             break;
             
-            // TODO: commenting for *ass ops
         case DIVASS:
             generateExpression(lhs, reg);
             generateExpression(rhs, ac2);
-            divide(reg, reg, ac2);
+            emitRO("DIV", reg, reg, ac2, "Op /=" );
             assign(lhs, reg);
             break;
             
         case MULASS:
             generateExpression(lhs, reg);
             generateExpression(rhs, ac2);
-            multiply(reg, reg, ac2);
+            emitRO("MUL", reg, reg, ac2, "Op *=" );
             assign(lhs, reg);
             break;
             
         case SUBASS:
             generateExpression(lhs, reg);
             generateExpression(rhs, ac2);
-            subtract(reg, reg, ac2);
+            emitRO("SUB", reg, reg, ac2, "Op -=" );
             assign(lhs, reg);
             break;
             
         case ADDASS:
             generateExpression(lhs, reg);
             generateExpression(rhs, ac2);
-            add(reg, reg, ac2);
+            emitRO("ADD", reg, reg, ac2, "Op +=" );
             assign(lhs, reg);
             break;
             
@@ -425,31 +424,34 @@ void codegenTM::generateExpression( TreeNode * node, int reg )
         case MULTIPLY:
             generateExpression(lhs, reg);
             generateExpression(rhs, ac2);
-            multiply(reg, reg, ac2);
+            emitRO("MUL", reg, reg, ac2, "Op *" );
             break;
             
         case DIVIDE:
             generateExpression(lhs, reg);
             generateExpression(rhs, ac2);
-            divide(reg, reg, ac2);
+            emitRO("DIV", reg, reg, ac2, "Op /" );
             break;
             
         case MODULUS: // a mod n
-            generateExpression(lhs, reg); // a -> ac1
+            generateExpression(lhs, ac1); // a -> ac1
             generateExpression(rhs, ac2); // n -> ac2
-            mod(reg, reg, ac2); // reg = ac1 mod ac2
+            // r = a - (n * trunc(a/n))    
+            emitRO("DIV", reg, ac1, ac2, "Op %" ); // res = trunc(a/n)
+            emitRO("MUL", reg, ac2, reg, "" );// res = n * res
+            emitRO("SUB", reg, ac1, reg, "" ); // res = a - res
             break;
             
         case PLUS:
             generateExpression(lhs, reg);
             generateExpression(rhs, ac2);
-            add(reg, reg, ac2);
+            emitRO("ADD", reg, reg, ac2, "Op +" );
             break;
             
         case MINUS:
             generateExpression(lhs, reg);
             generateExpression(rhs, ac2);
-            subtract(reg, reg, ac2);
+            emitRO("SUB", reg, reg, ac2, "Op -" );
             break;
             
         case OR:
@@ -529,7 +531,7 @@ void codegenTM::generateExpression( TreeNode * node, int reg )
         case MINUS: // Op unary -
             generateExpression(lhs, reg);
             emitRM("LDC", ac2, 0, 0, "Load 0"); // Use ac3 so we don't step on anyone's toes
-            subtract(reg, ac2, reg); // reg = 0 - lhs
+            emitRO("SUB", reg, ac2, reg, "Op unary -" ); // reg = 0 - lhs
             break;
             
         default:
@@ -773,37 +775,6 @@ void codegenTM::loadConst( int reg, int c )
 }
 
 /* Macros */
-
-void codegenTM::add( int res, int reg1, int reg2 )
-{
-    emitRO("ADD", res, reg1, reg2, "Op +" );
-}
-
-void codegenTM::subtract( int res, int reg1, int reg2 )
-{
-    emitRO("SUB", res, reg1, reg2, "Op -" );
-}
-
-void codegenTM::multiply( int res, int reg1, int reg2 )
-{
-    emitRO("MUL", res, reg1, reg2, "Op *" );
-}
-
-void codegenTM::divide( int res, int reg1, int reg2 )
-{
-    emitRO("DIV", res, reg1, reg2, "Op /" );
-}
-
-void codegenTM::mod(int res, int reg1, int reg2)
-{
-    // r = a - (n * trunc(a/n))
-    emitComment("\t\tModulus");
-    divide( res, reg1, reg2);   // res = trunc(a/n)
-    multiply( res, reg2, res ); // res = n * res
-    subtract( res, reg1, res);  // res = a - res
-}
-
-
 
 void codegenTM::standardRet() // comment, zero out return, funRet
 {

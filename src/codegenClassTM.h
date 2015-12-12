@@ -44,15 +44,7 @@ private:
     void loadParams( TreeNode * node, int off ); // loads params before function call
     void loadConst( int reg, int c );
     void assign( TreeNode * node, int reg );
-    
-    /* Logical operators */
-    void add( int res, int reg1, int reg2 );
-    void subtract( int res, int reg1, int reg2 );
-    void multiply( int res, int reg1, int reg2 );
-    void divide( int res, int reg1, int reg2 );
-    void mod( int res, int reg1, int reg2 ); // MODULUS
-    void eq( int res, int reg1, int reg2 );
-    
+        
     /* Emit macros */
     void standardRet(); // zero out return first
     void funRet();      // Load ret addr, adjust FP, return 
@@ -96,6 +88,7 @@ private:
     int tOffset;
     
     /* Emit methods */
+    // TODO: default blank string for args
     void emitComment( std::string s );
     void emitRO( const char *op, int r, int s, int t, std::string c);
     void emitRM( const char * op, int r, int d, int s, std::string c);
