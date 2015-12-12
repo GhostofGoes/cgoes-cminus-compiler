@@ -445,13 +445,13 @@ void codegenTM::generateExpression( TreeNode * node, int reg )
         case LTHAN:
             generateExpression(lhs, ac1);
             generateExpression(rhs, ac2);
-            emitRO("TLE", reg, ac1, ac2, "Op <=");
+            emitRO("TLT", reg, ac1, ac2, "Op <=");
             break;
             
         case GTHAN:
             generateExpression(lhs, ac1);
             generateExpression(rhs, ac2);
-            emitRO("TLE", reg, ac1, ac2, "Op <=");
+            emitRO("TGT", reg, ac1, ac2, "Op <=");
             break;
             
         default:
