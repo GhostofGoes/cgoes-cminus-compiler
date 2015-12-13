@@ -88,6 +88,7 @@ private:
     /* Emit methods */
     // TODO: default blank string for args
     void emitComment( std::string s );
+    void emitIdentComment( std::string s );
     void emitRO( const char *op, int r, int s, int t, std::string c);
     void emitRM( const char * op, int r, int d, int s, std::string c);
     int emitSkip( int howMany);

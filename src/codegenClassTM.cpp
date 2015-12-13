@@ -132,12 +132,12 @@ void codegenTM::initGlobalVars()
         {
             if ( tree->offsetReg == local && tree->isStatic )
             {
-                emitRM("LDC", val, tree->arraySize, 0, "Load size of LocalStatic array " + svalResolve(tree));
+                emitRM("LDC", val, tree->arraySize, ac3, "Load size of LocalStatic array " + svalResolve(tree));
                 emitRM("ST", val, tree->location + 1, gp, "Store size of LocalStatic array " + svalResolve(tree));                    
             } 
             else if ( tree->offsetReg == global )
             {
-                emitRM("LDC", val, tree->arraySize, 0, "Load size of global array " + svalResolve(tree));
+                emitRM("LDC", val, tree->arraySize, ac3, "Load size of global array " + svalResolve(tree));
                 emitRM("ST", val, tree->location + 1, gp, "Store size of global array " + svalResolve(tree));
             }
             else
@@ -184,7 +184,7 @@ void codegenTM::generateDeclaration(TreeNode* node)
                 {
                     if(tree->offsetReg == local && !tree->isStatic)
                     {
-                        emitRM("LDC", val, tree->arraySize, 0, "Load size of local array " + treestr);
+                        emitRM("LDC", val, tree->arraySize, ac3, "Load size of local array " + treestr);
                         emitRM("ST", val, tree->location + 1, fp, "Store size of local array " + treestr);
                     }
                     else
@@ -210,15 +210,17 @@ void codegenTM::generateDeclaration(TreeNode* node)
                 mainLoc = emitSkip(0); // TODO: needed?
             tree->loc = emitSkip(0);
             symtable->insert(treestr, tree);
-            emitRM("ST", val, -1, fp, "Store return address");
+            
             
             if(tree->isIO != Nopeput)
             {
+                emitRM("ST", val, -1, fp, "Store return address"); // no period! wwwaaaah!
                 IOroutines(tree->isIO);
                 funRet();
             }
             else
             {
+                emitRM("ST", val, -1, fp, "Store return address."); // there's a period in the comment...
                 symtable->enter("Function " + treestr);
                 treeTraversal(lhs); // parameters, if any
                 treeTraversal(rhs); // *magical* compound
@@ -271,7 +273,7 @@ void codegenTM::generateStatement( TreeNode * node )
         break;
 
     case ReturnK:
-        emitComment("\tRETURN");
+        emitComment("RETURN");
         if ( tree->child[0] != NULL )
         { // Check for return value
             generateExpression(tree->child[0], fOffset - 1);
@@ -493,7 +495,7 @@ void codegenTM::generateExpression( TreeNode * node, int tOff = 0 )
             break;
         case QUESTION: // Random from 0 to n
             generateExpression(lhs, tOff);
-            emitRO("RND", val, val, 0, "Op ?");
+            emitRO("RND", val, val, ac3, "Op ?");
             break;
         case MINUS: // Op unary -
             generateExpression(lhs, tOff);
@@ -508,11 +510,11 @@ void codegenTM::generateExpression( TreeNode * node, int tOff = 0 )
         
     case ConstK: // 'integer', 'Boolean', 'char'
         if ( tree->nodetype == Integer )
-            emitRM("LDC", val, tree->token->ivalue, 0, "Load integer constant");
+            emitRM("LDC", val, tree->token->ivalue, ac3, "Load integer constant");
         else if ( tree->nodetype == Boolean )
-            emitRM("LDC", val, tree->token->ivalue, 0, "Load Boolean constant");
+            emitRM("LDC", val, tree->token->ivalue, ac3, "Load Boolean constant");
         else if( tree->nodetype == Character )
-            emitRM("LDC", val, tree->token->cvalue, 0, "Load char constant");
+            emitRM("LDC", val, tree->token->cvalue, ac3, "Load char constant");
         else
             cout << "Constant isn't Integer, Boolean, or Character." << endl;
         break;        
@@ -531,7 +533,7 @@ void codegenTM::generateExpression( TreeNode * node, int tOff = 0 )
 
     case CallK:
         //emitComment("EXPRESSION");
-        emitComment("\t\t\tBegin call to " + treestr);
+        emitIdentComment("Begin call to " + treestr);
         tmp = lookup(treestr);
         if(tmp == NULL)
         {
@@ -542,12 +544,12 @@ void codegenTM::generateExpression( TreeNode * node, int tOff = 0 )
         emitRM("ST", fp, tOff, fp, "Store current frame pointer");
         loadParams(tree->child[0], tOff - 1); // Load parameters into memory
         
-        emitComment("\t\tJump to " + treestr);
+        emitIdentComment("Jump to " + treestr);
         emitRM("LDA", fp, tOff, fp, "Load address of new frame");
         emitRM("LDA", val, 1, pc, "Save return address");
         emitRMAbs("LDA", pc, tmp->loc, "CALL " + treestr );
         emitRM("LDA", val, 0, ret, "Save function result");
-        emitComment("\t\t\tEnd call to " + treestr);
+        emitIdentComment("End call to " + treestr);
         break;
 
     default:
@@ -562,7 +564,7 @@ void codegenTM::loadParams( TreeNode * tree, int off )
     
     while(tree != NULL)
     {
-        emitComment("\t\t\tLoad param " + to_string(siblingCount) );
+        emitIdentComment("Load param " + to_string(siblingCount) );
         generateExpression(tree, off - siblingCount);
         emitRM("ST", val, off - siblingCount, fp, "Store paramater " + to_string(siblingCount) );
         tree = tree->sibling;
@@ -608,15 +610,15 @@ void codegenTM::storeArrayVar(TreeNode* arr, int reg, int index)
     
     if ( tmp->offsetReg == local && !tmp->isStatic )
     {
-        emitRM("ST", reg, 0, ac3, "Store reg(" + to_string(reg) + ") into local array " + svalResolve(tmp));
+        emitRM("ST", reg, 0, ac3, "Store into local array " + svalResolve(tmp));
     } 
     else if( tmp->offsetReg == local && tmp->isStatic)
     {
-        emitRM("ST", reg, 0, ac3, "Store reg(" + to_string(reg) + ") into LocalStatic array " + svalResolve(tmp));
+        emitRM("ST", reg, 0, ac3, "Store into LocalStatic array " + svalResolve(tmp));
     }
     else if ( tmp->offsetReg == global )
     {
-        emitRM("ST", reg, 0, ac3, "Store reg(" + to_string(reg) + ") into global array " + svalResolve(tmp));
+        emitRM("ST", reg, 0, ac3, "Store into global array " + svalResolve(tmp));
     }
     else
     {
@@ -663,17 +665,17 @@ void codegenTM::loadArrayVar(TreeNode* arr, int reg, int index)
     
     if ( tmp->offsetReg == local && !tmp->isStatic )
     {
-        emitRM("LD", reg, 0, ac3, "Load local array variable " + svalResolve(tmp));
+        emitRM("LD", reg, 0, ac3, "Load variable local array " + svalResolve(tmp));
     }
     else if (tmp->offsetReg == local && tmp->isStatic )
     {      
-        emitRM("LD", reg, 0, ac3, "Load LocalStatic array variable " + svalResolve(tmp));
+        emitRM("LD", reg, 0, ac3, "Load variable LocalStatic array " + svalResolve(tmp));
     }
     else if(tmp->offsetReg == global )
     {
-        emitRM("LD", reg, 0, ac3, "Load global array variable " + svalResolve(tmp));
+        emitRM("LD", reg, 0, ac3, "Load variable global array " + svalResolve(tmp));
     }
-    else
+    else // globals and statics are the same for our purposes
     {
         cout << "Fell off if-else chain in loadArrayVar. svalue: " << svalResolve(tmp) << endl;
     }    
@@ -688,15 +690,15 @@ void codegenTM::loadArrayAddr( TreeNode* arr, int reg )
 
     if ( tmp->offsetReg == local && !tmp->isStatic )
     {
-        emitRM("LDA", reg, tmp->location, fp, "Load local array address of  " + svalResolve(tmp));
+        emitRM("LDA", reg, tmp->location, fp, "Load address of  local array " + svalResolve(tmp));
     }
     else if (tmp->offsetReg == local && tmp->isStatic)
     {
-        emitRM("LDA", reg, tmp->location, gp, "Load LocalStatic array address of " + svalResolve(tmp)); 
+        emitRM("LDA", reg, tmp->location, gp, "Load address of LocalStatic array " + svalResolve(tmp)); 
     }
     else if( tmp->offsetReg == global)
     {
-        emitRM("LDA", reg, tmp->location, gp, "Load global array address of " + svalResolve(tmp)); 
+        emitRM("LDA", reg, tmp->location, gp, "Load address of global array " + svalResolve(tmp)); 
     }
     else
     {
@@ -706,15 +708,16 @@ void codegenTM::loadArrayAddr( TreeNode* arr, int reg )
 
 void codegenTM::loadConst( int reg, int c )
 {
-    emitRM("LDC", reg, c, 0, "Load " + to_string(c));
+    emitRM("LDC", reg, c, ac3, "Load " + to_string(c));
 }
 
 /* Macros */
 
 void codegenTM::standardRet() // comment, zero out return, funRet
 {
-    emitComment("\tFailsafe return");
-    emitRM("LDC", ret, 0, 0, "Set return to 0");
+    // was "Failsafe return"...but gotta make the diff match
+    emitComment("Add standard closing in case there is no return statement");
+    emitRM("LDC", ret, 0, ac3, "Set return value to 0");
     funRet();
 }
 
@@ -738,7 +741,7 @@ void codegenTM::IOroutines(IO io)
         case OutputI:
             emitRM("LD", val, -2, fp, "Load parameter");
             emitRO("OUT", val, 3, 3, "Output integer");
-            emitRM("LDC", ret, 0, ac1, "Set return to 0"); // ac3 is zero at this point, so we can do this
+            emitRM("LDC", ret, 0, ac3, "Set return to 0"); // ac3 is zero at this point, so we can do this
             break;
 
         case InputB:
@@ -748,7 +751,7 @@ void codegenTM::IOroutines(IO io)
         case OutputB:
             emitRM("LD", val, -2, fp, "Load parameter");
             emitRO("OUTB", val, 3, 3, "Output bool");
-            emitRM("LDC", ret, 0, ac1, "Set return to 0");
+            emitRM("LDC", ret, 0, ac3, "Set return to 0");
             break;
 
         case InputC:
@@ -758,7 +761,7 @@ void codegenTM::IOroutines(IO io)
         case OutputC:
             emitRM("LD", val, -2, fp, "Load parameter");
             emitRO("OUTC", val, 3, 3, "Output char");
-            emitRM("LDC", ret, 0, ac1, "Set return to 0");
+            emitRM("LDC", ret, 0, ac3, "Set return to 0");
             break;
 
         case OutNL:
@@ -888,7 +891,6 @@ void codegenTM::loopSiblings( NodeKind nk, TreeNode * node )
             generateStatement(tree);
             break;
         case ExpK:
-            emitComment("EXPRESSION");
             generateExpression(tree, fOffset);
             break;
         default:
@@ -915,7 +917,6 @@ void codegenTM::treeTraversal( TreeNode * node )
                 generateStatement(tree);
                 break;
             case ExpK:
-                emitComment("EXPRESSION");
                 generateExpression(tree, fOffset);
                 break;
             default:
@@ -935,7 +936,15 @@ void codegenTM::emitComment( string s )
     if(emitToFile)
         outfile << "* " << s << endl;
     else
-        cout << "* " << s << endl;
+        cout    << "* " << s << endl;
+}
+
+void codegenTM::emitIdentComment( string s )
+{
+    if(emitToFile)
+        outfile << "*                       " << s << endl;
+    else
+        cout    << "*                       " << s << endl;
 }
 
 /* Procedure emitRO emits a register-only
@@ -953,14 +962,14 @@ void codegenTM::emitRO( const char *op, int r, int s, int t, string c )
     outfile << setw(3) << emitLoc++ 
             << ":  " << setw(5) << op 
             << "  " << r << "," << s << "," << t
-            << " \t" << c << endl; /* append comment */
+            << "\t" << c << " " << endl; /* append comment */
     }
     else
     {
     cout << setw(3) << emitLoc++ 
             << ":  " << setw(5) << op 
             << "  " << r << "," << s << "," << t
-            << " \t" << c << endl; /* append comment */        
+            << "\t" << c << " " << endl; /* append comment */        
     }
 
     if (highEmitLoc < emitLoc) 
@@ -983,14 +992,14 @@ void codegenTM::emitRM( const char * op, int r, int d, int s, string c )
     outfile << setw(3) << emitLoc++ 
             << ":  " << setw(5) << op 
             << "  " << r << "," << d << "(" << s << ")"
-            << " \t" << c << endl; /* append comment */
+            << "\t" << c << " " << endl; /* append comment */
     }
     else
     {
     cout << setw(3) << emitLoc++ 
             << ":  " << setw(5) << op 
             << "  " << r << "," << d << "(" << s << ")"
-            << " \t" << c << endl; /* append comment */        
+            << "\t" << c << " " << endl; /* append comment */        
     }
     
     if (highEmitLoc < emitLoc)  
@@ -1048,14 +1057,14 @@ void codegenTM::emitRMAbs( const char *op, int r, int a, string c )
     outfile << setw(3) << emitLoc 
             << ":  " << setw(5) << op 
             << "  " << r << "," << a - (emitLoc + 1) << "(" << pc << ")"
-            << " \t" << c << endl; /* append comment */
+            << "\t" << c << " " << endl; /* append comment */
     }
     else
     {
     cout << setw(3) << emitLoc 
             << ":  " << setw(5) << op 
             << "  " << r << "," << a - (emitLoc + 1) << "(" << pc << ")"
-            << " \t" << c << endl; /* append comment */        
+            << "\t" << c << " " << endl; /* append comment */        
     }
     emitLoc++;
     
