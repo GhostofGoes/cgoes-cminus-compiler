@@ -48,7 +48,7 @@ codegenTM::codegenTM ( TreeNode * t, int g, string of, string inf)
     emitLoc = 0;
     highEmitLoc = 0;
     mainLoc = 0;
-    tempLoc = 0;
+    //tempLoc = 0;
 }
 
 codegenTM::~codegenTM ( ) 
@@ -90,7 +90,7 @@ void codegenTM::generateCode()
     /* Instruction generation */
     start = emitSkip(1); // so we can have our jump to init
     
-    treeTraversal(aTree); // Main code generation
+    treeTraversal(aTree, fOffset); // Main code generation
     
     emitBackup(start); // Go back to the beginnnnning of time
     emitRMAbs("LDA", pc, highEmitLoc, "Jump to init");
@@ -222,8 +222,8 @@ void codegenTM::generateDeclaration(TreeNode* node)
             {
                 emitRM("ST", val, -1, fp, "Store return address."); // there's a period in the comment...
                 symtable->enter("Function " + treestr);
-                treeTraversal(lhs); // parameters, if any
-                treeTraversal(rhs); // *magical* compound
+                treeTraversal(lhs, fOffset); // parameters, if any
+                treeTraversal(rhs, fOffset); // *magical* compound
                 standardRet(); // redundant return in case one is never specified
                 symtable->leave();
             }
@@ -250,10 +250,12 @@ void codegenTM::generateStatement( TreeNode * node )
         return;
     }
     TreeNode * lhs = tree->child[0];
-    string lstr = svalResolve(lhs);
+    //string lstr = svalResolve(lhs);
     TreeNode * rhs = tree->child[1];
-    string rstr = svalResolve(rhs);
+    //string rstr = svalResolve(rhs);
     string treestr = svalResolve(tree);
+    
+    int tPos = 0;
     
     switch (tree->kind) {
         
@@ -264,8 +266,8 @@ void codegenTM::generateStatement( TreeNode * node )
 
         fOffset = tree->size;
 
-        treeTraversal(lhs); // declarations, if any
-        treeTraversal(rhs); // Expressions/Statements
+        treeTraversal(lhs, fOffset); // declarations, if any
+        treeTraversal(rhs, fOffset); // Expressions/Statements
 
         if ( tree->isFuncCompound == false )
             symtable->leave();
@@ -276,7 +278,7 @@ void codegenTM::generateStatement( TreeNode * node )
         emitComment("RETURN");
         if ( tree->child[0] != NULL )
         { // Check for return value
-            generateExpression(tree->child[0], fOffset - 1);
+            generateExpression(tree->child[0], fOffset);
             emitRM("LDA", ret, 0, val, "Save result into ret");
         }
         funRet(); // Return!
@@ -289,7 +291,7 @@ void codegenTM::generateStatement( TreeNode * node )
         loopBreak.push(emitSkip(1)); // TODO
         
         emitComment("DO");
-        treeTraversal(rhs);
+        treeTraversal(rhs, fOffset - 1);
         
         emitRMAbs("LDA", pc, loopBreak.top() - 2, "go to beginning of loop");
         
@@ -306,17 +308,32 @@ void codegenTM::generateStatement( TreeNode * node )
         emitComment("IF");
         if(tree->numChildren == 2)
         {
-            generateExpression(lhs, fOffset - 1);
+            generateExpression(lhs, fOffset);
+            tPos = emitSkip(1);
+            
             emitComment("THEN");
-            treeTraversal(rhs);
+            treeTraversal(rhs, fOffset);
+            emitBackup(tPos);
+            emitRMAbs("JZR", val, highEmitLoc, "Jump around the THEN if false [backpatch]");
+            emitRestore();
         }
         else if(tree->numChildren == 3)
         {
-            generateExpression(lhs, fOffset - 1);
+            generateExpression(lhs, fOffset);
+            tPos = emitSkip(1);
+            
             emitComment("THEN");
-            treeTraversal(rhs);
+            treeTraversal(rhs, fOffset);
+            emitBackup(tPos);
+            emitRMAbs("JZR", val, highEmitLoc + 1, "Jump around the THEN if false [backpatch]");
+            emitRestore(); // note the +1 for jumping around the else backpatch
+            
             emitComment("ELSE");
-            treeTraversal(tree->child[2]);
+            tPos = emitSkip(1);
+            treeTraversal(tree->child[2], fOffset - 1);
+            emitBackup(tPos);
+            emitRMAbs("LDA", pc, highEmitLoc, "Jump around the ELSE [backpatch]");
+            emitRestore();
         }
         else
         {
@@ -364,21 +381,21 @@ void codegenTM::generateExpression( TreeNode * node, int tOff = 0 )
         // Save array index
         if ( lhs->kind == IdK && lhs->child[0] != NULL ) // note the tOff--
         {
-            generateExpression(lhs->child[0], tOff - 1); // calculate array index
+            generateExpression(lhs->child[0], tOff); // calculate array index
             emitRM("ST", val, tOff--, fp, "Save index of array " + lstr);
         } 
         
         // Prime the registers for processing
         switch(tree->token->bval) {
         case ASSIGN:
-            generateExpression(rhs, tOff - 1); // rhs -> val
+            generateExpression(rhs, tOff); // rhs -> val
             break;
         case INC:
         case DEC:
-            generateExpression(lhs, tOff - 1); // lhs -> val
+            generateExpression(lhs, tOff); // lhs -> val
             break;
         default:
-            generateExpression(lhs, tOff - 1); // gen lhs
+            generateExpression(lhs, tOff); // gen lhs
             emitRM("ST", val, tOff, fp, "Save left side"); // save lhs
             generateExpression(rhs, tOff - 1); // gen rhs
             emitRM("LD", ac1, tOff, fp, "Load left into ac1"); // load lhs
@@ -413,8 +430,8 @@ void codegenTM::generateExpression( TreeNode * node, int tOff = 0 )
             break;
         } // end bval switch
         
-        if ( lhs->kind == IdK && lhs->child[0] != NULL ) // note the tOff + 1
-        {
+        if ( lhs->kind == IdK && lhs->child[0] != NULL ) 
+        {           // note the tOff + 1
             emitRM("LD", ac1, tOff + 1, fp, "Retrieve index of array " + lstr);
             storeArrayVar(lhs, val, ac1); // Assign rvalue to lvalue
         }
@@ -425,7 +442,7 @@ void codegenTM::generateExpression( TreeNode * node, int tOff = 0 )
         break;
         
     case OpK:
-        generateExpression(lhs, tOff - 1); // gen lhs
+        generateExpression(lhs, tOff); // gen lhs
         emitRM("ST", val, tOff, fp, "Save left side"); // save lhs
         generateExpression(rhs, tOff - 1); // gen rhs
         emitRM("LD", ac1, tOff, fp, "Load left into ac1"); // load lhs  
@@ -582,7 +599,7 @@ void codegenTM::storeVar(TreeNode* var, int reg) // ST reg->var
     }
     if ( tmp->offsetReg == local && !tmp->isStatic )
     {
-        emitRM("ST", reg, tmp->location, fp, "Store Local variable " + svalResolve(tmp));
+        emitRM("ST", reg, tmp->location, fp, "Store local variable " + svalResolve(tmp));
     }
     else if (tmp->offsetReg == local && tmp->isStatic )
     {
@@ -590,7 +607,7 @@ void codegenTM::storeVar(TreeNode* var, int reg) // ST reg->var
     }
     else if (tmp->offsetReg == global)
     {
-        emitRM("ST", reg, tmp->location, gp, "Store Global variable " + svalResolve(tmp));
+        emitRM("ST", reg, tmp->location, gp, "Store global variable " + svalResolve(tmp));
     }
     else
     {
@@ -645,7 +662,7 @@ void codegenTM::loadVar(TreeNode* var, int reg )
     }
     else if( tmp->offsetReg == global )
     {
-        emitRM("LD", reg, tmp->location, gp, "Load Global variable " + svalResolve(tmp));
+        emitRM("LD", reg, tmp->location, gp, "Load global variable " + svalResolve(tmp));
     }
     else
     {
@@ -903,7 +920,7 @@ void codegenTM::loopSiblings( NodeKind nk, TreeNode * node )
 }
 
 
-void codegenTM::treeTraversal( TreeNode * node )
+void codegenTM::treeTraversal( TreeNode * node, int off )
 {
     TreeNode * tree = node;
     
@@ -917,7 +934,7 @@ void codegenTM::treeTraversal( TreeNode * node )
                 generateStatement(tree);
                 break;
             case ExpK:
-                generateExpression(tree, fOffset);
+                generateExpression(tree, off);
                 break;
             default:
                 cout << "Hit default in treeTraversal switch(nodekind)!" << endl;

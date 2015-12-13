@@ -50,7 +50,7 @@ private:
     
     /* General generation */
     void loopSiblings( NodeKind nk, TreeNode * node );    
-    void treeTraversal( TreeNode * tree ); // loopsiblings without nk selection
+    void treeTraversal( TreeNode * tree, int off ); // loopsiblings without nk selection
     
     /* SymbolTable creation + copying node values */
     void buildTable();
@@ -77,13 +77,14 @@ private:
     /* Emit locations */
     int emitLoc; // Location for current instruction emission  
     int highEmitLoc; // Highest location emitted thus far. Used with: emitSkip, emitBackup, emitRestore
-    int mainLoc;
-    int tempLoc;
+    int mainLoc; // TODO: needed?
+    //int tempLoc;
     std::stack<int> loopBreak;
     
     /* Offsets */
     int gOffset;
     int fOffset;
+    //int tOffset;
     
     /* Emit methods */
     // TODO: default blank string for args
