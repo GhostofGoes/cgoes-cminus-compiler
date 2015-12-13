@@ -1,9 +1,8 @@
-/* 
- * File:   yyerrorHelper.h
- * Author: tehlizard
- *
- * Created on November 10, 2015, 1:03 PM
- */
+/*
+ * symbolTable.cpp
+ * Author: Robert Heckendorn, Univerisity of Idaho
+ * License: All code contained is attributed to and licence held by author
+*/
 
 #ifndef YYERRORHELPER_H
 #define	YYERRORHELPER_H

@@ -1,3 +1,11 @@
+/*
+ * symbolTable.cpp
+ * Author: Robert Heckendorn, Univerisity of Idaho
+ * License: All code contained is attributed to and licence held by author
+*/
+
+
+
 #include "symbolTable.h"
    
 // // // // // // // // // // // // // // // // // // // // 

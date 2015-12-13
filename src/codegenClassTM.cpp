@@ -286,12 +286,12 @@ void codegenTM::generateStatement( TreeNode * node )
 
     case WhileK: // TODO: while implementation
         emitComment("WHILE");
-        generateExpression(lhs, fOffset - 1);
+        generateExpression(lhs, fOffset);
         emitRM("JNZ", val, 1, pc, "Jump to while part"); // if exp != 0, continue
         loopBreak.push(emitSkip(1)); // TODO
         
         emitComment("DO");
-        treeTraversal(rhs, fOffset - 1);
+        treeTraversal(rhs, fOffset);
         
         emitRMAbs("LDA", pc, loopBreak.top() - 2, "go to beginning of loop");
         
@@ -330,7 +330,7 @@ void codegenTM::generateStatement( TreeNode * node )
             
             emitComment("ELSE");
             tPos = emitSkip(1);
-            treeTraversal(tree->child[2], fOffset - 1);
+            treeTraversal(tree->child[2], fOffset);
             emitBackup(tPos);
             emitRMAbs("LDA", pc, highEmitLoc, "Jump around the ELSE [backpatch]");
             emitRestore();

@@ -1,3 +1,10 @@
+/*
+ * symbolTable.h
+ * Author: Robert Heckendorn, Univerisity of Idaho
+ * License: All code contained is attributed to and licence held by author
+*/
+
+
 #ifndef _SYMBOLTABLE_H_
 #define _SYMBOLTABLE_H_
 
