@@ -29,9 +29,16 @@
 
 // TODO: free tokens!
 
-%token <tok> ID NUMCONST STRINGCONST CHARCONST  BOOLCONST
-%token <tok> ADDASS SUBASS MULASS DIVASS INC DEC LESSEQ GRTEQ EQ NOTEQ STATIC INT BOOL CHAR IF ELSE WHILE FOREACH IN RETURN BREAK
-%token <tok> SEMICOLON LPAREN RPAREN LBRACKET RBRACKET OR AND NOT ASSIGN PLUS MINUS MULTIPLY DIVIDE MODULUS QUESTION LTHAN GTHAN LBRACE RBRACE COMMA COLON 
+%token <tok> ID NUMCONST STRINGCONST CHARCONST BOOLCONST
+%token <tok> STATIC INT BOOL CHAR
+%token <tok> ASSIGN ADDASS SUBASS MULASS DIVASS INC DEC 
+%token <tok> LESSEQ GRTEQ EQ NOTEQ LTHAN GTHAN  
+%token <tok> IF ELSE WHILE FOREACH IN RETURN BREAK
+%token <tok> MULTIPLY MODULUS 
+%token <tok> DIVIDE        
+%token <tok> PLUS MINUS
+%token <tok> OR AND NOT QUESTION         
+%token <tok> SEMICOLON LPAREN RPAREN LBRACKET RBRACKET LBRACE RBRACE COMMA COLON 
 
 %type <tok> assignop     
         
@@ -757,11 +764,12 @@ term:
     ;
     
 mulop:
-    MULTIPLY 
+    DIVIDE 
     { 
         $$ = makeNode( ExpK, OpK, Integer, $1->lineno, $1 );
+        // TODO: @##@% associtivity issues! (tinyOps.c-, line 106)
     }
-    | DIVIDE 
+    | MULTIPLY 
     { 
         $$ = makeNode( ExpK, OpK, Integer, $1->lineno, $1 );
     }

@@ -43,7 +43,7 @@ codegenTM::codegenTM ( TreeNode * t, int g, string of, string inf)
     
     gOffset = g;
     fOffset = 0;
-    tOffset = 0;
+    //tOffset = 0;
 
     emitLoc = 0;
     highEmitLoc = 0;
@@ -147,7 +147,7 @@ void codegenTM::initGlobalVars()
         }
         else if( tree->child[0] != NULL )
         {
-            generateExpression(tree->child[0], val);
+            generateExpression(tree->child[0], gOffset + 1);
             storeVar(tree, val);          
         }
         else
@@ -196,7 +196,7 @@ void codegenTM::generateDeclaration(TreeNode* node)
                 {
                     if( (tree->offsetReg == local && !tree->isStatic) && lhs != NULL)
                     {
-                        generateExpression(lhs, val);
+                        generateExpression(lhs, fOffset - 1);
                         storeVar(tree,val);
                     }
                 }
@@ -220,8 +220,8 @@ void codegenTM::generateDeclaration(TreeNode* node)
             else
             {
                 symtable->enter("Function " + treestr);
-                treeTraversal(tree->child[0]); // parameters, if any
-                treeTraversal(tree->child[1]); // *magical* compound
+                treeTraversal(lhs); // parameters, if any
+                treeTraversal(rhs); // *magical* compound
                 standardRet(); // redundant return in case one is never specified
                 symtable->leave();
             }
@@ -274,7 +274,7 @@ void codegenTM::generateStatement( TreeNode * node )
         emitComment("\tRETURN");
         if ( tree->child[0] != NULL )
         { // Check for return value
-            generateExpression(tree->child[0], val);
+            generateExpression(tree->child[0], fOffset - 1);
             emitRM("LDA", ret, 0, val, "Save result into ret");
         }
         funRet(); // Return!
@@ -282,7 +282,7 @@ void codegenTM::generateStatement( TreeNode * node )
 
     case WhileK: // TODO: while implementation
         emitComment("WHILE");
-        generateExpression(lhs, val);
+        generateExpression(lhs, fOffset - 1);
         emitRM("JNZ", val, 1, pc, "Jump to while part"); // if exp != 0, continue
         loopBreak.push(emitSkip(1)); // TODO
         
@@ -304,13 +304,13 @@ void codegenTM::generateStatement( TreeNode * node )
         emitComment("IF");
         if(tree->numChildren == 2)
         {
-            generateExpression(lhs, val);
+            generateExpression(lhs, fOffset - 1);
             emitComment("THEN");
             treeTraversal(rhs);
         }
         else if(tree->numChildren == 3)
         {
-            generateExpression(lhs, val);
+            generateExpression(lhs, fOffset - 1);
             emitComment("THEN");
             treeTraversal(rhs);
             emitComment("ELSE");
@@ -339,14 +339,13 @@ void codegenTM::generateStatement( TreeNode * node )
     }
 }
 
-// NOTE: some expressions will obey reg, but others may use val instead!
-// IdK will load vars by default, not store!
-void codegenTM::generateExpression( TreeNode * node, int reg )
+// Call using tOff - 1, so you can preserve the caller's saved vars
+void codegenTM::generateExpression( TreeNode * node, int tOff = 0 )
 {
     TreeNode * tree = node;
     if(tree == NULL)
     {
-        cout << "NULL node in generateExpression!" << endl;
+        cout << "NULL node in generateExpression(TreeNode, int)!" << endl;
         return;
     }        
     TreeNode * tmp = tree;
@@ -358,150 +357,120 @@ void codegenTM::generateExpression( TreeNode * node, int reg )
     
     switch (tree->kind) { 
     case AssignK: 
+        emitComment("EXPRESSION");
+        
+        // Save array index
+        if ( lhs->kind == IdK && lhs->child[0] != NULL ) // note the tOff--
+        {
+            generateExpression(lhs->child[0], tOff - 1); // calculate array index
+            emitRM("ST", val, tOff--, fp, "Save index of array " + lstr);
+        } 
+        
+        // Prime the registers for processing
         switch(tree->token->bval) {
         case ASSIGN:
-            if ( lhs->kind == IdK && lhs->child[0] != NULL ) //lhs->isArray )
-            {
-                generateExpression(lhs->child[0], val); // calculate the index
-                emitRM("ST", val, fOffset, fp, "Save index of array " + lstr);
-                generateExpression(rhs, reg); // // Get rvalue to assign, put in reg
-                emitRM("LD", ac1, fOffset, fp, "Retrieve index of array " + lstr);
-                storeArrayVar(lhs, val, ac1); // Assign rvalue to lvalue
-            } else
-            {
-                generateExpression(rhs, reg); // // Get rvalue to assign, put in reg
-                storeVar(lhs, reg); // Assign rvalue to lvalue
-            }
+            generateExpression(rhs, tOff - 1); // rhs -> val
             break;
         case INC:
-            generateExpression(lhs, reg);
-            emitRM("LDA", reg, 1, reg, "increment value of " + lstr);
-            assign(lhs, reg);
-            break;
-            
         case DEC:
-            generateExpression(lhs, reg);
-            emitRM("LDA", reg, -1, reg, "decrement value of " + lstr);
-            assign(lhs, reg);
+            generateExpression(lhs, tOff - 1); // lhs -> val
             break;
-            
+        default:
+            generateExpression(lhs, tOff - 1); // gen lhs
+            emitRM("ST", val, tOff, fp, "Save left side"); // save lhs
+            generateExpression(rhs, tOff - 1); // gen rhs
+            emitRM("LD", ac1, tOff, fp, "Load left into ac1"); // load lhs
+            break;
+        } // end bval switch
+        
+        // For *ASS:    ac1 = lhs, val = rhs
+        // For INC/DEC: val = rhs
+        switch(tree->token->bval) {
+        case ASSIGN:
+            break;
+        case INC:
+            emitRM("LDA", val,  1, val, "increment value of " + lstr);
+            break;
+        case DEC:
+            emitRM("LDA", val, -1, val, "decrement value of " + lstr);
+            break;
         case DIVASS:
-            generateExpression(lhs, reg);
-            generateExpression(rhs, ac2);
-            emitRO("DIV", reg, reg, ac2, "Op /=" );
-            assign(lhs, reg);
+            emitRO("DIV", val, ac1, val, "Op /=" );
             break;
-            
         case MULASS:
-            generateExpression(lhs, reg);
-            generateExpression(rhs, ac2);
-            emitRO("MUL", reg, reg, ac2, "Op *=" );
-            assign(lhs, reg);
+            emitRO("MUL", val, ac1, val, "Op *=" );
             break;
-            
         case SUBASS:
-            generateExpression(lhs, reg);
-            generateExpression(rhs, ac2);
-            emitRO("SUB", reg, reg, ac2, "Op -=" );
-            assign(lhs, reg);
+            emitRO("SUB", val, ac1, val, "Op -=" );
             break;
-            
         case ADDASS:
-            generateExpression(lhs, reg);
-            generateExpression(rhs, ac2);
-            emitRO("ADD", reg, reg, ac2, "Op +=" );
-            assign(lhs, reg);
+            emitRO("ADD", val, ac1, val, "Op +=" );
             break;
-            
         default:
             cout << "Hit default in generateExpression AssignK:bval. treestr: " << treestr << endl;
             break;
+        } // end bval switch
+        
+        if ( lhs->kind == IdK && lhs->child[0] != NULL ) // note the tOff + 1
+        {
+            emitRM("LD", ac1, tOff + 1, fp, "Retrieve index of array " + lstr);
+            storeArrayVar(lhs, val, ac1); // Assign rvalue to lvalue
+        }
+        else
+        {
+            storeVar(lhs, val); // Assign rvalue to lvalue
         }
         break;
         
     case OpK:
+        generateExpression(lhs, tOff - 1); // gen lhs
+        emitRM("ST", val, tOff, fp, "Save left side"); // save lhs
+        generateExpression(rhs, tOff - 1); // gen rhs
+        emitRM("LD", ac1, tOff, fp, "Load left into ac1"); // load lhs  
+        
         switch (tree->token->bval) {
         case MULTIPLY:
-            generateExpression(lhs, reg);
-            generateExpression(rhs, ac2);
-            emitRO("MUL", reg, reg, ac2, "Op *" );
+            emitRO("MUL", val, ac1, val, "Op *" );
             break;
-            
-        case DIVIDE:
-            generateExpression(lhs, reg);
-            generateExpression(rhs, ac2);
-            emitRO("DIV", reg, reg, ac2, "Op /" );
+        case DIVIDE: // TODO: integer division
+            emitRO("DIV", val, ac1, val, "Op /" );
             break;
-            
-        case MODULUS: // a mod n
-            generateExpression(lhs, ac1); // a -> ac1
-            generateExpression(rhs, ac2); // n -> ac2
+        case MODULUS: // a mod n: a -> ac1, n -> val
             // r = a - (n * trunc(a/n))    
-            emitRO("DIV", reg, ac1, ac2, "Op %" ); // res = trunc(a/n)
-            emitRO("MUL", reg, ac2, reg, "" );// res = n * res
-            emitRO("SUB", reg, ac1, reg, "" ); // res = a - res
+            emitRO("DIV", ac2, ac1, val, "Op %" );  // res = trunc(a/n)
+            emitRO("MUL", ac2, val, ac2, "" );      // res = n * res
+            emitRO("SUB", val, ac1, ac2, "" );      // res = a - res
             break;
-            
         case PLUS:
-            generateExpression(lhs, reg);
-            generateExpression(rhs, ac2);
-            emitRO("ADD", reg, reg, ac2, "Op +" );
+            emitRO("ADD", val, ac1, val, "Op +" );
             break;
-            
         case MINUS:
-            generateExpression(lhs, reg);
-            generateExpression(rhs, ac2);
-            emitRO("SUB", reg, reg, ac2, "Op -" );
+            emitRO("SUB", val, ac1, val, "Op -" );
             break;
-            
         case OR:
-            generateExpression(lhs, reg);
-            generateExpression(rhs, ac2);
-            emitRO("OR", reg, reg, ac2, "Op OR" );    
+            emitRO( "OR", val, ac1, val, "Op OR" );    
             break;
-            
         case AND:
-            generateExpression(lhs, reg);
-            generateExpression(rhs, ac2);
-            emitRO("AND", reg, reg, ac2, "Op AND" );
+            emitRO("AND", val, ac1, val, "Op AND");
             break;
-            
         case LESSEQ:
-            generateExpression(lhs, reg);
-            generateExpression(rhs, ac2);
-            emitRO("TLE", reg, reg, ac2, "Op <=");
+            emitRO("TLE", val, ac1, val, "Op <=");
             break;
-            
         case GRTEQ:
-            generateExpression(lhs, reg);
-            generateExpression(rhs, ac2);
-            emitRO("TGE", reg, reg, ac2, "Op >=");
+            emitRO("TGE", val, ac1, val, "Op >=");
             break;
-            
         case EQ:
-            generateExpression(lhs, reg);
-            generateExpression(rhs, ac2);
-            emitRO("TEQ", reg, reg, ac2, "Op ==");
+            emitRO("TEQ", val, ac1, val, "Op ==");
             break;
-            
         case NOTEQ:
-            generateExpression(lhs, reg);
-            generateExpression(rhs, ac2);
-            emitRO("TNE", reg, reg, ac2, "Op !=");
+            emitRO("TNE", val, ac1, val, "Op !=");
             break;
-            
         case LTHAN:
-            generateExpression(lhs, reg);
-            generateExpression(rhs, ac2);
-            emitRO("TLT", reg, reg, ac2, "Op <");
+            emitRO("TLT", val, ac1, val, "Op <");
             break;
-            
         case GTHAN:
-            generateExpression(lhs, reg);
-            generateExpression(rhs, ac2);
-            emitRO("TGT", reg, reg, ac2, "Op >");
+            emitRO("TGT", val, ac1, val, "Op >");
             break;
-            
         default:
             cout << "Hit default in generateExpression OpK:bval. treestr: " << treestr << endl;
             break;
@@ -513,70 +482,56 @@ void codegenTM::generateExpression( TreeNode * node, int reg )
         case MULTIPLY:
             if( lhs != NULL)
             {
-                loadArrayAddr(lhs, ac2);
-                emitRM("LD", reg, 1, ac2, "Load size of array " + lstr); // +1 to get size                
+                loadArrayAddr(lhs, val);
+                emitRM("LD", val, 1, val, "Load size of array " + lstr); // +1 to get size                
             }
             break;
-        case NOT: // Logical NOT
-            generateExpression(lhs, reg);   // load lhs
-            loadConst(ac2, 1);              // load 1 to XOR with
-            emitRO("XOR", reg, reg, ac2, "Op NOT"); // reg = !lhs
+        case NOT: // Logical negation
+            generateExpression(lhs, tOff);   // load lhs
+            loadConst(ac1, 1);              // load 1 to XOR with
+            emitRO("XOR", val, val, ac1, "Op NOT"); // val = !lhs
             break;
-            
         case QUESTION: // Random from 0 to n
-            generateExpression(lhs, reg);
-            emitRO("RND", reg, reg, 0, "Op ?");
+            generateExpression(lhs, tOff);
+            emitRO("RND", val, val, 0, "Op ?");
             break;
-            
         case MINUS: // Op unary -
-            generateExpression(lhs, reg);
-            emitRM("LDC", ac2, 0, 0, "Load 0"); // Use ac3 so we don't step on anyone's toes
-            emitRO("SUB", reg, ac2, reg, "Op unary -" ); // reg = 0 - lhs
+            generateExpression(lhs, tOff);
+            loadConst(ac1, 0);
+            emitRO("SUB", val, ac1, val, "Op unary -" ); // val = 0 - lhs
             break;
-            
         default:
             cout << "Hit default in generateExpression UnaryK:bval. treestr: " << treestr << endl;
             break;
         } // end bval switch
         break;
-
-    case IdK: // TODO: reevaluate this case's logic
-        //tmp = idResolve(tree);
-        if(lhs != NULL ) // lhs->isArray
-        {
-           generateExpression(lhs, reg); // calculate the index
-           loadArrayVar(tree, reg, reg);
-        }
-        else
-        {
-            loadVar(tree, reg);
-        }        
-        break;
-
-    case ConstK:
-        //emitComment("EXPRESSION");
-        // His comment names are really strange(i'm just matching them for diff purposes)
-        // 'integer', 'Boolean', 'char'
-        // Assuming the tokens are not NULL, since we've error checked and its all valid C- code...
+        
+    case ConstK: // 'integer', 'Boolean', 'char'
         if ( tree->nodetype == Integer )
-        {
-            emitRM("LDC", reg, tree->token->ivalue, 0, "Load integer constant");
-        }
+            emitRM("LDC", val, tree->token->ivalue, 0, "Load integer constant");
         else if ( tree->nodetype == Boolean )
-        {
-            emitRM("LDC",reg, tree->token->ivalue, 0, "Load Boolean constant");
-        }
+            emitRM("LDC", val, tree->token->ivalue, 0, "Load Boolean constant");
         else if( tree->nodetype == Character )
-        {
-            emitRM("LDC",reg, tree->token->cvalue, 0, "Load char constant");
-        }
+            emitRM("LDC", val, tree->token->cvalue, 0, "Load char constant");
         else
             cout << "Constant isn't Integer, Boolean, or Character." << endl;
+        break;        
+        
+    case IdK: // Load variable
+        if(lhs != NULL ) // lhs->isArray
+        {
+           generateExpression(lhs, tOff); // calculate the index
+           loadArrayVar(tree, val, val);
+        }
+        else
+        {
+            loadVar(tree, val);
+        }        
         break;
 
     case CallK:
         emitComment("EXPRESSION");
-        emitComment("\t\tBegin call to " + treestr);
+        emitComment("\t\t\tBegin call to " + treestr);
         tmp = lookup(treestr);
         if(tmp == NULL)
         {
@@ -585,39 +540,19 @@ void codegenTM::generateExpression( TreeNode * node, int reg )
         }
         
         emitRM("ST", fp, fOffset, fp, "Store current frame pointer");
-        loadParams(tree->child[0], -1 + fOffset); // Load parameters into memory
+        loadParams(tree->child[0], fOffset - 1); // Load parameters into memory
         
         emitComment("\t\tJump to " + treestr);
         emitRM("LDA", fp, fOffset, fp, "Load address of new frame");
         emitRM("LDA", val, 1, pc, "Save return address");
         emitRMAbs("LDA", pc, tmp->loc, "CALL " + treestr );
         emitRM("LDA", val, 0, ret, "Save function result");
-        emitComment("\t\tEnd call to " + treestr);
+        emitComment("\t\t\tEnd call to " + treestr);
         break;
 
     default:
         cout << "Hit default in generateExpression switch(kind)! treestr: " << treestr << endl;
         break;
-    }
-}
-
-void codegenTM::assign(TreeNode* node, int reg) // USES: ac3
-{
-    if ( node->kind == IdK && node->child[0] != NULL ) //lhs->isArray )
-    {
-        generateExpression(node->child[0], ac3); // calculate the index
-        //emitRM("ST", ac3, fOffset, fp, "Save index of array " + lstr);
-        //generateExpression(rhs, reg); // // Get rvalue to assign, put in val (*assumption*)
-        //emitRM("LD", ac1, fOffset, fp, "Retrieve index of array " + lstr); 
-        storeArrayVar(node, reg, ac3); // Assign rvalue to lvalue
-    } 
-    else if( node->kind == IdK )
-    {
-        storeVar(node, reg); // Assign rvalue to lvalue
-    }    
-    else
-    {
-        cout << "Fell off if-else chain in assign. svalue: " << svalResolve(node) << endl;
     }
 }
 
@@ -628,7 +563,7 @@ void codegenTM::loadParams( TreeNode * tree, int off )
     while(tree != NULL)
     {
         emitComment("\t\t\tLoad param " + to_string(siblingCount) );
-        generateExpression(tree, val);
+        generateExpression(tree, off - siblingCount);
         emitRM("ST", val, off - siblingCount, fp, "Store paramater " + to_string(siblingCount) );
         tree = tree->sibling;
         siblingCount++;
@@ -953,7 +888,7 @@ void codegenTM::loopSiblings( NodeKind nk, TreeNode * node )
             generateStatement(tree);
             break;
         case ExpK:
-            generateExpression(tree, val);
+            generateExpression(tree, fOffset);
             break;
         default:
             cout << "Hit default in loopSiblings switch(nk)!" << endl;
@@ -979,7 +914,7 @@ void codegenTM::treeTraversal( TreeNode * node )
                 generateStatement(tree);
                 break;
             case ExpK:
-                generateExpression(tree, val);
+                generateExpression(tree, fOffset);
                 break;
             default:
                 cout << "Hit default in treeTraversal switch(nodekind)!" << endl;

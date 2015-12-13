@@ -33,8 +33,8 @@ private:
     /* Generate by nodekind */
     void generateDeclaration( TreeNode * node );    // generic decleration 
     void generateStatement( TreeNode * node );      // generic statement
-    void generateExpression( TreeNode * node, int reg );     // generic expression
-
+    void generateExpression( TreeNode * node, int tOff );     // generic expression
+    // TODO: overload genExp?
     /* Emit functions */
     void storeVar( TreeNode * var, int reg ); // ST reg->var
     void storeArrayVar( TreeNode * arr, int reg, int index ); // USES: ac3
@@ -43,7 +43,7 @@ private:
     void loadArrayAddr( TreeNode * arr, int reg ); // LDA reg<-arr
     void loadParams( TreeNode * node, int off ); // loads params before function call
     void loadConst( int reg, int c );
-    void assign( TreeNode * node, int reg );
+    //void assign( TreeNode * node, int reg );
         
     /* Emit macros */
     void standardRet(); // zero out return first
@@ -85,7 +85,7 @@ private:
     /* Offsets */
     int gOffset;
     int fOffset;
-    int tOffset;
+    //int tOffset;
     
     /* Emit methods */
     // TODO: default blank string for args
