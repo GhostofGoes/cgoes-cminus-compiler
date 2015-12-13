@@ -438,8 +438,8 @@ void codegenTM::generateExpression( TreeNode * node, int tOff = 0 )
         case MODULUS: // a mod n: a -> ac1, n -> val
             // r = a - (n * trunc(a/n))    
             emitRO("DIV", ac2, ac1, val, "Op %" );  // res = trunc(a/n)
-            emitRO("MUL", ac2, val, ac2, "" );      // res = n * res
-            emitRO("SUB", val, ac1, ac2, "" );      // res = a - res
+            emitRO("MUL", ac2, val, ac2, "");      // res = n * res
+            emitRO("SUB", val, ac1, ac2, "");      // res = a - res
             break;
         case PLUS:
             emitRO("ADD", val, ac1, val, "Op +" );
@@ -530,7 +530,7 @@ void codegenTM::generateExpression( TreeNode * node, int tOff = 0 )
         break;
 
     case CallK:
-        emitComment("EXPRESSION");
+        //emitComment("EXPRESSION");
         emitComment("\t\t\tBegin call to " + treestr);
         tmp = lookup(treestr);
         if(tmp == NULL)
@@ -539,11 +539,11 @@ void codegenTM::generateExpression( TreeNode * node, int tOff = 0 )
             break;
         }
         
-        emitRM("ST", fp, fOffset, fp, "Store current frame pointer");
-        loadParams(tree->child[0], fOffset - 1); // Load parameters into memory
+        emitRM("ST", fp, tOff, fp, "Store current frame pointer");
+        loadParams(tree->child[0], tOff - 1); // Load parameters into memory
         
         emitComment("\t\tJump to " + treestr);
-        emitRM("LDA", fp, fOffset, fp, "Load address of new frame");
+        emitRM("LDA", fp, tOff, fp, "Load address of new frame");
         emitRM("LDA", val, 1, pc, "Save return address");
         emitRMAbs("LDA", pc, tmp->loc, "CALL " + treestr );
         emitRM("LDA", val, 0, ret, "Save function result");
@@ -888,6 +888,7 @@ void codegenTM::loopSiblings( NodeKind nk, TreeNode * node )
             generateStatement(tree);
             break;
         case ExpK:
+            emitComment("EXPRESSION");
             generateExpression(tree, fOffset);
             break;
         default:
@@ -914,6 +915,7 @@ void codegenTM::treeTraversal( TreeNode * node )
                 generateStatement(tree);
                 break;
             case ExpK:
+                emitComment("EXPRESSION");
                 generateExpression(tree, fOffset);
                 break;
             default:
