@@ -287,7 +287,7 @@ void codegenTM::generateStatement( TreeNode * node )
         loopBreak.push(emitSkip(1)); // TODO
         
         emitComment("DO");
-        generateStatement(rhs);
+        treeTraversal(rhs);
         
         emitRMAbs("LDA", pc, loopBreak.top() - 2, "go to beginning of loop");
         
