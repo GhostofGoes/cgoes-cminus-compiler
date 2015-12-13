@@ -24,8 +24,9 @@
 
 using namespace std;
 
-
+/*** PUBLIC ***/
 /* Constructors/Destructors */
+
 codegenTM::codegenTM ( TreeNode * t, int g, string of, string inf) 
 { 
     //symtable = s;
@@ -48,7 +49,6 @@ codegenTM::codegenTM ( TreeNode * t, int g, string of, string inf)
     emitLoc = 0;
     highEmitLoc = 0;
     mainLoc = 0;
-    //tempLoc = 0;
 }
 
 codegenTM::~codegenTM ( ) 
@@ -66,9 +66,7 @@ codegenTM::~codegenTM ( )
     delete symtable;
 }
 
-
-/* Primary public functions */
-
+// The ONLY function we directly call externally! (other than cons/des)
 void codegenTM::generateCode()
 {
     int start = 0;
@@ -99,6 +97,7 @@ void codegenTM::generateCode()
     initSetup(); // Do our init jam
 }
 
+/*** PRIVATE ***/
 
 /* Initialization */
 
@@ -171,72 +170,67 @@ void codegenTM::generateDeclaration(TreeNode* node)
     string treestr = svalResolve(tree);
     TreeNode * lhs = tree->child[0];
     TreeNode * rhs = tree->child[1];
-    
-    switch(tree->kind) {
-        case VarK:
-            if( (tree->offsetReg == local && tree->isStatic) || tree->offsetReg == global)
+
+    switch (tree->kind) {
+    case VarK:
+        if ( (tree->offsetReg == local && tree->isStatic) || tree->offsetReg == global )
+        {
+            globalInitVec.push_back(tree);
+        } else
+        {
+            if ( tree->isArray ) // Array size loading
             {
-                globalInitVec.push_back(tree);
-            }
-            else
-            {
-                if(tree->isArray) // Array size loading
+                if ( tree->offsetReg == local && !tree->isStatic )
                 {
-                    if(tree->offsetReg == local && !tree->isStatic)
-                    {
-                        emitRM("LDC", val, tree->arraySize, ac3, "Load size of local array " + treestr);
-                        emitRM("ST", val, tree->location + 1, fp, "Store size of local array " + treestr);
-                    }
-                    else
-                    {
-                        cout << "Fell off array if-else chain in generateDelcaration:VarK. svalue: " << svalResolve(tree) << endl;
-                    }
+                    emitRM("LDC", val, tree->arraySize, ac3, "Load size of local array " + treestr);
+                    emitRM("ST", val, tree->location + 1, fp, "Store size of local array " + treestr);
+                } else
+                {
+                    cout << "Fell off array if-else chain in generateDelcaration:VarK. svalue: " << svalResolve(tree) << endl;
                 }
-                else
+            } else
+            {
+                if ( (tree->offsetReg == local && !tree->isStatic) && lhs != NULL )
                 {
-                    if( (tree->offsetReg == local && !tree->isStatic) && lhs != NULL)
-                    {
-                        generateExpression(lhs, fOffset - 1);
-                        storeVar(tree,val);
-                    }
+                    generateExpression(lhs, fOffset - 1);
+                    storeVar(tree, val);
                 }
             }
-            symtable->insert(treestr, tree);
-            break;
-            
-        case FunK: // Function declaration
-            emitComment("FUNCTION " + treestr);
-            if(treestr == "main")
-                mainLoc = emitSkip(0); // TODO: needed?
-            tree->loc = emitSkip(0);
-            symtable->insert(treestr, tree);
-            
-            
-            if(tree->isIO != Nopeput)
-            {
-                emitRM("ST", val, -1, fp, "Store return address"); // no period! wwwaaaah!
-                IOroutines(tree->isIO);
-                funRet();
-            }
-            else
-            {
-                emitRM("ST", val, -1, fp, "Store return address."); // there's a period in the comment...
-                symtable->enter("Function " + treestr);
-                treeTraversal(lhs, fOffset); // parameters, if any
-                treeTraversal(rhs, fOffset); // *magical* compound
-                standardRet(); // redundant return in case one is never specified
-                symtable->leave();
-            }
-            emitComment("END FUNCTION " + treestr);
-            break;
-            
+        }
+        symtable->insert(treestr, tree);
+        break;
+
+    case FunK: // Function declaration
+        emitComment("FUNCTION " + treestr);
+        if ( treestr == "main" )
+            mainLoc = emitSkip(0);
+        tree->loc = emitSkip(0);
+        symtable->insert(treestr, tree);
+
+        if ( tree->isIO != Nopeput )
+        {
+            emitRM("ST", val, -1, fp, "Store return address"); // no period! wwwaaaah!
+            IOroutines(tree->isIO);
+            funRet();
+        } else
+        {
+            emitRM("ST", val, -1, fp, "Store return address."); // there's a period in the comment...
+            symtable->enter("Function " + treestr);
+            treeTraversal(lhs, fOffset); // parameters, if any
+            treeTraversal(rhs, fOffset); // *magical* compound
+            standardRet(); // redundant return in case one is never specified
+            symtable->leave();
+        }
+        emitComment("END FUNCTION " + treestr);
+        break;
+
     case ParamK:
         symtable->insert(treestr, tree);
         break;
-               
-        default:
-            cout << "Hit default in generateDeclaration switch(kind)! treestr: " << treestr << endl;
-            break;
+
+    default:
+        cout << "Hit default in generateDeclaration switch(kind)! treestr: " << treestr << endl;
+        break;
     }
 }
 
@@ -254,11 +248,9 @@ void codegenTM::generateStatement( TreeNode * node )
     TreeNode * rhs = tree->child[1];
     //string rstr = svalResolve(rhs);
     string treestr = svalResolve(tree);
-    
     int tPos = 0;
-    
+
     switch (tree->kind) {
-        
     case CompoundK:
         emitComment("COMPOUND");
         if ( tree->isFuncCompound == false )
@@ -276,8 +268,8 @@ void codegenTM::generateStatement( TreeNode * node )
 
     case ReturnK:
         emitComment("RETURN");
-        if ( tree->child[0] != NULL )
-        { // Check for return value
+        if ( tree->child[0] != NULL ) // Check for return value
+        { 
             generateExpression(tree->child[0], fOffset);
             emitRM("LDA", ret, 0, val, "Save result into ret");
         }
@@ -289,53 +281,50 @@ void codegenTM::generateStatement( TreeNode * node )
         generateExpression(lhs, fOffset);
         emitRM("JNZ", val, 1, pc, "Jump to while part"); // if exp != 0, continue
         loopBreak.push(emitSkip(1)); // TODO
-        
+
         emitComment("DO");
         treeTraversal(rhs, fOffset);
-        
+
         emitRMAbs("LDA", pc, loopBreak.top() - 2, "go to beginning of loop");
-        
+
         emitBackup(loopBreak.top()); // rewind
-        emitRMAbs("LDA", pc, highEmitLoc, "Jump past loop [backpatch]");// backpatch jump
+        emitRMAbs("LDA", pc, highEmitLoc, "Jump past loop [backpatch]"); // backpatch jump
         emitComment("ENDWHILE");
         emitRestore(); // and we're back to post-loop place!
-        
+
         loopBreak.pop();
         break;
 
     case IfK:
-        // can probably optimize for "if false/true"
         emitComment("IF");
-        if(tree->numChildren == 2)
+        if ( tree->numChildren == 2 ) // can probably optimize for "if false/true"
         {
             generateExpression(lhs, fOffset);
             tPos = emitSkip(1);
-            
+
             emitComment("THEN");
             treeTraversal(rhs, fOffset);
             emitBackup(tPos);
             emitRMAbs("JZR", val, highEmitLoc, "Jump around the THEN if false [backpatch]");
             emitRestore();
-        }
-        else if(tree->numChildren == 3)
-        {
+        } else if ( tree->numChildren == 3 )
+        { // we can probably put everything before "ELSE" at start of the IfK case
             generateExpression(lhs, fOffset);
             tPos = emitSkip(1);
-            
+
             emitComment("THEN");
             treeTraversal(rhs, fOffset);
             emitBackup(tPos);
             emitRMAbs("JZR", val, highEmitLoc + 1, "Jump around the THEN if false [backpatch]");
             emitRestore(); // note the +1 for jumping around the else backpatch
-            
+
             emitComment("ELSE");
             tPos = emitSkip(1);
             treeTraversal(tree->child[2], fOffset);
             emitBackup(tPos);
             emitRMAbs("LDA", pc, highEmitLoc, "Jump around the ELSE [backpatch]");
             emitRestore();
-        }
-        else
+        } else
         {
             cout << "Fell off if-else in IfK. treestr: " << treestr << endl;
         }
@@ -344,7 +333,7 @@ void codegenTM::generateStatement( TreeNode * node )
 
     case ForeachK: // NOTE: We're not doing foreach this time
         break;
-        
+
     case BreakK: // TODO: break implementation
         emitComment("BREAK");
         // TODO: store end of while(loop) register to use for break
@@ -355,7 +344,7 @@ void codegenTM::generateStatement( TreeNode * node )
     default:
         cout << "Hit default in generateStatement switch(kind)! treestr: " << treestr << endl;
         break;
-    }
+    } // end kind switch
 }
 
 // Call using tOff - 1, so you can preserve the caller's saved vars
@@ -451,7 +440,7 @@ void codegenTM::generateExpression( TreeNode * node, int tOff = 0 )
         case MULTIPLY:
             emitRO("MUL", val, ac1, val, "Op *" );
             break;
-        case DIVIDE: // TODO: integer division
+        case DIVIDE:
             emitRO("DIV", val, ac1, val, "Op /" );
             break;
         case MODULUS: // a mod n: a -> ac1, n -> val
@@ -881,7 +870,7 @@ void codegenTM::tableRecurse(TreeNode * node)
             copyAnnotations(tmp, node); // tmp -> node            
             break;
             
-        default: // TODO: is this where this should be?
+        default:
             for (int i = 0; i < 3; i++)
                 tableRecurse(node->child[i]);
             break;

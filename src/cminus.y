@@ -767,7 +767,6 @@ mulop:
     DIVIDE 
     { 
         $$ = makeNode( ExpK, OpK, Integer, $1->lineno, $1 );
-        // TODO: @##@% associtivity issues! (tinyOps.c-, line 106)
     }
     | MULTIPLY 
     { 

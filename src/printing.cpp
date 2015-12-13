@@ -94,7 +94,6 @@ std::string svalResolve( TreeNode * tree ) {
     return temp;
 }
 
-// TODO: makes assumption about indentation with "|   "
 std::string applyIndents( std::string s, int indent ) {
     std::string temp;
     for (int i = 0; i < indent; i++) {

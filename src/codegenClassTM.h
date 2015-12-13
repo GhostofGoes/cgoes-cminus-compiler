@@ -77,8 +77,7 @@ private:
     /* Emit locations */
     int emitLoc; // Location for current instruction emission  
     int highEmitLoc; // Highest location emitted thus far. Used with: emitSkip, emitBackup, emitRestore
-    int mainLoc; // TODO: needed?
-    //int tempLoc;
+    int mainLoc;
     std::stack<int> loopBreak;
     
     /* Offsets */
@@ -87,7 +86,6 @@ private:
     //int tOffset;
     
     /* Emit methods */
-    // TODO: default blank string for args
     void emitComment( std::string s );
     void emitIdentComment( std::string s );
     void emitRO( const char *op, int r, int s, int t, std::string c);

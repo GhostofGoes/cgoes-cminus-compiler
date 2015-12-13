@@ -370,7 +370,6 @@ void typeResolution ( TreeNode * par, TreeNode * node, SymbolTable * symtable )
         {
             symtable->leave();
         } 
-        // TODO: need to verify i'm not overwriting proper types i got from bison
         else if ( tree->kind == OpK )
         {
             switch (tree->token->bval)
@@ -1114,8 +1113,7 @@ void generateCode( std::string output_file, std::string infile )
 // Creates the tree of IO functions
 TreeNode * buildIOLibrary ( )
 {
-    // TODO: put in one declaration lol
-    TreeNode * in;
+    TreeNode * in; // these could use some cleanup into one declaration
     TreeNode * out;
     TreeNode * inputb;
     TreeNode * outputb;
@@ -1222,26 +1220,20 @@ void checkArgTypes( TreeNode * call, TreeNode * func)
     
 }
 
-
-// TODO: update symboltable values?
 // TODO: rewrite into a class similiar to codegen
 // TODO: SERIOUSLY, CLASS==BETTER
 int memorySizing( TreeNode * node, SymbolTable * symtable, int parOff )
 {
-    TreeNode * tree;
-    tree = node;
-    
-    //TreeNode * tmp = NULL;
+    TreeNode * tree = node;
     int tOff = 0;
     int childVal = 0;
     int line = -99;
-    
     std::string tree_svalue;
 
     while (tree != NULL)
     {
-        line = tree->lineno; // Node's line number
-        tree_svalue = svalResolve(tree);
+        line = tree->lineno;                // Node's line number
+        tree_svalue = svalResolve(tree);    // Node's string
 
         switch (tree->nodekind) {
         case DeclK:
@@ -1250,7 +1242,7 @@ int memorySizing( TreeNode * node, SymbolTable * symtable, int parOff )
                 if ( tree->isArray )
                     tree->size = tree->arraySize + 1; // +1 for pointer
                 else
-                    tree->size = 1;
+                    tree->size = 1; // We use the same size regardless of type
 
                 if ( symtable->depth() > 1 && !tree->isStatic )
                 {
@@ -1271,7 +1263,7 @@ int memorySizing( TreeNode * node, SymbolTable * symtable, int parOff )
                 break;
 
             case ParamK:
-                tree->size = 1; // since its just a param pointer
+                tree->size = 1; // It's just a pointer to location of passed variable
                 tree->location = parOff + tOff;
                 tOff -= tree->size;
                 tree->offsetReg = local;
@@ -1282,13 +1274,13 @@ int memorySizing( TreeNode * node, SymbolTable * symtable, int parOff )
                 tOff = 0;
                 tree->offsetReg = global;
                 param_count = 0;
-                tree->location = 0; // TODO: check this assumption
+                tree->location = 0;
                 tree->size = 2;
                 tOff -= tree->size;
                 symtable->enter("Function " + tree_svalue);
                 
-                tOff += memorySizing(tree->child[0], symtable, tOff); // Params
-                memorySizing(tree->child[1], symtable, tOff); // Compound
+                tOff += memorySizing(tree->child[0], symtable, tOff);   // Params
+                memorySizing(tree->child[1], symtable, tOff);           // Compound
 
                 tree->size += param_count;
                 symtable->leave();
@@ -1312,7 +1304,7 @@ int memorySizing( TreeNode * node, SymbolTable * symtable, int parOff )
                     childVal = memorySizing(tree->child[0], symtable, tOff + parOff);
                     memorySizing(tree->child[1], symtable, childVal + tOff + parOff);
                 }
-                tree->size = parOff + childVal; // tOff?
+                tree->size = parOff + childVal;
                 break;
             }
             break;
