@@ -553,11 +553,11 @@ void codegenTM::generateExpression( TreeNode * node, int tOff = 0 )
         
         // TODO: nested compound statement pointers
         // problem seems to be with nested calls and frame pointers. what is getting incremented and why
-        emitRM("ST", fp, fOffset, fp, "Store current frame pointer");
+        emitRM("ST", fp, tOff, fp, "Store current frame pointer");
         loadParams(tree->child[0], tOff - 1); // Load parameters into memory
         
         emitIdentComment("Jump to " + treestr);
-        emitRM("LDA", fp, fOffset, fp, "Load address of new frame");
+        emitRM("LDA", fp, tOff, fp, "Load address of new frame");
         emitRM("LDA", val, 1, pc, "Save return address");
         emitRMAbs("LDA", pc, tmp->loc, "CALL " + treestr );
         emitRM("LDA", val, 0, ret, "Save function result");
