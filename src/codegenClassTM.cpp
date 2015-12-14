@@ -342,7 +342,8 @@ void codegenTM::generateStatement( TreeNode * node )
 
     case BreakK:
         emitComment("BREAK");
-        emitRM("LDA", pc, loopBreak.top(), pc, "break");
+        //emitRM("LDA", pc, loopBreak.top(), pc, "break");
+        emitRMAbs("LDA", pc, loopBreak.top(), "break");
         break; // heh
 
     default:
