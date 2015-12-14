@@ -1024,7 +1024,7 @@ void treeParse ( TreeNode * par, TreeNode * node, SymbolTable * symtable )
                             tree->isArray = false; // can we have arr[] be a thing?
                             if ( tmp->isArray ) // TODO: possible subtle error, if add "child[0] == null" check we have...issues. do everything05.c-
                             {
-                                if ( child0_sval == tree_svalue )
+                                if ( child0_sval == tree_svalue && tree->child[0]->child[0] == NULL)
                                 {
                                     printf("ERROR(%d): Array index is the unindexed array '%s'.\n", line, tree_svalue.c_str());
                                     errors++;
