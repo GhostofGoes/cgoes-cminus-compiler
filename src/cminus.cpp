@@ -1287,7 +1287,11 @@ int memorySizing( TreeNode * node, SymbolTable * symtable, int parOff )
                 symtable->leave();
                 tOff = 0;
                 break;
-            }
+            default:
+                for (int i = 0; i < tree->numChildren; i++)
+                    memorySizing(tree->child[i], symtable, parOff);
+                break;
+            } // end DeclK switch
             break;
 
         case StmtK:
@@ -1307,7 +1311,17 @@ int memorySizing( TreeNode * node, SymbolTable * symtable, int parOff )
                 }
                 tree->size = parOff + childVal;
                 break;
-            }
+                
+            default:
+                for(int i = 0; i < tree->numChildren; i++)
+                    memorySizing(tree->child[i], symtable, parOff);
+                break;
+            } // end StmtK switch
+            break;
+
+        case ExpK:
+            for (int i = 0; i < tree->numChildren; i++)
+                memorySizing(tree->child[i], symtable, parOff);
             break;
         } // end nodekind switch
         tree = tree->sibling; // Jump to the next sibling

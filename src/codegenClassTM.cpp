@@ -256,6 +256,7 @@ void codegenTM::generateStatement( TreeNode * node )
         if ( tree->isFuncCompound == false )
         {
             symtable->enter("Compound" + tree->lineno);
+            fOffset += tree->size;
         }
         else
         {
@@ -268,8 +269,11 @@ void codegenTM::generateStatement( TreeNode * node )
         treeTraversal(rhs, fOffset); // Expressions/Statements
 
         if ( tree->isFuncCompound == false )
+        {
+            fOffset -= tree->size;
             symtable->leave();
-        emitComment("END COMPOUND");
+        }
+            emitComment("END COMPOUND");
         break;
 
     case ReturnK:
