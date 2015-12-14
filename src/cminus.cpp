@@ -1267,6 +1267,7 @@ int memorySizing( TreeNode * node, SymbolTable * symtable, int parOff )
                 tree->location = parOff + tOff;
                 tOff -= tree->size;
                 tree->offsetReg = local;
+                tree->isParam = true;
                 param_count++;
                 break;
 
