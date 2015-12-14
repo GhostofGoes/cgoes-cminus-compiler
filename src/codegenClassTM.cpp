@@ -216,8 +216,9 @@ void codegenTM::generateDeclaration(TreeNode* node)
         {
             emitRM("ST", val, -1, fp, "Store return address."); // there's a period in the comment...
             symtable->enter("Function " + treestr);
+            fOffset = -1 * tree->size;
             treeTraversal(lhs, fOffset); // parameters, if any
-            treeTraversal(rhs, fOffset); // *magical* compound
+            treeTraversal(rhs, fOffset); // *magical* compound (NOT ALWAYS THOUGH! gdcsm.c- !!))
             standardRet(); // redundant return in case one is never specified
             symtable->leave();
         }
@@ -256,24 +257,17 @@ void codegenTM::generateStatement( TreeNode * node )
         if ( tree->isFuncCompound == false )
         {
             symtable->enter("Compound" + tree->lineno);
-            fOffset += tree->size;
-        }
-        else
-        {
-            fOffset = tree->size; // epic hack alert! (comb.tm)
         }
 
-        //fOffset = tree->size;
+        fOffset = tree->size;
 
         treeTraversal(lhs, fOffset); // declarations, if any
         treeTraversal(rhs, fOffset); // Expressions/Statements
 
         if ( tree->isFuncCompound == false )
-        {
-            fOffset -= tree->size;
             symtable->leave();
-        }
-            emitComment("END COMPOUND");
+        
+        emitComment("END COMPOUND");
         break;
 
     case ReturnK:
@@ -346,10 +340,8 @@ void codegenTM::generateStatement( TreeNode * node )
     case ForeachK: // NOTE: We're not doing foreach this time
         break;
 
-    case BreakK: // TODO: break implementation
+    case BreakK:
         emitComment("BREAK");
-        // TODO: store end of while(loop) register to use for break
-        // would tempLoc work for nested loops?
         emitRM("LDA", pc, loopBreak.top(), pc, "break");
         break; // heh
 
@@ -375,7 +367,29 @@ void codegenTM::generateExpression( TreeNode * node, int tOff = 0 )
     std::string rstr = svalResolve(rhs);
     string treestr = svalResolve(tree);
     
-    switch (tree->kind) { 
+    switch (tree->kind) {
+
+    case CallK:
+        emitComment("EXPRESSION");
+        emitIdentComment("Begin call to  " + treestr);
+        tmp = lookup(treestr);
+        if ( tmp == NULL )
+        {
+            cout << "Couldn't find function in table" << endl;
+            break;
+        }
+
+        emitRM("ST", fp, tOff, fp, "Store old fp in ghost frame"); // Store current frame pointer
+        loadParams(tree->child[0], tOff - 1); // Load parameters into memory
+
+        emitIdentComment("Jump to " + treestr);
+        emitRM("LDA", fp, tOff, fp, "Load address of new frame");
+        emitRM("LDA", val, 1, pc, "Save return address");
+        emitRMAbs("LDA", pc, tmp->loc, "CALL " + treestr);
+        emitRM("LDA", val, 0, ret, "Save function result");
+        emitIdentComment("End call to " + treestr);
+        break;
+        
     case AssignK: 
         emitComment("EXPRESSION");
         
@@ -553,45 +567,22 @@ void codegenTM::generateExpression( TreeNode * node, int tOff = 0 )
         }        
         break;
 
-    case CallK:
-        emitComment("EXPRESSION");
-        emitIdentComment("Begin call to  " + treestr);
-        tmp = lookup(treestr);
-        if(tmp == NULL)
-        {
-            cout << "Couldn't find function in table" << endl;
-            break;
-        }
-        
-        // TODO: nested compound statement pointers
-        // problem seems to be with nested calls and frame pointers. what is getting incremented and why
-        emitRM("ST", fp, tOff, fp, "Store old fp in ghost frame"); // Store current frame pointer
-        loadParams(tree->child[0], tOff - 1); // Load parameters into memory
-        
-        emitIdentComment("Jump to " + treestr);
-        emitRM("LDA", fp, tOff, fp, "Load address of new frame");
-        emitRM("LDA", val, 1, pc, "Save return address");
-        emitRMAbs("LDA", pc, tmp->loc, "CALL " + treestr );
-        emitRM("LDA", val, 0, ret, "Save function result");
-        emitIdentComment("End call to " + treestr);
-        break;
-
     default:
         cout << "Hit default in generateExpression switch(kind)! treestr: " << treestr << endl;
         break;
     }
 }
 
-void codegenTM::loadParams( TreeNode * tree, int off )
+void codegenTM::loadParams(TreeNode* tree, int off)
 {
     int siblingCount = 1;
-    
-    while(tree != NULL)
+
+    while (tree != NULL)
     {
-        emitIdentComment("Load param " + to_string(siblingCount) );
+        emitIdentComment("Load param " + to_string(siblingCount));
         generateExpression(tree, off - siblingCount);
-        
-        emitRM("ST", val, off - siblingCount, fp, "Store paramater " + to_string(siblingCount) );
+
+        emitRM("ST", val, off - siblingCount, fp, "Store paramater " + to_string(siblingCount));
         tree = tree->sibling;
         siblingCount++;
     }
