@@ -79,6 +79,7 @@ private:
     int highEmitLoc; // Highest location emitted thus far
     int mainLoc;
     std::stack<int> loopBreak;
+    std::stack<int> loopStart;
     
     /* Offsets */
     int gOffset;

@@ -254,9 +254,15 @@ void codegenTM::generateStatement( TreeNode * node )
     case CompoundK:
         emitComment("COMPOUND");
         if ( tree->isFuncCompound == false )
+        {
             symtable->enter("Compound" + tree->lineno);
+        }
+        else
+        {
+            fOffset = tree->size; // epic hack alert! (comb.tm)
+        }
 
-        fOffset = tree->size;
+        //fOffset = tree->size;
 
         treeTraversal(lhs, fOffset); // declarations, if any
         treeTraversal(rhs, fOffset); // Expressions/Statements
@@ -278,6 +284,7 @@ void codegenTM::generateStatement( TreeNode * node )
 
     case WhileK:
         emitComment("WHILE");
+        loopStart.push(emitSkip(0));
         generateExpression(lhs, fOffset);
         emitRM("JNZ", val, 1, pc, "Jump to while part"); // if exp != 0, continue
         loopBreak.push(emitSkip(1)); 
@@ -285,13 +292,14 @@ void codegenTM::generateStatement( TreeNode * node )
         emitComment("DO");
         treeTraversal(rhs, fOffset);
 
-        emitRMAbs("LDA", pc, loopBreak.top(), "go to beginning of loop");
+        emitRMAbs("LDA", pc, loopStart.top(), "go to beginning of loop");
 
         emitBackup(loopBreak.top()); // rewind
         emitRMAbs("LDA", pc, highEmitLoc, "Jump past loop [backpatch]"); // backpatch jump
         emitRestore(); // and we're back to post-loop place!
         
         loopBreak.pop();
+        loopStart.pop();
         emitComment("ENDWHILE");
         break;
 
@@ -543,7 +551,7 @@ void codegenTM::generateExpression( TreeNode * node, int tOff = 0 )
 
     case CallK:
         emitComment("EXPRESSION");
-        emitIdentComment("Begin call to " + treestr);
+        emitIdentComment("Begin call to  " + treestr);
         tmp = lookup(treestr);
         if(tmp == NULL)
         {
@@ -553,7 +561,7 @@ void codegenTM::generateExpression( TreeNode * node, int tOff = 0 )
         
         // TODO: nested compound statement pointers
         // problem seems to be with nested calls and frame pointers. what is getting incremented and why
-        emitRM("ST", fp, tOff, fp, "Store current frame pointer");
+        emitRM("ST", fp, tOff, fp, "Store old fp in ghost frame"); // Store current frame pointer
         loadParams(tree->child[0], tOff - 1); // Load parameters into memory
         
         emitIdentComment("Jump to " + treestr);
