@@ -411,10 +411,12 @@ void codegenTM::generateExpression( TreeNode * node, int tOff = 0 )
             generateExpression(lhs, tOff); // lhs -> val
             break;
         default:
-            generateExpression(lhs, tOff); // gen lhs
-            emitRM("ST", val, tOff, fp, "Save left side"); // save lhs
-            generateExpression(rhs, tOff - 1); // gen rhs
-            emitRM("LD", ac1, tOff, fp, "Load left into ac1"); // load lhs
+            generateExpression(rhs, tOff); // gen rhs
+            emitRM("ST", val, tOff, fp, "Save right side result");
+            generateExpression(lhs, tOff - 1); // gen lhs
+            //emitRM("ST", val, tOff, fp, "Save left side"); // save lhs
+            //generateExpression(rhs, tOff - 1); // gen rhs
+            emitRM("LD", ac1, tOff, fp, "Load right into ac1"); // load lhs
             break;
         } // end bval switch
         
@@ -430,16 +432,16 @@ void codegenTM::generateExpression( TreeNode * node, int tOff = 0 )
             emitRM("LDA", val, -1, val, "decrement value of " + lstr);
             break;
         case DIVASS:
-            emitRO("DIV", val, ac1, val, "Op /=" );
+            emitRO("DIV", val, val, ac1, "Op /=" );
             break;
         case MULASS:
-            emitRO("MUL", val, ac1, val, "Op *=" );
+            emitRO("MUL", val, val, ac1, "Op *=" );
             break;
         case SUBASS:
-            emitRO("SUB", val, ac1, val, "Op -=" );
+            emitRO("SUB", val, val, ac1, "Op -=" );
             break;
         case ADDASS:
-            emitRO("ADD", val, ac1, val, "Op +=" );
+            emitRO("ADD", val, val, ac1, "Op +=" );
             break;
         default:
             cout << "Hit default in generateExpression AssignK:bval. treestr: " << treestr << endl;
