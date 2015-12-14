@@ -132,12 +132,12 @@ void codegenTM::initGlobalVars()
             if ( tree->offsetReg == local && tree->isStatic )
             {
                 emitRM("LDC", val, tree->arraySize, ac3, "Load size of LocalStatic array " + svalResolve(tree));
-                emitRM("ST", val, tree->location + 1, gp, "Store size of LocalStatic array " + svalResolve(tree));                    
+                emitRM("ST", val, tree->location + 1, gp, "Save size of LocalStatic array " + svalResolve(tree));                    
             } 
             else if ( tree->offsetReg == global )
             {
                 emitRM("LDC", val, tree->arraySize, ac3, "Load size of global array " + svalResolve(tree));
-                emitRM("ST", val, tree->location + 1, gp, "Store size of global array " + svalResolve(tree));
+                emitRM("ST", val, tree->location + 1, gp, "Save size of global array " + svalResolve(tree));
             }
             else
             {
@@ -183,7 +183,7 @@ void codegenTM::generateDeclaration(TreeNode* node)
                 if ( tree->offsetReg == local && !tree->isStatic )
                 {
                     emitRM("LDC", val, tree->arraySize, ac3, "Load size of local array " + treestr);
-                    emitRM("ST", val, tree->location + 1, fp, "Store size of local array " + treestr);
+                    emitRM("ST", val, tree->location + 1, fp, "Save size of local array " + treestr);
                 } else
                 {
                     cout << "Fell off array if-else chain in generateDelcaration:VarK. svalue: " << svalResolve(tree) << endl;
@@ -276,23 +276,23 @@ void codegenTM::generateStatement( TreeNode * node )
         funRet(); // Return!
         break;
 
-    case WhileK: // TODO: while implementation
+    case WhileK:
         emitComment("WHILE");
         generateExpression(lhs, fOffset);
         emitRM("JNZ", val, 1, pc, "Jump to while part"); // if exp != 0, continue
-        loopBreak.push(emitSkip(1)); // TODO
+        loopBreak.push(emitSkip(1)); 
 
         emitComment("DO");
         treeTraversal(rhs, fOffset);
 
-        emitRMAbs("LDA", pc, loopBreak.top() - 2, "go to beginning of loop");
+        emitRMAbs("LDA", pc, loopBreak.top(), "go to beginning of loop");
 
         emitBackup(loopBreak.top()); // rewind
         emitRMAbs("LDA", pc, highEmitLoc, "Jump past loop [backpatch]"); // backpatch jump
-        emitComment("ENDWHILE");
         emitRestore(); // and we're back to post-loop place!
-
+        
         loopBreak.pop();
+        emitComment("ENDWHILE");
         break;
 
     case IfK:
@@ -531,6 +531,10 @@ void codegenTM::generateExpression( TreeNode * node, int tOff = 0 )
            generateExpression(lhs, tOff); // calculate the index
            loadArrayVar(tree, val, val);
         }
+        else if( tree->isArray )
+        {
+            loadArrayAddr(tree, val);
+        }
         else
         {
             loadVar(tree, val);
@@ -538,7 +542,7 @@ void codegenTM::generateExpression( TreeNode * node, int tOff = 0 )
         break;
 
     case CallK:
-        //emitComment("EXPRESSION");
+        emitComment("EXPRESSION");
         emitIdentComment("Begin call to " + treestr);
         tmp = lookup(treestr);
         if(tmp == NULL)
@@ -547,11 +551,13 @@ void codegenTM::generateExpression( TreeNode * node, int tOff = 0 )
             break;
         }
         
-        emitRM("ST", fp, tOff, fp, "Store current frame pointer");
+        // TODO: nested compound statement pointers
+        // problem seems to be with nested calls and frame pointers. what is getting incremented and why
+        emitRM("ST", fp, fOffset, fp, "Store current frame pointer");
         loadParams(tree->child[0], tOff - 1); // Load parameters into memory
         
         emitIdentComment("Jump to " + treestr);
-        emitRM("LDA", fp, tOff, fp, "Load address of new frame");
+        emitRM("LDA", fp, fOffset, fp, "Load address of new frame");
         emitRM("LDA", val, 1, pc, "Save return address");
         emitRMAbs("LDA", pc, tmp->loc, "CALL " + treestr );
         emitRM("LDA", val, 0, ret, "Save function result");
@@ -572,6 +578,7 @@ void codegenTM::loadParams( TreeNode * tree, int off )
     {
         emitIdentComment("Load param " + to_string(siblingCount) );
         generateExpression(tree, off - siblingCount);
+        
         emitRM("ST", val, off - siblingCount, fp, "Store paramater " + to_string(siblingCount) );
         tree = tree->sibling;
         siblingCount++;
@@ -586,7 +593,12 @@ void codegenTM::storeVar(TreeNode* var, int reg) // ST reg->var
         cout << "tmp is null in storeVar" << endl;
         return;
     }
-    if ( tmp->offsetReg == local && !tmp->isStatic )
+    
+    if (tmp->offsetReg == local && tmp->isParam )
+    {
+        emitRM("ST", reg, tmp->location, fp, "Store param variable " + svalResolve(tmp));
+    }
+    else if ( tmp->offsetReg == local && !tmp->isStatic )
     {
         emitRM("ST", reg, tmp->location, fp, "Store local variable " + svalResolve(tmp));
     }
@@ -614,7 +626,11 @@ void codegenTM::storeArrayVar(TreeNode* arr, int reg, int index)
     loadArrayAddr(tmp, ac3);
     emitRO("SUB", ac3, ac3, index, "Calculate offset using index");
     
-    if ( tmp->offsetReg == local && !tmp->isStatic )
+    if ( tmp->offsetReg == local && tmp->isParam )
+    {
+        emitRM("ST", reg, 0, ac3, "Store into param array " + svalResolve(tmp));
+    }
+    else if ( tmp->offsetReg == local && !tmp->isStatic )
     {
         emitRM("ST", reg, 0, ac3, "Store into local array " + svalResolve(tmp));
     } 
@@ -641,7 +657,11 @@ void codegenTM::loadVar(TreeNode* var, int reg )
     if(tmp == NULL)
         return;
     
-    if ( tmp->offsetReg == local && !tmp->isStatic )
+    if( tmp->offsetReg == local && tmp->isParam )
+    {
+        emitRM("LD", reg, tmp->location, fp, "Load param variable " + svalResolve(tmp));
+    }
+    else if ( tmp->offsetReg == local && !tmp->isStatic )
     {
         emitRM("LD", reg, tmp->location, fp, "Load local variable " + svalResolve(tmp));
     }
@@ -669,7 +689,11 @@ void codegenTM::loadArrayVar(TreeNode* arr, int reg, int index)
     loadArrayAddr(tmp, ac3);
     emitRO("SUB", ac3, ac3, index, "Calculate offset using index"); // assumes index is positive
     
-    if ( tmp->offsetReg == local && !tmp->isStatic )
+    if ( tmp->offsetReg == local && tmp->isParam )
+    {
+        emitRM("LD", reg, 0, ac3, "Load variable param array " + svalResolve(tmp));
+    }
+    else if ( tmp->offsetReg == local && !tmp->isStatic )
     {
         emitRM("LD", reg, 0, ac3, "Load variable local array " + svalResolve(tmp));
     }
@@ -694,7 +718,11 @@ void codegenTM::loadArrayAddr( TreeNode* arr, int reg )
     if(tmp == NULL)
         return;
 
-    if ( tmp->offsetReg == local && !tmp->isStatic )
+    if ( tmp->offsetReg == local && tmp->isParam )
+    {
+        emitRM("LD", reg, tmp->location, fp, "Load address of param array " + svalResolve(tmp));
+    }
+    else if ( tmp->offsetReg == local && !tmp->isStatic )
     {
         emitRM("LDA", reg, tmp->location, fp, "Load address of  local array " + svalResolve(tmp));
     }

@@ -162,6 +162,7 @@ TreeNode * allocNode() {
     tempNode->isIndex = false;
     tempNode->isConstant = false;
     tempNode->isFuncCompound = false;
+    tempNode->isParam = false;
     tempNode->arraySize = 0;
     tempNode->size = 0;
     tempNode->location = 0;

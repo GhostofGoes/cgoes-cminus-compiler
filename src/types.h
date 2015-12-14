@@ -62,6 +62,7 @@ typedef struct treeNode
     bool isIndex;           // Array index?
     bool isConstant;        // Constant?
     bool isFuncCompound;    // Super-magical function compound?
+    bool isParam;
     
     /* Memory info */
     Offset offsetReg;   // offset register: global, local
