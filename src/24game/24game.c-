@@ -25,6 +25,21 @@
 // 
 // NOTE: there may not always be a solution!
 //
+// *** Program operation ***
+// "T?": testing mode
+//      y to give pre-determined set of beautiful number prompts
+//      n to play the game as a fallible human!
+// Input is formatted as such: digit, op, digit, op, digit, op, digit
+// Basically: (((digit1 op digit2) op digit3) op digit4)
+// Upon bad input <error> "BAD!"
+//  'O': bad operator(s)
+//  'D': bad digit(s)
+// If expression doesn't work: "NO!"
+// If expression works: "YES!"
+// "A?": loop check
+//      y to play again
+//      n to quit
+//
 // *** Example ***
 // Output: 9 7 4 4
 // Input: 9 + 4 + 7 + 4
@@ -33,16 +48,7 @@
 // Input: 5 + 8 + 8 + 5
 // Output: YES!
 
-//
-// *** Program operation ***
-// Input is formatted as such: digit, op, digit, op, digit, op, digit
-// Basically: (((digit1 op digit2) op digit3) op digit4)
-// Upon bad input <error> "BAD!"
-//  'O': bad operator(s)
-//  'D': bad digit(s)
-// If expression doesn't work: "NO!"
-// If expression works: "YES!"
-// "A?": y to play again, n to quit
+
 
 int a, b, c, d;
 int dig1, dig2, dig3, dig4;
