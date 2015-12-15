@@ -1,0 +1,47 @@
+TM version 3.4b (enter h for help)...
+
+Memory Configuration: Data Addresses: 0-9999  Instruction Addresses: 0-9999
+Abort Limit: 50000
+Loading file: 24game.tm
+Enter command: T?
+Enter characters: 
+1 1 1 1 
+Enter integer value: Enter characters: Enter integer value: Enter characters: Enter integer value: Enter characters: Enter integer value: R=4 
+NO!
+
+2 2 2 2 
+Enter integer value: Enter characters: Enter integer value: Enter characters: Enter integer value: Enter characters: Enter integer value: R=16 
+NO!
+
+3 3 3 3 
+Enter integer value: Enter characters: Enter integer value: Enter characters: Enter integer value: Enter characters: Enter integer value: R=-6 
+NO!
+
+4 4 4 4 
+Enter integer value: Enter characters: Enter integer value: Enter characters: Enter integer value: Enter characters: Enter integer value: R=24 
+YES!
+
+5 5 5 5 
+Enter integer value: Enter characters: Enter integer value: Enter characters: Enter integer value: Enter characters: Enter integer value: R=1 
+NO!
+
+6 6 6 6 
+Enter integer value: Enter characters: Enter integer value: Enter characters: Enter integer value: Enter characters: Enter integer value: O
+BAD!
+
+7 7 7 7 
+Enter integer value: Enter characters: Enter integer value: Enter characters: Enter integer value: Enter characters: Enter integer value: D
+BAD!
+
+8 8 8 8 
+Enter integer value: Enter characters: Enter integer value: Enter characters: Enter integer value: Enter characters: Enter integer value: DO
+BAD!
+
+9 9 9 9 
+Enter integer value: Enter characters: Enter integer value: Enter characters: Enter integer value: Enter characters: Enter integer value: R=8 
+NO!
+Status: Halted
+Last executed cmd: 1000: HALT  0,  0, 0  | before: r[0]:9999 r[1]:9987 r[2]:0   r[3]:1000 r[4]:10  r[5]:0   r[6]:0   |  
+PC was 1000, PC is now 1001
+Enter command: Bye.
+

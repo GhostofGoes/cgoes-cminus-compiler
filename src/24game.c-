@@ -3,70 +3,86 @@
 // Fall 2015 CS 445 Compilers
 // Release 1.0 - December 14, 2015
 // Language: Robert Heckendorn's C- language
-// 
+// ******************************************
+//
 // The 24 Game tests one's mental arithmetic
-// Background: https://en.wikipedia.org/wiki/24_Game
+// Background on the game: https://en.wikipedia.org/wiki/24_Game
+// Examples of implementations in other languages: http://rosettacode.org/wiki/24_game
 //
+// ******************************************
+// How to play
 //
-// Four digits will be randomly chosen and displayed.
-// The goal: enter an expression that evaluates to 24.
+// *** Goal ***
+//
+// You will be given 4 random numbers between 1 and 9
+// Your goal is to make an expression that evaluates to 24
+//
+// *** Rules ***
 // Only * / + - operators are allowed.
 // Division is truncating integer division
-// No shoving numberstogether!
-//      1 2 1 2
-//      12 + 12 = 24
-//      "I win woohoo!" (No, you don't...)
 // The order of the digits when given does not have to be preserved.
+// Expression is evaluated left to right, ignoring regular order of operations
 // 
+// NOTE: there may not always be a solution!
 //
-// Example:
-// Output: 9 2 2 7
-// Input: dig, op, dig, op, dig, op, dig
-// Total of 7 characters input, 4 digits and 3 operators.
+// *** Example ***
+// Output: 9 7 4 4
+// Input: 9 + 4 + 7 + 4
+// Output: YES!
+// Output: 8 8 3 5
+// Input: 5 + 8 + 8 + 5
+// Output: YES!
+
 //
-// ? http://rosettacode.org/wiki/24_game
-//
-//
+// *** Program operation ***
+// Input is formatted as such: digit, op, digit, op, digit, op, digit
+// Basically: (((digit1 op digit2) op digit3) op digit4)
+// Upon bad input <error> "BAD!"
+//  'O': bad operator(s)
+//  'D': bad digit(s)
+// If expression doesn't work: "NO!"
+// If expression works: "YES!"
+// "A?": y to play again, n to quit
 
 int a, b, c, d;
 int dig1, dig2, dig3, dig4;
 char op1, op2, op3;
 
+int testCount;
+
 bool checkDig(int dig)
 {
     if(dig != a & dig != b & dig != c & dig != d)
-    {
         return false;
-    }
     else
-    {
         return true;
-    }
 }
 
 bool checkOp(char op)
 {
-    if(op != '*' & op != '/' & op != '+' & op != '-')
-    {
+    if((op != '*') & (op != '/') & (op != '+') & (op != '-'))
         return false;
-    }
     else
-    {
         return true;
-    }
 }
-
 
 genDigits()
 {
 	int range;
-	
 	range = 9;
 	    
 	a = ?range + 1;
 	b = ?range + 1;
 	c = ?range + 1;
 	d = ?range + 1;
+}
+
+genTestDigits()
+{
+    a = testCount;
+    b = testCount;
+    c = testCount;
+    d = testCount;
 }
 
 outputDigits()
@@ -90,47 +106,166 @@ getUserExpression()
     dig4 = input();
 }
 
-bool checkUserExpression()
+bool checkUserInput()
 {
-    if(checkDig(dig1) == false & checkDig(dig2) == false & checkDig(dig3) == false & checkDig(dig4) == false)
+    if((checkDig(dig1) == false) | (checkDig(dig2) == false) | (checkDig(dig3) == false) | (checkDig(dig4) == false))
     {
         outputc('D');
-        if(checkOp(op1) == false & checkOp(op2) == false & checkOp(op3) == false)
-        {
+        if((checkOp(op1) == false) | (checkOp(op2) == false) | (checkOp(op3) == false))
             outputc('O');
-            return false;
-        }
-        else
-        {
-            return false;
-        }
+        return false;
     }
+    
+    if((checkOp(op1) == false) | (checkOp(op2) == false) | (checkOp(op3) == false))
+    {
+        outputc('O');
+        return false;
+    }
+    
+    return true;
+}
 
+int evalOp(int x, y; char op)
+{
+    if(op == '+')
+        return (x + y);
+    if(op == '-')
+        return (x - y);
+    if(op == '*')
+        return (x * y);
+    if(op == '/')
+        return (x / y);
+}
+
+bool checkExpression()
+{
+    int res;
+
+    res = evalOp(dig1, dig2, op1);
+    res = evalOp(res, dig3, op2);
+    res = evalOp(res, dig4, op3);
+    
+    if(res != 24)
+    {
+        outputc('R');
+        outputc('=');
+        output(res);
+        //outnl();
+        return false;
+    }
     else
     {
+        outputc('R');
+        outputc('=');
+        output(res);
+        //outnl();
         return true;
     }
-
 }
 
 main()
 {
-    bool temp;
+    bool inputCheck;
+    bool expressionEval;
+    bool again;
+    bool test;
+    again = true;
+    testCount = 1;
     
-    genDigits();
-    outputDigits();
-    getUserExpression();
-    temp = checkUserExpression();
-    if(!temp)
+    outputc('T');
+    outputc('?');
+    outnl();
+    if(inputc() == 'y')
     {
-        outnl();
-        outputc('N');
-        outputc('O');
-        outputc('!');
-        outnl();
-        return;
+        while(testCount < 10)
+        {
+            genTestDigits();
+            outputDigits();
+            getUserExpression();
+            
+            inputCheck = checkUserInput();
+            if(!inputCheck)
+            {
+                outnl();
+                outputc('B');
+                outputc('A');
+                outputc('D');
+                outputc('!');
+                outnl();
+            }
+            else
+            {
+                expressionEval = checkExpression();
+                if(expressionEval == false)
+                {
+                    outnl();
+                    outputc('N');
+                    outputc('O');
+                    outputc('!');
+                    outnl();
+                }
+                else
+                {
+                    outnl();
+                    outputc('Y');
+                    outputc('E');
+                    outputc('S');
+                    outputc('!');
+                    outnl();
+                }
+            }
+                        
+            testCount++;
+        }
     }
-	
-
-
+    else
+    {    
+        while(again)
+        {
+            genDigits();
+            outputDigits();
+            getUserExpression();
+            
+            inputCheck = checkUserInput();
+            if(!inputCheck)
+            {
+                outnl();
+                outputc('B');
+                outputc('A');
+                outputc('D');
+                outputc('!');
+                outnl();
+            }
+            else
+            {
+                expressionEval = checkExpression();
+                if(expressionEval == false)
+                {
+                    outnl();
+                    outputc('N');
+                    outputc('O');
+                    outputc('!');
+                    outnl();
+                }
+                else
+                {
+                    outnl();
+                    outputc('Y');
+                    outputc('E');
+                    outputc('S');
+                    outputc('!');
+                    outnl();
+                }
+            }
+            
+            outputc('A');
+            outputc('?');
+            outnl();
+            if(inputc() == 'y')
+                again = true;
+            else
+                again = false;
+        }
+    }    
+    return;
 }

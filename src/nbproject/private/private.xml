@@ -18,17 +18,21 @@
             <file>file:/home/tehlizard/cgoes-cs445/src/symbolTable.h</file>
             <file>file:/home/tehlizard/cgoes-cs445/src/codegen.cpp</file>
             <file>file:/home/tehlizard/cgoes-cs445/src/trees.cpp</file>
+            <file>file:/home/tehlizard/cgoes-cs445/src/testing.tm</file>
             <file>file:/home/tehlizard/cgoes-cs445/src/types.h</file>
             <file>file:/home/tehlizard/cgoes-cs445/src/symbolTable.cpp</file>
             <file>file:/home/tehlizard/cgoes-cs445/src/printing.cpp</file>
-            <file>file:/home/tehlizard/cgoes-cs445/src/cminus.cpp</file>
+            <file>file:/home/tehlizard/cgoes-cs445/src/toker.cpp</file>
             <file>file:/home/tehlizard/cgoes-cs445/src/cminus.y</file>
-            <file>file:/home/tehlizard/cgoes-cs445/src/trees.h</file>
+            <file>file:/home/tehlizard/cgoes-cs445/src/cminus.cpp</file>
             <file>file:/home/tehlizard/cgoes-cs445/src/emit.cpp</file>
+            <file>file:/home/tehlizard/cgoes-cs445/src/trees.h</file>
             <file>file:/home/tehlizard/cgoes-cs445/src/codegenClassTM.h</file>
             <file>file:/home/tehlizard/cgoes-cs445/src/testoutput.txt</file>
             <file>file:/home/tehlizard/cgoes-cs445/src/test.sh</file>
             <file>file:/home/tehlizard/cgoes-cs445/src/makefile</file>
+            <file>file:/home/tehlizard/cgoes-cs445/src/printing.h</file>
+            <file>file:/home/tehlizard/cgoes-cs445/src/toker.h</file>
         </group>
     </open-files>
 </project-private>
