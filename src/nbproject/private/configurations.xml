@@ -58,6 +58,7 @@
       <in>yyerrorHelper.cpp</in>
       <in>yyerrorHelper.h</in>
     </df>
+    <itemPath>24game.c-</itemPath>
     <itemPath>bison_values.txt</itemPath>
   </logicalFolder>
   <projectmakefile>makefile</projectmakefile>
