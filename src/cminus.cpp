@@ -50,11 +50,12 @@ int warnings = 0;
 int errors = 0;
 
 // Debugging/Testing flags
-bool testing = false;
+bool testing = false; // TODO: use a #define so gcc can optimze out
 
-/* Used for semantic analysis */
+// Used for semantic analysis
 bool return_found = false;
 TreeNode * func = NULL;
+
 // Enter loop, push true. Leave, pop. If there is a break, checks the top of stack
 std::stack<bool> loopDepth; 
 
@@ -62,6 +63,8 @@ std::stack<bool> loopDepth;
 int global_offset = 0;
 int param_count = 0;
 
+
+// NOTE: this thing leaks memory a lot. destructors would help, but...it's a compiler. one-time run. 
 // TODO: '=' requires that if one operand is an array so must the other...
 // In: everything06.c-, everything06linear.c-
 // TODO: hamlet.c- invalid input character, hard.c- charconst, sample.c- stringconst
@@ -95,7 +98,6 @@ int main ( int argc, char * argv[] )
         size_t lastindex = infile.find_last_of(".");
         outfileTM = infile.substr(0, lastindex);
         outfileTM += ".tm";
-        
         yyin = fopen(argv[1], "r");
     }
 
@@ -119,14 +121,12 @@ int main ( int argc, char * argv[] )
         case 'o':
             code_generation = true;
             if ( optarg == "-" )
-            {
                 outfileTM = "stdout";
-            } 
             else
             {
                 if ( optarg != NULL )
                     outfileTM.assign(optarg);
-                else // If its null, output error and let default
+                else
                     std::cerr << "NULL optarg!" << std::endl;
             }
             break;
@@ -135,10 +135,8 @@ int main ( int argc, char * argv[] )
         }
     }
 
-    // Bison builds the syntax tree for us
-    parseStatus = yyparse();
-    if(testing)
-        std::cout << "yyparse() status: " << parseStatus << std::endl;
+    parseStatus = yyparse(); // Bison builds the syntax tree for us
+    if(testing) { std::cout << "yyparse() status: " << parseStatus << std::endl; }
     
     if ( print_syntax_tree )
         printAbstractTree(syntaxTree);
@@ -155,9 +153,7 @@ int main ( int argc, char * argv[] )
     }
  
     if ( code_generation && (errors == 0) )
-    {
         generateCode(outfileTM, infile);
-    }
 
     if(print_annotated_tree)
         printf("Offset for end of global space: %d\n", global_offset);
@@ -165,18 +161,7 @@ int main ( int argc, char * argv[] )
     printf("Number of warnings: %d\n", warnings);
     printf("Number of errors: %d\n", errors);
 
-    
-    /* Cleanup */
-    
     fclose(yyin);
-    
-    /*
-    if(syntaxTree != NULL)
-        //freeTree(syntaxTree);
-    if(annotatedTree != NULL)
-        //freeTree(annotatedTree);
-    */
-
     return 0;
 }
 
@@ -203,7 +188,6 @@ void semanticAnalysis ( TreeNode * og )
     // *** Memory allocation *** //
     memorySizing(annotatedTree, symtable, 0);
     
-    /* Cleanup */
     delete symtable;
     delete typetable;
 }
@@ -212,23 +196,15 @@ void semanticAnalysis ( TreeNode * og )
 // TODO: rewrite into class?
 void typeResolution ( TreeNode * par, TreeNode * node, SymbolTable * symtable )
 {
-    TreeNode * tree;
+    TreeNode * tree, parent;
     tree = node;
-
-    TreeNode * parent;
-    if ( par == NULL )
-    {
-        parent = tree;
-    } else
-    {
-        parent = par;
-    }
+    (par == NULL) ? parent = tree : parent = par;
 
     while (tree != NULL)
     {
-        TreeNode * temp; // Temporary TreeNode
-        int sibling_count = 0; // Keeps track of siblings
-        int line = tree->lineno; // Node's line number
+        TreeNode * temp;            // Temporary TreeNode
+        int sibling_count = 0;      // Keeps track of siblings
+        int line = tree->lineno;    // Node's line number
         std::string tree_svalue = svalResolve(tree);
 
         switch (tree->nodekind)
@@ -287,7 +263,6 @@ void typeResolution ( TreeNode * par, TreeNode * node, SymbolTable * symtable )
                         tree->nodetype = Undef;
                     }
                     break;
-
                 }
               break;
 
@@ -335,7 +310,8 @@ void typeResolution ( TreeNode * par, TreeNode * node, SymbolTable * symtable )
                     if ( temp != NULL )
                     {
                         tree->nodetype = temp->nodetype;
-                        if ( temp->isArray && temp->child[0] == NULL ) // TODO: could it have a non-null child, and still be an array?
+                        // TODO: could it have a non-null child, and still be an array?
+                        if ( temp->isArray && temp->child[0] == NULL ) 
                             tree->isArray = true;
                         else
                             tree->isArray = false;
@@ -350,8 +326,6 @@ void typeResolution ( TreeNode * par, TreeNode * node, SymbolTable * symtable )
                     break;
                 }
               break;
-
-
           }
 
         // Check if there are children
@@ -360,9 +334,7 @@ void typeResolution ( TreeNode * par, TreeNode * node, SymbolTable * symtable )
             for (int i = 0; i < tree->numChildren; i++)
             {
                 if ( tree->child[i] != NULL )
-                {
                     typeResolution(tree, tree->child[i], symtable);
-                }
             }
         }
 
@@ -417,26 +389,17 @@ void typeResolution ( TreeNode * par, TreeNode * node, SymbolTable * symtable )
 // TODO: put different error types into their own methods in a "errors.cpp" file.
 void treeParse ( TreeNode * par, TreeNode * node, SymbolTable * symtable )
 {
-
-    TreeNode * tree;
+    TreeNode * tree, parent;
     tree = node;
+    (par == NULL) ? parent = tree : parent = par;
 
-    TreeNode * parent;
-    if ( par == NULL )
-        parent = tree;
-    else
-        parent = par;
-
-    //bool iloop = in_loop;
-    
     while (tree != NULL)
     {
+        TreeNode * tmp;             // Temporary TreeNode
+        int sibling_count = 0;      // Keeps track of siblings
+        int line = tree->lineno;    // Node's line number
 
-        TreeNode * tmp; // Temporary TreeNode
-        int sibling_count = 0; // Keeps track of siblings
-        int line = tree->lineno; // Node's line number
-
-        Type lhs = Undef; // Left hand side (child[0])'s type
+        Type lhs = Undef; // Left hand side  (child[0])'s type
         Type rhs = Undef; // Right hand side (child[1])'s type
 
         std::string child0_sval;
@@ -462,10 +425,8 @@ void treeParse ( TreeNode * par, TreeNode * node, SymbolTable * symtable )
         lhs_str = typeToStr(lhs);
         rhs_str = typeToStr(rhs);
 
-
         if(testing)
         {
-            //printf("\niloop: %d\n", iloop);
             printf("Tree\n");
             fflush(stdout);
             printTreeNode(tree);
@@ -508,7 +469,6 @@ void treeParse ( TreeNode * par, TreeNode * node, SymbolTable * symtable )
                             printf("ERROR(%d): Initializer for nonarray variable '%s' of type %s cannot be initialized with an array.\n",
                                    line, tree_svalue.c_str(), tree_type_str);
                             errors++;
-                        //} else if ( tree->child[0]->kind != ConstK )
                         } else if ( tree->child[0]->isConstant != true )
                         {
                             printf("ERROR(%d): Initializer for variable '%s' is not a constant expression.\n",
@@ -521,7 +481,6 @@ void treeParse ( TreeNode * par, TreeNode * node, SymbolTable * symtable )
                             errors++;
                         }
                     }
-
                     break;
 
                   case ParamK:
@@ -551,7 +510,6 @@ void treeParse ( TreeNode * par, TreeNode * node, SymbolTable * symtable )
 
                 } // end DeclK kind switch
               break;
-
 
 
               // *** Node is part of a statement ***
@@ -588,7 +546,6 @@ void treeParse ( TreeNode * par, TreeNode * node, SymbolTable * symtable )
 
                     // TODO: change all if statements to use error checking methods
                   case ForeachK:
-                    //iloop = true;
                       loopDepth.push(true);
                     if ( tree->numChildren > 1 && tree->child[0] != NULL && tree->child[1] != NULL )
                     {
@@ -629,7 +586,6 @@ void treeParse ( TreeNode * par, TreeNode * node, SymbolTable * symtable )
 
                   case WhileK:
                       loopDepth.push(true);
-                    //iloop = true;
                     if ( tree->numChildren > 0 && tree->child[0] != NULL )
                     {
                         if ( lhs != Undef &&  tree->child[0]->isArray && tree->child[0]->child[0] == NULL )
@@ -682,10 +638,6 @@ void treeParse ( TreeNode * par, TreeNode * node, SymbolTable * symtable )
                     break;
 
                   case BreakK:
-                      if(testing)
-                          printf("Hit break\n");
-                      
-                      //if ( iloop == false )
                     if(loopDepth.top() == false)
                     {
                         printf("ERROR(%d): Cannot have a break statement outside of loop.\n", line);
@@ -1113,16 +1065,7 @@ void generateCode( std::string output_file, std::string infile )
 // Creates the tree of IO functions
 TreeNode * buildIOLibrary ( )
 {
-    TreeNode * in; // these could use some cleanup into one declaration
-    TreeNode * out;
-    TreeNode * inputb;
-    TreeNode * outputb;
-    TreeNode * inputc;
-    TreeNode * outputc;
-    TreeNode * outnl;
-    TreeNode * idummy;
-    TreeNode * bdummy;
-    TreeNode * cdummy;
+    TreeNode * in, out, inputb, outputb, inputc, outputc, outnl, idummy, bdummy, cdummy;
 
     /* Integer Input */
     in = makeParent(DeclK, FunK, Integer, -1, "input");
@@ -1143,7 +1086,7 @@ TreeNode * buildIOLibrary ( )
     /* Boolean Output */
     outputb = makeParent(DeclK, FunK, Void, -1, "outputb");
     outputb->isIO = OutputB;
-    bdummy = makeParent(DeclK, ParamK, Boolean, -1, "*dummy*"); // Parent? lol naming ftw
+    bdummy = makeParent(DeclK, ParamK, Boolean, -1, "*dummy*");
     addChild(outputb, bdummy);
     linkSiblings(in, outputb);
     
@@ -1164,7 +1107,7 @@ TreeNode * buildIOLibrary ( )
     outnl->isIO = OutNL;
     linkSiblings(in, outnl);
 
-    // Return beginning of the sibling list
+    // Return beginning of the linked sibling list
     return in;
 }
 

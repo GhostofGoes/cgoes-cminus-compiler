@@ -747,7 +747,8 @@ term:
         $$ = $2;
         addChild( $$, $1);
         addChild( $$, $3);
-        if( $1 != NULL && $3 != NULL && $1->isConstant && $3->isConstant ) {
+        if( $1 != NULL && $3 != NULL && $1->isConstant && $3->isConstant ) 
+		{
             $$->isConstant = true;
         }
     }

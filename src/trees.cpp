@@ -142,7 +142,6 @@ int countSiblings( TreeNode * start ) {
 // Allocates and zeros a new TreeNode
 // TODO: should do as a class, put this into constructor, have destructor for things like token
 TreeNode * allocNode() {
-    //TreeNode * tempNode = (TreeNode *)calloc(1, sizeof(TreeNode));
     TreeNode * tempNode = (TreeNode *)new TreeNode;
     
     // Initialize values
@@ -170,63 +169,5 @@ TreeNode * allocNode() {
     tempNode->isIO = Nopeput;
     tempNode->loc = 0;
     
-    return tempNode; // Return the allocated node...
-}
-
-// TODO: destructor version
-void freeTree( TreeNode * tree ) {
-    if (tree == NULL) {
-        return;
-    }
-
-    TreeNode * prev;
-    TreeNode * temp;
-    prev = tree;
-
-    while (prev != NULL) {
-        temp = prev;
-        if (prev->token != NULL) {
-            freeToken(prev->token);
-            prev->token = NULL;
-        }
-
-        if (prev->svalue != NULL) {
-            free(prev->svalue);
-            prev->svalue = NULL;
-        }
-        // Check if there are children
-        if (prev->numChildren > 0) {
-            //for ( int i = 0; i < prev->numChildren; i++ ) {
-            for (int i = 0; i < MAXCHILDREN; i++) {
-                if (prev->child[i] != NULL) {
-                    freeTree(prev->child[i]);
-                }
-            }
-        }
-
-        prev = prev->sibling;
-        delete(temp); // TODO: *temp?
-        temp = NULL;
-    } // end while
-    tree = NULL;
-}
-
-// TODO: use new instead?
-void freeToken( TokenData * token ) {
-    if (token == NULL) {
-        return;
-    }
-
-    if (token->svalue != NULL) {
-        free(token->svalue);
-        token->svalue = NULL;
-    }
-
-    if (token->input != NULL) {
-        free(token->input);
-        token->input = NULL;
-    }
-
-    free(token);
-    token = NULL;
+    return tempNode;
 }

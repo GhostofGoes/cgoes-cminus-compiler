@@ -1,4 +1,5 @@
 // printing.cpp
+
 /* C++ Libraries */
 #include <iostream>
 #include <string>
@@ -178,13 +179,11 @@ void printTokenData(void * tok) {
 // TODO: null characters in char and string consts, store/print properly (check treeParse for solution, make function)
 void printAbstractTree ( TreeNode * og, int indent_count )
 {
-
     TreeNode * tree = og;
     int sibling_count = 0; // Keeps track of siblings
 
-    // Output buffer 
     // TODO: string stream better option?
-    std::string outstr;
+    std::string outstr; // Output buffer 
 
     // Prints all nodes of the tree
     while (tree != NULL)
@@ -463,7 +462,7 @@ void printAnnotatedTree ( TreeNode * og, int indent_count )
               outstr.append("Break");
               break;
 
-            case VarK: // TODO: negative sizes??
+            case VarK:
               outstr.append("Var ");
               outstr.append(svalResolve(tree));
               if ( tree->isArray )
@@ -512,7 +511,7 @@ void printAnnotatedTree ( TreeNode * og, int indent_count )
                   outstr += "Global";
               else
                   outstr += "Local";
-              outstr += " of size -"; // TODO: printing as negative for now, ask in class?
+              outstr += " of size -";
               outstr += std::to_string(tree->size);
               outstr += " and exec location ";
               outstr += std::to_string(tree->location);              
@@ -558,5 +557,3 @@ void printAnnotatedTree ( TreeNode * og, int indent_count )
     } // end while
 
 }
-
-

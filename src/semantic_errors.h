@@ -1,10 +1,3 @@
-/* 
- * File:   semantic_errors.h
- * Author: tehlizard
- *
- * Created on November 9, 2015, 1:00 PM
- */
-
 #ifndef SEMANTIC_ERRORS_H
 #define	SEMANTIC_ERRORS_H
 

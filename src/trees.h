@@ -1,5 +1,3 @@
-// trees.h
-
 #ifndef _TREES_H_
 #define _TREES_H_
 
@@ -24,7 +22,6 @@
 TreeNode * makeNode( NodeKind nk, Kind k, Type t, int line, TokenData * token );
 TreeNode * makeParent( NodeKind nk, Kind k, Type t, int line, const char * svalue );
 void copyAnnotations ( TreeNode * from, TreeNode * to ); // from -> to
-// Adds a child to an existing syntax tree node
 void addChild( TreeNode * parent, TreeNode * child );
 
 
@@ -42,7 +39,5 @@ int countSiblings( TreeNode * start );
 /* Memory */
 
 TreeNode * allocNode(); 		// Allocates and zeros a new TreeNode
-void freeTree( TreeNode * tree );	// Recursively frees and zeroes the tree
-void freeToken( TokenData * token );	// Frees and zeroes the token
 
 #endif

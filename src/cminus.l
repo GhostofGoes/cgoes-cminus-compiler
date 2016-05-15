@@ -40,27 +40,27 @@ stringbody	([^"])|(\\[^n])
 "//".*\n 	{ }
 
         /* Single character tokens */
-";"		{ return cToker(SEMICOLON,  yytext, yylineno, yytext[0]);}
-"("		{ return cToker(LPAREN,     yytext, yylineno, yytext[0]);   }
-")"		{ return cToker(RPAREN,     yytext, yylineno, yytext[0]);   }
+";"		{ return cToker(SEMICOLON,  yytext, yylineno, yytext[0]); }
+"("		{ return cToker(LPAREN,     yytext, yylineno, yytext[0]); }
+")"		{ return cToker(RPAREN,     yytext, yylineno, yytext[0]); }
 "["		{ return cToker(LBRACKET,   yytext, yylineno, yytext[0]); }
 "]"		{ return cToker(RBRACKET,   yytext, yylineno, yytext[0]); }
-"|"		{ return cToker(OR,         yytext, yylineno, yytext[0]);       }
-"&"		{ return cToker(AND,        yytext, yylineno, yytext[0]);      }
-"!"		{ return cToker(NOT,        yytext, yylineno, yytext[0]);      }
-"="		{ return cToker(ASSIGN,     yytext, yylineno, yytext[0]);   }
-"+"		{ return cToker(PLUS,       yytext, yylineno, yytext[0]);     }
-"-"		{ return cToker(MINUS,      yytext, yylineno, yytext[0]);    }
+"|"		{ return cToker(OR,         yytext, yylineno, yytext[0]); }
+"&"		{ return cToker(AND,        yytext, yylineno, yytext[0]); }
+"!"		{ return cToker(NOT,        yytext, yylineno, yytext[0]); }
+"="		{ return cToker(ASSIGN,     yytext, yylineno, yytext[0]); }
+"+"		{ return cToker(PLUS,       yytext, yylineno, yytext[0]); }
+"-"		{ return cToker(MINUS,      yytext, yylineno, yytext[0]); }
 "*"		{ return cToker(MULTIPLY,   yytext, yylineno, yytext[0]); }
-"/"		{ return cToker(DIVIDE,     yytext, yylineno, yytext[0]);   }
-"%"		{ return cToker(MODULUS,    yytext, yylineno, yytext[0]);  }
+"/"		{ return cToker(DIVIDE,     yytext, yylineno, yytext[0]); }
+"%"		{ return cToker(MODULUS,    yytext, yylineno, yytext[0]); }
 "?"		{ return cToker(QUESTION,   yytext, yylineno, yytext[0]); }
-"<"		{ return cToker(LTHAN,      yytext, yylineno, yytext[0]);    }
-">"		{ return cToker(GTHAN,      yytext, yylineno, yytext[0]);    }
-"{"		{ return cToker(LBRACE,     yytext, yylineno, yytext[0]);   }
-"}"		{ return cToker(RBRACE,     yytext, yylineno, yytext[0]);   }
-","		{ return cToker(COMMA,      yytext, yylineno, yytext[0]);    }
-":"		{ return cToker(COLON,      yytext, yylineno, yytext[0]);    }
+"<"		{ return cToker(LTHAN,      yytext, yylineno, yytext[0]); }
+">"		{ return cToker(GTHAN,      yytext, yylineno, yytext[0]); }
+"{"		{ return cToker(LBRACE,     yytext, yylineno, yytext[0]); }
+"}"		{ return cToker(RBRACE,     yytext, yylineno, yytext[0]); }
+","		{ return cToker(COMMA,      yytext, yylineno, yytext[0]); }
+":"		{ return cToker(COLON,      yytext, yylineno, yytext[0]); }
 
         /* Multi-character tokens */
 "+="		{ return sToker(ADDASS,     yytext, yylineno, yytext); }
@@ -90,37 +90,37 @@ stringbody	([^"])|(\\[^n])
 "false"		{ return iToker(BOOLCONST,  yytext, yylineno, 0); }
 
 	/* Tokens */
-{letter}{letdig}*	{ return sToker(ID,         yytext, yylineno, yytext); }
-{digit}+		{ return iToker(NUMCONST,   yytext, yylineno, atoi(yytext)); }
+{letter}{letdig}*	{ return sToker(ID,         yytext, yylineno, yytext); 			}
+{digit}+		    { return iToker(NUMCONST,   yytext, yylineno, atoi(yytext)); 	}
 
 	/* String Constants */
 \"	{ 
-            stringbuffer = (char *)calloc(100, sizeof(char));
-            sbuf_ptr = stringbuffer;
-            literalbuffer = (char *)calloc(110, sizeof(char)); 
-            start_line = yylineno;
-            BEGIN(scond); 
-	}
+	stringbuffer = (char *)calloc(100, sizeof(char));
+	sbuf_ptr = stringbuffer;
+	literalbuffer = (char *)calloc(110, sizeof(char)); 
+	start_line = yylineno;
+	BEGIN(scond); 
+}
 <scond>{
 	\"  {
 		*sbuf_ptr = '\0';
-                yytext = strdup(stringbuffer);
-                sToker(STRINGCONST, literalbuffer, start_line, stringbuffer);
-                free(literalbuffer);
-                free(stringbuffer);
-                BEGIN(INITIAL);
-                return STRINGCONST;
+        yytext = strdup(stringbuffer);
+        sToker(STRINGCONST, literalbuffer, start_line, stringbuffer);
+        free(literalbuffer);
+        free(stringbuffer);
+        BEGIN(INITIAL);
+        return STRINGCONST;
 	}
 	\n  {
-                // TODO: should we be returning on newline?
-                //yytext = strdup(stringbuffer);
-                warnInputChar('\"', start_line);
-                //warnInputChar(yytext[0], yylineno);
-                //sToker(STRINGCONST, literalbuffer, yylineno, stringbuffer);                
+        // TODO: should we be returning on newline?
+        //yytext = strdup(stringbuffer);
+        warnInputChar('\"', start_line);
+        //warnInputChar(yytext[0], yylineno);
+        //sToker(STRINGCONST, literalbuffer, yylineno, stringbuffer);                
 		free(literalbuffer);
-                free(stringbuffer);
+        free(stringbuffer);
 		BEGIN(INITIAL);
-                //return STRINGCONST;
+        //return STRINGCONST;
 	}
 	\\n { 
 		*sbuf_ptr++ = '\n';
@@ -142,40 +142,40 @@ stringbody	([^"])|(\\[^n])
 	
 	/* Character Constants  */
 \'		{ 
-                    // buffer size was causing problems. oh, wish i could use a C++ string...
-                    literalbuffer = (char *)calloc(100, sizeof(char)); 
-                    //strcat(literalbuffer, yytext);
-                    clength = 0;
-                    start_line = yylineno;
-                    BEGIN(ccond);
-		}
+        // buffer size was causing problems. oh, wish i could use a C++ string...
+        literalbuffer = (char *)calloc(100, sizeof(char)); 
+        //strcat(literalbuffer, yytext);
+        clength = 0;
+        start_line = yylineno;
+        BEGIN(ccond);
+	}
 <ccond>{
 	\'  {
-                if( clength < 2 ) // ALL GOOD MATE
-                {
-                    strcat(literalbuffer, yytext);
-                    yytext = strdup(literalbuffer);
-                    cToker(CHARCONST, literalbuffer, start_line, ctemp);
-                    free(literalbuffer);
-                    BEGIN(INITIAL);
-                    return CHARCONST;
-                }
-                else // OH NO, TOO MANY CHARACTERS!
-                {
-                    //strcat(literalbuffer, yytext);
-                    yytext = strdup(literalbuffer);
-                    warnCharLength(yytext, clength, yylineno);
-                    cToker(CHARCONST, literalbuffer, start_line, ctemp);
-                    free(literalbuffer);
-                    BEGIN(INITIAL);
-                    return CHARCONST;
-                }
-            }
+		if( clength < 2 ) // ALL GOOD MATE
+		{
+			strcat(literalbuffer, yytext);
+			yytext = strdup(literalbuffer);
+			cToker(CHARCONST, literalbuffer, start_line, ctemp);
+			free(literalbuffer);
+			BEGIN(INITIAL);
+			return CHARCONST;
+		}
+		else // OH NO, TOO MANY CHARACTERS!
+		{
+			//strcat(literalbuffer, yytext);
+			yytext = strdup(literalbuffer);
+			warnCharLength(yytext, clength, yylineno);
+			cToker(CHARCONST, literalbuffer, start_line, ctemp);
+			free(literalbuffer);
+			BEGIN(INITIAL);
+			return CHARCONST;
+		}
+	}
 	\n  {
-                warnInputChar('\'', start_line);
-                free(literalbuffer);
-                BEGIN(INITIAL);
-            }
+		warnInputChar('\'', start_line);
+		free(literalbuffer);
+		BEGIN(INITIAL);
+        }
 	\\n { 
 
 		if(clength < 1)
@@ -185,22 +185,22 @@ stringbody	([^"])|(\\[^n])
 	}
 	\\0 {
 		if(clength < 1) 
-                    ctemp = '\0'; 
+		ctemp = '\0'; 
 		strcat(literalbuffer, yytext);
-                clength++;
+		clength++;
 	}
 	\\. {
 		if(clength < 1)
-                    ctemp = yytext[1]; 
-                strcat(literalbuffer, yytext);
-                clength++;
+		ctemp = yytext[1]; 
+		strcat(literalbuffer, yytext);
+		clength++;
 	}
 	.   {
 		if(clength < 1)            
-                    ctemp = yytext[0]; 
+		ctemp = yytext[0]; 
 		strcat(literalbuffer, yytext);
-                clength++;
-        }	
+		clength++;
+	}	
 }
 
 	/* Eat whitespace */

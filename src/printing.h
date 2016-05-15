@@ -1,4 +1,3 @@
-// printing.h
 #ifndef _PRINTING_H_
 #define _PRINTING_H_
 
@@ -14,9 +13,9 @@
 
 
 /* Printing and String manipulation */
-const char * iboolToString( int ib );	// Returns "true" for 1, "false" for 0
+const char * iboolToString( int ib );	    // Returns "true" for 1, "false" for 0
 std::string applyIndents( std::string s, int indent_count );
-const char * typeToStr( Type t );	// Returns literal string of type, eg "int" for Integer
+const char * typeToStr( Type t );	        // Returns literal string of type, eg "int" for Integer
 const char * nodekindToStr( NodeKind nk );
 std::string svalResolve( TreeNode * tree ); // Resolves the svalue of node or token as a C++ string
 std::string opToStr( TokenData * tok );
