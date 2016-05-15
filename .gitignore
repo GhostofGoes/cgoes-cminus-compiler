@@ -1,3 +1,10 @@
 **/.idea
 **/.vsc
 **/.vagrant
+*.o
+lex.yy.c
+cminus.tab.h
+cminus.tab.o
+cminus.tab.c
+*.output
+*~
