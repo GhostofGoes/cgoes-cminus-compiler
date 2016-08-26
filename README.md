@@ -1,5 +1,7 @@
-# uidaho CS445 - Compilers - Fall 2015
-Project for CS445 - Compilers class at the University of Idaho.
+# CS 445 - Compilers
+Project code and class notes for Robert Heckendorn's CS445 - Compilers class at the University of Idaho Fall 2015.
+
+[Course Website](http://marvin.cs.uidaho.edu/Teaching/CS445/index.html)
 
 # Cgoes Cminus Compiler (CCC)
 A compiler for Robert Heckendorn's C- (cminus) language. 
@@ -21,11 +23,12 @@ A compiler for Robert Heckendorn's C- (cminus) language.
 ```
 
 # Using the CCC
+It is reccomended you run this on a distribution of Linux. (Debian-based is best)
 ## Environment requirements
     Bison 3.0 or higher (Hard requirement, can confirm 2.5 freaks out)
     Flex 2.5.39 or higher (I think flex 2.5.37 will work as well)
     gcc 4.9 or higher (Hard requirement, C++11)
-    make 4.0 (Most any version will work fine)
+    Make 4.0 (Most any version will work fine)
 
 ## Quickstart guide
     git clone <repo>
