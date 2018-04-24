@@ -1,7 +1,5 @@
-# CS 445 - Compilers
-Project code and class notes for Robert Heckendorn's CS445 - Compilers class at the University of Idaho Fall 2015.
-
-[Course Website](http://marvin.cs.uidaho.edu/Teaching/CS445/index.html)
+# Compilers
+My project code and class notes from compilers.
 
 # Cgoes Cminus Compiler (CCC)
 A compiler for Robert Heckendorn's C- (cminus) language. 
@@ -40,5 +38,5 @@ It is reccomended you run this on a distribution of Linux. (Debian-based is best
     g
 
 # License
-    Code and documentation copyright 2015-2016 Christopher Goes.
+    Code and documentation copyright 2015-2018 Christopher Goes.
     All code and documentation released under the MIT License.
