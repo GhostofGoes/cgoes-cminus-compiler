@@ -1,8 +1,15 @@
-# Compilers
-My project code and class notes from compilers.
-
 # Cgoes Cminus Compiler (CCC)
 A compiler for Robert Heckendorn's C- (cminus) language. 
+
+## A note on plagarism
+If you are currently in the class: *DO NOT USE THIS CODE IN YOUR PROJECT*. 
+MIT License does *not* enable its use in a school assignment. 
+Plagiarizing will get you suspended or expelled, I've seen it happen before.
+You're welcome to read it and fill gaps in understanding in Flex/Bison, such as function calls and syntax, *not* the algorithms and logical structure of the program. 
+
+
+# Using the CCC
+It is recommended you run this on a distribution of Linux.
 
 ## Usage
 ```
@@ -20,8 +27,6 @@ A compiler for Robert Heckendorn's C- (cminus) language.
 (Default: "fred.tm". <filename>: outputs to the filename. '-': stdout)
 ```
 
-# Using the CCC
-It is reccomended you run this on a distribution of Linux. (Debian-based is best)
 ## Environment requirements
     Bison 3.0 or higher (Hard requirement, can confirm 2.5 freaks out)
     Flex 2.5.39 or higher (I think flex 2.5.37 will work as well)
